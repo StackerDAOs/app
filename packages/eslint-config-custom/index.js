@@ -1,7 +1,16 @@
 module.exports = {
-  extends: ["next", "turbo", "prettier"],
+  extends: ['airbnb', 'next', 'turbo', 'prettier'],
+  plugins: ['prettier'],
   rules: {
-    "@next/next/no-html-link-for-pages": "off",
-    "react/jsx-key": "off",
+    'prettier/prettier': ['error'],
+    '@next/next/no-html-link-for-pages': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
+    'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off',
+    'react/jsx-key': 'off',
+    'react/jsx-filename-extension': [1, { extensions: ['.ts', '.tsx'] }],
+    'react/jsx-props-no-spreading': 'off',
   },
 };
