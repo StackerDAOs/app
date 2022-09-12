@@ -12,10 +12,10 @@ export default function Web() {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Container display='flex' alignItems='center' h='100vh'>
+      <Container display='flex' alignItems='center' h='100vh' maxW='3xl'>
         <Stack spacing='4'>
           <HStack>
-            <Text fontSize='md' fontWeight='light' color='light.900'>
+            <Text fontSize='md' fontWeight='light' color='white'>
               Protocol built with{' '}
             </Text>
             <Image
@@ -43,12 +43,15 @@ export default function Web() {
             </Text>
           </Heading>
           <Text fontSize='lg' fontWeight='light' color='gray'>
-            Connect your wallet and launch an investment club in a few clicks
-            for just the cost of gas. Creating an investing DAO has never been
-            easier.
+            Launch an investment club in a few clicks for just the cost of gas.
+            Creating an investing DAO has never been easier.
           </Text>
           <ButtonGroup>
-            <ConnectButton variant='inverted' size='lg'>
+            <ConnectButton
+              variant='inverted'
+              size='lg'
+              redirectOnConnect='/create'
+            >
               Connect wallet
             </ConnectButton>
           </ButtonGroup>

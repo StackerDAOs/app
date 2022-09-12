@@ -4,7 +4,9 @@ import { extendTheme, theme as base } from '@chakra-ui/react';
 const tokens = {
   colors: {
     brand: {
-      'bg-default': '#0c1117',
+      'card-bg': '#17181c',
+      'card-border': '#1c1f21',
+      'bg-default': '#111111',
       'fg-default': '#c9d1d9',
       'fg-muted': '#8b949e',
       'fg-accent': '#58a6ff',
@@ -33,6 +35,10 @@ const tokens = {
 
 const semanticTokens = {
   colors: {
+    'card-bg': {
+      default: tokens.colors.brand['card-bg'],
+      _dark: tokens.colors.brand['card-bg'],
+    },
     'bg-default': {
       default: tokens.colors.brand['bg-default'],
       _dark: tokens.colors.brand['bg-default'],
@@ -215,6 +221,63 @@ const components = {
     },
     defaultProps: {
       size: 'md',
+    },
+  },
+  FormLabel: {
+    baseStyle: {
+      color: 'fg-muted',
+    },
+  },
+  Input: {
+    baseStyle: {
+      field: {
+        color: 'white',
+        fontWeight: 'regular',
+        borderRadius: 'md',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: 'rgba(240, 246, 252, 0.1)',
+        autoComplete: 'off',
+        py: '4px',
+        px: '8px',
+        _focus: {
+          ring: '0px',
+        },
+      },
+    },
+    variants: {
+      brand: {
+        field: {
+          bg: '#111111',
+        },
+      },
+    },
+    defaultProps: {
+      variant: 'brand',
+    },
+  },
+  Tabs: {
+    baseStyle: {
+      tab: {
+        my: '1',
+        _focus: {
+          boxShadow: 'none',
+        },
+      },
+    },
+    variants: {
+      unstyled: {
+        tab: {
+          _active: {
+            color: 'inherit',
+            bg: 'transparent',
+          },
+          _selected: {
+            borderBottom: '1px solid',
+            borderColor: '#fff',
+          },
+        },
+      },
     },
   },
 };

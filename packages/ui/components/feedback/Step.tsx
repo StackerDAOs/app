@@ -1,8 +1,8 @@
 import { Box, BoxProps, Stack, Text } from '@chakra-ui/react';
 
 interface StepProps extends BoxProps {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   isCompleted: boolean;
   isActive: boolean;
 }
@@ -12,11 +12,9 @@ export const Step = (props: StepProps) => {
   return (
     <Box
       flex='1'
-      py={{ base: '2', md: '3' }}
-      ps={{ base: '3', md: '0' }}
-      borderTopWidth={{ base: '0', md: '4px' }}
-      borderLeftWidth={{ base: '4px', md: '0' }}
-      borderColor={isActive || isCompleted ? 'accent' : 'inherit'}
+      borderTopWidth={{ base: '0', md: '5px' }}
+      borderLeftWidth={{ base: '5px', md: '0' }}
+      borderColor={isActive || isCompleted ? '#624AF2' : 'inherit'}
       {...boxProps}
     >
       <Stack spacing='0.5'>

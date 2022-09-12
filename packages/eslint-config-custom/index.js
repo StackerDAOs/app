@@ -12,5 +12,17 @@ module.exports = {
     'react/jsx-key': 'off',
     'react/jsx-filename-extension': [1, { extensions: ['.ts', '.tsx'] }],
     'react/jsx-props-no-spreading': 'off',
+    'no-use-before-define': 'off',
+    'import/prefer-default-export': false,
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
   },
 };
