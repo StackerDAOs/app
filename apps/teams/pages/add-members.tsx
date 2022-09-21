@@ -70,7 +70,14 @@ export default function AddMembers() {
         exit={FADE_IN_VARIANTS.exit}
         transition={{ duration: 0.8, type: 'linear' }}
       >
-        <Stack display='flex' justify='center' h='calc(100vh - 10px)'>
+        <Stack
+          display='flex'
+          justify='center'
+          h='calc(100vh - 7px)'
+          backgroundImage='radial-gradient(#2e3336 0.75px, transparent 0.75px), radial-gradient(#2e3336 0.75px, #111111 0.75px)'
+          backgroundSize='30px 30px'
+          backgroundPosition='0 0, 15px 15px'
+        >
           <Container maxW='3xl'>
             <SectionHeader justify='flex-start' align='center' color='white'>
               <Stack spacing='2'>
@@ -82,7 +89,7 @@ export default function AddMembers() {
                     fontWeight='bold'
                     justify='center'
                     align='center'
-                    bgGradient='linear(to-br, #50DDC3, #624AF2)'
+                    bg='bg-primary'
                   >
                     <Text color='white' fontWeight='bold' fontSize='lg'>
                       3
@@ -114,8 +121,7 @@ export default function AddMembers() {
                     key={member}
                     size='lg'
                     borderRadius='full'
-                    variant='solid'
-                    colorScheme='green'
+                    variant='dark'
                   >
                     <TagLabel>{member}</TagLabel>
                     <TagCloseButton />
@@ -144,6 +150,7 @@ export default function AddMembers() {
                           <InputRightElement width='4.5rem'>
                             <Button
                               size='md'
+                              variant='default'
                               position='relative'
                               top='1'
                               onClick={addMember}
@@ -184,11 +191,11 @@ export default function AddMembers() {
                 </Button>
                 <Button
                   size='lg'
-                  variant='primary'
+                  variant='default'
                   isLoading={false}
                   type='submit'
                 >
-                  Next
+                  Continue
                 </Button>
               </Stack>
             </Stack>

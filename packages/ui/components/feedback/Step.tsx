@@ -14,7 +14,7 @@ export const Step = (props: StepProps) => {
       flex='1'
       borderTopWidth={{ base: '0', md: '5px' }}
       borderLeftWidth={{ base: '5px', md: '0' }}
-      borderColor={isActive || isCompleted ? '#624AF2' : 'inherit'}
+      borderColor={isActive || isCompleted ? '#624AF2' : 'transparent'}
       {...boxProps}
     >
       <Stack spacing='0.5'>

@@ -75,8 +75,6 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
       useSelectToggleButtonProps,
     );
 
-    console.log('selectedItem', selectedItem);
-
     return (
       <chakra.div position='relative'>
         <chakra.button

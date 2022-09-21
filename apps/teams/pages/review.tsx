@@ -1,33 +1,48 @@
 import React from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
   Button,
-  Grid,
-  GridItem,
+  Circle,
   Heading,
   HStack,
+  Icon,
+  Modal,
+  ModalBody,
+  ModalOverlay,
+  ModalContent,
+  ModalFooter,
   SimpleGrid,
+  Spinner,
   Stack,
-  Tab,
-  Tabs,
-  TabList,
-  TabPanel,
-  TabPanels,
   Text,
+  useDisclosure,
 } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container, SectionHeader } from 'ui/components/layout';
 import { useSteps, useLaunchForm } from 'ui/store';
+import { DeployCoreButton } from 'ui/components/buttons';
+import { useTransaction } from 'ui/hooks';
+import { LightningBolt } from 'ui/components/icons';
 import { LaunchLayout } from '../components/layout';
 
 export default function Review() {
   const router = useRouter();
+  const [transactionId, setTransactionId] = React.useState('');
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStep, setStep } = useSteps();
   const { clubInfo, clubDetails } = useLaunchForm();
+  const { data: transaction } = useTransaction(transactionId);
+  console.log({ transaction });
 
   const handleGoBack = () => {
     setStep(currentStep - 1);
     router.push('/add-members');
+  };
+
+  const handleOnFinish = (data: any) => {
+    setTransactionId(data.txId);
+    onOpen();
   };
 
   React.useEffect(() => {
@@ -42,7 +57,14 @@ export default function Review() {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.8, type: 'linear' }}
     >
-      <Stack display='flex' justify='center' h='calc(100vh - 10px)'>
+      <Stack
+        display='flex'
+        justify='center'
+        h='calc(100vh - 7px)'
+        backgroundImage='radial-gradient(#2e3336 0.75px, transparent 0.75px), radial-gradient(#2e3336 0.75px, #111111 0.75px)'
+        backgroundSize='30px 30px'
+        backgroundPosition='0 0, 15px 15px'
+      >
         <Container maxW='3xl'>
           <SectionHeader justify='flex-start' align='center' color='white'>
             <Stack spacing='2'>
@@ -54,7 +76,7 @@ export default function Review() {
                   fontWeight='bold'
                   justify='center'
                   align='center'
-                  bgGradient='linear(to-br, #50DDC3, #624AF2)'
+                  bg='bg-primary'
                 >
                   <Text color='white' fontWeight='bold' fontSize='lg'>
                     4
@@ -79,144 +101,40 @@ export default function Review() {
             </Stack>
           </SectionHeader>
           <Stack spacing='8'>
-            <Tabs variant='unstyled' size='md' orientation='vertical'>
-              <Grid templateColumns='repeat(6, 1fr)' gap='8'>
-                <GridItem colSpan={2}>
-                  <TabList>
-                    <Tab pl='0' justifyContent='flex-start'>
-                      <HStack spacing='4'>
-                        <Stack align='flex-start' spacing='1' textAlign='left'>
-                          <Text fontSize='md' fontWeight='bold' color='white'>
-                            Investment Club
-                          </Text>
-                          <Text fontSize='sm' color='gray'>
-                            General club info and details.
-                          </Text>
-                        </Stack>
-                      </HStack>
-                    </Tab>
-                    <Tab pl='0' justifyContent='flex-start'>
-                      <HStack spacing='4'>
-                        <Stack align='flex-start' spacing='1' textAlign='left'>
-                          <Text fontSize='md' fontWeight='bold' color='white'>
-                            Membership
-                          </Text>
-                          <Text fontSize='sm' color='gray'>
-                            Club Membership NFT and Governance Token.
-                          </Text>
-                        </Stack>
-                      </HStack>
-                    </Tab>
-                    <Tab pl='0' justifyContent='flex-start'>
-                      <HStack spacing='4'>
-                        <Stack align='flex-start' spacing='1' textAlign='left'>
-                          <Text fontSize='md' fontWeight='bold' color='white'>
-                            DAO Extensions
-                          </Text>
-                          <Text fontSize='sm' color='gray'>
-                            Deploy contracts required for managing your Club.
-                          </Text>
-                        </Stack>
-                      </HStack>
-                    </Tab>
-                  </TabList>
-                </GridItem>
-                <GridItem colSpan={4}>
-                  <TabPanels h='30vh'>
-                    <TabPanel>
-                      <SimpleGrid columns={2} spacing='4'>
-                        <Stack align='flex-start' spacing='0'>
-                          <Text fontSize='sm' color='gray'>
-                            Name
-                          </Text>
-                          <Text fontSize='md' fontWeight='bold' color='white'>
-                            {clubInfo?.name}
-                          </Text>
-                        </Stack>
-                        <Stack align='flex-start' spacing='0'>
-                          <Text fontSize='sm' color='gray'>
-                            Open to deposits for
-                          </Text>
-                          <Text fontSize='md' fontWeight='bold' color='white'>
-                            ~ {clubDetails?.duration} days
-                          </Text>
-                        </Stack>
-                        <Stack align='flex-start' spacing='0'>
-                          <Text fontSize='sm' color='gray'>
-                            Total members
-                          </Text>
-                          <Text fontSize='md' fontWeight='bold' color='white'>
-                            {clubInfo?.totalMembers}
-                          </Text>
-                        </Stack>
-                        <Stack align='flex-start' spacing='0'>
-                          <Text fontSize='sm' color='gray'>
-                            Signer threshold
-                          </Text>
-                          <Text fontSize='md' fontWeight='bold' color='white'>
-                            {clubInfo?.threshold}
-                          </Text>
-                        </Stack>
-                        <Stack align='flex-start' spacing='0'>
-                          <Text fontSize='sm' color='gray'>
-                            Minimum deposit
-                          </Text>
-                          <Text fontSize='md' fontWeight='bold' color='white'>
-                            {clubDetails?.minimum} STX
-                          </Text>
-                        </Stack>
-                      </SimpleGrid>
-                    </TabPanel>
-                    <TabPanel>
-                      <Heading
-                        size='xl'
-                        fontWeight='light'
-                        letterSpacing='tight'
-                        color='white'
-                      >
-                        Investment Clubs powered by
-                        <Text
-                          color='blue'
-                          fontWeight='black'
-                          fontSize='8xl'
-                          bgGradient='linear(to-br, #F2A900 15%, #FFC431 50%)'
-                          bgClip='text'
-                        >
-                          Bitcoin
-                        </Text>
-                      </Heading>
-                      <Text fontSize='lg' fontWeight='light' color='gray'>
-                        Launch an investment club in
-                      </Text>
-                    </TabPanel>
-                    <TabPanel>
-                      <Heading
-                        size='2xl'
-                        fontWeight='light'
-                        letterSpacing='tight'
-                        color='white'
-                      >
-                        Investment Clubs powered by
-                        <Text
-                          color='blue'
-                          fontWeight='black'
-                          fontSize='8xl'
-                          bgGradient='linear(to-br, #F2A900 15%, #FFC431 50%)'
-                          bgClip='text'
-                        >
-                          Bitcoin
-                        </Text>
-                      </Heading>
-                      <Text fontSize='lg' fontWeight='light' color='gray'>
-                        Launch an investment club in a few clicks for just the
-                        cost of gas. Creating an investing DAO has never been
-                        easier.
-                      </Text>
-                    </TabPanel>
-                  </TabPanels>
-                </GridItem>
-              </Grid>
-            </Tabs>
+            <SimpleGrid columns={2} spacing='4'>
+              <Stack align='flex-start' spacing='0'>
+                <Text fontSize='md' color='gray'>
+                  Name
+                </Text>
+                <Text fontSize='md' fontWeight='semibold' color='white'>
+                  {clubInfo?.name}
+                </Text>
+              </Stack>
+              <Stack align='flex-start' spacing='0'>
+                <Text fontSize='md' color='gray'>
+                  Open to deposits for
+                </Text>
+                <Text fontSize='md' fontWeight='semibold' color='white'>
+                  ~ {clubDetails?.duration} days
+                </Text>
+              </Stack>
+              <Stack align='flex-start' spacing='0'>
+                <Text fontSize='md' color='gray'>
+                  Total members
+                </Text>
+                <Text fontSize='md' fontWeight='semibold' color='white'>
+                  {clubInfo?.totalMembers || 3}
+                </Text>
+              </Stack>
+              <Stack align='flex-start' spacing='0'>
+                <Text fontSize='md' color='gray'>
+                  Minimum deposit
+                </Text>
+                <Text fontSize='md' fontWeight='semibold' color='white'>
+                  {clubDetails?.minimum} STX
+                </Text>
+              </Stack>
+            </SimpleGrid>
             <Stack justify='space-between' direction='row'>
               <Button
                 size='lg'
@@ -227,13 +145,110 @@ export default function Review() {
               >
                 Back
               </Button>
-              <Button size='lg' variant='primary' isLoading={false} isDisabled>
-                View dashboard
-              </Button>
+              <Link href={`/d/${clubInfo?.name}`}>
+                <DeployCoreButton
+                  title='Deploy'
+                  name='StackerDAO'
+                  slug='stackerdao'
+                  size='lg'
+                  variant='primary'
+                  isLoading={false}
+                  onFinish={handleOnFinish}
+                />
+              </Link>
             </Stack>
           </Stack>
         </Container>
       </Stack>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+        closeOnOverlayClick={false}
+      >
+        <ModalOverlay />
+        <ModalContent bg='dark.800' borderColor='dark.500' borderWidth='1px'>
+          <ModalBody>
+            <Stack spacing='0'>
+              {transaction?.tx_status === 'pending' ? (
+                <Stack
+                  px={{ base: '6', md: '6' }}
+                  py={{ base: '6', md: '6' }}
+                  spacing='2'
+                  align='center'
+                >
+                  <Circle bg='dark.500' size='14' mb='3'>
+                    <Icon as={LightningBolt} boxSize='8' color='primary.900' />
+                  </Circle>
+                  <Stack spacing='3'>
+                    <Heading mt='0 !important' size='md' fontWeight='medium'>
+                      Your transaction is pending
+                    </Heading>
+                  </Stack>
+                  <Text
+                    fontSize='md'
+                    fontWeight='thin'
+                    color='text-muted'
+                    textAlign='center'
+                  >
+                    Once your transaction is confirmed, your Club dashboard will
+                    be available.
+                  </Text>
+                </Stack>
+              ) : (
+                <Stack
+                  px={{ base: '6', md: '6' }}
+                  py={{ base: '6', md: '6' }}
+                  spacing='2'
+                  align='center'
+                >
+                  <Circle bg='dark.500' size='14' mb='3'>
+                    <Icon as={LightningBolt} boxSize='8' color='primary.900' />
+                  </Circle>
+                  <Stack spacing='3'>
+                    <Heading mt='0 !important' size='md' fontWeight='medium'>
+                      Your transaction is confirmed
+                    </Heading>
+                  </Stack>
+                  <Text
+                    fontSize='md'
+                    fontWeight='thin'
+                    color='text-muted'
+                    textAlign='center'
+                  >
+                    Go to the {clubInfo?.name} Dashboard to finish your club
+                    setup.
+                  </Text>
+                </Stack>
+              )}
+            </Stack>
+          </ModalBody>
+          <ModalFooter>
+            {transaction?.tx_status === 'pending' ? (
+              <Stack>
+                <Button variant='default' isFullWidth>
+                  <Spinner size='xs' mr='2' />
+                </Button>
+                <Text
+                  fontSize='sm'
+                  fontWeight='light'
+                  color='text-muted'
+                  textAlign='center'
+                >
+                  Do not refresh the page or close this window until your
+                  transaction is confirmed.
+                </Text>
+              </Stack>
+            ) : (
+              <Link href={`/d/${clubInfo?.name}`}>
+                <Button variant='primary' isFullWidth>
+                  Go to your dashboard
+                </Button>
+              </Link>
+            )}
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </motion.div>
   );
 }

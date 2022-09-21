@@ -3,17 +3,33 @@ import { extendTheme, theme as base } from '@chakra-ui/react';
 // TODO: define tokens
 const tokens = {
   colors: {
+    dark: {
+      900: '#111111',
+      800: '#121416',
+      700: '#171717',
+      600: '#1c1d21',
+      500: '#1c1f21',
+    },
+    light: {
+      900: '#f9fafb',
+      800: '#f4f6f8',
+      700: '#edf1fa',
+      600: '#eaedf5',
+      500: '#e5e9f2',
+    },
     brand: {
-      'card-bg': '#17181c',
+      'card-bg': '#121416',
       'card-border': '#1c1f21',
+      'bg-primary': '#5a44de',
       'bg-default': '#111111',
-      'fg-default': '#c9d1d9',
+      'fg-default': '#121416',
       'fg-muted': '#8b949e',
       'fg-accent': '#58a6ff',
+      'fg-overlay-default': '#1c1f21',
       'btn-bg': '#21262d',
       'btn-hover-bg': '#30363d',
       'btn-active-bg': 'hsla(212, 12%, 18%, 1)',
-      'btn-border': 'rgba(240, 246, 252, 0.1)',
+      'btn-border': '#1c1f21',
       'btn-hover-border': 'rgba(240, 246, 252, 0.1)',
       'btn-active-border': 'rgba(240, 246, 252, 0.1)',
       'btn-primary-bg': '#5a44de',
@@ -27,6 +43,30 @@ const tokens = {
       'btn-inverted-active-bg': 'white',
       'btn-inverted-border': 'rgba(240, 246, 252, 0.1)',
       'btn-inverted-hover-border': 'rgba(240, 246, 252, 0.1)',
+      'text-default': '#f9fafb',
+      'text-muted': '#8b949e',
+    },
+    primary: {
+      100: '#624AF2',
+      200: '#624AF2',
+      300: '#624AF2',
+      400: '#624AF2',
+      500: '#624AF2',
+      600: '#624AF2',
+      700: '#624AF2',
+      800: '#624AF2',
+      900: '#624AF2',
+    },
+    secondary: {
+      100: '#eb00ff',
+      200: '#eb00ff',
+      300: '#eb00ff',
+      400: '#eb00ff',
+      500: '#eb00ff',
+      600: '#eb00ff',
+      700: '#eb00ff',
+      800: '#eb00ff',
+      900: '#eb00ff',
     },
   },
 };
@@ -38,6 +78,10 @@ const semanticTokens = {
     'card-bg': {
       default: tokens.colors.brand['card-bg'],
       _dark: tokens.colors.brand['card-bg'],
+    },
+    'bg-primary': {
+      default: tokens.colors.brand['bg-primary'],
+      _dark: tokens.colors.brand['bg-primary'],
     },
     'bg-default': {
       default: tokens.colors.brand['bg-default'],
@@ -54,6 +98,10 @@ const semanticTokens = {
     'fg-accent': {
       default: tokens.colors.brand['fg-accent'],
       _dark: tokens.colors.brand['fg-accent'],
+    },
+    'fg-overlay-default': {
+      default: tokens.colors.brand['fg-overlay-default'],
+      _dark: tokens.colors.brand['fg-overlay-default'],
     },
     'btn-bg': {
       default: tokens.colors.brand['btn-bg'],
@@ -123,6 +171,110 @@ const semanticTokens = {
       default: tokens.colors.brand['btn-inverted-hover-border'],
       _dark: tokens.colors.brand['btn-inverted-hover-border'],
     },
+    'text-default': {
+      default: tokens.colors.brand['text-default'],
+      _dark: tokens.colors.brand['text-default'],
+    },
+    'text-muted': {
+      default: tokens.colors.brand['text-muted'],
+      _dark: tokens.colors.brand['text-muted'],
+    },
+    'dark.900': {
+      default: tokens.colors.dark['900'],
+      _dark: tokens.colors.dark['900'],
+    },
+    'dark.800': {
+      default: tokens.colors.dark['800'],
+      _dark: tokens.colors.dark['800'],
+    },
+    'dark.700': {
+      default: tokens.colors.dark['700'],
+      _dark: tokens.colors.dark['700'],
+    },
+    'dark.600': {
+      default: tokens.colors.dark['600'],
+      _dark: tokens.colors.dark['600'],
+    },
+    'dark.500': {
+      default: tokens.colors.dark['500'],
+      _dark: tokens.colors.dark['500'],
+    },
+    'light.900': {
+      default: tokens.colors.light['900'],
+      _dark: tokens.colors.light['900'],
+    },
+    'light.800': {
+      default: tokens.colors.light['800'],
+      _dark: tokens.colors.light['800'],
+    },
+    'light.700': {
+      default: tokens.colors.light['700'],
+      _dark: tokens.colors.light['700'],
+    },
+    'light.600': {
+      default: tokens.colors.light['600'],
+      _dark: tokens.colors.light['600'],
+    },
+    'light.500': {
+      default: tokens.colors.light['500'],
+      _dark: tokens.colors.light['500'],
+    },
+    'primary.900': {
+      default: tokens.colors.primary['900'],
+      _dark: tokens.colors.primary['900'],
+    },
+    'primary.800': {
+      default: tokens.colors.primary['800'],
+      _dark: tokens.colors.primary['800'],
+    },
+    'primary.700': {
+      default: tokens.colors.primary['700'],
+      _dark: tokens.colors.primary['700'],
+    },
+    'primary.600': {
+      default: tokens.colors.primary['600'],
+      _dark: tokens.colors.primary['600'],
+    },
+    'primary.500': {
+      default: tokens.colors.primary['500'],
+      _dark: tokens.colors.primary['500'],
+    },
+    'secondary.900': {
+      default: tokens.colors.secondary['900'],
+      _dark: tokens.colors.secondary['900'],
+    },
+    'secondary.800': {
+      default: tokens.colors.secondary['800'],
+      _dark: tokens.colors.secondary['800'],
+    },
+    'secondary.700': {
+      default: tokens.colors.secondary['700'],
+      _dark: tokens.colors.secondary['700'],
+    },
+    'secondary.600': {
+      default: tokens.colors.secondary['600'],
+      _dark: tokens.colors.secondary['600'],
+    },
+    'secondary.500': {
+      default: tokens.colors.secondary['500'],
+      _dark: tokens.colors.secondary['500'],
+    },
+    'secondary.400': {
+      default: tokens.colors.secondary['400'],
+      _dark: tokens.colors.secondary['400'],
+    },
+    'secondary.300': {
+      default: tokens.colors.secondary['300'],
+      _dark: tokens.colors.secondary['300'],
+    },
+    'secondary.200': {
+      default: tokens.colors.secondary['200'],
+      _dark: tokens.colors.secondary['200'],
+    },
+    'secondary.100': {
+      default: tokens.colors.secondary['100'],
+      _dark: tokens.colors.secondary['100'],
+    },
   },
 };
 
@@ -137,7 +289,8 @@ const fonts = {
 const styles = {
   global: {
     body: {
-      background: 'bg-default',
+      background: 'dark.900',
+      color: 'text-default',
     },
   },
 };
@@ -145,6 +298,63 @@ const styles = {
 // TODO: define components
 
 const components = {
+  Accordion: {
+    baseStyle: {
+      root: {
+        bg: 'transparent',
+      },
+      container: {
+        bg: 'dark.700',
+        borderWidth: '1px',
+        borderColor: 'dark.500',
+        borderRadius: 'lg',
+      },
+      button: {
+        bg: 'inherit',
+        _hover: {
+          bg: 'transparent',
+        },
+        _focus: {
+          boxShadow: 'none',
+        },
+      },
+      panel: {
+        bg: 'inherit',
+      },
+    },
+  },
+  Tag: {
+    baseStyle: {
+      container: {
+        bg: 'light.900',
+        borderWidth: '1px',
+        borderColor: 'dark.500',
+      },
+    },
+    variants: {
+      default: {
+        container: {
+          bg: 'light.900',
+          color: 'white',
+        },
+      },
+      primary: {
+        container: {
+          bg: 'primary.900',
+          color: 'white',
+        },
+      },
+      dark: {
+        container: {
+          bg: 'dark.700',
+          color: 'white',
+        },
+      },
+      defaultProps: {
+        variant: 'default',
+      },
+    },
+  },
   Button: {
     baseStyle: {
       color: 'fg-default',
@@ -155,6 +365,44 @@ const components = {
       },
     },
     variants: {
+      dark: {
+        bg: 'dark.700',
+        borderColor: 'dark.500',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        color: 'light.900',
+        _hover: {
+          bg: 'dark.600',
+        },
+        _active: {
+          bg: 'dark.800',
+        },
+        _disabled: {
+          bg: 'dark.500',
+          _hover: {
+            opacity: 0.4,
+          },
+        },
+      },
+      default: {
+        bg: 'light.900',
+        borderColor: 'dark.900',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        color: 'dark.900',
+        _hover: {
+          bg: 'light.500',
+        },
+        _active: {
+          bg: 'light.500',
+        },
+        _disabled: {
+          bg: 'light.500',
+          _hover: {
+            opacity: 0.4,
+          },
+        },
+      },
       solid: {
         bg: 'btn-bg',
         borderColor: 'btn-border',
@@ -185,8 +433,7 @@ const components = {
         },
       },
       link: {
-        color: 'fg-muted',
-        fontWeight: '500',
+        color: 'light.900',
         _hover: {
           color: 'fg-accent',
           textDecoration: 'none',
@@ -197,11 +444,11 @@ const components = {
         },
       },
       inverted: {
-        bg: 'btn-inverted-bg',
-        borderColor: 'btn-inverted-border',
+        bg: 'dark.900',
+        borderColor: 'primary.900',
         borderWidth: '1px',
         borderStyle: 'solid',
-        color: 'black',
+        color: 'primary.900',
         _hover: {
           bg: 'btn-inverted-hover-bg',
           borderColor: 'btn-inverted-hover-border',
@@ -212,13 +459,7 @@ const components = {
         },
       },
     },
-    sizes: {
-      md: {
-        h: '8',
-        p: '5px 16px',
-        fontSize: '14px',
-      },
-    },
+    sizes: {},
     defaultProps: {
       size: 'md',
     },
@@ -236,7 +477,7 @@ const components = {
         borderRadius: 'md',
         borderWidth: '1px',
         borderStyle: 'solid',
-        borderColor: 'rgba(240, 246, 252, 0.1)',
+        borderColor: 'dark.500',
         autoComplete: 'off',
         py: '4px',
         px: '8px',
@@ -248,12 +489,51 @@ const components = {
     variants: {
       brand: {
         field: {
-          bg: '#111111',
+          bg: 'dark.700',
         },
       },
     },
     defaultProps: {
       variant: 'brand',
+    },
+  },
+  Radio: {
+    baseStyle: {
+      boxShadow: 'none',
+      control: {
+        boxShadow: 'none',
+        borderColor: '#5a44de',
+        _checked: {
+          boxShadow: 'none',
+          bg: '#5a44de',
+          borderColor: '#5a44de',
+          color: '#0a0a0b',
+          _hover: {
+            boxShadow: 'none',
+            bg: '#5a44de',
+            borderColor: '#5a44de',
+            color: '#0a0a0b',
+          },
+          _focus: {
+            boxShadow: 'none',
+            bg: '#5a44de',
+            borderColor: '#5a44de',
+            color: '#0a0a0b',
+          },
+        },
+        _focus: {
+          boxShadow: 'none',
+          bg: '#0a0a0b',
+          borderColor: '#5a44de',
+          color: '#0a0a0b',
+        },
+        _hover: {
+          boxShadow: 'none',
+          bg: '#0a0a0b',
+          borderColor: '#5a44de',
+          color: '#0a0a0b',
+        },
+      },
     },
   },
   Tabs: {
@@ -266,7 +546,10 @@ const components = {
       },
     },
     variants: {
-      unstyled: {
+      nav: {
+        tab: {},
+      },
+      basic: {
         tab: {
           _active: {
             color: 'inherit',
@@ -278,6 +561,34 @@ const components = {
           },
         },
       },
+    },
+  },
+  Textarea: {
+    baseStyle: {
+      resize: 'none',
+      bg: 'dark.700',
+      color: 'white',
+      fontWeight: 'regular',
+      borderRadius: 'md',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: 'dark.500',
+      autoComplete: 'off',
+      py: '4px',
+      px: '8px',
+      _focus: {
+        ring: '0px',
+      },
+    },
+    variants: {
+      brand: {
+        field: {
+          bg: 'dark.800',
+        },
+      },
+    },
+    defaultProps: {
+      variant: 'brand',
     },
   },
 };

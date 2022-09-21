@@ -94,8 +94,8 @@ export const RadioButton = (props: RadioButtonProps) => {
         id={id}
         as='div'
         color='white'
-        bg='card-bg'
-        borderColor='rgba(240, 246, 252, 0.1)'
+        bg='dark.700'
+        borderColor='dark.500'
         _checked={{ bg: 'btn-primary-bg' }}
         _focus={{ boxShadow: 'none' }}
         _hover={{ bg: 'transparent' }}

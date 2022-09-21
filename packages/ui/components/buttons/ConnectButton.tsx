@@ -11,6 +11,7 @@ export const ConnectButton = (props: ConnectButtonProps) => {
   const router = useRouter();
   const { isSignedIn, openAuthRequest, signOut } = useAuth();
   const text = isSignedIn ? 'Disconnect' : props?.children || 'Connect';
+  const variant = isSignedIn ? 'inverted' : 'default';
 
   const handleClick = () => {
     if (isSignedIn) {

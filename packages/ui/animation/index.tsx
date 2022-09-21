@@ -1,4 +1,4 @@
-export { motion } from 'framer-motion';
+export { motion, AnimatePresence } from 'framer-motion';
 export const OPEN_SPRING = {
   type: 'spring',
   stiffness: 200,

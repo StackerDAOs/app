@@ -6,7 +6,6 @@ export const SectionHeader = (props: StackProps) => {
     <Stack
       spacing='4'
       mt='6'
-      mb='3'
       direction={{ base: 'column', md: 'row' }}
       {...props}
     />
