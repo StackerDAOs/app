@@ -77,7 +77,7 @@ export default function Web() {
                     color='text-default'
                     maxW='lg'
                   >
-                    Primitives for groups, companies, nonprofits, subDAOs, and
+                    Primitive for groups, companies, nonprofits, subDAOs, and
                     early DAOs to manage resources and smart contracts.
                   </Text>
                 </Stack>
