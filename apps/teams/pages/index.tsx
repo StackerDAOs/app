@@ -77,8 +77,9 @@ export default function Web() {
                     color='text-default'
                     maxW='lg'
                   >
-                    Membership gated primitive to raise funds, govern, and take
-                    action.
+                    Multisig-esque primitives for groups, companies, nonprofits,
+                    subDAOs, and early DAOs to manage resources and smart
+                    contracts.
                   </Text>
                 </Stack>
                 <ButtonGroup>
