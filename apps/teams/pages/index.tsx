@@ -77,9 +77,8 @@ export default function Web() {
                     color='text-default'
                     maxW='lg'
                   >
-                    Multisig-esque primitives for groups, companies, nonprofits,
-                    subDAOs, and early DAOs to manage resources and smart
-                    contracts.
+                    Primitives for groups, companies, nonprofits, subDAOs, and
+                    early DAOs to manage resources and smart contracts.
                   </Text>
                 </Stack>
                 <ButtonGroup>
@@ -253,11 +252,11 @@ export default function Web() {
                 color='text-default'
                 maxW='lg'
               >
-                Store your assets{' '}
+                Multisig-esque primitive for teams to manage assets and smart
+                contracts.{' '}
                 <Text as='span' fontWeight='black'>
-                  securely
-                </Text>{' '}
-                with our Multisignature extensions.
+                  Together.
+                </Text>
               </Text>
             </Stack>
             <HStack align='space-between' justify='center'>
