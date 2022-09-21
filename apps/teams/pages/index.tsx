@@ -252,7 +252,7 @@ export default function Web() {
                 color='text-default'
                 maxW='lg'
               >
-                Multisig-esque primitive for teams to manage assets and smart
+                Multisig primitive for teams to manage assets and smart
                 contracts.{' '}
                 <Text as='span' fontWeight='black'>
                   Together.
