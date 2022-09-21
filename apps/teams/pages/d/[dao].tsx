@@ -1,51 +1,34 @@
 import React from 'react';
 import {
   Button,
-  Circle,
   FormControl,
-  Icon,
   Image,
   Input,
   Heading,
   HStack,
-  Modal,
-  ModalBody,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
   Progress,
-  Grid,
-  GridItem,
   SimpleGrid,
   Stack,
   Text,
   VStack,
-  useDisclosure,
 } from 'ui';
-import { map, size } from 'lodash';
 import { Card } from 'ui/components/cards';
 import { SectionHeader } from 'ui/components/layout';
 import { AppLayout } from '@components/layout';
 import { DashboardHeader } from '@components/navigation';
 import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import {
-  DepositButton,
-  DeployBootstrapButton,
-  InitializeClubButton,
-} from 'ui/components/buttons';
+import { DepositButton } from 'ui/components/buttons';
 import { useAccountBalance, useDAO } from 'ui/hooks';
-import { ustxToStx, getPercentage } from 'utils';
+import { ustxToStx } from 'utils';
 import { ClubsTable } from '@components/tables';
-import { FinishSetupDrawer } from '@components/drawers';
-import { LightningBolt, SwapArrows } from 'ui/components/icons';
+import { EmptyState } from '@components/misc';
 
-const EXTENSION_SIZE = 6;
+// const EXTENSION_SIZE = 6;
 
 export default function Dashboard() {
   const dao = useDAO();
   const { data } = useAccountBalance();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [depositAmount, setDepositAmount] = React.useState('');
   const handleInputDeposit = (e: any) => {
     const re = /^[0-9.\b]+$/;
@@ -55,7 +38,7 @@ export default function Dashboard() {
   };
 
   const isInactive = !dao.data?.active;
-  const isReadyToInitialize = dao.data?.extensions.length === EXTENSION_SIZE;
+  // const isReadyToInitialize = dao.data?.extensions.length === EXTENSION_SIZE;
 
   if (dao.isLoading || dao.isFetching) {
     return null;
@@ -79,313 +62,27 @@ export default function Dashboard() {
               exit={FADE_IN_VARIANTS.exit}
               transition={{ duration: 0.25, type: 'linear' }}
             >
-              <Card h='fit-content' bg='dark.700'>
-                <Stack spacing='0'>
-                  <Grid
-                    templateColumns='repeat(5, 1fr)'
-                    gap={{ base: 0, md: 8 }}
-                    alignItems='center'
-                    justifyItems='space-between'
-                  >
-                    <GridItem colSpan={4}>
-                      {isReadyToInitialize ? (
-                        <Stack
-                          px={{ base: '6', md: '6' }}
-                          py={{ base: '6', md: '6' }}
-                          spacing='2'
-                        >
-                          <Stack mt='2' spacing='3'>
-                            <Heading
-                              mt='0 !important'
-                              size='md'
-                              fontWeight='medium'
-                            >
-                              You are ready to launch your Club!
-                            </Heading>
-                            <Progress
-                              colorScheme='primary'
-                              borderRadius='lg'
-                              size='md'
-                              value={getPercentage(
-                                EXTENSION_SIZE,
-                                size(dao.data?.extensions),
-                              )}
-                              bg='dark.500'
-                            />
-                            <Text
-                              fontSize='md'
-                              fontWeight='thin'
-                              color='text-muted'
-                            >
-                              After you deploy your initial proposal you will be
-                              able to start your Club.
-                            </Text>
-                          </Stack>
-                        </Stack>
-                      ) : (
-                        <Stack
-                          px={{ base: '6', md: '6' }}
-                          py={{ base: '6', md: '6' }}
-                          spacing='2'
-                        >
-                          <Stack mt='2' spacing='3'>
-                            <Heading
-                              mt='0 !important'
-                              size='md'
-                              fontWeight='medium'
-                            >
-                              You still have a few more steps left
-                            </Heading>
-                            <Progress
-                              colorScheme='primary'
-                              borderRadius='lg'
-                              size='md'
-                              value={getPercentage(
-                                EXTENSION_SIZE,
-                                size(dao.data?.extensions),
-                              )}
-                              bg='dark.500'
-                            />
-                          </Stack>
-                          <Text
-                            fontSize='md'
-                            fontWeight='thin'
-                            color='text-muted'
-                          >
-                            {EXTENSION_SIZE - size(dao.data?.extensions)}{' '}
-                            {size(dao.data?.extensions) !== 1
-                              ? 'extension'
-                              : 'extensions'}{' '}
-                            left to deploy before you can initialize your club.
-                          </Text>
-                        </Stack>
-                      )}
-                    </GridItem>
-                    <GridItem colSpan={{ base: 2, md: 1 }}>
-                      <Stack
-                        px={{ base: '6', md: '6' }}
-                        py={{ base: '6', md: '6' }}
-                        pt={{ base: '0', md: '6' }}
-                        spacing='2'
-                      >
-                        {isReadyToInitialize ? (
-                          <>
-                            <Button variant='primary' onClick={onOpen}>
-                              Launch your club
-                            </Button>
-                            <Modal isOpen={isOpen} onClose={onClose} isCentered>
-                              <ModalOverlay />
-                              <ModalContent
-                                bg='dark.800'
-                                borderColor='dark.500'
-                                borderWidth='1px'
-                              >
-                                <ModalHeader bg='primary.900' borderRadius='md'>
-                                  <Stack spacing='3'>
-                                    <Heading
-                                      mt='0 !important'
-                                      size='md'
-                                      fontWeight='medium'
-                                    >
-                                      Final steps
-                                    </Heading>
-                                  </Stack>
-                                </ModalHeader>
-                                <ModalBody>
-                                  <Stack spacing='0'>
-                                    <Stack
-                                      px={{ base: '0', md: '0' }}
-                                      py={{ base: '3', md: '3' }}
-                                      spacing='6'
-                                    >
-                                      <Grid
-                                        templateColumns='repeat(5, 1fr)'
-                                        gap={8}
-                                      >
-                                        <GridItem colSpan={{ base: 2, md: 4 }}>
-                                          <Stack spacing='1'>
-                                            <Heading
-                                              size='sm'
-                                              fontWeight='medium'
-                                            >
-                                              Deploy your club proposal
-                                            </Heading>
-                                            <Text
-                                              fontSize='sm'
-                                              fontWeight='thin'
-                                              color='text-muted'
-                                            >
-                                              This will finalize the setup of
-                                              your club.
-                                            </Text>
-                                          </Stack>
-                                        </GridItem>
-                                        <GridItem colSpan={{ base: 2, md: 1 }}>
-                                          <DeployBootstrapButton
-                                            variant='primary'
-                                            isFullWidth
-                                            name='StackerDAO'
-                                            slug='stackerdao'
-                                            extensions={map(
-                                              dao.data?.extensions,
-                                            )}
-                                            onFinish={() =>
-                                              console.log('init!')
-                                            }
-                                          />
-                                        </GridItem>
-                                        <GridItem colSpan={{ base: 2, md: 4 }}>
-                                          <Stack spacing='1'>
-                                            <Heading
-                                              size='sm'
-                                              fontWeight='medium'
-                                            >
-                                              Initialize club
-                                            </Heading>
-                                            <Text
-                                              fontSize='sm'
-                                              fontWeight='thin'
-                                              color='text-muted'
-                                            >
-                                              This will activate your club based
-                                              on the proposal you just deployed.
-                                            </Text>
-                                          </Stack>
-                                        </GridItem>
-                                        <GridItem colSpan={{ base: 2, md: 1 }}>
-                                          <InitializeClubButton
-                                            variant='primary'
-                                            isFullWidth
-                                            title='Start'
-                                            address='123'
-                                          />
-                                        </GridItem>
-                                      </Grid>
-                                    </Stack>
-                                  </Stack>
-                                </ModalBody>
-                              </ModalContent>
-                            </Modal>
-                          </>
-                        ) : (
-                          <FinishSetupDrawer
-                            variant='default'
-                            clubId={dao.data?.id}
-                            defaultStartingValue={size(dao.data?.extensions)}
-                          />
-                        )}
-                      </Stack>
-                    </GridItem>
-                  </Grid>
-                </Stack>
-              </Card>
-            </motion.div>
-          </Stack>
-          <Stack spacing='8' pb='16' mt='6'>
-            <motion.div
-              variants={FADE_IN_VARIANTS}
-              initial={FADE_IN_VARIANTS.hidden}
-              animate={FADE_IN_VARIANTS.enter}
-              exit={FADE_IN_VARIANTS.exit}
-              transition={{ duration: 0.25, type: 'linear' }}
-            >
-              <Stack spacing='6'>
-                <SectionHeader
-                  justify={{ base: 'flex-start', md: 'space-between' }}
-                  align={{ base: 'flex-start', md: 'space-between' }}
-                  color='light.900'
+              <Stack spacing='0'>
+                <Stack
+                  px={{ base: '6', md: '6' }}
+                  py={{ base: '6', md: '6' }}
+                  spacing='2'
                 >
-                  <Stack spacing='3'>
-                    <Text fontSize='md' fontWeight='light' color='text-muted'>
-                      Explore Contracts
-                    </Text>
-                    <Heading mt='0 !important' size='lg' fontWeight='medium'>
-                      Browse Extensions
-                    </Heading>
-                  </Stack>
-                </SectionHeader>
-                <SimpleGrid columns={{ base: 1, md: 3 }} spacing='6'>
-                  <Card h='fit-content' bg='dark.900'>
-                    <Stack spacing='0'>
-                      <Stack
-                        px={{ base: '6', md: '6' }}
-                        py={{ base: '6', md: '6' }}
-                        spacing='2'
-                      >
-                        <Stack spacing='1'>
-                          <HStack align='baseline'>
-                            <Circle bg='dark.500' size='7' mb='3'>
-                              <Icon
-                                as={LightningBolt}
-                                boxSize='4'
-                                color='primary.900'
-                              />
-                            </Circle>
-                            <Heading
-                              mt='0 !important'
-                              size='sm'
-                              fontWeight='semibold'
-                            >
-                              Buy &amp; Sell NFTs
-                            </Heading>
-                          </HStack>
-
-                          <Text
-                            fontSize='md'
-                            fontWeight='thin'
-                            color='text-default'
-                          >
-                            Add the ability for your club to buy and sell NFTs
-                            via proposal submissions.
-                          </Text>
-                        </Stack>
-                        <Button variant='default' isDisabled>
-                          Add
-                        </Button>
-                      </Stack>
+                  <EmptyState align='center' textAlign='center' spacing='3'>
+                    <Stack spacing='1'>
+                      <Heading size='md' fontWeight='light'>
+                        Your team is still inactive
+                      </Heading>
+                      <Text color='gray' maxW='md'>
+                        You are ready to initialize your team. Once you do, you
+                        will be able to submit and vote on proposals.
+                      </Text>
                     </Stack>
-                  </Card>
-                  <Card h='fit-content' bg='dark.900'>
-                    <Stack spacing='0'>
-                      <Stack
-                        px={{ base: '6', md: '6' }}
-                        py={{ base: '6', md: '6' }}
-                        spacing='2'
-                      >
-                        <Stack spacing='1'>
-                          <HStack align='baseline'>
-                            <Circle bg='dark.500' size='7' mb='3'>
-                              <Icon
-                                as={SwapArrows}
-                                boxSize='4'
-                                color='primary.900'
-                              />
-                            </Circle>
-                            <Heading
-                              mt='0 !important'
-                              size='sm'
-                              fontWeight='semibold'
-                            >
-                              Swap Tokens
-                            </Heading>
-                          </HStack>
-
-                          <Text
-                            fontSize='md'
-                            fontWeight='thin'
-                            color='text-default'
-                          >
-                            Bring DeFi to your Club by adding token swap
-                            integration straight from your vault.
-                          </Text>
-                        </Stack>
-                        <Button variant='default' isDisabled>
-                          Add
-                        </Button>
-                      </Stack>
-                    </Stack>
-                  </Card>
-                </SimpleGrid>
+                    <Button variant='primary' isDisabled>
+                      Initialize your team
+                    </Button>
+                  </EmptyState>
+                </Stack>
               </Stack>
             </motion.div>
           </Stack>

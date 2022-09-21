@@ -112,7 +112,7 @@ export default function Web() {
     );
   }
 
-  if (size(data) > 0) {
+  if (stxAddress && size(data) > 0) {
     return (
       <motion.div
         variants={FADE_IN_VARIANTS}

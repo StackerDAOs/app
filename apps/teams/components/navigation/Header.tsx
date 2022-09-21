@@ -40,12 +40,12 @@ export const DashboardHeader = () => {
             <HStack>
               <Avatar
                 size={40}
-                name='StackerDAO'
+                name='Bitcoin Days'
                 variant='marble'
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                StackerDAO{' '}
+                Bitcoin Days{' '}
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -63,7 +63,7 @@ export const DashboardHeader = () => {
                 <HStack>
                   <a
                     href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.stacker-dao',
+                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-core',
                     )}
                     target='_blank'
                     rel='noreferrer'
@@ -75,7 +75,7 @@ export const DashboardHeader = () => {
                       fontWeight='light'
                     >
                       {truncateAddress(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.stacker-dao',
+                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-core',
                       )}
                     </Text>
                   </a>
@@ -89,11 +89,11 @@ export const DashboardHeader = () => {
                 </HStack>
               </Badge>
             </HStack>
-            <Text fontSize='lg' fontWeight='light' color='text-default'>
+            {/* <Text fontSize='lg' fontWeight='light' color='text-default'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
-            </Text>
+            </Text> */}
           </Stack>
           <ButtonGroup>
             <ProposalDrawer
@@ -132,12 +132,12 @@ export const VaultHeader = () => {
             <HStack>
               <Avatar
                 size={40}
-                name='StackerDAO'
+                name='Bitcoin Days'
                 variant='marble'
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                StackerDAO{' '}
+                Bitcoin Days{' '}
                 <Text
                   as='span'
                   maxW='2xl'
@@ -164,7 +164,7 @@ export const VaultHeader = () => {
                 <HStack>
                   <a
                     href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
+                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-vault',
                     )}
                     target='_blank'
                     rel='noreferrer'
@@ -176,7 +176,7 @@ export const VaultHeader = () => {
                       fontWeight='light'
                     >
                       {truncateAddress(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
+                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-vault',
                       )}
                     </Text>
                   </a>
@@ -190,14 +190,18 @@ export const VaultHeader = () => {
                 </HStack>
               </Badge>
             </HStack>
-            <Text fontSize='lg' fontWeight='light' color='text-default'>
+            {/* <Text fontSize='lg' fontWeight='light' color='text-default'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
-            </Text>
+            </Text> */}
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' _hover={{ opacity: 0.9 }} />
+            <ProposalDrawer
+              isDisabled
+              variant='default'
+              _hover={{ opacity: 0.9 }}
+            />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -229,12 +233,12 @@ export const ProposalHeader = () => {
             <HStack>
               <Avatar
                 size={40}
-                name='StackerDAO'
+                name='Bitcoin Days'
                 variant='marble'
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                StackerDAO{' '}
+                Bitcoin Days{' '}
                 <Text
                   as='span'
                   maxW='2xl'
@@ -261,7 +265,7 @@ export const ProposalHeader = () => {
                 <HStack>
                   <a
                     href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-submission',
+                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-submission',
                     )}
                     target='_blank'
                     rel='noreferrer'
@@ -273,7 +277,7 @@ export const ProposalHeader = () => {
                       fontWeight='light'
                     >
                       {truncateAddress(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-submission',
+                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-submission',
                       )}
                     </Text>
                   </a>
@@ -287,14 +291,18 @@ export const ProposalHeader = () => {
                 </HStack>
               </Badge>
             </HStack>
-            <Text fontSize='lg' fontWeight='light' color='text-default'>
+            {/* <Text fontSize='lg' fontWeight='light' color='text-default'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
-            </Text>
+            </Text> */}
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' _hover={{ opacity: 0.9 }} />
+            <ProposalDrawer
+              isDisabled
+              variant='default'
+              _hover={{ opacity: 0.9 }}
+            />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -326,12 +334,12 @@ export const VotingHeader = () => {
             <HStack>
               <Avatar
                 size={40}
-                name='StackerDAO'
+                name='Bitcoin Days'
                 variant='marble'
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                StackerDAO{' '}
+                Bitcoin Days{' '}
                 <Text
                   as='span'
                   maxW='2xl'
@@ -358,7 +366,7 @@ export const VotingHeader = () => {
                 <HStack>
                   <a
                     href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vote',
+                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-voting',
                     )}
                     target='_blank'
                     rel='noreferrer'
@@ -370,7 +378,7 @@ export const VotingHeader = () => {
                       fontWeight='light'
                     >
                       {truncateAddress(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vote',
+                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-voting',
                       )}
                     </Text>
                   </a>
@@ -384,14 +392,18 @@ export const VotingHeader = () => {
                 </HStack>
               </Badge>
             </HStack>
-            <Text fontSize='lg' fontWeight='light' color='text-default'>
+            {/* <Text fontSize='lg' fontWeight='light' color='text-default'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
-            </Text>
+            </Text> */}
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' _hover={{ opacity: 0.9 }} />
+            <ProposalDrawer
+              isDisabled
+              variant='default'
+              _hover={{ opacity: 0.9 }}
+            />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -423,12 +435,12 @@ export const ExtensionsHeader = () => {
             <HStack>
               <Avatar
                 size={40}
-                name='StackerDAO'
+                name='Bitcoin Days'
                 variant='marble'
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                StackerDAO{' '}
+                Bitcoin Days{' '}
                 <Text
                   as='span'
                   maxW='2xl'
@@ -440,14 +452,18 @@ export const ExtensionsHeader = () => {
                 </Text>
               </Heading>
             </HStack>
-            <Text fontSize='lg' fontWeight='light' color='text-default'>
+            {/* <Text fontSize='lg' fontWeight='light' color='text-default'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
-            </Text>
+            </Text> */}
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' _hover={{ opacity: 0.9 }} />
+            <ProposalDrawer
+              isDisabled
+              variant='default'
+              _hover={{ opacity: 0.9 }}
+            />
           </ButtonGroup>
         </Stack>
       </motion.div>
