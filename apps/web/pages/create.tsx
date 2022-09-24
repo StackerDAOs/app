@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import {
   Box,
   Button,
@@ -37,14 +36,12 @@ import { useForm, Controller, useFormPersist } from 'ui/components';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container, SectionHeader } from 'ui/components/layout';
 import { useSteps, useLaunchForm } from 'ui/store';
-import { LaunchLayout } from '../components/layout';
 import { DeployCoreButton } from 'ui/components/buttons';
 import { useTransaction } from 'ui/hooks';
 import { LightningBolt } from 'ui/components/icons';
-import { Card } from 'ui/components/cards';
+import { LaunchLayout } from '../components/layout';
 
 export default function Create() {
-  const router = useRouter();
   const [transactionId, setTransactionId] = React.useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStep, setStep } = useSteps();
@@ -552,6 +549,7 @@ export default function Create() {
     if (step === 3) {
       return Step4 as JSX.Element;
     }
+    return Step1 as JSX.Element;
   };
 
   return (
