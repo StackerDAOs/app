@@ -33,7 +33,6 @@ export default function Review() {
   const { currentStep, setStep } = useSteps();
   const { clubInfo, clubDetails } = useLaunchForm();
   const { data: transaction } = useTransaction(transactionId);
-  console.log({ transaction });
 
   const handleGoBack = () => {
     setStep(currentStep - 1);
