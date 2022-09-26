@@ -3,11 +3,16 @@
   "pipeline": {
     "build": {
       "dependsOn": [
-        "^build",
-        "$NEXT_PUBLIC_NEXTAUTH_URL",
-        "$NEXT_PUBLIC_NEXTAUTH_SECRET"
+        "^build"
       ],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ],
+      "env": [
+        "NEXT_PUBLIC_NEXTAUTH_URL",
+        "NEXT_PUBLIC_NEXTAUTH_SECRET"
+      ]
     },
     "lint": {
       "outputs": []
