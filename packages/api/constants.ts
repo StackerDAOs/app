@@ -1,15 +1,10 @@
 import {
-  StacksMocknet,
+  // StacksMocknet,
   StacksTestnet,
-  StacksMainnet,
+  // StacksMainnet,
 } from 'micro-stacks/network';
 
-export const stacksNetwork =
-  process.env.NODE_ENV === 'production'
-    ? StacksMainnet
-    : process.env.NODE_ENV === 'development'
-    ? StacksMocknet
-    : StacksTestnet;
+export const stacksNetwork = StacksTestnet;
 
 export const devnet = process.env.NODE_ENV === 'development';
 export const EXECUTOR_DAO_CONTRACT = devnet
