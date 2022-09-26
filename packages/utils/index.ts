@@ -20,9 +20,9 @@ export const contractPrincipal = (address: string): string[] =>
   address.split('.');
 
 export const getExplorerLink = (txId: string) =>
-  process.env.NODE_ENV === 'production'
+  process.env.VERCEL_ENV === 'production'
     ? `https://explorer.stacks.co/txid/${txId}?chain=mainnet`
-    : process.env.NODE_ENV === 'development'
+    : process.env.VERCEL_ENV === 'development'
     ? `http://localhost:8000/txid/${txId}?chain=testnet`
     : `https://explorer.stacks.co/txid/${txId}?chain=testnet`;
 
