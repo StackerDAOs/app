@@ -465,12 +465,13 @@ export default function Create() {
                             validateStacksAddress: () => {
                               if (!value) {
                                 return true;
+                              } else {
+                                const isValid = validateStacksAddress(value);
+                                if (isValid) {
+                                  return true;
+                                }
+                                return false;
                               }
-                              const isValid = validateStacksAddress(value);
-                              if (isValid) {
-                                return true;
-                              }
-                              return false;
                             },
                           },
                         })}
