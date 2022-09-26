@@ -5,11 +5,12 @@ import {
 } from 'micro-stacks/network';
 
 export const stacksNetwork =
-  process.env.NODE_ENV === 'production' ? StacksMainnet : StacksMocknet; // FIXME: change to StacksMocknet
-export const baseUrl =
   process.env.NODE_ENV === 'production'
-    ? 'https://app.stackerdaos.com'
-    : 'http://localhost:3001/';
+    ? StacksMainnet
+    : process.env.NODE_ENV === 'development'
+    ? StacksMocknet
+    : StacksTestnet;
+
 export const devnet = process.env.NODE_ENV === 'development';
 export const EXECUTOR_DAO_CONTRACT = devnet
   ? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.executor-dao'
