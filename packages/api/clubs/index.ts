@@ -462,12 +462,56 @@ export async function getPostConditions(proposalPrincipal: string) {
 
 export async function getProjects() {
   try {
-    const { data: Organizations, error } = await supabase
+    const { data: clubs, error } = await supabase
       .from('clubs')
       .select('id, name, slug, contract_address');
     if (error) throw error;
-    if (Organizations.length > 0) {
-      return Organizations;
+    if (clubs.length > 0) {
+      return clubs;
+    }
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function upvoteProposal(id: any) {
+  try {
+    let { data, error } = await supabase.rpc('upvote', { id });
+    console.log({ data });
+    if (error) throw error;
+    try {
+      let { data: proposals, error: proposalsError }: any = await supabase
+        .from('proposals')
+        .select('upvote')
+        .eq('id', id);
+      if (proposalsError) throw proposalsError;
+      if (proposals.length > 0) {
+        return proposals[0];
+      }
+    } catch (e: any) {
+      console.error({ e });
+    }
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function downvoteProposal(id: any) {
+  try {
+    let { data, error } = await supabase.rpc('downvote', { id });
+    console.log({ data });
+    if (error) throw error;
+    try {
+      let { data: proposals, error: proposalsError }: any = await supabase
+        .from('proposals')
+        .select('downvote')
+        .eq('id', id);
+      if (proposalsError) throw proposalsError;
+      if (proposals.length > 0) {
+        return proposals[0];
+      }
+    } catch (e: any) {
+      console.error({ e });
     }
   } catch (e: any) {
     console.error({ e });

@@ -41,7 +41,7 @@ export const DeployCoreButton = (props: DeployClubProps) => {
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
     >
-      {isRequestPending ? <Spinner /> : props?.title || 'Deploy'}
+      {props?.title || 'Deploy'}
     </Button>
   );
 };

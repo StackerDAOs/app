@@ -392,15 +392,15 @@ const components = {
         color: 'dark.900',
         _hover: {
           bg: 'light.500',
+          _disabled: {
+            bg: 'light.500',
+          },
         },
         _active: {
           bg: 'light.500',
         },
         _disabled: {
           bg: 'light.500',
-          _hover: {
-            opacity: 0.4,
-          },
         },
       },
       solid: {

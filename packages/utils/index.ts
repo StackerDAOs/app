@@ -217,3 +217,7 @@ export function findExtension(extensions: Array<any[]>, type: string): any {
     (extension: any) => extension.extension_types.name === type,
   );
 }
+
+export function nameToSlug(name: string) {
+  return name.toLowerCase().replace(/ /g, '-');
+}

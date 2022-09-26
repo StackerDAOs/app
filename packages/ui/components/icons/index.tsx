@@ -3,6 +3,7 @@ export * from './CheckCircle';
 export * from './ChevronDown';
 export * from './ChevronDoubleRight';
 export * from './CopyClipboard';
+export * from './InfoIcon';
 export * from './LightningBolt';
 export * from './LogoIcon';
 export * from './SwapArrows';
