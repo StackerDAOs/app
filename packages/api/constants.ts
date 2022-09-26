@@ -5,13 +5,13 @@ import {
 } from 'micro-stacks/network';
 
 export const stacksNetwork =
-  process.env.VERCEL_ENV === 'production'
+  process.env.NODE_ENV === 'production'
     ? StacksMainnet
-    : process.env.VERCEL_ENV === 'development'
+    : process.env.NODE_ENV === 'development'
     ? StacksMocknet
     : StacksTestnet;
 
-export const devnet = process.env.VERCEL_ENV === 'development';
+export const devnet = process.env.NODE_ENV === 'development';
 export const EXECUTOR_DAO_CONTRACT = devnet
   ? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.executor-dao'
   : 'testnet_contract';
