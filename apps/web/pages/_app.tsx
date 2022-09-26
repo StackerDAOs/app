@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { theme, ChakraProvider } from 'ui';
-import { ClientProvider, StacksMocknet } from 'ui/components';
+import { ClientProvider, StacksTestnet } from 'ui/components';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AnimatePresence } from 'ui/animation';
 import { SessionProvider } from 'next-auth/react';
@@ -24,9 +24,9 @@ function App({ Component, pageProps: { session, ...pageProps } }: any) {
   return (
     <SessionProvider session={session}>
       <ClientProvider
-        appName='StackerDAO LABS'
+        appName='StackerDAO Labs'
         appIconUrl='https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png'
-        network={new StacksMocknet()}
+        network={new StacksTestnet()}
         onNoWalletFound={noWalletFound}
       >
         <ChakraProvider theme={theme}>
