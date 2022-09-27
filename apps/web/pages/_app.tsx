@@ -18,10 +18,7 @@ const queryClient = new QueryClient({
 
 function App({ Component, pageProps: { session, ...pageProps } }: any) {
   const getLayout = Component.getLayout || ((page: any) => page);
-  console.log('vercel env', process.env.VERCEL);
-  console.log('node env', process.env.NODE);
-  console.log('supabase url env', process.env.NEXT_PUBLIC_SUPABASE_URL);
-  console.log('sup env', process.env.SUP);
+  console.log('stacks network env', process.env.STACKS_NETWORK);
   const network: StacksNetwork =
     process.env.NODE_ENV === 'production'
       ? new StacksMainnet({
