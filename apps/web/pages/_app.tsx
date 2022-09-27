@@ -18,6 +18,7 @@ const queryClient = new QueryClient({
 
 function App({ Component, pageProps: { session, ...pageProps } }: any) {
   const getLayout = Component.getLayout || ((page: any) => page);
+  console.log('vercel env', process.env.VERCEL);
   const network: StacksNetwork =
     process.env.NODE_ENV === 'production'
       ? new StacksMainnet({
