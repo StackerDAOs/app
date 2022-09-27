@@ -1,6 +1,11 @@
 import Head from 'next/head';
 import { theme, ChakraProvider } from 'ui';
-import { ClientProvider, StacksTestnet } from 'ui/components';
+import {
+  ClientProvider,
+  StacksNetwork,
+  StacksMainnet,
+  StacksTestnet,
+} from 'ui/components';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AnimatePresence } from 'ui/animation';
 import { SessionProvider } from 'next-auth/react';
@@ -13,9 +18,12 @@ const queryClient = new QueryClient({
 
 function App({ Component, pageProps: { session, ...pageProps } }: any) {
   const getLayout = Component.getLayout || ((page: any) => page);
-  // const network: StacksNetwork = new StacksMainnet({
-  //   url: 'https://capable-yolo-moon.stacks-mainnet.discover.quiknode.pro/',
-  // });
+  const network: StacksNetwork =
+    process.env.NODE_ENV === 'production'
+      ? new StacksMainnet({
+          url: 'https://capable-yolo-moon.stacks-mainnet.discover.quiknode.pro/',
+        })
+      : new StacksTestnet();
 
   const noWalletFound = () => {
     alert('Please install Hiro Wallet');
@@ -26,7 +34,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: any) {
       <ClientProvider
         appName='StackerDAO Labs'
         appIconUrl='https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png'
-        network={new StacksTestnet()}
+        network={network}
         onNoWalletFound={noWalletFound}
       >
         <ChakraProvider theme={theme}>

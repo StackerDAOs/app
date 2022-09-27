@@ -3,7 +3,6 @@ import {
   StacksTestnet,
   // StacksMainnet,
 } from 'micro-stacks/network';
-
 export const stacksNetwork = StacksTestnet;
 
 export const devnet = process.env.NODE_ENV === 'development';
