@@ -5,10 +5,12 @@ import {
   StacksNetwork,
   StacksMainnet,
   StacksTestnet,
+  StacksMocknet,
 } from 'ui/components';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AnimatePresence } from 'ui/animation';
 import { SessionProvider } from 'next-auth/react';
+import { isMainnet, isTestnet } from 'api/constants';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,13 +20,13 @@ const queryClient = new QueryClient({
 
 function App({ Component, pageProps: { session, ...pageProps } }: any) {
   const getLayout = Component.getLayout || ((page: any) => page);
-  console.log('stacks network env', process.env.STACKS_NETWORK);
-  const network: StacksNetwork =
-    process.env.NODE_ENV === 'production'
-      ? new StacksMainnet({
-          url: 'https://capable-yolo-moon.stacks-mainnet.discover.quiknode.pro/',
-        })
-      : new StacksTestnet();
+  const network: StacksNetwork = isMainnet
+    ? new StacksMainnet({
+        url: 'https://capable-yolo-moon.stacks-mainnet.discover.quiknode.pro/',
+      })
+    : isTestnet
+    ? new StacksTestnet()
+    : new StacksMocknet();
 
   const noWalletFound = () => {
     alert('Please install Hiro Wallet');

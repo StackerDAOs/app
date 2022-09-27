@@ -15,19 +15,17 @@ import {
   makeContractFungiblePostCondition,
   createAssetInfo,
 } from 'micro-stacks/transactions';
+import { isMainnet, isTestnet } from 'api/constants';
 
 export const contractPrincipal = (address: string): string[] =>
   address.split('.');
 
-// export const getExplorerLink = (txId: string) =>
-//   process.env.NODE_ENV === 'production'
-//     ? `https://explorer.stacks.co/txid/${txId}?chain=mainnet`
-//     : process.env.NODE_ENV === 'development'
-//     ? `http://localhost:8000/txid/${txId}?chain=testnet`
-//     : `https://explorer.stacks.co/txid/${txId}?chain=testnet`;
-
 export const getExplorerLink = (txId: string) =>
-  `https://explorer.stacks.co/txid/${txId}?chain=testnet`;
+  isMainnet
+    ? `https://explorer.stacks.co/txid/${txId}?chain=mainnet`
+    : isTestnet
+    ? `https://explorer.stacks.co/txid/${txId}?chain=testnet`
+    : `http://localhost:8000/txid/${txId}?chain=testnet`;
 
 export const truncate = (
   str: string,
