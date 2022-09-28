@@ -5,7 +5,7 @@ import { investmentClub } from 'utils/contracts';
 import { useCreateExtension } from 'api/clubs/mutations/extensions';
 import { DeployICProps } from 'ui/components/buttons/types';
 import { useTransaction } from 'ui/hooks';
-import { EXTENSION_TYPES } from 'api/constants';
+import { CLUB_EXTENSION_TYPES } from 'api/constants';
 
 export const DeployICButton = (props: DeployICProps) => {
   const [transactionId, setTransactionId] = React.useState('');
@@ -21,7 +21,7 @@ export const DeployICButton = (props: DeployICProps) => {
         createExtension.mutate({
           club_id: props?.clubId,
           contract_address: `${stxAddress}.${props?.name}`,
-          extension_type_id: EXTENSION_TYPES.INVESTMENT_CLUB,
+          extension_type_id: CLUB_EXTENSION_TYPES.INVESTMENT_CLUB,
         });
         props?.onFinish(data);
       } catch (e: any) {

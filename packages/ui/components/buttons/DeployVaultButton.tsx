@@ -5,7 +5,7 @@ import { vault } from 'utils/contracts';
 import { useCreateExtension } from 'api/clubs/mutations/extensions';
 import { DeployVaultProps } from 'ui/components/buttons/types';
 import { useTransaction } from 'ui/hooks';
-import { EXTENSION_TYPES } from 'api/constants';
+import { CLUB_EXTENSION_TYPES } from 'api/constants';
 
 export const DeployVaultButton = (props: DeployVaultProps) => {
   const [transactionId, setTransactionId] = React.useState('');
@@ -21,7 +21,7 @@ export const DeployVaultButton = (props: DeployVaultProps) => {
         createExtension.mutate({
           club_id: props?.clubId,
           contract_address: `${stxAddress}.${props?.name}`,
-          extension_type_id: EXTENSION_TYPES.VAULT,
+          extension_type_id: CLUB_EXTENSION_TYPES.VAULT,
         });
         props?.onFinish(data);
       } catch (e: any) {

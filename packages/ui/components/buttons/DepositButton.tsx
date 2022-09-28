@@ -11,13 +11,13 @@ import {
 
 // Utils
 import { stxToUstx } from 'utils';
-import { vaultAddress } from 'api/constants';
 import { splitContractAddress } from '@stacks-os/utils';
 import { DepositProps } from './types';
 
 export const DepositButton = (props: DepositProps) => {
   const { stxAddress } = useAccount();
   const { openContractCall, isRequestPending } = useOpenContractCall();
+  const vaultAddress = ''; // TODO: use a hook to get the contract address for vault
   const [contractAddress, contractName] = splitContractAddress(vaultAddress);
 
   const deposit = React.useCallback(async () => {

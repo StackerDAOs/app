@@ -5,7 +5,7 @@ import { votingExtension } from 'utils/contracts';
 import { useCreateExtension } from 'api/clubs/mutations/extensions';
 import { DeployVotingProps } from 'ui/components/buttons/types';
 import { useTransaction } from 'ui/hooks';
-import { EXTENSION_TYPES } from 'api/constants';
+import { CLUB_EXTENSION_TYPES } from 'api/constants';
 
 export const DeployVotingButton = (props: DeployVotingProps) => {
   const [transactionId, setTransactionId] = React.useState('');
@@ -21,7 +21,7 @@ export const DeployVotingButton = (props: DeployVotingProps) => {
         createExtension.mutate({
           club_id: props?.clubId,
           contract_address: `${stxAddress}.${props?.name}`,
-          extension_type_id: EXTENSION_TYPES.VOTING,
+          extension_type_id: CLUB_EXTENSION_TYPES.VOTING,
         });
         props?.onFinish(data);
       } catch (e: any) {
