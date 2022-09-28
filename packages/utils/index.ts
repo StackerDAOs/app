@@ -224,3 +224,24 @@ export function findExtension(extensions: Array<any[]>, type: string): any {
 export function nameToSlug(name: string) {
   return name.toLowerCase().replace(/ /g, '-');
 }
+
+function hasWhiteSpace(s: string) {
+  return /\s/g.test(s);
+}
+
+export function nameToSymbol(name: string) {
+  if (hasWhiteSpace(name)) {
+    name = name.replace(/\s/g, '');
+    if (name.length > 3) {
+      return name.toUpperCase().substring(0, 4);
+    } else {
+      return name.toUpperCase().substring(0, 2);
+    }
+  } else {
+    if (name.length > 3) {
+      return name.toUpperCase().substring(0, 4);
+    } else {
+      return name.toUpperCase().substring(0, 2);
+    }
+  }
+}
