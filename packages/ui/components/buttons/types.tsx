@@ -8,10 +8,19 @@ export interface BootstrapProps extends ButtonProps {
 export interface DeployClubProps extends ButtonProps {
   name: string;
   slug: string;
+  config: {
+    description: string;
+    tokenSymbol: string;
+    nftMembershipPass: string;
+    memberAddresses: string[];
+    durationInDays: string;
+    minimumDeposit: string;
+  };
   onFinish: (data: any) => void;
 }
 
 export interface DeployNFTProps extends ButtonProps {
+  coreDao: string;
   name: string;
   clubId: number;
   hasExtension: boolean;
@@ -19,13 +28,16 @@ export interface DeployNFTProps extends ButtonProps {
 }
 
 export interface DeployGovernanceTokenProps extends ButtonProps {
+  coreDao: string;
   name: string;
+  symbol: string;
   clubId: number;
   hasExtension: boolean;
   onFinish: (data: any) => void;
 }
 
 export interface DeployVaultProps extends ButtonProps {
+  coreDao: string;
   name: string;
   clubId: number;
   hasExtension: boolean;
@@ -33,16 +45,20 @@ export interface DeployVaultProps extends ButtonProps {
 }
 
 export interface DeployICProps extends ButtonProps {
+  coreDao: string;
   name: string;
   clubId: number;
   nftMembershipContractAddress: string;
   governanceTokenContractAddress: string;
   vaultContractAddress: string;
   hasExtension: boolean;
+  startWindow: string;
+  minimumDeposit: string;
   onFinish: (data: any) => void;
 }
 
 export interface DeploySubmissionProps extends ButtonProps {
+  coreDao: string;
   name: string;
   clubId: number;
   nftMembershipContractAddress: string;
@@ -53,6 +69,7 @@ export interface DeploySubmissionProps extends ButtonProps {
 }
 
 export interface DeployVotingProps extends ButtonProps {
+  coreDao: string;
   name: string;
   clubId: number;
   nftMembershipContractAddress: string;

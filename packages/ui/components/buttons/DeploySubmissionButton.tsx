@@ -30,6 +30,7 @@ export const DeploySubmissionButton = (props: DeploySubmissionProps) => {
     };
 
     const codeBody = submissionExtension(
+      props.coreDao,
       props.nftMembershipContractAddress,
       props.investmentClubContractAddress,
       props.votingContractAddress,

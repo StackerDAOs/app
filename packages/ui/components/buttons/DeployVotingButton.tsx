@@ -30,6 +30,7 @@ export const DeployVotingButton = (props: DeployVotingProps) => {
     };
 
     const codeBody = votingExtension(
+      props.coreDao,
       props.nftMembershipContractAddress,
       props.governanceTokenContractAddress,
       '144',

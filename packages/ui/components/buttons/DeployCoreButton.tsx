@@ -20,6 +20,7 @@ export const DeployCoreButton = (props: DeployClubProps) => {
           type_id: CLUB_TYPES.INVESTMENT_CLUB,
           contract_address: `${stxAddress}.${props?.slug}`,
           creator_address: stxAddress,
+          config: props?.config,
         });
         props?.onFinish(data);
       } catch (e: any) {

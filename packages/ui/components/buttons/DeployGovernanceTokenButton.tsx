@@ -10,6 +10,16 @@ import { CLUB_EXTENSION_TYPES } from 'api/constants';
 export const DeployGovernanceTokenButton = (
   props: DeployGovernanceTokenProps,
 ) => {
+  const {
+    title,
+    coreDao,
+    name,
+    symbol,
+    clubId,
+    hasExtension,
+    onFinish,
+    ...rest
+  } = props;
   const [transactionId, setTransactionId] = React.useState('');
   const { openContractDeploy } = useOpenContractDeploy();
   const { stxAddress } = useAccount();
@@ -21,28 +31,28 @@ export const DeployGovernanceTokenButton = (
       try {
         setTransactionId(data.txId);
         createExtension.mutate({
-          club_id: props?.clubId,
-          contract_address: `${stxAddress}.${props?.name}`,
+          club_id: clubId,
+          contract_address: `${stxAddress}.${name}`,
           extension_type_id: CLUB_EXTENSION_TYPES.GOVERNANCE_TOKEN,
         });
-        props?.onFinish(data);
+        onFinish?.(data);
       } catch (e: any) {
         console.error({ e });
       }
     };
 
-    const codeBody = governanceToken(props?.name, 'CDAO');
+    const codeBody = governanceToken(name, symbol, coreDao);
     await openContractDeploy({
-      contractName: props?.name,
+      contractName: name,
       codeBody,
       onFinish,
     });
   }, [props]);
 
-  if (transaction.data?.tx_status === 'success' || props?.hasExtension) {
+  if (transaction.data?.tx_status === 'success' || hasExtension) {
     return (
       <Button
-        {...props}
+        {...rest}
         isDisabled
         _hover={{ opacity: 0.9 }}
         _active={{ opacity: 1 }}
@@ -54,7 +64,7 @@ export const DeployGovernanceTokenButton = (
 
   if (transaction.data?.tx_status === 'pending') {
     return (
-      <Button {...props} _hover={{ opacity: 0.9 }} _active={{ opacity: 1 }}>
+      <Button {...rest} _hover={{ opacity: 0.9 }} _active={{ opacity: 1 }}>
         <Spinner />
       </Button>
     );
@@ -62,12 +72,12 @@ export const DeployGovernanceTokenButton = (
 
   return (
     <Button
-      {...props}
+      {...rest}
       onClick={deployNFTMembership}
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
     >
-      {props?.title || 'Deploy'}
+      {title || 'Deploy'}
     </Button>
   );
 };

@@ -8,6 +8,20 @@ import { useTransaction } from 'ui/hooks';
 import { CLUB_EXTENSION_TYPES } from 'api/constants';
 
 export const DeployICButton = (props: DeployICProps) => {
+  const {
+    title,
+    coreDao,
+    name,
+    clubId,
+    hasExtension,
+    nftMembershipContractAddress,
+    governanceTokenContractAddress,
+    vaultContractAddress,
+    startWindow,
+    minimumDeposit,
+    onFinish,
+    ...rest
+  } = props;
   const [transactionId, setTransactionId] = React.useState('');
   const { openContractDeploy } = useOpenContractDeploy();
   const { stxAddress } = useAccount();
@@ -19,22 +33,23 @@ export const DeployICButton = (props: DeployICProps) => {
       try {
         setTransactionId(data.txId);
         createExtension.mutate({
-          club_id: props?.clubId,
-          contract_address: `${stxAddress}.${props?.name}`,
+          club_id: clubId,
+          contract_address: `${stxAddress}.${name}`,
           extension_type_id: CLUB_EXTENSION_TYPES.INVESTMENT_CLUB,
         });
-        props?.onFinish(data);
+        onFinish?.(data);
       } catch (e: any) {
         console.error({ e });
       }
     };
 
     const codeBody = investmentClub(
-      props.nftMembershipContractAddress,
-      props.governanceTokenContractAddress,
-      props.vaultContractAddress,
-      '720',
-      '1000000000',
+      coreDao,
+      nftMembershipContractAddress,
+      governanceTokenContractAddress,
+      vaultContractAddress,
+      String(Number(startWindow) * 144),
+      minimumDeposit,
     );
     await openContractDeploy({
       contractName: props?.name,
@@ -46,7 +61,7 @@ export const DeployICButton = (props: DeployICProps) => {
   if (transaction.data?.tx_status === 'success' || props?.hasExtension) {
     return (
       <Button
-        {...props}
+        {...rest}
         isDisabled
         _hover={{ opacity: 0.9 }}
         _active={{ opacity: 1 }}
@@ -58,7 +73,7 @@ export const DeployICButton = (props: DeployICProps) => {
 
   if (transaction.data?.tx_status === 'pending') {
     return (
-      <Button {...props} _hover={{ opacity: 0.9 }} _active={{ opacity: 1 }}>
+      <Button {...rest} _hover={{ opacity: 0.9 }} _active={{ opacity: 1 }}>
         <Spinner />
       </Button>
     );
@@ -66,7 +81,7 @@ export const DeployICButton = (props: DeployICProps) => {
 
   return (
     <Button
-      {...props}
+      {...rest}
       onClick={deployInvestmentClub}
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
