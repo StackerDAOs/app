@@ -40,7 +40,7 @@ import { DeployCoreButton } from 'ui/components/buttons';
 import { useTransaction } from 'ui/hooks';
 import { InfoIcon, LightningBolt } from 'ui/components/icons';
 import { shortenAddress, validateStacksAddress } from '@stacks-os/utils';
-import { nameToSlug } from 'utils';
+import { nameToSlug, nameToSymbol } from 'utils';
 import { includes, size } from 'lodash';
 import { LaunchLayout } from '../components/layout';
 
@@ -107,6 +107,15 @@ export default function Create() {
   const handleOnFinish = (data: any) => {
     setTransactionId(data.txId);
     onOpen();
+  };
+
+  const config = {
+    description: club?.description,
+    tokenSymbol: nameToSymbol(club?.name),
+    nftMembershipPass: `${nameToSymbol(club?.name)} Membership Pass`,
+    memberAddresses: club?.members,
+    durationInDays: club?.durationInDays,
+    minimumDeposit: club?.minimumDeposit,
   };
 
   const Step1 = (
@@ -621,17 +630,16 @@ export default function Create() {
             >
               Back
             </Button>
-            <Link href={`/d/${club?.name}`}>
-              <DeployCoreButton
-                title='Deploy'
-                name={club?.name}
-                slug={nameToSlug(club?.name)}
-                size='lg'
-                variant='primary'
-                isLoading={false}
-                onFinish={handleOnFinish}
-              />
-            </Link>
+            <DeployCoreButton
+              title='Deploy'
+              name={club?.name}
+              slug={nameToSlug(club?.name)}
+              config={config}
+              size='lg'
+              variant='primary'
+              isLoading={false}
+              onFinish={handleOnFinish}
+            />
           </Stack>
         </Stack>
         <Modal isOpen={isInfoOpen} onClose={onInfoClose} isCentered>
@@ -775,7 +783,7 @@ export default function Create() {
             </ModalBody>
             <ModalFooter>
               {transaction?.tx_status === 'success' ? (
-                <Link href={`/d/${club?.name}`}>
+                <Link href={`/d/${nameToSlug(club?.name)}`}>
                   <Button variant='primary' isFullWidth>
                     Go to your dashboard
                   </Button>
