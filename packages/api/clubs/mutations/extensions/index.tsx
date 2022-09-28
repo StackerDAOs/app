@@ -24,6 +24,7 @@ export const useCreateExtension = () => {
   return useMutation(createExtension, {
     onSuccess: () => {
       queryClient.invalidateQueries('extensions');
+      queryClient.invalidateQueries('dao');
     },
   });
 };

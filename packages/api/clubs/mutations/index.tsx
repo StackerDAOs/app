@@ -7,6 +7,14 @@ type Club = {
   creator_address: string | undefined;
   slug: string;
   type_id: number;
+  config: {
+    description: string;
+    tokenSymbol: string;
+    nftMembershipPass: string;
+    memberAddresses: string[];
+    durationInDays: string;
+    minimumDeposit: string;
+  };
 };
 
 export async function createClub(club: Club) {
