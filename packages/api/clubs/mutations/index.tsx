@@ -6,7 +6,7 @@ type Club = {
   contract_address: string;
   creator_address: string | undefined;
   slug: string;
-  type: number;
+  type_id: number;
 };
 
 export async function createClub(club: Club) {
