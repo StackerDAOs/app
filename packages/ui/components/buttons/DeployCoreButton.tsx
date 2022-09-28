@@ -4,9 +4,10 @@ import { useAccount, useOpenContractDeploy } from '@micro-stacks/react';
 import { coreDAO } from 'utils/contracts';
 import { useCreateClub } from 'api/clubs/mutations';
 import { DeployClubProps } from 'ui/components/buttons/types';
+import { CLUB_TYPES } from 'api/constants';
 
 export const DeployCoreButton = (props: DeployClubProps) => {
-  const { openContractDeploy, isRequestPending } = useOpenContractDeploy();
+  const { openContractDeploy } = useOpenContractDeploy();
   const { stxAddress } = useAccount();
   const createClub = useCreateClub();
 
@@ -16,7 +17,7 @@ export const DeployCoreButton = (props: DeployClubProps) => {
         createClub.mutate({
           name: props?.name,
           slug: props?.slug,
-          type: 1,
+          type_id: CLUB_TYPES.INVESTMENT_CLUB,
           contract_address: `${stxAddress}.${props?.slug}`,
           creator_address: stxAddress,
         });
