@@ -33,3 +33,8 @@ export enum CLUB_EXTENSION_TYPES {
   SUBMISSION = 5,
   VOTING = 6,
 }
+
+export enum CLUB_TYPES {
+  INVESTMENT_CLUB = 1,
+  IMPACT_CLUB = 2,
+}
