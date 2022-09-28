@@ -8,16 +8,21 @@ import {
   useBreakpointValue,
 } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { getExplorerLink } from 'utils';
+import { getExplorerLink, findExtension } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
 import Avatar from 'boring-avatars';
 import { ProposalDrawer } from '@components/drawers';
+import { useDAO } from 'ui/hooks';
 
 import { Wrapper } from '../containers';
 import { Clipboard } from '../feedback';
 
+const hasExtension = (extensions: any, extensionToFind: string) =>
+  findExtension(extensions, extensionToFind);
+
 export const DashboardHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const dao = useDAO();
 
   return (
     <Wrapper>
@@ -40,12 +45,12 @@ export const DashboardHeader = () => {
             <HStack>
               <Avatar
                 size={40}
-                name='StackerDAO'
+                name={dao?.data?.name}
                 variant='marble'
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                StackerDAO{' '}
+                {dao?.data?.name}{' '}
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -62,9 +67,7 @@ export const DashboardHeader = () => {
               >
                 <HStack>
                   <a
-                    href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.stacker-dao',
-                    )}
+                    href={getExplorerLink(dao?.data?.contract_address)}
                     target='_blank'
                     rel='noreferrer'
                   >
@@ -74,16 +77,14 @@ export const DashboardHeader = () => {
                       fontSize='sm'
                       fontWeight='light'
                     >
-                      {truncateAddress(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.stacker-dao',
-                      )}
+                      {truncateAddress(dao?.data?.contract_address)}
                     </Text>
                   </a>
 
                   <Clipboard
                     color='light.900'
                     fontSize='sm'
-                    content='address' // TODO: replace with address
+                    content={dao?.data?.contract_address}
                     _hover={{ cursor: 'pointer', color: 'light.900' }}
                   />
                 </HStack>
@@ -110,6 +111,7 @@ export const DashboardHeader = () => {
 
 export const VaultHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const dao = useDAO();
 
   return (
     <Wrapper>
@@ -132,12 +134,12 @@ export const VaultHeader = () => {
             <HStack>
               <Avatar
                 size={40}
-                name='StackerDAO'
+                name={dao?.data?.name}
                 variant='marble'
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                StackerDAO{' '}
+                {dao?.data?.name}{' '}
                 <Text
                   as='span'
                   maxW='2xl'
@@ -161,33 +163,44 @@ export const VaultHeader = () => {
                 px='3'
                 _hover={{ opacity: 0.9 }}
               >
-                <HStack>
-                  <a
-                    href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
-                    )}
-                    target='_blank'
-                    rel='noreferrer'
-                  >
-                    <Text
-                      as='span'
-                      cursor='pointer'
-                      fontSize='sm'
-                      fontWeight='light'
-                    >
-                      {truncateAddress(
+                {hasExtension(dao?.data?.extensions, 'Vault') ? (
+                  <HStack>
+                    <a
+                      href={getExplorerLink(
                         'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
                       )}
-                    </Text>
-                  </a>
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      <Text
+                        as='span'
+                        cursor='pointer'
+                        fontSize='sm'
+                        fontWeight='light'
+                      >
+                        {truncateAddress(
+                          'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
+                        )}
+                      </Text>
+                    </a>
 
-                  <Clipboard
-                    color='light.900'
+                    <Clipboard
+                      color='light.900'
+                      fontSize='sm'
+                      content='address' // TODO: add dao address
+                      _hover={{ cursor: 'pointer', color: 'light.900' }}
+                    />
+                  </HStack>
+                ) : (
+                  <Text
+                    as='span'
+                    cursor='pointer'
                     fontSize='sm'
-                    content='address' // TODO: add dao address
-                    _hover={{ cursor: 'pointer', color: 'light.900' }}
-                  />
-                </HStack>
+                    fontWeight='light'
+                  >
+                    No contract found
+                  </Text>
+                )}
               </Badge>
             </HStack>
             <Text fontSize='lg' fontWeight='light' color='text-default'>
@@ -207,6 +220,7 @@ export const VaultHeader = () => {
 
 export const ProposalHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const dao = useDAO();
 
   return (
     <Wrapper>
@@ -229,12 +243,12 @@ export const ProposalHeader = () => {
             <HStack>
               <Avatar
                 size={40}
-                name='StackerDAO'
+                name={dao?.data?.name}
                 variant='marble'
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                StackerDAO{' '}
+                {dao?.data?.name}{' '}
                 <Text
                   as='span'
                   maxW='2xl'
@@ -258,33 +272,44 @@ export const ProposalHeader = () => {
                 px='3'
                 _hover={{ opacity: 0.9 }}
               >
-                <HStack>
-                  <a
-                    href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-submission',
-                    )}
-                    target='_blank'
-                    rel='noreferrer'
-                  >
-                    <Text
-                      as='span'
-                      cursor='pointer'
-                      fontSize='sm'
-                      fontWeight='light'
-                    >
-                      {truncateAddress(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-submission',
+                {hasExtension(dao?.data?.etensions, 'Submission') ? (
+                  <HStack>
+                    <a
+                      href={getExplorerLink(
+                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
                       )}
-                    </Text>
-                  </a>
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      <Text
+                        as='span'
+                        cursor='pointer'
+                        fontSize='sm'
+                        fontWeight='light'
+                      >
+                        {truncateAddress(
+                          'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
+                        )}
+                      </Text>
+                    </a>
 
-                  <Clipboard
-                    color='light.900'
+                    <Clipboard
+                      color='light.900'
+                      fontSize='sm'
+                      content='address' // TODO: add dao address
+                      _hover={{ cursor: 'pointer', color: 'light.900' }}
+                    />
+                  </HStack>
+                ) : (
+                  <Text
+                    as='span'
+                    cursor='pointer'
                     fontSize='sm'
-                    content='address' // TODO: add dao address
-                    _hover={{ cursor: 'pointer', color: 'light.900' }}
-                  />
-                </HStack>
+                    fontWeight='light'
+                  >
+                    No contract found
+                  </Text>
+                )}
               </Badge>
             </HStack>
             <Text fontSize='lg' fontWeight='light' color='text-default'>
@@ -304,6 +329,7 @@ export const ProposalHeader = () => {
 
 export const VotingHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const dao = useDAO();
 
   return (
     <Wrapper>
@@ -326,12 +352,12 @@ export const VotingHeader = () => {
             <HStack>
               <Avatar
                 size={40}
-                name='StackerDAO'
+                name={dao?.data?.name}
                 variant='marble'
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                StackerDAO{' '}
+                {dao?.data?.name}{' '}
                 <Text
                   as='span'
                   maxW='2xl'
@@ -355,33 +381,44 @@ export const VotingHeader = () => {
                 px='3'
                 _hover={{ opacity: 0.9 }}
               >
-                <HStack>
-                  <a
-                    href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vote',
-                    )}
-                    target='_blank'
-                    rel='noreferrer'
-                  >
-                    <Text
-                      as='span'
-                      cursor='pointer'
-                      fontSize='sm'
-                      fontWeight='light'
-                    >
-                      {truncateAddress(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vote',
+                {hasExtension(dao?.data?.etensions, 'Voting') ? (
+                  <HStack>
+                    <a
+                      href={getExplorerLink(
+                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
                       )}
-                    </Text>
-                  </a>
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      <Text
+                        as='span'
+                        cursor='pointer'
+                        fontSize='sm'
+                        fontWeight='light'
+                      >
+                        {truncateAddress(
+                          'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
+                        )}
+                      </Text>
+                    </a>
 
-                  <Clipboard
-                    color='light.900'
+                    <Clipboard
+                      color='light.900'
+                      fontSize='sm'
+                      content='address' // TODO: add dao address
+                      _hover={{ cursor: 'pointer', color: 'light.900' }}
+                    />
+                  </HStack>
+                ) : (
+                  <Text
+                    as='span'
+                    cursor='pointer'
                     fontSize='sm'
-                    content='address' // TODO: add dao address
-                    _hover={{ cursor: 'pointer', color: 'light.900' }}
-                  />
-                </HStack>
+                    fontWeight='light'
+                  >
+                    No contract found
+                  </Text>
+                )}
               </Badge>
             </HStack>
             <Text fontSize='lg' fontWeight='light' color='text-default'>
@@ -401,6 +438,7 @@ export const VotingHeader = () => {
 
 export const ExtensionsHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const dao = useDAO();
 
   return (
     <Wrapper>
@@ -423,12 +461,12 @@ export const ExtensionsHeader = () => {
             <HStack>
               <Avatar
                 size={40}
-                name='StackerDAO'
+                name={dao?.data?.name}
                 variant='marble'
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                StackerDAO{' '}
+                {dao?.data?.name}{' '}
                 <Text
                   as='span'
                   maxW='2xl'
