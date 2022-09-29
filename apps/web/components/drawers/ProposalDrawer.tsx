@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ButtonProps } from '@chakra-ui/react';
+import type { ButtonProps } from 'ui';
 import {
   Button,
   Drawer,

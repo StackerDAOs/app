@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ButtonProps } from '@chakra-ui/react';
+import type { ButtonProps } from 'ui';
 import {
   Accordion,
   AccordionButton,
@@ -63,7 +63,6 @@ export const FinishSetupDrawer = (props: SetupDrawerProps) => {
     'Investment Club',
   );
   const votingExtension = findExtension(dao.data?.extensions, 'Voting');
-  console.log({ dao });
 
   return (
     <>
@@ -162,7 +161,7 @@ export const FinishSetupDrawer = (props: SetupDrawerProps) => {
                             clubId={clubId}
                             hasExtension={hasExtension('NFT Membership')}
                             variant='primary'
-                            onFinish={onFinish}
+                            onDeploy={onFinish}
                           />
                         </Stack>
                         <Stack py={{ base: '3', md: '3' }} spacing='2'>
@@ -210,7 +209,7 @@ export const FinishSetupDrawer = (props: SetupDrawerProps) => {
                             clubId={clubId}
                             hasExtension={hasExtension('Governance Token')}
                             variant='primary'
-                            onFinish={onFinish}
+                            onDeploy={onFinish}
                           />
                         </Stack>
                       </Stack>
@@ -251,7 +250,7 @@ export const FinishSetupDrawer = (props: SetupDrawerProps) => {
                                 fontWeight='black'
                                 color='white'
                               >
-                                MEGA
+                                NA
                               </Text>
                             </Stack>
                           </SimpleGrid>
@@ -264,7 +263,7 @@ export const FinishSetupDrawer = (props: SetupDrawerProps) => {
                             clubId={clubId}
                             hasExtension={hasExtension('Vault')}
                             variant='primary'
-                            onFinish={onFinish}
+                            onDeploy={onFinish}
                           />
                         </Stack>
                         <Stack py={{ base: '3', md: '3' }} spacing='2'>
@@ -282,7 +281,7 @@ export const FinishSetupDrawer = (props: SetupDrawerProps) => {
                                 fontWeight='black'
                                 color='white'
                               >
-                                100 STX
+                                {dao?.data?.config?.minimumDeposit} STX
                               </Text>
                             </Stack>
                             <Stack align='flex-start' spacing='0'>
@@ -298,7 +297,7 @@ export const FinishSetupDrawer = (props: SetupDrawerProps) => {
                                 fontWeight='black'
                                 color='white'
                               >
-                                ~ 14 days
+                                ~ {dao?.data?.config?.durationInDays} days
                               </Text>
                             </Stack>
                           </SimpleGrid>
@@ -322,7 +321,7 @@ export const FinishSetupDrawer = (props: SetupDrawerProps) => {
                             startWindow={dao?.data?.config?.durationInDays}
                             minimumDeposit={dao?.data?.config?.minimumDeposit}
                             variant='primary'
-                            onFinish={onFinish}
+                            onDeploy={onFinish}
                           />
                         </Stack>
                       </Stack>
@@ -383,7 +382,7 @@ export const FinishSetupDrawer = (props: SetupDrawerProps) => {
                             }
                             hasExtension={hasExtension('Voting')}
                             variant='primary'
-                            onFinish={onFinish}
+                            onDeploy={onFinish}
                           />
                         </Stack>
                         <Stack py={{ base: '3', md: '3' }} spacing='2'>
@@ -423,7 +422,7 @@ export const FinishSetupDrawer = (props: SetupDrawerProps) => {
                             }
                             hasExtension={hasExtension('Submission')}
                             variant='primary'
-                            onFinish={onFinish}
+                            onDeploy={onFinish}
                           />
                         </Stack>
                       </Stack>
