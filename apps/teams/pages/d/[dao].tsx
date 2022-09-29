@@ -211,6 +211,7 @@ export default function Dashboard() {
                       <DepositButton
                         title='Deposit'
                         variant='primary'
+                        vaultAddress=''
                         amount={depositAmount}
                       />
                       <Text

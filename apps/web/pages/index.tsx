@@ -121,44 +121,6 @@ export default function Web() {
         transition={{ duration: 0.25, type: 'linear' }}
       >
         <Wrapper>
-          <Stack spacing='6' my='16'>
-            <SectionHeader
-              mb='0'
-              justify={{ base: 'flex-start', md: 'space-between' }}
-              align={{ base: 'flex-start', md: 'space-between' }}
-              color='light.900'
-            >
-              <Stack spacing='3' align='space-between'>
-                <Heading mt='0 !important' size='lg' fontWeight='regular'>
-                  DAOs
-                </Heading>
-              </Stack>
-            </SectionHeader>
-            <Stack spacing='8' pb='16'>
-              <motion.div
-                variants={FADE_IN_VARIANTS}
-                initial={FADE_IN_VARIANTS.hidden}
-                animate={FADE_IN_VARIANTS.enter}
-                exit={FADE_IN_VARIANTS.exit}
-                transition={{ duration: 0.25, type: 'linear' }}
-              >
-                <Stack mt='2' spacing='3'>
-                  <EmptyState align='center' textAlign='center' spacing='3'>
-                    <Stack spacing='1'>
-                      <Heading size='md' fontWeight='light'>
-                        You do not have any DAOs yet
-                      </Heading>
-                      <Text color='gray' maxW='md'>
-                        Organize your purpose-driven community and customize
-                        your DAO across web3.
-                      </Text>
-                    </Stack>
-                    <Button variant='primary'>Create a DAO</Button>
-                  </EmptyState>
-                </Stack>
-              </motion.div>
-            </Stack>
-          </Stack>
           <Stack spacing='6' my='8'>
             <SectionHeader
               mb='0'

@@ -40,11 +40,15 @@ export const useCreateClub = () => {
 export async function updateBootrapAddress(club: {
   contract_address?: string;
   bootstrap_address?: string;
+  bootstrap_tx_id?: string;
 }) {
   try {
     const { data, error } = await supabase
       .from('clubs')
-      .update({ bootstrap_address: club.bootstrap_address })
+      .update({
+        bootstrap_address: club.bootstrap_address,
+        bootstrap_tx_id: club.bootstrap_tx_id,
+      })
       .match({
         contract_address: club.contract_address,
       });
@@ -59,6 +63,35 @@ export const useUpdateBootstrap = () => {
   const queryClient = useQueryClient();
   return useMutation(updateBootrapAddress, {
     onSuccess: () => {
+      queryClient.invalidateQueries('dao');
+      queryClient.invalidateQueries('clubs');
+    },
+  });
+};
+
+export async function updateInitTxId(club: {
+  contract_address?: string;
+  activation_tx_id?: string;
+}) {
+  try {
+    const { data, error } = await supabase
+      .from('clubs')
+      .update({ activation_tx_id: club.activation_tx_id, active: true })
+      .match({
+        contract_address: club.contract_address,
+      });
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useUpdateInitTxId = () => {
+  const queryClient = useQueryClient();
+  return useMutation(updateInitTxId, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('dao');
       queryClient.invalidateQueries('clubs');
     },
   });

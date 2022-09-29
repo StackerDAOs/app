@@ -4,6 +4,7 @@ export interface BootstrapProps extends ButtonProps {
   title: string;
   contractPrincipal: string;
   bootstrapPrincipal: string;
+  onSubmit?: (data: any) => void;
 }
 
 export interface DeployClubProps extends ButtonProps {
@@ -109,6 +110,7 @@ export interface VoteProposalProps extends ButtonProps {
 export interface DepositProps extends ButtonProps {
   title: string;
   amount: string;
+  vaultAddress: string;
 }
 
 export interface ProposeProps extends ButtonProps {

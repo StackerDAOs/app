@@ -111,6 +111,7 @@ export const DashboardHeader = () => {
 export const VaultHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const dao = useDAO();
+  const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
 
   return (
     <Wrapper>
@@ -156,9 +157,7 @@ export const VaultHeader = () => {
                 {hasExtension(dao?.data?.extensions, 'Vault') ? (
                   <HStack>
                     <a
-                      href={getExplorerLink(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
-                      )}
+                      href={getExplorerLink(vaultExtension?.contract_address)}
                       target='_blank'
                       rel='noreferrer'
                     >
@@ -168,15 +167,13 @@ export const VaultHeader = () => {
                         fontSize='sm'
                         fontWeight='light'
                       >
-                        {truncateAddress(
-                          'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
-                        )}
+                        {truncateAddress(vaultExtension?.contract_address)}
                       </Text>
                     </a>
                     <Clipboard
                       color='light.900'
                       fontSize='sm'
-                      content='address' // TODO: add dao address
+                      content={vaultExtension?.contract_address}
                       _hover={{ cursor: 'pointer', color: 'light.900' }}
                     />
                   </HStack>
@@ -210,6 +207,10 @@ export const VaultHeader = () => {
 export const ProposalHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const dao = useDAO();
+  const submissionExtension = findExtension(
+    dao?.data?.extensions,
+    'Submission',
+  );
 
   return (
     <Wrapper>
@@ -252,11 +253,11 @@ export const ProposalHeader = () => {
                 px='3'
                 _hover={{ opacity: 0.9 }}
               >
-                {hasExtension(dao?.data?.etensions, 'Submission') ? (
+                {hasExtension(dao?.data?.extensions, 'Submission') ? (
                   <HStack>
                     <a
                       href={getExplorerLink(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
+                        submissionExtension?.contract_address,
                       )}
                       target='_blank'
                       rel='noreferrer'
@@ -267,15 +268,13 @@ export const ProposalHeader = () => {
                         fontSize='sm'
                         fontWeight='light'
                       >
-                        {truncateAddress(
-                          'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
-                        )}
+                        {truncateAddress(submissionExtension?.contract_address)}
                       </Text>
                     </a>
                     <Clipboard
                       color='light.900'
                       fontSize='sm'
-                      content='address' // TODO: add dao address
+                      content={submissionExtension?.contract_address}
                       _hover={{ cursor: 'pointer', color: 'light.900' }}
                     />
                   </HStack>
@@ -309,6 +308,7 @@ export const ProposalHeader = () => {
 export const VotingHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const dao = useDAO();
+  const votingExtension = findExtension(dao?.data?.extensions, 'Voting');
 
   return (
     <Wrapper>
@@ -351,12 +351,10 @@ export const VotingHeader = () => {
                 px='3'
                 _hover={{ opacity: 0.9 }}
               >
-                {hasExtension(dao?.data?.etensions, 'Voting') ? (
+                {hasExtension(dao?.data?.extensions, 'Voting') ? (
                   <HStack>
                     <a
-                      href={getExplorerLink(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
-                      )}
+                      href={getExplorerLink(votingExtension?.contract_address)}
                       target='_blank'
                       rel='noreferrer'
                     >
@@ -366,15 +364,13 @@ export const VotingHeader = () => {
                         fontSize='sm'
                         fontWeight='light'
                       >
-                        {truncateAddress(
-                          'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.mega-vault',
-                        )}
+                        {truncateAddress(votingExtension?.contract_address)}
                       </Text>
                     </a>
                     <Clipboard
                       color='light.900'
                       fontSize='sm'
-                      content='address' // TODO: add dao address
+                      content={votingExtension?.contract_address}
                       _hover={{ cursor: 'pointer', color: 'light.900' }}
                     />
                   </HStack>

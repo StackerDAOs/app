@@ -33,6 +33,7 @@ export const DeployBootstrapButton = (props: DeployBootstrapProps) => {
         updateBootstrap.mutate({
           contract_address: `${stxAddress}.${slug}`,
           bootstrap_address: `${stxAddress}.${name}`,
+          bootstrap_tx_id: data.txId,
         });
         onDeploy?.(data);
       } catch (e: any) {

@@ -21,6 +21,7 @@ import {
   Grid,
   GridItem,
   SimpleGrid,
+  Spinner,
   Stack,
   Text,
   VStack,
@@ -58,7 +59,12 @@ export default function Dashboard() {
   const dao = useDAO();
   const { data } = useAccountBalance();
   const { data: transaction } = useTransaction(dao?.data?.tx_id);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: bootstrapTransaction } = useTransaction(
+    dao?.data?.bootstrap_tx_id,
+  );
+  const { data: activationTransaction } = useTransaction(
+    dao?.data?.activation_tx_id,
+  );
   const [depositAmount, setDepositAmount] = React.useState('');
   const handleInputDeposit = (e: any) => {
     const re = /^[0-9.\b]+$/;
@@ -67,27 +73,32 @@ export default function Dashboard() {
     }
   };
 
-  const isReadyToInitialize =
-    dao.data?.extensions.length + OTHER_REQUIREMENTS_SIZE ===
-      EXTENSION_SIZE + OTHER_REQUIREMENTS_SIZE && !dao?.data?.active;
-  const isActive = dao.data?.active;
+  const isInitializing =
+    dao?.data?.extensions?.length !== EXTENSION_SIZE ||
+    !dao?.data?.bootstrap_tx_id;
+
+  const isActive =
+    dao?.data?.active && activationTransaction?.tx_status === 'success';
   const onFinish = () => {
     console.log('onFinish');
   };
   const hasExtension = (extension: string) =>
-    findExtension(dao.data?.extensions, extension);
-  const nftExtension = findExtension(dao.data?.extensions, 'NFT Membership');
+    findExtension(dao?.data?.extensions, extension);
+  const nftExtension = findExtension(dao?.data?.extensions, 'NFT Membership');
   const governanceExtension = findExtension(
-    dao.data?.extensions,
+    dao?.data?.extensions,
     'Governance Token',
   );
-  const vaultExtension = findExtension(dao.data?.extensions, 'Vault');
+  const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
   const investmentClubExtension = findExtension(
-    dao.data?.extensions,
+    dao?.data?.extensions,
     'Investment Club',
   );
-  const votingExtension = findExtension(dao.data?.extensions, 'Voting');
-  const submissionExtension = findExtension(dao.data?.extensions, 'Submission');
+  const votingExtension = findExtension(dao?.data?.extensions, 'Voting');
+  const submissionExtension = findExtension(
+    dao?.data?.extensions,
+    'Submission',
+  );
   const progressForMembership = size(
     [nftExtension, governanceExtension].filter(
       (extension) => extension !== undefined,
@@ -104,11 +115,13 @@ export default function Dashboard() {
     ),
   );
 
-  if (dao.isLoading) {
+  console.log({ activationTransaction });
+
+  if (dao?.isLoading) {
     return null;
   }
 
-  if (!isReadyToInitialize) {
+  if (isInitializing) {
     return (
       <motion.div
         variants={FADE_IN_VARIANTS}
@@ -170,7 +183,7 @@ export default function Dashboard() {
                               size='md'
                               value={getPercentage(
                                 EXTENSION_SIZE + OTHER_REQUIREMENTS_SIZE,
-                                size(dao.data?.extensions) +
+                                size(dao?.data?.extensions) +
                                   OTHER_REQUIREMENTS_SIZE,
                               )}
                               bg='dark.500'
@@ -276,7 +289,7 @@ export default function Dashboard() {
                                               dao?.data?.contract_address
                                             }
                                             name={`${dao?.data?.slug}-nft-membership-pass`}
-                                            clubId={dao.data?.id}
+                                            clubId={dao?.data?.id}
                                             hasExtension={hasExtension(
                                               'NFT Membership',
                                             )}
@@ -342,7 +355,7 @@ export default function Dashboard() {
                                             symbol={
                                               dao?.data?.config?.tokenSymbol
                                             }
-                                            clubId={dao.data?.id}
+                                            clubId={dao?.data?.id}
                                             hasExtension={hasExtension(
                                               'Governance Token',
                                             )}
@@ -684,10 +697,10 @@ export default function Dashboard() {
                                               dao?.data?.contract_address
                                             }
                                             title='Deploy Bootstrap'
-                                            name='letsfngooo'
+                                            name='lfg'
                                             slug={nameToSlug(dao?.data?.name)}
                                             extensions={map(
-                                              dao.data?.extensions,
+                                              dao?.data?.extensions,
                                             )}
                                             memberAddresses={
                                               dao?.data?.config?.memberAddresses
@@ -759,47 +772,89 @@ export default function Dashboard() {
                                   alignItems='center'
                                 >
                                   <GridItem colSpan={{ base: 2, md: 4 }}>
-                                    <Stack spacing='1'>
-                                      <HStack align='flex-start' spacing='4'>
-                                        <Circle bg='dark.500' size='10'>
-                                          <Icon
-                                            as={LightningBolt}
-                                            boxSize='6'
-                                            color='primary.900'
-                                          />
-                                        </Circle>
-                                        <Stack spacing='0' maxW='lg'>
-                                          <Heading
-                                            size='md'
-                                            fontWeight='regular'
-                                          >
-                                            Launch your club
-                                          </Heading>
-                                          <Text
-                                            fontSize='md'
-                                            fontWeight='thin'
-                                            color='text-muted'
-                                          >
-                                            Activate your club based on the
-                                            proposal you just deployed. You can
-                                            view the proposal contract here.
-                                          </Text>
-                                        </Stack>
-                                      </HStack>
-                                    </Stack>
+                                    {bootstrapTransaction?.tx_status ===
+                                    'success' ? (
+                                      <Stack spacing='1'>
+                                        <HStack align='flex-start' spacing='4'>
+                                          <Circle bg='dark.500' size='10'>
+                                            <Icon
+                                              as={LightningBolt}
+                                              boxSize='6'
+                                              color='primary.900'
+                                            />
+                                          </Circle>
+                                          <Stack spacing='1' maxW='lg'>
+                                            <Heading
+                                              size='md'
+                                              fontWeight='regular'
+                                            >
+                                              Launch your club
+                                            </Heading>
+                                            <Text
+                                              fontSize='md'
+                                              fontWeight='thin'
+                                              color='text-muted'
+                                            >
+                                              Activate your club based on the
+                                              proposal you just deployed. You
+                                              can view the proposal contract
+                                              here.
+                                            </Text>
+                                          </Stack>
+                                        </HStack>
+                                      </Stack>
+                                    ) : (
+                                      <Stack spacing='1'>
+                                        <HStack align='flex-start' spacing='4'>
+                                          <Circle bg='dark.500' size='10'>
+                                            <Icon
+                                              as={LightningBolt}
+                                              boxSize='6'
+                                              color='primary.900'
+                                            />
+                                          </Circle>
+                                          <Stack spacing='1' maxW='lg'>
+                                            <Heading
+                                              size='md'
+                                              fontWeight='regular'
+                                            >
+                                              Preparing your club for launch
+                                            </Heading>
+                                            <Text
+                                              fontSize='md'
+                                              fontWeight='thin'
+                                              color='text-muted'
+                                            >
+                                              Once your proposal is deployed,
+                                              you can activate your club. You
+                                              can view the proposal contract
+                                              here.
+                                            </Text>
+                                          </Stack>
+                                        </HStack>
+                                      </Stack>
+                                    )}
                                   </GridItem>
                                   <GridItem colSpan={{ base: 2, md: 1 }}>
-                                    <InitializeClubButton
-                                      variant='primary'
-                                      isFullWidth
-                                      title='Start'
-                                      contractPrincipal={
-                                        dao?.data?.contract_address
-                                      }
-                                      bootstrapPrincipal={
-                                        dao?.data?.bootstrap_address
-                                      }
-                                    />
+                                    {bootstrapTransaction?.tx_status ===
+                                    'success' ? (
+                                      <InitializeClubButton
+                                        variant='primary'
+                                        isFullWidth
+                                        title='Start'
+                                        contractPrincipal={
+                                          dao?.data?.contract_address
+                                        }
+                                        bootstrapPrincipal={
+                                          dao?.data?.bootstrap_address
+                                        }
+                                        onSubmit={() => console.log('init!')}
+                                      />
+                                    ) : (
+                                      <Button variant='primary' isFullWidth>
+                                        <Spinner />
+                                      </Button>
+                                    )}
                                   </GridItem>
                                 </Grid>
                               </Stack>
@@ -929,6 +984,7 @@ export default function Dashboard() {
                       <DepositButton
                         title='Deposit'
                         variant='primary'
+                        vaultAddress={vaultExtension?.contract_address}
                         amount={depositAmount}
                       />
                       <Text
