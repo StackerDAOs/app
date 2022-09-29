@@ -17,13 +17,14 @@ const generateClarityList = (
   members.forEach((address, index) => {
     memberList += `(try! (contract-call? '${nftMembershipContract} mint '${address}))`;
     if (index !== members.length - 1) {
-      memberList += `\n  `;
+      memberList += `  \n    `;
     }
   });
   return memberList;
 };
 
 export const bootstrapProposal = (
+  coreDao: string,
   extensions: BootstrapExtensions,
   members: string[],
 ) => {
@@ -41,7 +42,7 @@ export const bootstrapProposal = (
 
 (define-public (execute (sender principal))
   (begin
-    (try! (contract-call? .core-dao set-extensions
+    (try! (contract-call? '${coreDao} set-extensions
       (list
         { extension: '${vaultContract}, enabled: true }
         { extension: '${governanceTokenContract}, enabled: true }
@@ -52,11 +53,11 @@ export const bootstrapProposal = (
       )
     ))
 
-  ${generateClarityList(members, nftMembershipContract)}
+    ${generateClarityList(members, nftMembershipContract)}
 
-  (try! (contract-call? '${investmentClubContract} start))
+    (try! (contract-call? '${investmentClubContract} start))
 
-  (print { message: "...to be a completely separate network and separate block chain, yet share CPU power with Bitcoin.", sender: sender })
+    (print { message: "...to be a completely separate network and separate block chain, yet share CPU power with Bitcoin.", sender: sender })
     (ok true)
   )
 )

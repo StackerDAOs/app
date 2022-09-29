@@ -222,7 +222,7 @@ export function findExtension(extensions: Array<any[]>, type: string): any {
 }
 
 export function nameToSlug(name: string) {
-  return name.toLowerCase().replace(/ /g, '-');
+  return name?.toLowerCase().replace(/ /g, '-');
 }
 
 function hasWhiteSpace(s: string) {
