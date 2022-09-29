@@ -23,7 +23,6 @@ import {
   Select,
   Stack,
   SimpleGrid,
-  Spinner,
   Tag,
   TagLabel,
   TagCloseButton,
@@ -37,7 +36,6 @@ import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container, SectionHeader } from 'ui/components/layout';
 import { useSteps } from 'ui/store';
 import { DeployCoreButton } from 'ui/components/buttons';
-import { useTransaction } from 'ui/hooks';
 import { InfoIcon, LightningBolt } from 'ui/components/icons';
 import { shortenAddress, validateStacksAddress } from '@stacks-os/utils';
 import { nameToSlug, nameToSymbol } from 'utils';
@@ -61,7 +59,6 @@ export default function Create() {
     durationInDays: '',
     minimumDeposit: '',
   });
-  const [transactionId, setTransactionId] = React.useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isInfoOpen,
@@ -69,7 +66,6 @@ export default function Create() {
     onClose: onInfoClose,
   } = useDisclosure();
   const { currentStep, setStep } = useSteps();
-  const { data: transaction } = useTransaction(transactionId);
   const {
     register,
     control,
@@ -105,7 +101,6 @@ export default function Create() {
   };
 
   const handleOnFinish = (data: any) => {
-    setTransactionId(data.txId);
     onOpen();
   };
 
@@ -638,7 +633,7 @@ export default function Create() {
               size='lg'
               variant='primary'
               isLoading={false}
-              onFinish={handleOnFinish}
+              onDeploy={handleOnFinish}
             />
           </Stack>
         </Stack>
@@ -720,90 +715,37 @@ export default function Create() {
           <ModalContent bg='dark.800' borderColor='dark.500' borderWidth='1px'>
             <ModalBody>
               <Stack spacing='0'>
-                {transaction?.tx_status === 'success' ? (
-                  <Stack
-                    px={{ base: '6', md: '6' }}
-                    py={{ base: '6', md: '6' }}
-                    spacing='2'
-                    align='center'
-                  >
-                    <Circle bg='dark.500' size='14' mb='3'>
-                      <Icon
-                        as={LightningBolt}
-                        boxSize='8'
-                        color='primary.900'
-                      />
-                    </Circle>
-                    <Stack spacing='3'>
-                      <Heading mt='0 !important' size='md' fontWeight='medium'>
-                        Your transaction is confirmed
-                      </Heading>
-                    </Stack>
-                    <Text
-                      fontSize='md'
-                      fontWeight='thin'
-                      color='text-muted'
-                      textAlign='center'
-                    >
-                      Go to the {club?.name} Dashboard to finish your club
-                      setup.
-                    </Text>
+                <Stack
+                  px={{ base: '6', md: '6' }}
+                  py={{ base: '6', md: '6' }}
+                  spacing='2'
+                  align='center'
+                >
+                  <Circle bg='dark.500' size='14' mb='3'>
+                    <Icon as={LightningBolt} boxSize='8' color='primary.900' />
+                  </Circle>
+                  <Stack spacing='3'>
+                    <Heading mt='0 !important' size='md' fontWeight='medium'>
+                      Your club is being deployed
+                    </Heading>
                   </Stack>
-                ) : (
-                  <Stack
-                    px={{ base: '6', md: '6' }}
-                    py={{ base: '6', md: '6' }}
-                    spacing='2'
-                    align='center'
-                  >
-                    <Circle bg='dark.500' size='14' mb='3'>
-                      <Icon
-                        as={LightningBolt}
-                        boxSize='8'
-                        color='primary.900'
-                      />
-                    </Circle>
-                    <Stack spacing='3'>
-                      <Heading mt='0 !important' size='md' fontWeight='medium'>
-                        Your transaction is pending
-                      </Heading>
-                    </Stack>
-                    <Text
-                      fontSize='md'
-                      fontWeight='thin'
-                      color='text-muted'
-                      textAlign='center'
-                    >
-                      Once your transaction is confirmed, your Club dashboard
-                      will be available.
-                    </Text>
-                  </Stack>
-                )}
-              </Stack>
-            </ModalBody>
-            <ModalFooter>
-              {transaction?.tx_status === 'success' ? (
-                <Link href={`/d/${nameToSlug(club?.name)}`}>
-                  <Button variant='primary' isFullWidth>
-                    Go to your dashboard
-                  </Button>
-                </Link>
-              ) : (
-                <Stack>
-                  <Button variant='default' isFullWidth>
-                    <Spinner size='xs' mr='2' />
-                  </Button>
                   <Text
-                    fontSize='sm'
-                    fontWeight='light'
+                    fontSize='md'
+                    fontWeight='thin'
                     color='text-muted'
                     textAlign='center'
                   >
-                    Do not refresh the page or close this window until your
-                    transaction is confirmed.
+                    Go to the {club?.name} Dashboard to finish your setup.
                   </Text>
                 </Stack>
-              )}
+              </Stack>
+            </ModalBody>
+            <ModalFooter>
+              <Link href={`/d/${nameToSlug(club?.name)}`}>
+                <Button variant='primary' isFullWidth>
+                  Go to your dashboard
+                </Button>
+              </Link>
             </ModalFooter>
           </ModalContent>
         </Modal>
