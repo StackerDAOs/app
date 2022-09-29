@@ -37,7 +37,7 @@ export const ProposalDrawer = (props: ButtonProps) => {
         <DrawerOverlay />
         <DrawerContent bg='dark.900'>
           <DrawerCloseButton />
-          <DrawerHeader>Create your account</DrawerHeader>
+          <DrawerHeader>Create your proposal</DrawerHeader>
           <DrawerBody>
             <Stack spacing='3'>
               <VStack spacing='2' align='flex-start'>
