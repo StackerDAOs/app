@@ -13,6 +13,8 @@ export {
   Button,
   ButtonGroup,
   Circle,
+  CircularProgress,
+  CircularProgressLabel,
   Container,
   Divider,
   Drawer,
