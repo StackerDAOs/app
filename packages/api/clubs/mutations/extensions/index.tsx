@@ -5,6 +5,7 @@ type Extension = {
   club_id: number;
   contract_address: string;
   extension_type_id: number;
+  tx_id: string;
 };
 
 export async function createExtension(extension: Extension) {

@@ -15,6 +15,7 @@ type Club = {
     durationInDays: string;
     minimumDeposit: string;
   };
+  tx_id: string;
 };
 
 export async function createClub(club: Club) {
