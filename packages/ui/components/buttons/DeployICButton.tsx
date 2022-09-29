@@ -19,7 +19,7 @@ export const DeployICButton = (props: DeployICProps) => {
     vaultContractAddress,
     startWindow,
     minimumDeposit,
-    onFinish,
+    onDeploy,
     ...rest
   } = props;
   const [transactionId, setTransactionId] = React.useState('');
@@ -36,8 +36,9 @@ export const DeployICButton = (props: DeployICProps) => {
           club_id: clubId,
           contract_address: `${stxAddress}.${name}`,
           extension_type_id: CLUB_EXTENSION_TYPES.INVESTMENT_CLUB,
+          tx_id: data.txId,
         });
-        onFinish?.(data);
+        onDeploy?.(data);
       } catch (e: any) {
         console.error({ e });
       }

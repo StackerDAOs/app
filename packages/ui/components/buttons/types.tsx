@@ -2,7 +2,8 @@ import type { ButtonProps, IconProps, IconButtonProps } from '@chakra-ui/react';
 
 export interface BootstrapProps extends ButtonProps {
   title: string;
-  address: string;
+  contractPrincipal: string;
+  bootstrapPrincipal: string;
 }
 
 export interface DeployClubProps extends ButtonProps {
@@ -16,7 +17,7 @@ export interface DeployClubProps extends ButtonProps {
     durationInDays: string;
     minimumDeposit: string;
   };
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployNFTProps extends ButtonProps {
@@ -24,7 +25,7 @@ export interface DeployNFTProps extends ButtonProps {
   name: string;
   clubId: number;
   hasExtension: boolean;
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployGovernanceTokenProps extends ButtonProps {
@@ -33,7 +34,7 @@ export interface DeployGovernanceTokenProps extends ButtonProps {
   symbol: string;
   clubId: number;
   hasExtension: boolean;
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployVaultProps extends ButtonProps {
@@ -41,7 +42,7 @@ export interface DeployVaultProps extends ButtonProps {
   name: string;
   clubId: number;
   hasExtension: boolean;
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployICProps extends ButtonProps {
@@ -54,7 +55,7 @@ export interface DeployICProps extends ButtonProps {
   hasExtension: boolean;
   startWindow: string;
   minimumDeposit: string;
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeploySubmissionProps extends ButtonProps {
@@ -65,7 +66,7 @@ export interface DeploySubmissionProps extends ButtonProps {
   investmentClubContractAddress: string;
   votingContractAddress: string;
   hasExtension: boolean;
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployVotingProps extends ButtonProps {
@@ -75,14 +76,16 @@ export interface DeployVotingProps extends ButtonProps {
   nftMembershipContractAddress: string;
   governanceTokenContractAddress: string;
   hasExtension: boolean;
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployBootstrapProps extends ButtonProps {
+  coreDao: string;
   name: string;
   slug: string;
   extensions: any[];
-  onFinish: (data: any) => void;
+  memberAddresses: string[];
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployProposalProps extends ButtonProps {

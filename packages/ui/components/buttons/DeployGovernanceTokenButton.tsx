@@ -17,7 +17,7 @@ export const DeployGovernanceTokenButton = (
     symbol,
     clubId,
     hasExtension,
-    onFinish,
+    onDeploy,
     ...rest
   } = props;
   const [transactionId, setTransactionId] = React.useState('');
@@ -34,8 +34,9 @@ export const DeployGovernanceTokenButton = (
           club_id: clubId,
           contract_address: `${stxAddress}.${name}`,
           extension_type_id: CLUB_EXTENSION_TYPES.GOVERNANCE_TOKEN,
+          tx_id: data.txId,
         });
-        onFinish?.(data);
+        onDeploy?.(data);
       } catch (e: any) {
         console.error({ e });
       }

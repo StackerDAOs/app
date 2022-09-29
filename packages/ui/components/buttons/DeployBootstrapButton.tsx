@@ -7,7 +7,16 @@ import { DeployBootstrapProps } from 'ui/components/buttons/types';
 import { findExtension } from 'utils';
 
 export const DeployBootstrapButton = (props: DeployBootstrapProps) => {
-  const { extensions } = props;
+  const {
+    coreDao,
+    title,
+    name,
+    slug,
+    extensions,
+    memberAddresses,
+    onDeploy,
+    ...rest
+  } = props;
   const { openContractDeploy } = useOpenContractDeploy();
   const { stxAddress } = useAccount();
   const updateBootstrap = useUpdateBootstrap();
@@ -22,10 +31,10 @@ export const DeployBootstrapButton = (props: DeployBootstrapProps) => {
     const onFinish: any = async (data: any) => {
       try {
         updateBootstrap.mutate({
-          contract_address: `${stxAddress}.${props?.slug}`,
-          bootstrap_address: `${stxAddress}.letsfngooo`,
+          contract_address: `${stxAddress}.${slug}`,
+          bootstrap_address: `${stxAddress}.${name}`,
         });
-        props?.onFinish(data);
+        onDeploy?.(data);
       } catch (e: any) {
         console.error({ e });
       }
@@ -39,15 +48,9 @@ export const DeployBootstrapButton = (props: DeployBootstrapProps) => {
       submissionContract: submissionExtension.contract_address,
       votingContract: votingExtension.contract_address,
     };
-    const codeBody = bootstrapProposal(extensions, [
-      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-      'ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50',
-      'ST2Y2SFNVZBT8SSZ00XXKH930MCN0RFREB2GQG7CJ',
-      'STPJ2HPED2TMR1HAFBFA5VQF986CRD4ZWHH36F6X',
-      'ST2GG57WCVCS6AAVSKRHSKP10HJTQZ0M4AVTM0NAQ',
-    ]);
+    const codeBody = bootstrapProposal(coreDao, extensions, memberAddresses);
     await openContractDeploy({
-      contractName: 'letsfngooo',
+      contractName: name,
       codeBody,
       onFinish,
     });
@@ -55,12 +58,12 @@ export const DeployBootstrapButton = (props: DeployBootstrapProps) => {
 
   return (
     <Button
-      {...props}
+      {...rest}
       onClick={deployBootstrap}
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
     >
-      {props?.title || 'Deploy'}
+      {title || 'Deploy'}
     </Button>
   );
 };

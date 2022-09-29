@@ -8,7 +8,7 @@ import { useTransaction } from 'ui/hooks';
 import { CLUB_EXTENSION_TYPES } from 'api/constants';
 
 export const DeployVaultButton = (props: DeployVaultProps) => {
-  const { title, coreDao, name, clubId, hasExtension, onFinish, ...rest } =
+  const { title, coreDao, name, clubId, hasExtension, onDeploy, ...rest } =
     props;
   const [transactionId, setTransactionId] = React.useState('');
   const { openContractDeploy } = useOpenContractDeploy();
@@ -24,8 +24,9 @@ export const DeployVaultButton = (props: DeployVaultProps) => {
           club_id: clubId,
           contract_address: `${stxAddress}.${name}`,
           extension_type_id: CLUB_EXTENSION_TYPES.VAULT,
+          tx_id: data.txId,
         });
-        onFinish?.(data);
+        onDeploy?.(data);
       } catch (e: any) {
         console.error({ e });
       }

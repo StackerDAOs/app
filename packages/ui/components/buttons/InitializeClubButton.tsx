@@ -9,10 +9,13 @@ import {
 import { BootstrapProps } from './types';
 
 export const InitializeClubButton = (props: BootstrapProps) => {
-  const { title, address } = props;
-  const { openContractCall, isRequestPending } = useOpenContractCall();
+  const { title, contractPrincipal, bootstrapPrincipal, ...rest } = props;
+  const { openContractCall } = useOpenContractCall();
   const [contractAddress, contractName] = splitContractAddress(
-    'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.letsfngooo',
+    contractPrincipal ?? '',
+  );
+  const [boostrapAddress, bootstrapName] = splitContractAddress(
+    bootstrapPrincipal ?? '',
   );
 
   const initialize = React.useCallback(async () => {
@@ -24,16 +27,12 @@ export const InitializeClubButton = (props: BootstrapProps) => {
       }
     };
 
-    if (
-      validateContractAddress(
-        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.letsfngooo',
-      )
-    ) {
+    if (validateContractAddress(bootstrapPrincipal)) {
       await openContractCall({
-        contractAddress: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-        contractName: 'stackerdao',
+        contractAddress,
+        contractName,
         functionName: 'init',
-        functionArgs: [contractPrincipalCV(contractAddress, contractName)],
+        functionArgs: [contractPrincipalCV(boostrapAddress, bootstrapName)],
         postConditions: [],
         onFinish,
       });
@@ -42,12 +41,12 @@ export const InitializeClubButton = (props: BootstrapProps) => {
 
   return (
     <Button
-      {...props}
+      {...rest}
       onClick={initialize}
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
     >
-      {isRequestPending ? <Spinner /> : title || 'Init'}
+      {title || 'Init'}
     </Button>
   );
 };
