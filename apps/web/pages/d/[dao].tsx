@@ -984,7 +984,9 @@ export default function Dashboard() {
                       <DepositButton
                         title='Deposit'
                         variant='primary'
-                        vaultAddress={vaultExtension?.contract_address}
+                        investmentClubAddress={
+                          investmentClubExtension?.contract_address
+                        }
                         amount={depositAmount}
                       />
                       <Text

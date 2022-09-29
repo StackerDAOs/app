@@ -15,11 +15,11 @@ import { splitContractAddress } from '@stacks-os/utils';
 import { DepositProps } from './types';
 
 export const DepositButton = (props: DepositProps) => {
-  const { title, amount, vaultAddress, ...rest } = props;
+  const { title, amount, investmentClubAddress, ...rest } = props;
   const { stxAddress } = useAccount();
   const { openContractCall } = useOpenContractCall();
   const [contractAddress, contractName] = splitContractAddress(
-    vaultAddress ?? '',
+    investmentClubAddress ?? '',
   );
 
   const deposit = React.useCallback(async () => {
