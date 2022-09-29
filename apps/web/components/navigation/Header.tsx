@@ -80,7 +80,6 @@ export const DashboardHeader = () => {
                       {truncateAddress(dao?.data?.contract_address)}
                     </Text>
                   </a>
-
                   <Clipboard
                     color='light.900'
                     fontSize='sm'
@@ -139,16 +138,7 @@ export const VaultHeader = () => {
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                {dao?.data?.name}{' '}
-                <Text
-                  as='span'
-                  maxW='2xl'
-                  mx='auto'
-                  color='gray'
-                  fontWeight='thin'
-                >
-                  Vault
-                </Text>
+                Vault
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -183,7 +173,6 @@ export const VaultHeader = () => {
                         )}
                       </Text>
                     </a>
-
                     <Clipboard
                       color='light.900'
                       fontSize='sm'
@@ -248,16 +237,7 @@ export const ProposalHeader = () => {
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                {dao?.data?.name}{' '}
-                <Text
-                  as='span'
-                  maxW='2xl'
-                  mx='auto'
-                  color='gray'
-                  fontWeight='thin'
-                >
-                  Proposals
-                </Text>
+                Proposals
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -292,7 +272,6 @@ export const ProposalHeader = () => {
                         )}
                       </Text>
                     </a>
-
                     <Clipboard
                       color='light.900'
                       fontSize='sm'
@@ -357,16 +336,7 @@ export const VotingHeader = () => {
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                {dao?.data?.name}{' '}
-                <Text
-                  as='span'
-                  maxW='2xl'
-                  mx='auto'
-                  color='gray'
-                  fontWeight='thin'
-                >
-                  Voting
-                </Text>
+                Voting
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -401,7 +371,6 @@ export const VotingHeader = () => {
                         )}
                       </Text>
                     </a>
-
                     <Clipboard
                       color='light.900'
                       fontSize='sm'
@@ -466,16 +435,7 @@ export const ExtensionsHeader = () => {
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                {dao?.data?.name}{' '}
-                <Text
-                  as='span'
-                  maxW='2xl'
-                  mx='auto'
-                  color='gray'
-                  fontWeight='thin'
-                >
-                  Extensions
-                </Text>
+                Extensions
               </Heading>
             </HStack>
             <Text fontSize='lg' fontWeight='light' color='text-default'>
