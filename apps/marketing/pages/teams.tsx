@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import {
   Box,
   Button,
@@ -8,11 +7,98 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  Image,
 } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container } from 'ui/components/layout';
 import { MainLayout } from '@components/layout';
-import { ArrowRight } from 'ui/components/icons';
+import { RocketLaunch, UserGroup, Cog6Tooth } from 'ui/components/icons';
+import { CardGrid, FeatureList, BottomHero, TopHero } from '@components/nate';
+
+const sampleText = (
+  <Box flex='1' maxW={{ lg: 'lg' }} p='6'>
+    <Heading as='h1' size='3xl' mt='8' fontWeight='black'>
+      Teams
+    </Heading>
+    <Text color='gray' mt='5' fontSize='xl'>
+      Primitive for groups, companies, nonprofits, subDAOs, and early DAOs to
+      manage resources and smart contracts.
+    </Text>
+  </Box>
+);
+
+const sampleImage = (
+  <Image
+    pos='relative'
+    marginEnd={{ base: '0', lg: '-16rem' }}
+    w='60rem'
+    src='/images/teams.png'
+    alt='Screenshot for Form builder'
+  />
+);
+
+const sampleImage2 = (
+  <Image
+    boxSize='full'
+    objectFit='cover'
+    src='/images/stxImage.png'
+    alt='Screenshot for Stx'
+  />
+);
+
+const topHeroProps = {
+  title: 'StackerDAO Teams',
+  description:
+    'Primitive for groups, companies, nonprofits, subDAOs, and early DAOs to manage resources and smart contracts.',
+  link: '/create',
+  linkText: 'Coming soon',
+};
+
+const cardGridProps = [
+  sampleText,
+  sampleImage,
+  sampleImage,
+  sampleText,
+  sampleText,
+];
+
+const featureListProps = [
+  {
+    name: 'Feature 1',
+    description: 'This is the feature description',
+    icon: Cog6Tooth,
+  },
+  {
+    name: 'Feature 2',
+    description: 'This is the feature description',
+    icon: UserGroup,
+  },
+  {
+    name: 'Feature 3',
+    description: 'This is the feature description',
+    icon: RocketLaunch,
+  },
+];
+
+const bottomHeroProps = {
+  heading: 'Get Started and Deploy Custom Contracts Fast',
+  description: "Add Extensions to Meet your Teams's Needs",
+};
+
+const getStartedButton = (
+  <Button
+    minW='14rem'
+    bg='light.900'
+    color='dark.500'
+    size='lg'
+    height='14'
+    px='8'
+    fontSize='md'
+    fontWeight='bold'
+  >
+    Get Started
+  </Button>
+);
 
 export default function Teams() {
   return (
@@ -28,67 +114,22 @@ export default function Teams() {
         opacity='1'
       >
         <Container h='full' maxW='5xl'>
-          <SimpleGrid columns={1} spacing='3'>
-            <Stack
-              spacing='4'
-              h='calc(100vh - 5vh)'
-              justify='center'
-              align='center'
-              textAlign='center'
-            >
-              <Heading
-                size='3xl'
-                fontWeight='thin'
-                letterSpacing='tight'
-                color='white'
-              >
-                <Text
-                  color='blue'
-                  fontWeight='black'
-                  fontSize={{ base: '7xl', md: '7xl' }}
-                  bgGradient='linear(to-br, secondary.900 65%, dark.500 100%)'
-                  bgClip='text'
-                >
-                  StackerDAO Teams
-                </Text>
-              </Heading>
-
-              <Stack spacing='0'>
-                <Text
-                  fontSize='2xl'
-                  fontWeight='light'
-                  color='text-default'
-                  maxW='lg'
-                >
-                  Primitive for groups, companies, nonprofits, subDAOs, and
-                  early DAOs to manage resources and smart contracts.
-                </Text>
-              </Stack>
-              <ButtonGroup>
-                <Link href='/create'>
-                  <Button
-                    variant='link'
-                    color='secondary.900'
-                    fontWeight='light'
-                    fontSize={{ base: '2xl', md: '3xl' }}
-                    rightIcon={<Icon as={ArrowRight} />}
-                    size='lg'
-                    borderColor='transparent'
-                    borderBottomWidth='1px'
-                    borderRadius='none'
-                    isDisabled
-                    _hover={{
-                      borderColor: 'secondary.900',
-                      borderBottomWidth: '1px',
-                      borderRadius: 'none',
-                    }}
-                  >
-                    Coming soon
-                  </Button>
-                </Link>
-              </ButtonGroup>
-            </Stack>
-          </SimpleGrid>
+          <TopHero topHeroProps={topHeroProps} />
+          <Box>
+            <CardGrid
+              cardGridProps={cardGridProps}
+              getStartedButton={getStartedButton}
+            />
+          </Box>
+          <FeatureList
+            featureListProps={featureListProps}
+            getStartedButton={getStartedButton}
+          />
+          <BottomHero
+            bottomHeroProps={bottomHeroProps}
+            getStartedButton={getStartedButton}
+            bottomHeroImage={sampleImage2}
+          />
         </Container>
       </Box>
     </motion.div>

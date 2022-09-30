@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { MainNavbar } from '../navigation';
+import { Footer } from '@components/nate';
+import { MainNavbar, LandingNavbar } from '../navigation';
 
 export const MainLayout = ({ header, children }: any) => (
   <motion.div
@@ -11,7 +12,9 @@ export const MainLayout = ({ header, children }: any) => (
     transition={{ duration: 0.75, type: 'linear' }}
   >
     <MainNavbar />
+    <LandingNavbar />
     {header}
     {children}
+    <Footer />
   </motion.div>
 );

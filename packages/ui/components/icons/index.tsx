@@ -6,3 +6,6 @@ export * from './CopyClipboard';
 export * from './LightningBolt';
 export * from './LogoIcon';
 export * from './SwapArrows';
+export * from './Cog6Tooth';
+export * from './RocketLaunch';
+export * from './UserGroup';
