@@ -1,4 +1,5 @@
 export { useAccountBalance } from './useAccountBalance';
+export { useAuth } from './useAuth';
 export { useClubs } from './useClubs';
 export { useDAO } from './useDAO';
 export { useExtension } from './useExtension';
