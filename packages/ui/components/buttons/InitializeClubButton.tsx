@@ -50,7 +50,7 @@ export const InitializeClubButton = (props: BootstrapProps) => {
     }
   }, [props]);
 
-  if (transaction.data?.tx_status === 'pending') {
+  if (transaction?.data?.tx_status === 'pending') {
     return (
       <Button {...rest} _hover={{ opacity: 0.9 }} _active={{ opacity: 1 }}>
         <Spinner />

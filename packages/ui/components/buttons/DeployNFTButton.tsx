@@ -6,6 +6,7 @@ import { useCreateExtension } from 'api/clubs/mutations/extensions';
 import { DeployNFTProps } from 'ui/components/buttons/types';
 import { useTransaction } from 'ui/hooks';
 import { CLUB_EXTENSION_TYPES } from 'api/constants';
+import { getExplorerLink } from 'utils';
 
 export const DeployNFTButton = (props: DeployNFTProps) => {
   const { title, coreDao, name, clubId, hasExtension, onDeploy, ...rest } =
@@ -41,14 +42,18 @@ export const DeployNFTButton = (props: DeployNFTProps) => {
   }, [props]);
 
   if (transaction.data?.tx_status === 'success' || hasExtension) {
+    const transactionLink = getExplorerLink(transaction?.data?.tx_id);
     return (
       <Button
-        {...rest}
-        isDisabled
+        as='a'
+        variant='link'
+        textDecoration='underline'
+        href={transactionLink}
+        target='_blank'
         _hover={{ opacity: 0.9 }}
         _active={{ opacity: 1 }}
       >
-        Deployed
+        View transaction
       </Button>
     );
   }
