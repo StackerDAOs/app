@@ -73,7 +73,15 @@ export default function Create() {
     setValue,
     getValues,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      name: '',
+      description: '',
+      member: '',
+      durationInDays: '7',
+      minimumDeposit: '0',
+    },
+  });
 
   React.useEffect(() => {
     setStep(0);
@@ -131,11 +139,13 @@ export default function Create() {
               <Stack
                 width='40px'
                 height='40px'
-                borderRadius='25%'
-                fontWeight='bold'
+                borderRadius='lg'
+                borderColor='dark.500'
+                borderWidth='1px'
+                fontWeight='black'
                 justify='center'
                 align='center'
-                bg='bg-primary'
+                bg='dark.700'
               >
                 <Text color='white' fontWeight='bold' fontSize='lg'>
                   1
@@ -264,11 +274,13 @@ export default function Create() {
               <Stack
                 width='40px'
                 height='40px'
-                borderRadius='25%'
-                fontWeight='bold'
+                borderRadius='lg'
+                borderColor='dark.500'
+                borderWidth='1px'
+                fontWeight='black'
                 justify='center'
                 align='center'
-                bg='bg-primary'
+                bg='dark.700'
               >
                 <Text color='white' fontWeight='bold' fontSize='lg'>
                   2
@@ -372,7 +384,7 @@ export default function Create() {
               Back
             </Button>
             <Button size='lg' variant='default' isLoading={false} type='submit'>
-              Next
+              Continue
             </Button>
           </Stack>
         </Stack>
@@ -394,11 +406,13 @@ export default function Create() {
               <Stack
                 width='40px'
                 height='40px'
-                borderRadius='25%'
-                fontWeight='bold'
+                borderRadius='lg'
+                borderColor='dark.500'
+                borderWidth='1px'
+                fontWeight='black'
                 justify='center'
                 align='center'
-                bg='bg-primary'
+                bg='dark.700'
               >
                 <Text color='white' fontWeight='bold' fontSize='lg'>
                   3
@@ -517,7 +531,13 @@ export default function Create() {
             <Button size='lg' variant='link' onClick={handleGoBack}>
               Back
             </Button>
-            <Button size='lg' variant='default' isLoading={false} type='submit'>
+            <Button
+              size='lg'
+              variant='default'
+              isLoading={false}
+              type='submit'
+              isDisabled={club?.members?.length === 1}
+            >
               Continue
             </Button>
           </Stack>
@@ -539,11 +559,13 @@ export default function Create() {
               <Stack
                 width='40px'
                 height='40px'
-                borderRadius='25%'
-                fontWeight='bold'
+                borderRadius='lg'
+                borderColor='dark.500'
+                borderWidth='1px'
+                fontWeight='black'
                 justify='center'
                 align='center'
-                bg='bg-primary'
+                bg='dark.700'
               >
                 <Text color='white' fontWeight='bold' fontSize='lg'>
                   4
@@ -626,7 +648,7 @@ export default function Create() {
               Back
             </Button>
             <DeployCoreButton
-              title='Deploy'
+              title='Finish'
               name={club?.name}
               slug={nameToSlug(club?.name)}
               config={config}
