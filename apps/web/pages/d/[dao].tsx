@@ -25,9 +25,8 @@ import {
   Stack,
   Text,
   VStack,
-  useDisclosure,
 } from 'ui';
-import { map, size } from 'lodash';
+import { findKey, map, size } from 'lodash';
 import { Card } from 'ui/components/cards';
 import { SectionHeader } from 'ui/components/layout';
 import { AppLayout } from '@components/layout';
@@ -46,7 +45,8 @@ import {
   DeploySubmissionButton,
   DeployVotingButton,
 } from 'ui/components/buttons';
-import { useAccountBalance, useDAO, useTransaction } from 'ui/hooks';
+import { useAccount } from 'ui/components';
+import { useAuth, useAccountBalance, useDAO, useTransaction } from 'ui/hooks';
 import { ustxToStx, getPercentage, findExtension, nameToSlug } from 'utils';
 import { ClubsTable } from '@components/tables';
 import { InfoIcon, LightningBolt } from 'ui/components/icons';
@@ -56,6 +56,7 @@ const EXTENSION_SIZE = 6;
 const OTHER_REQUIREMENTS_SIZE = 2;
 
 export default function Dashboard() {
+  const { stxAddress } = useAccount();
   const dao = useDAO();
   const { data } = useAccountBalance();
   const { data: transaction } = useTransaction(dao?.data?.tx_id);
@@ -114,8 +115,6 @@ export default function Dashboard() {
       (extension) => extension !== undefined,
     ),
   );
-
-  console.log({ activationTransaction });
 
   if (dao?.isLoading) {
     return null;
@@ -274,7 +273,10 @@ export default function Dashboard() {
                                                 fontWeight='black'
                                                 color='white'
                                               >
-                                                3
+                                                {
+                                                  dao?.data?.config
+                                                    ?.memberAddresses?.length
+                                                }
                                               </Text>
                                             </Stack>
                                           </SimpleGrid>
@@ -774,35 +776,77 @@ export default function Dashboard() {
                                   <GridItem colSpan={{ base: 2, md: 4 }}>
                                     {bootstrapTransaction?.tx_status ===
                                     'success' ? (
-                                      <Stack spacing='1'>
-                                        <HStack align='flex-start' spacing='4'>
-                                          <Circle bg='dark.500' size='10'>
-                                            <Icon
-                                              as={LightningBolt}
-                                              boxSize='6'
-                                              color='primary.900'
-                                            />
-                                          </Circle>
-                                          <Stack spacing='1' maxW='lg'>
-                                            <Heading
-                                              size='md'
-                                              fontWeight='regular'
-                                            >
-                                              Launch your club
-                                            </Heading>
-                                            <Text
-                                              fontSize='md'
-                                              fontWeight='thin'
-                                              color='text-muted'
-                                            >
-                                              Activate your club based on the
-                                              proposal you just deployed. You
-                                              can view the proposal contract
-                                              here.
-                                            </Text>
-                                          </Stack>
-                                        </HStack>
-                                      </Stack>
+                                      activationTransaction?.tx_status ===
+                                      'pending' ? (
+                                        <Stack spacing='1'>
+                                          <HStack
+                                            align='flex-start'
+                                            spacing='4'
+                                          >
+                                            <Circle bg='dark.500' size='10'>
+                                              <Icon
+                                                as={LightningBolt}
+                                                boxSize='6'
+                                                color='primary.900'
+                                              />
+                                            </Circle>
+                                            <Stack spacing='1' maxW='lg'>
+                                              <Heading
+                                                size='md'
+                                                fontWeight='regular'
+                                              >
+                                                Launching club
+                                              </Heading>
+                                              <Text
+                                                fontSize='md'
+                                                fontWeight='thin'
+                                                color='text-muted'
+                                              >
+                                                Your club is being activated.
+                                                You can view your transaction
+                                                here.
+                                              </Text>
+                                            </Stack>
+                                          </HStack>
+                                        </Stack>
+                                      ) : (
+                                        <Stack spacing='1'>
+                                          <HStack
+                                            align='flex-start'
+                                            spacing='4'
+                                          >
+                                            <Circle bg='dark.500' size='10'>
+                                              <Icon
+                                                as={LightningBolt}
+                                                boxSize='6'
+                                                color='primary.900'
+                                              />
+                                            </Circle>
+                                            <Stack spacing='1' maxW='lg'>
+                                              <Heading
+                                                size='md'
+                                                fontWeight='regular'
+                                              >
+                                                You&apos;re all set!
+                                              </Heading>
+                                              <Text
+                                                fontSize='md'
+                                                fontWeight='thin'
+                                                color='text-muted'
+                                              >
+                                                Once you decide to activate your
+                                                club, {dao?.data?.name} will be
+                                                open for deposits for ~{' '}
+                                                {
+                                                  dao?.data?.config
+                                                    ?.durationInDays
+                                                }{' '}
+                                                days .
+                                              </Text>
+                                            </Stack>
+                                          </HStack>
+                                        </Stack>
+                                      )
                                     ) : (
                                       <Stack spacing='1'>
                                         <HStack align='flex-start' spacing='4'>
@@ -838,18 +882,25 @@ export default function Dashboard() {
                                   <GridItem colSpan={{ base: 2, md: 1 }}>
                                     {bootstrapTransaction?.tx_status ===
                                     'success' ? (
-                                      <InitializeClubButton
-                                        variant='primary'
-                                        isFullWidth
-                                        title='Start'
-                                        contractPrincipal={
-                                          dao?.data?.contract_address
-                                        }
-                                        bootstrapPrincipal={
-                                          dao?.data?.bootstrap_address
-                                        }
-                                        onSubmit={() => console.log('init!')}
-                                      />
+                                      activationTransaction?.tx_status ===
+                                      'pending' ? (
+                                        <Button variant='primary' isFullWidth>
+                                          <Spinner />
+                                        </Button>
+                                      ) : (
+                                        <InitializeClubButton
+                                          variant='primary'
+                                          isFullWidth
+                                          title='Start'
+                                          contractPrincipal={
+                                            dao?.data?.contract_address
+                                          }
+                                          bootstrapPrincipal={
+                                            dao?.data?.bootstrap_address
+                                          }
+                                          onSubmit={() => console.log('init!')}
+                                        />
+                                      )
                                     ) : (
                                       <Button variant='primary' isFullWidth>
                                         <Spinner />
@@ -924,7 +975,7 @@ export default function Dashboard() {
                       Open to deposits
                     </Text>
                     <Text color='gray' fontSize='md' fontWeight='light'>
-                      Closes in ~ 2 weeks
+                      Closes in ~ {dao?.data?.config?.durationInDays} days
                     </Text>
                   </HStack>
                   <Stack
@@ -1086,7 +1137,7 @@ export default function Dashboard() {
             </SimpleGrid>
           </Stack>
         </Stack>
-        {/* <Stack spacing='6'>
+        <Stack spacing='6'>
           <SectionHeader
             justify={{ base: 'flex-start', md: 'space-between' }}
             align={{ base: 'flex-start', md: 'space-between' }}
@@ -1101,8 +1152,8 @@ export default function Dashboard() {
               </Heading>
             </Stack>
           </SectionHeader>
-        </Stack> */}
-        {/* <Stack spacing='8' pb='16'>
+        </Stack>
+        <Stack spacing='8' pb='16'>
           <motion.div
             variants={FADE_IN_VARIANTS}
             initial={FADE_IN_VARIANTS.hidden}
@@ -1114,7 +1165,7 @@ export default function Dashboard() {
               <ClubsTable color='light.900' size='md' clubs={[]} />
             </Stack>
           </motion.div>
-        </Stack> */}
+        </Stack>
       </Wrapper>
     </motion.div>
   );
