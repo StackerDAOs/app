@@ -172,7 +172,7 @@ export async function getBns(address: string) {
   }
 }
 
-export async function getAccountBalance(address: string) {
+export async function getAccountStxBalance(address: string) {
   try {
     const network = new stacksNetwork();
     return await fetchAccountStxBalance({
@@ -188,7 +188,7 @@ export async function getAccountAndBns({ queryKey }: any) {
   const [_, address] = queryKey;
   try {
     const [account, bns] = await Promise.all([
-      await getAccountBalance(address),
+      await getAccountStxBalance(address),
       await getBns(address),
     ]);
     return { account, bns };

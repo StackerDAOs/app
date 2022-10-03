@@ -158,6 +158,19 @@ export async function getContractProposalByTx(transactionId: string) {
   }
 }
 
+export async function getAccountBalances(address: string) {
+  try {
+    const network = new stacksNetwork();
+    const balance = await fetchAccountBalances({
+      url: network.getCoreApiUrl(),
+      principal: address as string,
+    });
+    return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
 export async function getTokenMetadata(contractId: string) {
   try {
     const network = new stacksNetwork();
@@ -185,12 +198,12 @@ export async function getBns(address: string) {
   }
 }
 
-export async function getAccountBalance(address: string) {
+export async function getAccountStxBalance(address: string) {
   try {
     const network = new stacksNetwork();
     return await fetchAccountStxBalance({
       url: network.getCoreApiUrl(),
-      principal: address,
+      principal: address as string,
     });
   } catch (e: any) {
     console.error({ e });
@@ -201,7 +214,7 @@ export async function getAccountAndBns({ queryKey }: any) {
   const [_, address] = queryKey;
   try {
     const [account, bns] = await Promise.all([
-      await getAccountBalance(address),
+      await getAccountStxBalance(address),
       await getBns(address),
     ]);
     return { account, bns };
