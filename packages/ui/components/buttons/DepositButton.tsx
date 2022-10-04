@@ -15,7 +15,7 @@ import { splitContractAddress } from '@stacks-os/utils';
 import { DepositProps } from './types';
 
 export const DepositButton = (props: DepositProps) => {
-  const { title, amount, investmentClubAddress, ...rest } = props;
+  const { title, amount, investmentClubAddress, tokenId, ...rest } = props;
   const { stxAddress } = useAccount();
   const { openContractCall } = useOpenContractCall();
   const [contractAddress, contractName] = splitContractAddress(
@@ -27,13 +27,13 @@ export const DepositButton = (props: DepositProps) => {
       contractAddress: contractAddress,
       contractName: contractName,
       functionName: 'deposit',
-      functionArgs: [uintCV(stxToUstx(amount))],
+      functionArgs: [uintCV(stxToUstx(amount)), uintCV(tokenId)],
       postConditions: stxAddress
         ? [
             makeStandardSTXPostCondition(
-              stxAddress, // Post condition address
-              FungibleConditionCode.Equal, // Post condition code
-              stxToUstx(amount), // Post condition amount
+              stxAddress,
+              FungibleConditionCode.Equal,
+              stxToUstx(amount),
             ),
           ]
         : [],
