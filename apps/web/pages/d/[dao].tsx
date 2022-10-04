@@ -1,14 +1,7 @@
 import React from 'react';
 import {
   Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
   AccordionPanel,
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Button,
   Circle,
   FormControl,
@@ -26,7 +19,7 @@ import {
   Text,
   VStack,
 } from 'ui';
-import { findKey, map, size } from 'lodash';
+import { map, size } from 'lodash';
 import { Card } from 'ui/components/cards';
 import { SectionHeader } from 'ui/components/layout';
 import { AppLayout } from '@components/layout';
