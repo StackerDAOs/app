@@ -4,6 +4,8 @@ export { useClubs } from './useClubs';
 export { useDAO } from './useDAO';
 export { useExtension } from './useExtension';
 export { useGenerateName } from './useGenerateName';
+export { useGovernanceToken } from './useGovernanceToken';
+export { useInvestmentClub } from './useInvestmentClub';
 export { useToken } from './useToken';
 export { useTransaction } from './useTransaction';
 export { useVaultBalance } from './useVaultBalance';
