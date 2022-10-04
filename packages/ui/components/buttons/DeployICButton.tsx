@@ -6,7 +6,7 @@ import { useCreateExtension } from 'api/clubs/mutations/extensions';
 import { DeployICProps } from 'ui/components/buttons/types';
 import { useTransaction } from 'ui/hooks';
 import { CLUB_EXTENSION_TYPES } from 'api/constants';
-import { getExplorerLink } from 'utils';
+import { getExplorerLink, stxToUstx } from 'utils';
 
 export const DeployICButton = (props: DeployICProps) => {
   const {
@@ -51,7 +51,7 @@ export const DeployICButton = (props: DeployICProps) => {
       governanceTokenContractAddress,
       vaultContractAddress,
       String(Number(startWindow) * 144),
-      minimumDeposit,
+      String(stxToUstx(minimumDeposit)),
     );
     await openContractDeploy({
       contractName: props?.name,
