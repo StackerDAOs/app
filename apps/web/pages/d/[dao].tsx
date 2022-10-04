@@ -1167,7 +1167,11 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          100%
+                          {getPercentage(
+                            Number(governanceToken?.data?.totalSupply),
+                            Number(governanceToken?.data?.balance),
+                          )}
+                          %
                         </Heading>
                       </Stack>
                     </HStack>
