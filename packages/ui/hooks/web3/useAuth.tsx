@@ -1,8 +1,9 @@
 // Hook (use-auth.tsx)
 import { useQuery } from 'react-query';
+import { hexToCV } from 'micro-stacks/clarity';
 import { useAccount, useAuth as useMicroStacksAuth } from '@micro-stacks/react';
 import { useDAO, useExtension } from 'ui/hooks';
-import { getAccountBalances } from 'api/clubs';
+import { getAccountBalances, getTokenId } from 'api/clubs';
 import { filter, map } from 'lodash';
 
 const getNFTContract = (nftIdentifier: string) => {
@@ -21,16 +22,19 @@ export function useAuth() {
     ['auth', stxAddress],
     async () => {
       const balances = await getAccountBalances(stxAddress as string);
-      const hasNft = filter(
-        balances?.non_fungible_tokens,
-        (_, key) => getNFTContract(key) === nft?.data?.contract_address,
+      let assetIdentifier = '';
+      filter(balances?.non_fungible_tokens, (_, key) =>
+        getNFTContract(key) === nft?.data?.contract_address
+          ? (assetIdentifier = key)
+          : '',
       )[0];
-      console.log({ hasNft });
+
+      const tokenId = await getTokenId(stxAddress as string, assetIdentifier);
       return {
-        isMember: !!hasNft ?? false,
+        isMember: !!assetIdentifier ?? false,
         balances,
         membershipPass: {
-          tokenId: hasNft,
+          tokenId,
           contractAddress: nft?.data?.contract_address,
         },
       };
