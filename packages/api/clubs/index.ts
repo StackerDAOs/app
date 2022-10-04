@@ -5,6 +5,7 @@ import {
   fetchContractEventsById,
   fetchReadOnlyFunction,
   fetchAccountBalances,
+  fetchAccountAssets,
   fetchAccountStxBalance,
   fetchFtMetadataForContractId,
   fetchNamesByAddress,
@@ -16,8 +17,11 @@ import {
   deserializeCV,
   standardPrincipalCV,
   stringAsciiCV,
+  uintCV,
+  hexToCV,
 } from 'micro-stacks/clarity';
 import { defaultTo } from 'lodash';
+import { splitContractAddress } from '@stacks-os/utils';
 import { pluckSourceCode } from 'utils';
 
 export async function getDAO(name: string) {
@@ -236,18 +240,74 @@ export async function getVaultBalance(address: string) {
   }
 }
 
-export async function getBalanceOf(vaultAddress: string, assetAddress: string) {
+export async function getBalance(
+  stxAddress: string | undefined,
+  principalAddress: string,
+) {
   try {
     const network = new stacksNetwork();
+    const [contractAddress, contractName] =
+      splitContractAddress(principalAddress);
     const balance: any = await fetchReadOnlyFunction({
       network,
-      contractAddress: vaultAddress.split('.')[0],
-      contractName: vaultAddress.split('.')[1],
-      senderAddress: vaultAddress.split('.')[0],
-      functionArgs: [standardPrincipalCV(assetAddress)],
-      functionName: 'get-balance-of',
+      contractAddress,
+      contractName,
+      senderAddress: stxAddress as string,
+      functionArgs: [standardPrincipalCV(stxAddress as string)],
+      functionName: 'get-balance',
     });
     return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getSymbol(principalAddress: string) {
+  try {
+    const network = new stacksNetwork();
+    const [contractAddress, contractName] =
+      splitContractAddress(principalAddress);
+    const balance: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
+      senderAddress: contractAddress,
+      functionArgs: [],
+      functionName: 'get-symbol',
+    });
+    return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getTotalSupply(principalAddress: string) {
+  try {
+    const network = new stacksNetwork();
+    const [contractAddress, contractName] =
+      splitContractAddress(principalAddress);
+    const balance: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
+      senderAddress: contractAddress,
+      functionArgs: [],
+      functionName: 'get-total-supply',
+    });
+    return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getTokenData({ queryKey }: any) {
+  const [_, principalAddress] = queryKey;
+  try {
+    const [symbol, totalSupply] = await Promise.all([
+      await getSymbol(principalAddress),
+      await getTotalSupply(principalAddress),
+    ]);
+    return { symbol, totalSupply };
   } catch (e: any) {
     console.error({ e });
   }
@@ -268,6 +328,50 @@ export async function getTokenBalance(
       functionName: 'get-balance',
     });
     return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getFundingRound(
+  contractPrincipal: string,
+  roundId: string,
+) {
+  try {
+    const network = new stacksNetwork();
+    const [contractAddress, contractName] =
+      splitContractAddress(contractPrincipal);
+    const balance: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
+      senderAddress: contractAddress,
+      functionArgs: [uintCV(roundId)],
+      functionName: 'get-round',
+    });
+    return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getTokenId(principal: string, assetIdentifier: string) {
+  try {
+    const network = new stacksNetwork();
+    const fetchTokenId = await fetch(
+      `${network.getCoreApiUrl()}/extended/v1/tokens/nft/holdings?principal=${principal}&asset_identifers=${assetIdentifier}&limit=1`,
+      {},
+    );
+    const response = await fetchTokenId.json();
+    if (response.results.length > 0) {
+      const token = hexToCV(response?.results[0]?.value?.hex) as {
+        type: number;
+        value: any;
+      };
+      return Number(token?.value);
+    }
+
+    return 0;
   } catch (e: any) {
     console.error({ e });
   }
