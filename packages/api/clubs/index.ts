@@ -359,7 +359,7 @@ export async function getTokenId(principal: string, assetIdentifier: string) {
   try {
     const network = new stacksNetwork();
     const fetchTokenId = await fetch(
-      `${network.getCoreApiUrl()}/extended/v1/tokens/nft/holdings?principal=${principal}&asset_identifers=${assetIdentifier}&limit=1`,
+      `${network.getCoreApiUrl()}/extended/v1/tokens/nft/holdings?principal=${principal}&asset_identifers[]=${assetIdentifier}&limit=1`,
       {},
     );
     const response = await fetchTokenId.json();
