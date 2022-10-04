@@ -41,6 +41,7 @@ import {
 import { useAccount } from 'ui/components';
 import {
   useAuth,
+  useBlocks,
   useInvestmentClub,
   useGovernanceToken,
   useAccountBalance,
@@ -68,6 +69,7 @@ export default function Dashboard() {
   const { data } = useAccountBalance();
   const governanceToken = useGovernanceToken();
   const investmentClub = useInvestmentClub();
+  const { currentBlockHeight } = useBlocks();
   const { data: transaction } = useTransaction(dao?.data?.tx_id);
   const { data: bootstrapTransaction } = useTransaction(
     dao?.data?.bootstrap_tx_id,
@@ -229,12 +231,14 @@ export default function Dashboard() {
                                           fontSize='lg'
                                           fontWeight='regular'
                                         >
-                                          Edison bulb DIY aesthetic messenger
-                                          bag tumeric small batch chicharrones
-                                          etsy heirloom bitters +1. Hashtag
-                                          beard palo santo jianbing copper mug
-                                          adaptogen PBR&B YOLO tumblr keytar
-                                          kitsch fam.
+                                          Club Passes are non-transferable NFTs
+                                          and define your Club's membership.
+                                          Governance tokens are also
+                                          non-transferable, issued to Club Pass
+                                          holders who deposit funds at an amount
+                                          representing the deposit's pro rata
+                                          share of the Club's treasury, and
+                                          defines a member's voting power.
                                         </Text>
                                         <Stack
                                           py={{ base: '3', md: '3' }}
@@ -393,12 +397,16 @@ export default function Dashboard() {
                                           fontSize='lg'
                                           fontWeight='regular'
                                         >
-                                          Edison bulb DIY aesthetic messenger
-                                          bag tumeric small batch chicharrones
-                                          etsy heirloom bitters +1. Hashtag
-                                          beard palo santo jianbing copper mug
-                                          adaptogen PBR&B YOLO tumblr keytar
-                                          kitsch fam.
+                                          Your vault will store your Club's
+                                          assets, like fungible tokens and NFTs.
+                                          The investment club extension helps to
+                                          manage Club membership. After the
+                                          initial fundraise, Club approved
+                                          proposals can open a new fundraising
+                                          window where the Club can issue more
+                                          Club Passes to add members, accept new
+                                          deposits, and issue depositors new
+                                          governance tokens.
                                         </Text>
                                         <Stack
                                           py={{ base: '3', md: '3' }}
@@ -554,12 +562,16 @@ export default function Dashboard() {
                                           fontSize='lg'
                                           fontWeight='regular'
                                         >
-                                          Edison bulb DIY aesthetic messenger
-                                          bag tumeric small batch chicharrones
-                                          etsy heirloom bitters +1. Hashtag
-                                          beard palo santo jianbing copper mug
-                                          adaptogen PBR&B YOLO tumblr keytar
-                                          kitsch fam.
+                                          Any Club Pass holder can submit a
+                                          proposal. You can customize the length
+                                          of time a proposal will be open for
+                                          voting and the time period between
+                                          when an approved proposal can be
+                                          executed. Club approved proposals can
+                                          change these rules. Governance tokens,
+                                          which are obtained by depositing
+                                          funds, are used to vote with 1 token
+                                          equaling 1 vote.
                                         </Text>
                                         <Stack
                                           py={{ base: '3', md: '3' }}
@@ -691,12 +703,11 @@ export default function Dashboard() {
                                           fontSize='lg'
                                           fontWeight='regular'
                                         >
-                                          Edison bulb DIY aesthetic messenger
-                                          bag tumeric small batch chicharrones
-                                          etsy heirloom bitters +1. Hashtag
-                                          beard palo santo jianbing copper mug
-                                          adaptogen PBR&B YOLO tumblr keytar
-                                          kitsch fam.
+                                          The boostrap contract initializes your
+                                          Club. Once this contract is deployed,
+                                          you'll just have to make an initialize
+                                          smart contract go, and your Club will
+                                          be ready to raise funds!
                                         </Text>
                                         <Stack
                                           justify='space-between'
@@ -878,10 +889,10 @@ export default function Dashboard() {
                                               fontWeight='thin'
                                               color='text-muted'
                                             >
-                                              Once your proposal is deployed,
-                                              you can activate your club. You
-                                              can view the proposal contract
-                                              here.
+                                              Once your bootstrap contract is
+                                              deployed, you can activate your
+                                              Club. You can view the boostrap
+                                              contract here
                                             </Text>
                                           </Stack>
                                         </HStack>
@@ -1001,7 +1012,8 @@ export default function Dashboard() {
                       Open to deposits
                     </Text>
                     <Text color='gray' fontSize='md' fontWeight='light'>
-                      Closes in ~ {dao?.data?.config?.durationInDays} days
+                      Closes in ~ {dao?.data?.config?.durationInDays} days{' '}
+                      {/* TODO: fetch block height and do estimate */}
                     </Text>
                   </HStack>
                   <Stack
