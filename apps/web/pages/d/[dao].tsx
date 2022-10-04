@@ -46,8 +46,21 @@ import {
   DeployVotingButton,
 } from 'ui/components/buttons';
 import { useAccount } from 'ui/components';
-import { useAuth, useAccountBalance, useDAO, useTransaction } from 'ui/hooks';
-import { ustxToStx, getPercentage, findExtension, nameToSlug } from 'utils';
+import {
+  useAuth,
+  useInvestmentClub,
+  useGovernanceToken,
+  useAccountBalance,
+  useDAO,
+  useTransaction,
+} from 'ui/hooks';
+import {
+  ustxToStx,
+  getPercentage,
+  findExtension,
+  nameToSlug,
+  convertToken,
+} from 'utils';
 import { ClubsTable } from '@components/tables';
 import { InfoIcon, LightningBolt } from 'ui/components/icons';
 import { CustomAccordianItem } from '@components/disclosure';
@@ -57,8 +70,11 @@ const OTHER_REQUIREMENTS_SIZE = 2;
 
 export default function Dashboard() {
   const { stxAddress } = useAccount();
+  const auth = useAuth();
   const dao = useDAO();
   const { data } = useAccountBalance();
+  const governanceToken = useGovernanceToken();
+  const investmentClub = useInvestmentClub();
   const { data: transaction } = useTransaction(dao?.data?.tx_id);
   const { data: bootstrapTransaction } = useTransaction(
     dao?.data?.bootstrap_tx_id,
@@ -938,7 +954,16 @@ export default function Dashboard() {
                   colorScheme='primary'
                   borderRadius='lg'
                   size='md'
-                  value={0}
+                  value={getPercentage(
+                    10000,
+                    Number(
+                      ustxToStx(
+                        String(
+                          investmentClub?.data?.currentRound?.raisedAmount,
+                        ),
+                      ),
+                    ),
+                  )}
                   bg='dark.500'
                 />
                 <HStack justify='space-between'>
@@ -947,7 +972,12 @@ export default function Dashboard() {
                       Amount raised
                     </Text>
                     <Heading mt='0 !important' size='sm' fontWeight='regular'>
-                      0 STX
+                      {ustxToStx(
+                        String(
+                          investmentClub?.data?.currentRound?.raisedAmount,
+                        ),
+                      )}{' '}
+                      STX
                     </Heading>
                   </Stack>
                   <Stack spacing='3'>
@@ -955,7 +985,10 @@ export default function Dashboard() {
                       Funding goal
                     </Text>
                     <Heading mt='0 !important' size='sm' fontWeight='regular'>
-                      100,000 STX
+                      {ustxToStx(
+                        String(investmentClub?.data?.currentRound?.fundingGoal),
+                      )}{' '}
+                      STX
                     </Heading>
                   </Stack>
                 </HStack>
@@ -1039,6 +1072,7 @@ export default function Dashboard() {
                           investmentClubExtension?.contract_address
                         }
                         amount={depositAmount}
+                        tokenId={Number(auth?.data?.membershipPass?.tokenId)}
                       />
                       <Text
                         color='gray'
@@ -1077,7 +1111,11 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          0 STACK
+                          {convertToken(
+                            String(governanceToken?.data?.totalSupply),
+                            6,
+                          )}{' '}
+                          {governanceToken?.data?.symbol}
                         </Heading>
                       </Stack>
                       <Stack spacing='3' w='50%'>
@@ -1093,7 +1131,11 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          0 STACK
+                          {convertToken(
+                            String(governanceToken?.data?.balance),
+                            6,
+                          )}{' '}
+                          {governanceToken?.data?.symbol}
                         </Heading>
                       </Stack>
                     </HStack>
@@ -1111,7 +1153,12 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          0 STX
+                          {ustxToStx(
+                            String(
+                              investmentClub?.data?.currentRound?.raisedAmount,
+                            ),
+                          )}{' '}
+                          STX
                         </Heading>
                       </Stack>
                       <Stack spacing='3' w='50%'>
@@ -1127,7 +1174,7 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          0%
+                          100%
                         </Heading>
                       </Stack>
                     </HStack>
