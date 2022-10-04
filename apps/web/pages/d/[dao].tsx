@@ -19,7 +19,7 @@ import {
   Text,
   VStack,
 } from 'ui';
-import { map, size } from 'lodash';
+import { map, round, size } from 'lodash';
 import { Card } from 'ui/components/cards';
 import { SectionHeader } from 'ui/components/layout';
 import { AppLayout } from '@components/layout';
@@ -1167,9 +1167,12 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          {getPercentage(
-                            Number(governanceToken?.data?.totalSupply),
-                            Number(governanceToken?.data?.balance),
+                          {round(
+                            getPercentage(
+                              Number(governanceToken?.data?.totalSupply),
+                              Number(governanceToken?.data?.balance),
+                            ),
+                            2,
                           )}
                           %
                         </Heading>
