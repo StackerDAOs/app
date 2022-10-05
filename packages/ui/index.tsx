@@ -8,6 +8,8 @@ export {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  Avatar,
+  AvatarGroup,
   Badge,
   Box,
   Button,

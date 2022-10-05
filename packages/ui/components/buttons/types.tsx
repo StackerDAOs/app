@@ -82,7 +82,6 @@ export interface DeployVotingProps extends ButtonProps {
 
 export interface DeployBootstrapProps extends ButtonProps {
   coreDao: string;
-  name: string;
   slug: string;
   extensions: any[];
   memberAddresses: string[];

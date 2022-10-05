@@ -108,7 +108,7 @@ export default function Create() {
     e.preventDefault();
   };
 
-  const handleOnFinish = (data: any) => {
+  const handleOnFinish = () => {
     onOpen();
   };
 
@@ -135,7 +135,7 @@ export default function Create() {
       <Container maxW='3xl'>
         <SectionHeader justify='flex-start' align='center' color='white'>
           <Stack spacing='2'>
-            <HStack spacing='2'>
+            <HStack spacing='3' align='center'>
               <Stack
                 width='40px'
                 height='40px'
@@ -145,9 +145,9 @@ export default function Create() {
                 fontWeight='black'
                 justify='center'
                 align='center'
-                bg='dark.700'
+                bg='light.900'
               >
-                <Text color='white' fontWeight='bold' fontSize='lg'>
+                <Text color='dark.500' fontWeight='bold' fontSize='xl'>
                   1
                 </Text>
               </Stack>
@@ -270,7 +270,7 @@ export default function Create() {
       <Container maxW='3xl'>
         <SectionHeader justify='flex-start' align='center' color='white'>
           <Stack spacing='2'>
-            <HStack spacing='2'>
+            <HStack spacing='3'>
               <Stack
                 width='40px'
                 height='40px'
@@ -280,9 +280,9 @@ export default function Create() {
                 fontWeight='black'
                 justify='center'
                 align='center'
-                bg='dark.700'
+                bg='light.900'
               >
-                <Text color='white' fontWeight='bold' fontSize='lg'>
+                <Text color='dark.500' fontWeight='bold' fontSize='xl'>
                   2
                 </Text>
               </Stack>
@@ -402,7 +402,7 @@ export default function Create() {
       <Container maxW='3xl'>
         <SectionHeader justify='flex-start' align='center' color='white'>
           <Stack spacing='2'>
-            <HStack spacing='2'>
+            <HStack spacing='3'>
               <Stack
                 width='40px'
                 height='40px'
@@ -412,9 +412,9 @@ export default function Create() {
                 fontWeight='black'
                 justify='center'
                 align='center'
-                bg='dark.700'
+                bg='light.900'
               >
-                <Text color='white' fontWeight='bold' fontSize='lg'>
+                <Text color='dark.500' fontWeight='bold' fontSize='xl'>
                   3
                 </Text>
               </Stack>
@@ -483,13 +483,12 @@ export default function Create() {
                             validateStacksAddress: () => {
                               if (!value) {
                                 return true;
-                              } else {
-                                const isValid = validateStacksAddress(value);
-                                if (isValid) {
-                                  return true;
-                                }
-                                return false;
                               }
+                              const isValid = validateStacksAddress(value);
+                              if (isValid) {
+                                return true;
+                              }
+                              return false;
                             },
                           },
                         })}
@@ -555,7 +554,7 @@ export default function Create() {
       <Container maxW='3xl'>
         <SectionHeader justify='flex-start' align='center' color='white'>
           <Stack spacing='2'>
-            <HStack spacing='2'>
+            <HStack spacing='3'>
               <Stack
                 width='40px'
                 height='40px'
@@ -565,9 +564,9 @@ export default function Create() {
                 fontWeight='black'
                 justify='center'
                 align='center'
-                bg='dark.700'
+                bg='light.900'
               >
-                <Text color='white' fontWeight='bold' fontSize='lg'>
+                <Text color='dark.500' fontWeight='bold' fontSize='xl'>
                   4
                 </Text>
               </Stack>

@@ -65,6 +65,7 @@ export const useUpdateBootstrap = () => {
     onSuccess: () => {
       queryClient.invalidateQueries('dao');
       queryClient.invalidateQueries('clubs');
+      queryClient.invalidateQueries('investment-club');
     },
   });
 };
@@ -93,6 +94,7 @@ export const useUpdateInitTxId = () => {
     onSuccess: () => {
       queryClient.invalidateQueries('dao');
       queryClient.invalidateQueries('clubs');
+      queryClient.invalidateQueries('investment-club');
     },
   });
 };

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button, Spinner } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import { useAccount, useOpenContractDeploy } from '@micro-stacks/react';
+import { useGenerateName } from 'ui/hooks';
 import { bootstrapProposal } from 'utils/contracts/bootstrap';
 import { useUpdateBootstrap } from 'api/clubs/mutations';
 import { DeployBootstrapProps } from 'ui/components/buttons/types';
@@ -19,6 +20,7 @@ export const DeployBootstrapButton = (props: DeployBootstrapProps) => {
   } = props;
   const { openContractDeploy } = useOpenContractDeploy();
   const { stxAddress } = useAccount();
+  const { randomName: contractName } = useGenerateName();
   const updateBootstrap = useUpdateBootstrap();
   const nftExtension = findExtension(extensions, 'NFT Membership');
   const governanceExtension = findExtension(extensions, 'Governance Token');
@@ -32,7 +34,7 @@ export const DeployBootstrapButton = (props: DeployBootstrapProps) => {
       try {
         updateBootstrap.mutate({
           contract_address: `${stxAddress}.${slug}`,
-          bootstrap_address: `${stxAddress}.${name}`,
+          bootstrap_address: `${stxAddress}.${contractName}`,
           bootstrap_tx_id: data.txId,
         });
         onDeploy?.(data);
@@ -51,7 +53,7 @@ export const DeployBootstrapButton = (props: DeployBootstrapProps) => {
     };
     const codeBody = bootstrapProposal(coreDao, extensions, memberAddresses);
     await openContractDeploy({
-      contractName: name,
+      contractName,
       codeBody,
       onFinish,
     });

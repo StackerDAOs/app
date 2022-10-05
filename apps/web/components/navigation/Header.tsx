@@ -63,7 +63,6 @@ export const DashboardHeader = () => {
                 borderRadius='lg'
                 py='1'
                 px='3'
-                _hover={{ opacity: 0.9 }}
               >
                 <HStack>
                   <a
@@ -96,11 +95,7 @@ export const DashboardHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer
-              variant='default'
-              isDisabled
-              _hover={{ opacity: 0.9 }}
-            />
+            <ProposalDrawer variant='default' isDisabled />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -152,7 +147,6 @@ export const VaultHeader = () => {
                 borderRadius='lg'
                 py='1'
                 px='3'
-                _hover={{ opacity: 0.9 }}
               >
                 {hasExtension(dao?.data?.extensions, 'Vault') ? (
                   <HStack>
@@ -196,7 +190,7 @@ export const VaultHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' _hover={{ opacity: 0.9 }} />
+            <ProposalDrawer variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -238,7 +232,7 @@ export const ProposalHeader = () => {
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                Proposals
+                Submissions
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -251,7 +245,6 @@ export const ProposalHeader = () => {
                 borderRadius='lg'
                 py='1'
                 px='3'
-                _hover={{ opacity: 0.9 }}
               >
                 {hasExtension(dao?.data?.extensions, 'Submission') ? (
                   <HStack>
@@ -297,7 +290,7 @@ export const ProposalHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' _hover={{ opacity: 0.9 }} />
+            <ProposalDrawer variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -336,7 +329,7 @@ export const VotingHeader = () => {
                 colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
               <Heading size='2xl' fontWeight='black' color='light.900'>
-                Voting
+                Proposals
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -349,7 +342,6 @@ export const VotingHeader = () => {
                 borderRadius='lg'
                 py='1'
                 px='3'
-                _hover={{ opacity: 0.9 }}
               >
                 {hasExtension(dao?.data?.extensions, 'Voting') ? (
                   <HStack>
@@ -393,7 +385,7 @@ export const VotingHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' _hover={{ opacity: 0.9 }} />
+            <ProposalDrawer variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -441,7 +433,7 @@ export const ExtensionsHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' _hover={{ opacity: 0.9 }} />
+            <ProposalDrawer variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>

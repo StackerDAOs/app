@@ -92,43 +92,44 @@ export async function getExtension(name: string) {
   }
 }
 
-export async function getDBProposals({ queryKey }: any) {
+export async function getSubmissions({ queryKey }: any) {
   const [_, organizationId, filter] = queryKey;
   const query = supabase
-    .from('proposals')
+    .from('submissions')
     .select('*, clubs!inner(id, name)')
     .order('created_at', { ascending: false })
-    .eq('submitted', true)
     .eq('clubs.id', organizationId);
   try {
-    if (filter === 'inactive') {
-      const { data: Proposals, error } = await query.filter(
-        'submitted',
+    if (filter === 'active') {
+      const { data: submissions, error } = await query.filter(
+        'disabled',
         'in',
         `("false")`,
       );
       if (error) throw error;
-      return Proposals;
+      return submissions;
     }
-    if (filter === 'active') {
-      const { data: Proposals, error } = await query
-        .filter('submitted', 'in', `("false")`)
-        .filter('concluded', 'in', `("false")`);
-      if (error) throw error;
-      return Proposals;
-    }
-    if (filter === 'executed') {
-      const { data: Proposals, error } = await query.filter(
-        'concluded',
-        'in',
-        `("true")`,
-      );
-      if (error) throw error;
-      return Proposals;
-    }
-    const { data: Proposals, error } = await query;
+    const { data: submissions, error } = await query;
     if (error) throw error;
-    return Proposals;
+    return submissions;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getProposals({ queryKey }: any) {
+  const [_, organizationId] = queryKey;
+  const query = supabase
+    .from('proposals')
+    .select(
+      '*, club:clubs!inner(id, name, slug), submission:submissions!inner(id, title, description, body, submitted_by, contract_address)',
+    )
+    .order('created_at', { ascending: false })
+    .eq('clubs.id', organizationId);
+  try {
+    const { data: proposals, error } = await query;
+    if (error) throw error;
+    return proposals;
   } catch (e: any) {
     console.error({ e });
   }

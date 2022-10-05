@@ -21,13 +21,17 @@ const queryClient = new QueryClient({
 
 function App({ Component, pageProps: { session, ...pageProps } }: any) {
   const getLayout = Component.getLayout || ((page: any) => page);
-  const network: StacksNetwork = isMainnet
-    ? new StacksMainnet({
+  const getNetwork = (): StacksNetwork => {
+    if (isMainnet) {
+      return new StacksMainnet({
         url: 'https://capable-yolo-moon.stacks-mainnet.discover.quiknode.pro/',
-      })
-    : isTestnet
-    ? new StacksTestnet()
-    : new StacksMocknet();
+      });
+    }
+    if (isTestnet) {
+      return new StacksTestnet();
+    }
+    return new StacksMocknet();
+  };
 
   const noWalletFound = () => {
     alert('Please install Hiro Wallet');
@@ -38,7 +42,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: any) {
       <ClientProvider
         appName='StackerDAO Labs'
         appIconUrl='https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png'
-        network={network}
+        network={getNetwork()}
         onNoWalletFound={noWalletFound}
       >
         <ChakraProvider theme={theme}>

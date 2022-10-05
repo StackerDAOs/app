@@ -38,10 +38,8 @@ import {
   DeploySubmissionButton,
   DeployVotingButton,
 } from 'ui/components/buttons';
-import { useAccount } from 'ui/components';
 import {
   useAuth,
-  useBlocks,
   useInvestmentClub,
   useGovernanceToken,
   useAccountBalance,
@@ -60,17 +58,14 @@ import { InfoIcon, LightningBolt } from 'ui/components/icons';
 import { CustomAccordianItem } from '@components/disclosure';
 
 const EXTENSION_SIZE = 6;
-const OTHER_REQUIREMENTS_SIZE = 2;
+const OTHER_REQUIREMENTS_SIZE = 1;
 
 export default function Dashboard() {
-  const { stxAddress } = useAccount();
   const auth = useAuth();
   const dao = useDAO();
   const { data } = useAccountBalance();
   const governanceToken = useGovernanceToken();
   const investmentClub = useInvestmentClub();
-  const { currentBlockHeight } = useBlocks();
-  const { data: transaction } = useTransaction(dao?.data?.tx_id);
   const { data: bootstrapTransaction } = useTransaction(
     dao?.data?.bootstrap_tx_id,
   );
@@ -126,6 +121,104 @@ export default function Dashboard() {
       (extension) => extension !== undefined,
     ),
   );
+
+  const renderStatusComponent = (
+    bootstrapStatus: string,
+    activationStatus: string,
+  ) => {
+    if (bootstrapStatus === 'success' && activationStatus === 'pending') {
+      return (
+        <>
+          <GridItem colSpan={{ base: 2, md: 4 }}>
+            <Stack spacing='1'>
+              <HStack align='flex-start' spacing='4'>
+                <Circle bg='dark.500' size='10'>
+                  <Icon as={LightningBolt} boxSize='6' color='primary.900' />
+                </Circle>
+                <Stack spacing='1' maxW='lg'>
+                  <Heading size='md' fontWeight='regular'>
+                    Launching club
+                  </Heading>
+                  <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                    Your club is being activated. You can view your transaction
+                    here.
+                  </Text>
+                </Stack>
+              </HStack>
+            </Stack>
+          </GridItem>
+          <GridItem colSpan={{ base: 2, md: 1 }}>
+            <Button variant='primary' isFullWidth>
+              <Spinner />
+            </Button>
+          </GridItem>
+        </>
+      );
+    }
+    if (bootstrapStatus === 'pending') {
+      return (
+        <>
+          <GridItem colSpan={{ base: 2, md: 4 }}>
+            <Stack spacing='1'>
+              <HStack align='flex-start' spacing='4'>
+                <Circle bg='dark.500' size='10'>
+                  <Icon as={LightningBolt} boxSize='6' color='primary.900' />
+                </Circle>
+                <Stack spacing='1' maxW='lg'>
+                  <Heading size='md' fontWeight='regular'>
+                    Preparing your club for launch
+                  </Heading>
+                  <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                    Once your bootstrap contract is deployed, you can activate
+                    your Club. You can view the boostrap contract here
+                  </Text>
+                </Stack>
+              </HStack>
+            </Stack>
+          </GridItem>
+          <GridItem colSpan={{ base: 2, md: 1 }}>
+            <Button variant='primary' isFullWidth>
+              <Spinner />
+            </Button>
+          </GridItem>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <GridItem colSpan={{ base: 2, md: 4 }}>
+          <Stack spacing='1'>
+            <HStack align='flex-start' spacing='4'>
+              <Circle bg='dark.500' size='10'>
+                <Icon as={LightningBolt} boxSize='6' color='primary.900' />
+              </Circle>
+              <Stack spacing='1' maxW='lg'>
+                <Heading size='md' fontWeight='regular'>
+                  You&apos;re all set!
+                </Heading>
+                <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                  Once you decide to activate your club, {dao?.data?.name} will
+                  be open for deposits for ~ {dao?.data?.config?.durationInDays}{' '}
+                  days .
+                </Text>
+              </Stack>
+            </HStack>
+          </Stack>
+        </GridItem>
+        <GridItem colSpan={{ base: 2, md: 1 }}>
+          <InitializeClubButton
+            variant='primary'
+            isFullWidth
+            title='Start'
+            contractPrincipal={dao?.data?.contract_address}
+            bootstrapPrincipal={dao?.data?.bootstrap_address}
+            onSubmit={() => console.log('init!')}
+          />
+        </GridItem>
+      </>
+    );
+  };
 
   if (dao?.isLoading) {
     return null;
@@ -193,8 +286,7 @@ export default function Dashboard() {
                               size='md'
                               value={getPercentage(
                                 EXTENSION_SIZE + OTHER_REQUIREMENTS_SIZE,
-                                size(dao?.data?.extensions) +
-                                  OTHER_REQUIREMENTS_SIZE,
+                                size(dao?.data?.extensions),
                               )}
                               bg='dark.500'
                             />
@@ -204,16 +296,7 @@ export default function Dashboard() {
                                   <CustomAccordianItem
                                     title='Create an account'
                                     isPending={false}
-                                    hasCompleted={true}
-                                  />
-                                  <CustomAccordianItem
-                                    title='Deploy Core DAO'
-                                    isPending={
-                                      transaction?.tx_status === 'pending'
-                                    }
-                                    hasCompleted={
-                                      transaction?.tx_status === 'success'
-                                    }
+                                    hasCompleted
                                   />
                                   <CustomAccordianItem
                                     title='Manage Membership'
@@ -232,13 +315,14 @@ export default function Dashboard() {
                                           fontWeight='regular'
                                         >
                                           Club Passes are non-transferable NFTs
-                                          and define your Club's membership.
-                                          Governance tokens are also
+                                          and defines your Club&apos;s
+                                          membership. Governance tokens are also
                                           non-transferable, issued to Club Pass
                                           holders who deposit funds at an amount
-                                          representing the deposit's pro rata
-                                          share of the Club's treasury, and
-                                          defines a member's voting power.
+                                          representing the deposit&apos;s pro
+                                          rata share of the Club&apos;s
+                                          treasury, and defines a member&apos;s
+                                          voting power.
                                         </Text>
                                         <Stack
                                           py={{ base: '3', md: '3' }}
@@ -374,6 +458,9 @@ export default function Dashboard() {
                                             hasExtension={hasExtension(
                                               'Governance Token',
                                             )}
+                                            isDisabled={
+                                              !hasExtension('NFT Membership')
+                                            }
                                             variant='primary'
                                             onDeploy={onFinish}
                                           />
@@ -397,7 +484,7 @@ export default function Dashboard() {
                                           fontSize='lg'
                                           fontWeight='regular'
                                         >
-                                          Your vault will store your Club's
+                                          Your vault will store your Club&apos;s
                                           assets, like fungible tokens and NFTs.
                                           The investment club extension helps to
                                           manage Club membership. After the
@@ -452,6 +539,9 @@ export default function Dashboard() {
                                             name={`${dao?.data?.slug}-vault`}
                                             clubId={dao?.data?.id}
                                             hasExtension={hasExtension('Vault')}
+                                            isDisabled={
+                                              !hasExtension('Governance Token')
+                                            }
                                             variant='primary'
                                             onDeploy={onFinish}
                                           />
@@ -533,6 +623,7 @@ export default function Dashboard() {
                                             hasExtension={hasExtension(
                                               'Investment Club',
                                             )}
+                                            isDisabled={!hasExtension('Vault')}
                                             startWindow={
                                               dao?.data?.config?.durationInDays
                                             }
@@ -566,12 +657,12 @@ export default function Dashboard() {
                                           proposal. You can customize the length
                                           of time a proposal will be open for
                                           voting and the time period between
-                                          when an approved proposal can be
-                                          executed. Club approved proposals can
-                                          change these rules. Governance tokens,
-                                          which are obtained by depositing
-                                          funds, are used to vote with 1 token
-                                          equaling 1 vote.
+                                          when a proposal is approved and when
+                                          it can be executed. Clubs can approve
+                                          proposals to change these rules.
+                                          Governance tokens, which are obtained
+                                          by depositing funds, are used to vote
+                                          with 1 token equaling 1 vote.
                                         </Text>
                                         <Stack
                                           py={{ base: '3', md: '3' }}
@@ -625,6 +716,9 @@ export default function Dashboard() {
                                             hasExtension={hasExtension(
                                               'Voting',
                                             )}
+                                            isDisabled={
+                                              !hasExtension('Investment Club')
+                                            }
                                             variant='primary'
                                             onDeploy={onFinish}
                                           />
@@ -678,6 +772,7 @@ export default function Dashboard() {
                                             hasExtension={hasExtension(
                                               'Submission',
                                             )}
+                                            isDisabled={!hasExtension('Voting')}
                                             variant='primary'
                                             onDeploy={onFinish}
                                           />
@@ -705,9 +800,10 @@ export default function Dashboard() {
                                         >
                                           The boostrap contract initializes your
                                           Club. Once this contract is deployed,
-                                          you'll just have to make an initialize
-                                          smart contract go, and your Club will
-                                          be ready to raise funds!
+                                          you&apos;ll just have to make an
+                                          initialize smart contract call, and
+                                          your club will be ready to raise
+                                          funds!
                                         </Text>
                                         <Stack
                                           justify='space-between'
@@ -719,11 +815,11 @@ export default function Dashboard() {
                                               dao?.data?.contract_address
                                             }
                                             title='Deploy Bootstrap'
-                                            name='lfg'
                                             slug={nameToSlug(dao?.data?.name)}
                                             extensions={map(
                                               dao?.data?.extensions,
                                             )}
+                                            isDisabled={!hasExtension('Voting')}
                                             memberAddresses={
                                               dao?.data?.config?.memberAddresses
                                             }
@@ -793,140 +889,10 @@ export default function Dashboard() {
                                   gap={8}
                                   alignItems='center'
                                 >
-                                  <GridItem colSpan={{ base: 2, md: 4 }}>
-                                    {bootstrapTransaction?.tx_status ===
-                                    'success' ? (
-                                      activationTransaction?.tx_status ===
-                                      'pending' ? (
-                                        <Stack spacing='1'>
-                                          <HStack
-                                            align='flex-start'
-                                            spacing='4'
-                                          >
-                                            <Circle bg='dark.500' size='10'>
-                                              <Icon
-                                                as={LightningBolt}
-                                                boxSize='6'
-                                                color='primary.900'
-                                              />
-                                            </Circle>
-                                            <Stack spacing='1' maxW='lg'>
-                                              <Heading
-                                                size='md'
-                                                fontWeight='regular'
-                                              >
-                                                Launching club
-                                              </Heading>
-                                              <Text
-                                                fontSize='md'
-                                                fontWeight='thin'
-                                                color='text-muted'
-                                              >
-                                                Your club is being activated.
-                                                You can view your transaction
-                                                here.
-                                              </Text>
-                                            </Stack>
-                                          </HStack>
-                                        </Stack>
-                                      ) : (
-                                        <Stack spacing='1'>
-                                          <HStack
-                                            align='flex-start'
-                                            spacing='4'
-                                          >
-                                            <Circle bg='dark.500' size='10'>
-                                              <Icon
-                                                as={LightningBolt}
-                                                boxSize='6'
-                                                color='primary.900'
-                                              />
-                                            </Circle>
-                                            <Stack spacing='1' maxW='lg'>
-                                              <Heading
-                                                size='md'
-                                                fontWeight='regular'
-                                              >
-                                                You&apos;re all set!
-                                              </Heading>
-                                              <Text
-                                                fontSize='md'
-                                                fontWeight='thin'
-                                                color='text-muted'
-                                              >
-                                                Once you decide to activate your
-                                                club, {dao?.data?.name} will be
-                                                open for deposits for ~{' '}
-                                                {
-                                                  dao?.data?.config
-                                                    ?.durationInDays
-                                                }{' '}
-                                                days .
-                                              </Text>
-                                            </Stack>
-                                          </HStack>
-                                        </Stack>
-                                      )
-                                    ) : (
-                                      <Stack spacing='1'>
-                                        <HStack align='flex-start' spacing='4'>
-                                          <Circle bg='dark.500' size='10'>
-                                            <Icon
-                                              as={LightningBolt}
-                                              boxSize='6'
-                                              color='primary.900'
-                                            />
-                                          </Circle>
-                                          <Stack spacing='1' maxW='lg'>
-                                            <Heading
-                                              size='md'
-                                              fontWeight='regular'
-                                            >
-                                              Preparing your club for launch
-                                            </Heading>
-                                            <Text
-                                              fontSize='md'
-                                              fontWeight='thin'
-                                              color='text-muted'
-                                            >
-                                              Once your bootstrap contract is
-                                              deployed, you can activate your
-                                              Club. You can view the boostrap
-                                              contract here
-                                            </Text>
-                                          </Stack>
-                                        </HStack>
-                                      </Stack>
-                                    )}
-                                  </GridItem>
-                                  <GridItem colSpan={{ base: 2, md: 1 }}>
-                                    {bootstrapTransaction?.tx_status ===
-                                    'success' ? (
-                                      activationTransaction?.tx_status ===
-                                      'pending' ? (
-                                        <Button variant='primary' isFullWidth>
-                                          <Spinner />
-                                        </Button>
-                                      ) : (
-                                        <InitializeClubButton
-                                          variant='primary'
-                                          isFullWidth
-                                          title='Start'
-                                          contractPrincipal={
-                                            dao?.data?.contract_address
-                                          }
-                                          bootstrapPrincipal={
-                                            dao?.data?.bootstrap_address
-                                          }
-                                          onSubmit={() => console.log('init!')}
-                                        />
-                                      )
-                                    ) : (
-                                      <Button variant='primary' isFullWidth>
-                                        <Spinner />
-                                      </Button>
-                                    )}
-                                  </GridItem>
+                                  {renderStatusComponent(
+                                    bootstrapTransaction?.tx_status,
+                                    activationTransaction?.tx_status,
+                                  )}
                                 </Grid>
                               </Stack>
                             </Stack>
