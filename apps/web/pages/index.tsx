@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Box, Button, Heading, HStack, Stack, Text } from 'ui';
+import { Box, Button, ButtonGroup, Heading, HStack, Stack, Text } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container, SectionHeader } from 'ui/components/layout';
 import { MainLayout } from '@components/layout';
@@ -73,7 +73,7 @@ export default function Web() {
         backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
         opacity='1'
       >
-        <Container maxW='3xl'>
+        <Container>
           <Stack
             spacing='6'
             h='calc(100vh - 5vh)'
@@ -81,7 +81,7 @@ export default function Web() {
             align='center'
           >
             <Stack spacing='6' align='flex-start'>
-              <HStack m='0'>
+              <HStack m='0' px='2'>
                 <Text fontSize='lg' fontWeight='light' color='light.500'>
                   Protocol built with Stacks
                 </Text>
@@ -90,10 +90,11 @@ export default function Web() {
                 <Heading
                   fontSize={{ base: '4em', md: '6em', lg: '8em' }}
                   fontWeight='black'
-                  color='dark.800'
+                  bgGradient='linear(to-b, primary.900 65%, dark.500 100%)'
+                  bgClip='text'
                   style={{
                     WebkitTextStrokeWidth: '1px',
-                    WebkitTextStrokeColor: '#624AF2',
+                    WebkitTextStrokeColor: '#121416',
                   }}
                 >
                   Clubs
@@ -101,41 +102,70 @@ export default function Web() {
                     as='span'
                     mx='5'
                     fontWeight='thin'
-                    bgGradient='linear(to-b, primary.900 65%, dark.500 100%)'
+                    bgGradient='linear(to-b, light.900 25%, primary.900 100%)'
                     bgClip='text'
+                    style={{
+                      WebkitTextStrokeWidth: '1px',
+                      WebkitTextStrokeColor: '#121416',
+                    }}
                   >
                     powered by Bitcoin
                   </Text>
                 </Heading>
               </Stack>
-              <Text
-                fontSize={{ base: '2em', md: '2em', lg: '2em' }}
-                fontWeight='thin'
-                color='light.500'
-                maxW='2xl'
-              >
-                Invest, fund causes, build products, and more. Together.{' '}
-              </Text>
-              <Link href='/create'>
-                <Button
-                  variant='inverted'
-                  size='lg'
-                  borderRadius='3xl'
-                  bg='primary.900'
-                  borderColor='dark.500'
+              <Stack spacing='8'>
+                <Text
+                  fontSize={{ base: '1.5em', lg: '1.75em' }}
+                  fontWeight='light'
                   color='light.900'
-                  fontSize='xl'
-                  fontWeight='regular'
-                  rightIcon={<ArrowRight />}
-                  _hover={{
-                    color: 'light.900',
-                    bg: 'primary.900',
-                    opacity: 0.9,
-                  }}
+                  px='2'
                 >
-                  Start your club
-                </Button>
-              </Link>
+                  Invest, fund causes, build products, and more. Together.{' '}
+                </Text>
+                <ButtonGroup px='2' spacing='6'>
+                  <Link href='/create'>
+                    <Button
+                      variant='inverted'
+                      size='lg'
+                      borderRadius='3xl'
+                      bg='primary.900'
+                      borderColor='dark.500'
+                      color='light.900'
+                      fontSize='xl'
+                      fontWeight='medium'
+                      _active={{
+                        color: 'light.900',
+                        bg: 'primary.900',
+                        opacity: 0.9,
+                      }}
+                      _hover={{
+                        color: 'light.900',
+                        bg: 'primary.900',
+                        opacity: 0.9,
+                      }}
+                    >
+                      Create Club
+                    </Button>
+                  </Link>
+                  <Button
+                    variant='link'
+                    size='lg'
+                    color='light.900'
+                    fontWeight='medium'
+                    fontSize='xl'
+                    rightIcon={<ArrowRight />}
+                    _active={{
+                      color: 'light.500',
+                      opacity: 0.9,
+                    }}
+                    _hover={{
+                      color: 'light.500',
+                    }}
+                  >
+                    Read docs
+                  </Button>
+                </ButtonGroup>
+              </Stack>
             </Stack>
           </Stack>
         </Container>

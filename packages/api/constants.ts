@@ -7,7 +7,6 @@ import {
 export const isMainnet = process.env.STACKS_NETWORK === 'mainnet';
 export const isTestnet = process.env.STACKS_NETWORK === 'testnet';
 export const isMocknet = process.env.STACKS_NETWORK === 'mocknet';
-console.log('STACKS_NETWORK', process.env.STACKS_NETWORK);
 
 export const stacksNetwork = isMainnet
   ? StacksMainnet

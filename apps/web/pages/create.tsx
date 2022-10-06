@@ -163,7 +163,7 @@ export default function Create() {
                   as='span'
                   maxW='2xl'
                   mx='auto'
-                  color='gray'
+                  color='light.500'
                   fontWeight='thin'
                 >
                   Club
@@ -298,7 +298,7 @@ export default function Create() {
                   as='span'
                   maxW='2xl'
                   mx='auto'
-                  color='gray'
+                  color='light.500'
                   fontWeight='thin'
                 >
                   Details
@@ -430,7 +430,7 @@ export default function Create() {
                   as='span'
                   maxW='2xl'
                   mx='auto'
-                  color='gray'
+                  color='light.500'
                   fontWeight='thin'
                 >
                   Members
@@ -582,7 +582,7 @@ export default function Create() {
                   as='span'
                   maxW='2xl'
                   mx='auto'
-                  color='gray'
+                  color='light.500'
                   fontWeight='thin'
                 >
                   Deploy
