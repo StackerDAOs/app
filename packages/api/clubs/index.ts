@@ -59,7 +59,7 @@ export async function generateContractName(organization: any) {
       .select('contract_address, clubs!inner(id, name, prefix)')
       .eq('clubs.id', organization?.id);
     if (error) throw error;
-    if (Proposals.length > 0) {
+    if (Proposals?.length > 0) {
       const proposalSize = (defaultTo(Proposals?.length, 0) + 1)?.toString();
       const [proposal] = Proposals;
       const targetLength = Proposals?.length + 1 < 1000 ? 3 : 4;
@@ -364,7 +364,7 @@ export async function getTokenId(principal: string, assetIdentifier: string) {
       {},
     );
     const response = await fetchTokenId.json();
-    if (response.results.length > 0) {
+    if (response?.results?.length > 0) {
       const token = hexToCV(response?.results[0]?.value?.hex) as {
         type: number;
         value: any;
@@ -584,7 +584,7 @@ export async function getProjects() {
       .from('clubs')
       .select('id, name, slug, contract_address');
     if (error) throw error;
-    if (clubs.length > 0) {
+    if (clubs?.length > 0) {
       return clubs;
     }
   } catch (e: any) {
@@ -603,7 +603,7 @@ export async function upvoteProposal(id: any) {
         .select('upvote')
         .eq('id', id);
       if (proposalsError) throw proposalsError;
-      if (proposals.length > 0) {
+      if (proposals?.length > 0) {
         return proposals[0];
       }
     } catch (e: any) {
@@ -625,7 +625,7 @@ export async function downvoteProposal(id: any) {
         .select('downvote')
         .eq('id', id);
       if (proposalsError) throw proposalsError;
-      if (proposals.length > 0) {
+      if (proposals?.length > 0) {
         return proposals[0];
       }
     } catch (e: any) {

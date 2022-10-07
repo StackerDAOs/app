@@ -42,7 +42,7 @@ export async function generateContractName(organization: any) {
       .select('contractAddress, Organizations!inner(id, name, prefix)')
       .eq('Organizations.id', organization?.id);
     if (error) throw error;
-    if (Proposals.length > 0) {
+    if (Proposals?.length > 0) {
       const proposalSize = (defaultTo(Proposals?.length, 0) + 1)?.toString();
       const [proposal] = Proposals;
       const targetLength = Proposals?.length + 1 < 1000 ? 3 : 4;
@@ -473,7 +473,7 @@ export async function getProjects() {
       .from('Organizations')
       .select('id, name, slug, contractAddress');
     if (error) throw error;
-    if (Organizations.length > 0) {
+    if (Organizations?.length > 0) {
       return Organizations;
     }
   } catch (e: any) {

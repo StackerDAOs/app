@@ -127,7 +127,6 @@ export default function Web() {
                     <Button
                       variant='inverted'
                       size='lg'
-                      borderRadius='3xl'
                       bg='primary.900'
                       borderColor='dark.500'
                       color='light.900'

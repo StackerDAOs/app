@@ -357,9 +357,9 @@ const components = {
   },
   Button: {
     baseStyle: {
-      color: 'fg-default',
-      fontWeight: 'regular',
-      borderRadius: 'md',
+      color: 'light.900',
+      fontWeight: 'medium',
+      borderRadius: '3xl',
       _focus: {
         ring: '0px',
       },

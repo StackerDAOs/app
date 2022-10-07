@@ -16,7 +16,7 @@ const generateClarityList = (
   let memberList = '';
   members.forEach((address, index) => {
     memberList += `(try! (contract-call? '${nftMembershipContract} mint '${address}))`;
-    if (index !== members.length - 1) {
+    if (index !== members?.length - 1) {
       memberList += `  \n    `;
     }
   });

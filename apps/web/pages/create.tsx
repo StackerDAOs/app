@@ -660,7 +660,7 @@ export default function Create() {
         </Stack>
         <Modal isOpen={isInfoOpen} onClose={onInfoClose} isCentered>
           <ModalOverlay />
-          <ModalContent bg='dark.800' borderColor='dark.500' borderWidth='1px'>
+          <ModalContent bg='dark.900' borderColor='dark.500' borderWidth='1px'>
             <ModalBody>
               <Stack
                 px={{ base: '6', md: '6' }}
@@ -733,7 +733,7 @@ export default function Create() {
         </Stack>
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay />
-          <ModalContent bg='dark.800' borderColor='dark.500' borderWidth='1px'>
+          <ModalContent bg='dark.900' borderColor='dark.500' borderWidth='1px'>
             <ModalBody>
               <Stack spacing='0'>
                 <Stack

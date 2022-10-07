@@ -21,7 +21,7 @@ import {
 } from 'ui';
 import { map, round, size } from 'lodash';
 import { Card } from 'ui/components/cards';
-import { SectionHeader } from 'ui/components/layout';
+// import { SectionHeader } from 'ui/components/layout';
 import { AppLayout } from '@components/layout';
 import { DashboardHeader } from '@components/navigation';
 import { Wrapper } from '@components/containers';
@@ -53,7 +53,7 @@ import {
   nameToSlug,
   convertToken,
 } from 'utils';
-import { ClubsTable } from '@components/tables';
+// import { ClubsTable } from '@components/tables';
 import { InfoIcon, LightningBolt } from 'ui/components/icons';
 import { CustomAccordianItem } from '@components/disclosure';
 
@@ -258,7 +258,7 @@ export default function Dashboard() {
                     Follow the order below when deploying extensions.
                   </AlertDescription>
                 </Alert> */}
-                <Card h='fit-content' bg='dark.700'>
+                <Card h='fit-content' bg='dark.900'>
                   <Stack spacing='0'>
                     <Grid
                       templateColumns='repeat(5, 1fr)'
@@ -931,6 +931,7 @@ export default function Dashboard() {
                         String(
                           investmentClub?.data?.currentRound?.raisedAmount,
                         ),
+                        false,
                       ),
                     ),
                   )}
@@ -1026,7 +1027,9 @@ export default function Dashboard() {
                           color='light.900'
                           bg='dark.500'
                           onClick={() =>
-                            setDepositAmount(ustxToStx(data?.account?.balance))
+                            setDepositAmount(
+                              String(ustxToStx(data?.account?.balance)),
+                            )
                           }
                           _hover={{ opacity: 0.9 }}
                           _active={{ opacity: 1 }}
@@ -1162,7 +1165,7 @@ export default function Dashboard() {
             </SimpleGrid>
           </Stack>
         </Stack>
-        <Stack spacing='6'>
+        {/* <Stack spacing='6'>
           <SectionHeader
             justify={{ base: 'flex-start', md: 'space-between' }}
             align={{ base: 'flex-start', md: 'space-between' }}
@@ -1177,8 +1180,8 @@ export default function Dashboard() {
               </Heading>
             </Stack>
           </SectionHeader>
-        </Stack>
-        <Stack spacing='8' pb='16'>
+        </Stack> */}
+        {/* <Stack spacing='8' pb='16'>
           <motion.div
             variants={FADE_IN_VARIANTS}
             initial={FADE_IN_VARIANTS.hidden}
@@ -1190,7 +1193,7 @@ export default function Dashboard() {
               <ClubsTable color='light.900' size='md' clubs={[]} />
             </Stack>
           </motion.div>
-        </Stack>
+        </Stack> */}
       </Wrapper>
     </motion.div>
   );
