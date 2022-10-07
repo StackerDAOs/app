@@ -20,21 +20,21 @@ import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { EmptyState } from '@components/misc';
 import { Card } from 'ui/components/cards';
-import { capitalize, map, truncate } from 'lodash';
+import { capitalize, map, truncate, size } from 'lodash';
 import { ArrowRight } from 'ui/components/icons';
 
 const MotionGrid = motion(SimpleGrid);
 
 export default function Proposals() {
   const [isHovered, setHovered] = React.useState(false);
-  const [filter, setFilter] = React.useState('recent');
+  const [filter, setFilter] = React.useState('');
   const proposals = useProposals();
 
   if (proposals.isLoading || proposals?.isFetching || proposals?.isIdle) {
     return null;
   }
 
-  if (proposals?.data?.length === 0) {
+  if (size(proposals?.data) < 1) {
     return (
       <Stack spacing='8' pb='16' mt='6'>
         <motion.div

@@ -42,7 +42,6 @@ import {
   useAuth,
   useInvestmentClub,
   useGovernanceToken,
-  useAccountBalance,
   useDAO,
   useTransaction,
 } from 'ui/hooks';
@@ -52,6 +51,7 @@ import {
   findExtension,
   nameToSlug,
   convertToken,
+  getExplorerLink,
 } from 'utils';
 // import { ClubsTable } from '@components/tables';
 import { InfoIcon, LightningBolt } from 'ui/components/icons';
@@ -63,7 +63,6 @@ const OTHER_REQUIREMENTS_SIZE = 1;
 export default function Dashboard() {
   const auth = useAuth();
   const dao = useDAO();
-  const { data } = useAccountBalance();
   const governanceToken = useGovernanceToken();
   const investmentClub = useInvestmentClub();
   const { data: bootstrapTransaction } = useTransaction(
@@ -140,8 +139,18 @@ export default function Dashboard() {
                     Launching club
                   </Heading>
                   <Text fontSize='md' fontWeight='thin' color='text-muted'>
-                    Your club is being activated. You can view your transaction
-                    here.
+                    Once your bootstrap contract is deployed, you can activate
+                    your Club.{' '}
+                    <Text
+                      fontWeight='semibold'
+                      color='light.900'
+                      display='inline'
+                    >
+                      <a href={getExplorerLink(activationTransaction?.tx_id)}>
+                        View transaction
+                      </a>
+                    </Text>
+                    .
                   </Text>
                 </Stack>
               </HStack>
@@ -170,7 +179,17 @@ export default function Dashboard() {
                   </Heading>
                   <Text fontSize='md' fontWeight='thin' color='text-muted'>
                     Once your bootstrap contract is deployed, you can activate
-                    your Club. You can view the boostrap contract here
+                    your Club.{' '}
+                    <Text
+                      fontWeight='semibold'
+                      color='light.900'
+                      display='inline'
+                    >
+                      <a href={getExplorerLink(bootstrapTransaction?.tx_id)}>
+                        View transaction
+                      </a>
+                    </Text>
+                    .
                   </Text>
                 </Stack>
               </HStack>
@@ -315,13 +334,13 @@ export default function Dashboard() {
                                           fontWeight='regular'
                                         >
                                           Club Passes are non-transferable NFTs
-                                          and defines your Club&apos;s
+                                          and define your Club&apos;s
                                           membership. Governance tokens are also
                                           non-transferable, issued to Club Pass
                                           holders who deposit funds at an amount
                                           representing the deposit&apos;s pro
                                           rata share of the Club&apos;s
-                                          treasury, and defines a member&apos;s
+                                          treasury, and define a member&apos;s
                                           voting power.
                                         </Text>
                                         <Stack
@@ -994,7 +1013,6 @@ export default function Dashboard() {
                           <Input
                             py='1'
                             px='2'
-                            maxW='8em'
                             bg='dark.700'
                             type='tel'
                             border='none'
@@ -1009,33 +1027,28 @@ export default function Dashboard() {
                             }}
                           />
                         </FormControl>
-                        <HStack px='2'>
-                          <Image
-                            cursor='pointer'
-                            height='18px'
-                            src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
-                            alt='logo'
-                          />
-
-                          <Text fontSize='md' fontWeight='regular' color='gray'>
-                            STX
-                          </Text>
-                        </HStack>
                       </VStack>
-                      <HStack>
-                        <Button
-                          color='light.900'
-                          bg='dark.500'
-                          onClick={() =>
-                            setDepositAmount(
-                              String(ustxToStx(data?.account?.balance)),
-                            )
-                          }
-                          _hover={{ opacity: 0.9 }}
-                          _active={{ opacity: 1 }}
+                      <HStack
+                        bg='dark.600'
+                        borderRadius='lg'
+                        borderColor='dark.500'
+                        py='1'
+                        px='3'
+                      >
+                        <Image
+                          cursor='pointer'
+                          height='16px'
+                          src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                          alt='logo'
+                        />
+
+                        <Text
+                          fontSize='sm'
+                          fontWeight='semibold'
+                          color='light.500'
                         >
-                          Max
-                        </Button>
+                          STX
+                        </Text>
                       </HStack>
                     </HStack>
                     <Stack w='100%'>
@@ -1052,10 +1065,10 @@ export default function Dashboard() {
                         color='gray'
                         textAlign='center'
                         fontSize='md'
-                        fontWeight='regular'
+                        fontWeight='light'
                       >
-                        Your wallet balance: {ustxToStx(data?.account?.balance)}{' '}
-                        STX
+                        Minimum deposit amount is{' '}
+                        {dao?.data?.config?.minimumDeposit} STX
                       </Text>
                     </Stack>
                   </Stack>

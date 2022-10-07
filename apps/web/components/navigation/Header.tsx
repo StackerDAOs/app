@@ -10,7 +10,6 @@ import {
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { getExplorerLink, findExtension } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
-import Avatar from 'boring-avatars';
 import { ProposalDrawer } from '@components/drawers';
 import { useDAO } from 'ui/hooks';
 
@@ -43,13 +42,14 @@ export const DashboardHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name={dao?.data?.name}
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Heading size='2xl' fontWeight='black' color='light.900'>
+              {/*  */}
+              <Heading
+                size='3xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, primary-accent.900 10%, primary.900 100%)'
+                bgClip='text'
+              >
                 {dao?.data?.name}{' '}
               </Heading>
             </HStack>
@@ -95,7 +95,7 @@ export const DashboardHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' isDisabled />
+            <ProposalDrawer variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -127,13 +127,13 @@ export const VaultHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name={dao?.data?.name}
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Heading size='2xl' fontWeight='black' color='light.900'>
+              <Heading
+                size='3xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, primary-accent.900 10%, primary.900 100%)'
+                bgClip='text'
+              >
                 Vault
               </Heading>
             </HStack>
@@ -225,13 +225,13 @@ export const ProposalHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name={dao?.data?.name}
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Heading size='2xl' fontWeight='black' color='light.900'>
+              <Heading
+                size='3xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, primary-accent.900 10%, primary.900 100%)'
+                bgClip='text'
+              >
                 Submissions
               </Heading>
             </HStack>
@@ -322,13 +322,13 @@ export const VotingHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name={dao?.data?.name}
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Heading size='2xl' fontWeight='black' color='light.900'>
+              <Heading
+                size='3xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, primary-accent.900 10%, primary.900 100%)'
+                bgClip='text'
+              >
                 Proposals
               </Heading>
             </HStack>
@@ -395,7 +395,6 @@ export const VotingHeader = () => {
 
 export const ExtensionsHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const dao = useDAO();
 
   return (
     <Wrapper>
@@ -416,13 +415,13 @@ export const ExtensionsHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name={dao?.data?.name}
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Heading size='2xl' fontWeight='black' color='light.900'>
+              <Heading
+                size='3xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, primary-accent.900 10%, primary.900 100%)'
+                bgClip='text'
+              >
                 Extensions
               </Heading>
             </HStack>

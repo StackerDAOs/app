@@ -57,6 +57,17 @@ const tokens = {
       800: '#624AF2',
       900: '#624AF2',
     },
+    'primary-accent': {
+      100: '#7301fa',
+      200: '#7301fa',
+      300: '#7301fa',
+      400: '#7301fa',
+      500: '#7301fa',
+      600: '#7301fa',
+      700: '#7301fa',
+      800: '#7301fa',
+      900: '#7301fa',
+    },
     secondary: {
       100: '#eb00ff',
       200: '#eb00ff',
@@ -238,6 +249,26 @@ const semanticTokens = {
     'primary.500': {
       default: tokens.colors.primary['500'],
       _dark: tokens.colors.primary['500'],
+    },
+    'primary-accent.900': {
+      default: tokens.colors['primary-accent']['900'],
+      _dark: tokens.colors['primary-accent']['900'],
+    },
+    'primary-accent.800': {
+      default: tokens.colors['primary-accent']['800'],
+      _dark: tokens.colors['primary-accent']['800'],
+    },
+    'primary-accent.700': {
+      default: tokens.colors['primary-accent']['700'],
+      _dark: tokens.colors['primary-accent']['700'],
+    },
+    'primary-accent.600': {
+      default: tokens.colors['primary-accent']['600'],
+      _dark: tokens.colors['primary-accent']['600'],
+    },
+    'primary-accent.500': {
+      default: tokens.colors['primary-accent']['500'],
+      _dark: tokens.colors['primary-accent']['500'],
     },
     'secondary.900': {
       default: tokens.colors.secondary['900'],

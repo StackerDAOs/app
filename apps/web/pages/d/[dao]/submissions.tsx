@@ -19,19 +19,19 @@ import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { EmptyState } from '@components/misc';
 import { Card } from 'ui/components/cards';
-import { capitalize, map, padStart } from 'lodash';
+import { capitalize, map, padStart, size } from 'lodash';
 import { truncateAddress } from '@stacks-os/utils';
 import { ChevronDown, ChevronUp } from 'ui/components/icons';
 
 export default function Submissions() {
-  const [filter, setFilter] = React.useState('recent');
+  const [filter, setFilter] = React.useState('');
   const submissions = useSubmissions(filter);
 
   if (submissions.isLoading || submissions?.isFetching || submissions?.isIdle) {
     return null;
   }
 
-  if (submissions?.data?.length === 0) {
+  if (size(submissions?.data) < 1) {
     return (
       <Stack spacing='8' pb='16' mt='6'>
         <motion.div

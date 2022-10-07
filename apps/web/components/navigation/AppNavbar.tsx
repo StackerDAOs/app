@@ -35,6 +35,7 @@ const Navbar = () => {
               <Tab
                 key={item}
                 fontSize='md'
+                fontWeight='medium'
                 color={
                   isSelected(item.toLowerCase()) ? 'text-default' : 'text-muted'
                 }

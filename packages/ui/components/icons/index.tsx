@@ -5,6 +5,7 @@ export * from './ChevronDownMini';
 export * from './ChevronDoubleRight';
 export * from './ChevronUp';
 export * from './CopyClipboard';
+export * from './GearIcon';
 export * from './InfoIcon';
 export * from './LightningBolt';
 export * from './LogoIcon';
