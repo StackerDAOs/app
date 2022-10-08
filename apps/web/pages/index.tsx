@@ -105,7 +105,7 @@ export default function Web() {
                     bgGradient='linear(to-b, light.900 25%, primary.900 100%)'
                     bgClip='text'
                     style={{
-                      WebkitTextStrokeWidth: '1px',
+                      WebkitTextStrokeWidth: '0px',
                       WebkitTextStrokeColor: '#121416',
                     }}
                   >

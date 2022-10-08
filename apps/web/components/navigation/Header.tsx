@@ -47,7 +47,7 @@ export const DashboardHeader = () => {
                 size='3xl'
                 fontWeight='black'
                 color='light.900'
-                bgGradient='linear(to-b, primary-accent.900 10%, primary.900 100%)'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
                 bgClip='text'
               >
                 {dao?.data?.name}{' '}
@@ -131,7 +131,7 @@ export const VaultHeader = () => {
                 size='3xl'
                 fontWeight='black'
                 color='light.900'
-                bgGradient='linear(to-b, primary-accent.900 10%, primary.900 100%)'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
                 bgClip='text'
               >
                 Vault
@@ -229,7 +229,7 @@ export const ProposalHeader = () => {
                 size='3xl'
                 fontWeight='black'
                 color='light.900'
-                bgGradient='linear(to-b, primary-accent.900 10%, primary.900 100%)'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
                 bgClip='text'
               >
                 Submissions
@@ -326,7 +326,7 @@ export const VotingHeader = () => {
                 size='3xl'
                 fontWeight='black'
                 color='light.900'
-                bgGradient='linear(to-b, primary-accent.900 10%, primary.900 100%)'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
                 bgClip='text'
               >
                 Proposals
@@ -419,7 +419,7 @@ export const ExtensionsHeader = () => {
                 size='3xl'
                 fontWeight='black'
                 color='light.900'
-                bgGradient='linear(to-b, primary-accent.900 10%, primary.900 100%)'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
                 bgClip='text'
               >
                 Extensions

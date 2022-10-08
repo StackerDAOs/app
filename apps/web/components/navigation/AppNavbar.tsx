@@ -35,9 +35,15 @@ const Navbar = () => {
               <Tab
                 key={item}
                 fontSize='md'
-                fontWeight='medium'
+                fontWeight={
+                  isSelected(item?.toLocaleLowerCase())
+                    ? 'extrabold'
+                    : 'regular'
+                }
                 color={
-                  isSelected(item.toLowerCase()) ? 'text-default' : 'text-muted'
+                  isSelected(item?.toLocaleLowerCase())
+                    ? 'light.900'
+                    : 'light.500'
                 }
               >
                 {item}
