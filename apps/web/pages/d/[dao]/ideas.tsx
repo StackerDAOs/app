@@ -23,7 +23,7 @@ import { capitalize, map, padStart, size } from 'lodash';
 import { truncateAddress } from '@stacks-os/utils';
 import { ChevronDown, ChevronUp } from 'ui/components/icons';
 
-export default function Submissions() {
+export default function Ideas() {
   const [filter, setFilter] = React.useState('');
   const submissions = useSubmissions(filter);
 
@@ -85,7 +85,7 @@ export default function Submissions() {
                 Discover Ideas
               </Text>
               <Heading mt='0 !important' size='lg' fontWeight='medium'>
-                Submissions
+                Ideas
               </Heading>
             </Stack>
             <Stack align='center' direction='row' spacing='3'>
@@ -224,6 +224,6 @@ export default function Submissions() {
   );
 }
 
-Submissions.getLayout = (page: any) => (
+Ideas.getLayout = (page: any) => (
   <AppLayout header={<ProposalHeader />}>{page}</AppLayout>
 );

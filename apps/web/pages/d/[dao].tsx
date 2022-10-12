@@ -818,11 +818,9 @@ export default function Dashboard() {
                                           fontWeight='regular'
                                         >
                                           The boostrap contract initializes your
-                                          Club. Once this contract is deployed,
-                                          you&apos;ll just have to make an
-                                          initialize smart contract call, and
-                                          your club will be ready to raise
-                                          funds!
+                                          Club. Once deployed, you&apos;ll have
+                                          to make a contract call, and your Club
+                                          will be ready to raise funds!
                                         </Text>
                                         <Stack
                                           justify='space-between'

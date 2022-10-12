@@ -30,7 +30,7 @@ const Navbar = () => {
     <Flex justify='space-between' flex='1'>
       <Tabs isFitted variant='nav'>
         <TabList>
-          {['Vault', 'Submissions', 'Proposals', 'Extensions'].map((item) => (
+          {['Vault', 'Ideas', 'Proposals', 'Extensions'].map((item) => (
             <Link key={item} href={`/d/${dao}/${item?.toLocaleLowerCase()}`}>
               <Tab
                 key={item}

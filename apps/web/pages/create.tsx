@@ -78,7 +78,7 @@ export default function Create() {
       name: '',
       description: '',
       member: '',
-      durationInDays: '7',
+      durationInDays: '1',
       minimumDeposit: '0',
     },
   });
@@ -361,15 +361,15 @@ export default function Create() {
                   name='durationInDays'
                   render={({ field: { onChange, value } }) => (
                     <RadioButtonGroup
-                      defaultValue='7'
+                      defaultValue='1'
                       size='lg'
                       onChange={onChange}
                       value={value}
                     >
+                      <RadioButton value='1'>1 day</RadioButton>
                       <RadioButton value='7'>1 week</RadioButton>
                       <RadioButton value='14'>2 weeks</RadioButton>
                       <RadioButton value='30'>1 month</RadioButton>
-                      <RadioButton value='90'>3 months</RadioButton>
                     </RadioButtonGroup>
                   )}
                 />

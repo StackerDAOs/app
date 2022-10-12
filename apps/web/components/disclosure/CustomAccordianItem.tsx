@@ -56,8 +56,8 @@ export const CustomAccordianItem = (props: any) => {
                     color='light.900'
                     fontWeight='light'
                   >
-                    Deploying contracts can take anywhere between 10 minutes. In
-                    the meantime, you can continue to the next step.
+                    Deploying contracts can take ~ 10 minutes. In the meantime,
+                    you can continue to the next step.
                   </Text>
                 </Stack>
               </Stack>
@@ -117,8 +117,8 @@ export const CustomAccordianItem = (props: any) => {
                     color='light.900'
                     fontWeight='light'
                   >
-                    Deploying contracts can take anywhere between 10-30 minutes.
-                    In the meantime, you can continue to the next step.
+                    Deploying contracts can take ~ 10 minutes. In the meantime,
+                    you can continue to the next step.
                   </Text>
                 </Stack>
               </Stack>
@@ -220,8 +220,8 @@ export const CustomAccordianItem = (props: any) => {
                     color='light.900'
                     fontWeight='light'
                   >
-                    Deploying contracts can take anywhere between 10-30 minutes.
-                    In the meantime, you can continue to the next step.
+                    Deploying contracts can take ~ 10 minutes. In the meantime,
+                    you can continue to the next step.
                   </Text>
                 </Stack>
               </Stack>
@@ -321,8 +321,8 @@ export const CustomAccordianItem = (props: any) => {
                     color='light.900'
                     fontWeight='light'
                   >
-                    Deploying contracts can take anywhere between 10-30 minutes.
-                    In the meantime, you can continue to the next step.
+                    Deploying contracts can take ~ 10 minutes. In the meantime,
+                    you can continue to the next step.
                   </Text>
                 </Stack>
               </Stack>

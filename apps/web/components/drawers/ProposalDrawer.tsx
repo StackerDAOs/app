@@ -17,7 +17,12 @@ import {
 import { RadioCardGroup, RadioCard } from 'ui/components/forms';
 import { GearIcon, LightningBolt } from 'ui/components/icons';
 
-export const ProposalDrawer = (props: ButtonProps) => {
+interface ProposalDrawerProps extends ButtonProps {
+  title: string;
+}
+
+export const ProposalDrawer = (props: ProposalDrawerProps) => {
+  const { title } = props;
   const [selected, setSelected] = React.useState('1');
   const focusField = React.useRef<HTMLInputElement>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -48,7 +53,7 @@ export const ProposalDrawer = (props: ButtonProps) => {
   return (
     <>
       <Button {...props} onClick={onOpen}>
-        Create proposal
+        {title}
       </Button>
       <Drawer
         isOpen={isOpen}

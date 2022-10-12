@@ -372,7 +372,7 @@ export async function getTokenId(principal: string, assetIdentifier: string) {
       return Number(token?.value);
     }
 
-    return 0;
+    return 1;
   } catch (e: any) {
     console.error({ e });
   }

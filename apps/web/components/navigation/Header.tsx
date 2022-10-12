@@ -95,7 +95,7 @@ export const DashboardHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' />
+            <ProposalDrawer title='Create proposal' variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -190,7 +190,7 @@ export const VaultHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' />
+            <ProposalDrawer title='Create proposal' variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -232,7 +232,7 @@ export const ProposalHeader = () => {
                 bgGradient='linear(to-b, light.900 25%, light.500 100%)'
                 bgClip='text'
               >
-                Submissions
+                Ideas
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -290,7 +290,7 @@ export const ProposalHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' />
+            <ProposalDrawer title='Create proposal' variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -385,7 +385,7 @@ export const VotingHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' />
+            <ProposalDrawer title='Create proposal' variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -432,7 +432,7 @@ export const ExtensionsHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer variant='default' />
+            <ProposalDrawer title='Create proposal' variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>

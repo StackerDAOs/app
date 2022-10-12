@@ -1,4 +1,5 @@
 // Hook (use-auth.tsx)
+import React from 'react';
 import { useQuery } from 'react-query';
 import { useAccount, useAuth as useMicroStacksAuth } from '@micro-stacks/react';
 import { useExtension } from 'ui/hooks';
@@ -10,6 +11,7 @@ const getNFTContract = (nftIdentifier: string) => {
 };
 
 export function useAuth() {
+  const [interval, setInterval] = React.useState(1000);
   const { stxAddress } = useAccount();
   const nft = useExtension('NFT Membership');
   const { isSignedIn } = useMicroStacksAuth();
@@ -21,7 +23,13 @@ export function useAuth() {
       let assetIdentifier = `${nft?.data?.contract_address}::${
         nft?.data?.contract_address.split('.')[1]
       }`;
-      const tokenId = await getTokenId(stxAddress as string, assetIdentifier);
+      const tokenId = (await getTokenId(
+        stxAddress as string,
+        assetIdentifier,
+      )) as number;
+      if (tokenId > 0) {
+        setInterval(0);
+      }
       return {
         isMember: !!assetIdentifier ?? false,
         balances,
@@ -34,6 +42,7 @@ export function useAuth() {
     },
     {
       enabled: !!stxAddress && !!nft?.data,
+      refetchInterval: interval,
     },
   );
 
