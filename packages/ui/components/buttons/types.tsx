@@ -109,7 +109,6 @@ export interface VoteProposalProps extends ButtonProps {
 export interface DepositProps extends ButtonProps {
   title: string;
   amount: string;
-  tokenId: number;
   investmentClubAddress: string;
 }
 

@@ -8,6 +8,7 @@ import {
   FungibleConditionCode,
   makeStandardSTXPostCondition,
 } from 'micro-stacks/transactions';
+import { useAuth } from 'ui/hooks';
 
 // Utils
 import { stxToUstx } from 'utils';
@@ -15,19 +16,22 @@ import { splitContractAddress } from '@stacks-os/utils';
 import { DepositProps } from './types';
 
 export const DepositButton = (props: DepositProps) => {
-  const { title, amount, investmentClubAddress, tokenId, ...rest } = props;
+  const { title, amount, investmentClubAddress, ...rest } = props;
+  const auth = useAuth();
   const { stxAddress } = useAccount();
   const { openContractCall } = useOpenContractCall();
   const [contractAddress, contractName] = splitContractAddress(
     investmentClubAddress ?? '',
   );
-
   const deposit = React.useCallback(async () => {
     await openContractCall({
       contractAddress: contractAddress,
       contractName: contractName,
       functionName: 'deposit',
-      functionArgs: [uintCV(stxToUstx(amount)), uintCV(tokenId)],
+      functionArgs: [
+        uintCV(stxToUstx(amount)),
+        uintCV(auth?.data?.membershipPass?.tokenId as number),
+      ],
       postConditions: stxAddress
         ? [
             makeStandardSTXPostCondition(
@@ -38,7 +42,7 @@ export const DepositButton = (props: DepositProps) => {
           ]
         : [],
     });
-  }, [contractAddress, contractName, props]);
+  }, [contractAddress, contractName, props, auth?.data]);
 
   return (
     <Button

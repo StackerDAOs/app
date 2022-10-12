@@ -39,7 +39,6 @@ import {
   DeployVotingButton,
 } from 'ui/components/buttons';
 import {
-  useAuth,
   useInvestmentClub,
   useGovernanceToken,
   useDAO,
@@ -61,7 +60,6 @@ const EXTENSION_SIZE = 6;
 const OTHER_REQUIREMENTS_SIZE = 1;
 
 export default function Dashboard() {
-  const auth = useAuth();
   const dao = useDAO();
   const governanceToken = useGovernanceToken();
   const investmentClub = useInvestmentClub();
@@ -1057,7 +1055,6 @@ export default function Dashboard() {
                           investmentClubExtension?.contract_address
                         }
                         amount={depositAmount}
-                        tokenId={Number(auth?.data?.membershipPass?.tokenId)}
                       />
                       <Text
                         color='gray'

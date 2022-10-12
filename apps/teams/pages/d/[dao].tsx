@@ -215,7 +215,6 @@ export default function Dashboard() {
                         variant='primary'
                         investmentClubAddress=''
                         amount={depositAmount}
-                        tokenId={1}
                       />
                       <Text
                         color='gray'
