@@ -10,14 +10,9 @@ export const CardGrid = (props: CardGridProps) => {
   const { cardGridProps, getStartedButton } = props;
   return (
     <Box>
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={2}>
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={1}>
         {cardGridProps.map((x: any, index: any) => (
-          <Box
-            borderRadius='lg'
-            as='section'
-            py={{ base: '2', md: '4' }}
-            key={index}
-          >
+          <Box py={{ base: '2', md: '4' }} key={index}>
             {x}
           </Box>
         ))}

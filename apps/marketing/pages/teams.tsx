@@ -1,28 +1,57 @@
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Heading,
-  Icon,
-  SimpleGrid,
-  Stack,
-  Text,
-  Image,
-} from 'ui';
+import Link from 'next/link';
+import { Box, Heading, Text, Image, HStack, Button } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container } from 'ui/components/layout';
-import { MainLayout } from '@components/layout';
 import { RocketLaunch, UserGroup, Cog6Tooth } from 'ui/components/icons';
 import { CardGrid, FeatureList, BottomHero, TopHero } from '@components/nate';
+import { useScrollPosition } from 'ui/hooks/react';
+import { MainNavbar, LandingNavbar, Footer } from '@components/navigation';
+import { LogoIcon } from 'ui/components/icons';
+import { Nav } from '@components/containers';
 
-const sampleText = (
-  <Box flex='1' maxW={{ lg: 'lg' }} p='6'>
-    <Heading as='h1' size='3xl' mt='8' fontWeight='black'>
-      Teams
+const sampleText1 = (
+  <Box flex='1' maxW={{ md: 'md' }} mx='3'>
+    <Heading as='h1' size='3xl' fontWeight='black'>
+      Accessible
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
-      Primitive for groups, companies, nonprofits, subDAOs, and early DAOs to
-      manage resources and smart contracts.
+      Gate access and define membership with NFTs that members receive once your
+      club has been deployed.
+    </Text>
+  </Box>
+);
+
+const sampleText2 = (
+  <Box flex='1' maxW={{ md: 'md' }} mx='3'>
+    <Heading as='h1' size='3xl' fontWeight='black'>
+      Collaborate
+    </Heading>
+    <Text color='gray' mt='5' fontSize='xl'>
+      Track deposited assets and tokenize participation with fungible tokens
+      disbursed to club members. Use tokens to vote on and execute proposals.
+    </Text>
+  </Box>
+);
+
+const sampleText3 = (
+  <Box flex='1' maxW={{ md: 'md' }} mx='3'>
+    <Heading as='h1' size='3xl' fontWeight='black'>
+      Extensible
+    </Heading>
+    <Text color='gray' mt='5' fontSize='xl'>
+      Deploy extensions to seemlessly intract with smart contracts across the
+      Stacks ecosystem.
+    </Text>
+  </Box>
+);
+
+const sampleText4 = (
+  <Box flex='1' maxW={{ md: 'md' }} mx='3'>
+    <Heading as='h1' size='3xl' fontWeight='black'>
+      Codeless
+    </Heading>
+    <Text color='gray' mt='5' fontSize='xl'>
+      Deploy smart contracts that allow to manage your club
     </Text>
   </Box>
 );
@@ -46,36 +75,43 @@ const sampleImage2 = (
   />
 );
 
+const noImage = <Box />;
+
+const navTitle = 'TEAMS';
+
 const topHeroProps = {
   title: 'StackerDAO Teams',
   description:
     'Primitive for groups, companies, nonprofits, subDAOs, and early DAOs to manage resources and smart contracts.',
   link: '/create',
   linkText: 'Coming soon',
+  color: 'blue',
 };
 
 const cardGridProps = [
-  sampleText,
+  sampleText1,
+  noImage,
+  noImage,
+  sampleText2,
+  sampleText3,
   sampleImage,
-  sampleImage,
-  sampleText,
-  sampleText,
+  sampleText4,
 ];
 
 const featureListProps = [
   {
     name: 'Feature 1',
-    description: 'This is the feature description',
+    description: 'Create your club and set fundraising goals.',
     icon: Cog6Tooth,
   },
   {
     name: 'Feature 2',
-    description: 'This is the feature description',
+    description: 'Invite members.',
     icon: UserGroup,
   },
   {
     name: 'Feature 3',
-    description: 'This is the feature description',
+    description: 'Codelessly deploy smart contracts.',
     icon: RocketLaunch,
   },
 ];
@@ -101,6 +137,7 @@ const getStartedButton = (
 );
 
 export default function Teams() {
+  const scrollPosition = useScrollPosition();
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -109,6 +146,27 @@ export default function Teams() {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
+      <Box as='section'>
+        <Nav bg='dark.900'>
+          <HStack justify='space-between' h='40px'>
+            <Link href='/'>
+              <LogoIcon
+                alt='logo'
+                url='https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png'
+                cursor='pointer'
+                height='35px'
+              />
+            </Link>
+            <Box as='section' w='100%'>
+              {scrollPosition < 400 ? (
+                <MainNavbar />
+              ) : (
+                <LandingNavbar navTitle={navTitle} />
+              )}
+            </Box>
+          </HStack>
+        </Nav>
+      </Box>
       <Box
         backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
         opacity='1'
@@ -132,8 +190,7 @@ export default function Teams() {
           />
         </Container>
       </Box>
+      <Footer />
     </motion.div>
   );
 }
-
-Teams.getLayout = (page: any) => <MainLayout>{page}</MainLayout>;

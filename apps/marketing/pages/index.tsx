@@ -19,6 +19,7 @@ import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { MainLayout } from '@components/layout';
 import { LightningBolt, LogoIcon } from 'ui/components/icons';
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa';
+import { MainNavbar, Footer } from '@components/navigation';
 
 const features = [
   {
@@ -54,6 +55,7 @@ export default function Web() {
         backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
         opacity='1'
       >
+        <MainNavbar />
         <Box as='section' color='white' py='12.5rem' h='full'>
           <Box
             maxW={{ base: 'xl', md: '5xl' }}
@@ -314,8 +316,7 @@ export default function Web() {
           </Box>
         </Box>
       </Box>
+      <Footer />
     </motion.div>
   );
 }
-
-Web.getLayout = (page: any) => <MainLayout>{page}</MainLayout>;

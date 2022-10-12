@@ -2,67 +2,51 @@ import React from 'react';
 import Link from 'next/link';
 import {
   Box,
+  Container,
   Button,
   ButtonGroup,
-  Container,
   HStack,
   IconButton,
   useBreakpointValue,
-  Heading,
+  Text,
+  Flex,
 } from 'ui';
+import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 import { LightningBolt, LogoIcon } from 'ui/components/icons';
 
-export const LandingNavbar = (props) => {
-  const { title } = props;
+export const LandingNavbar = (props: any) => {
+  const { navTitle } = props;
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   return (
-    <Box as='section'>
-      <Box as='nav' bg='bg-surface' boxShadow='sm-dark'>
-        <Container py={{ base: '4', lg: '5' }} maxW='7xl'>
-          <HStack spacing='10' justify='space-between'>
-            <Link href='/'>
-              <LogoIcon
-                alt='logo'
-                url='https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png'
-                cursor='pointer'
-                height='35px'
-              />
-            </Link>
-            <Heading
-              as='h2'
-              size='md'
-              fontWeight='thin'
-              maxW='48rem'
-              mx='auto'
-              lineHeight='1.2'
-              letterSpacing='tight'
-            >
-              {title}
-            </Heading>
-            {isDesktop ? (
-              <Button
-                mt='8'
-                minW='14rem'
-                colorScheme='blue'
-                size='lg'
-                height='14'
-                px='8'
-                fontSize='md'
-                fontWeight='bold'
-              >
-                Get Started for free
+    <motion.div
+      variants={FADE_IN_VARIANTS}
+      initial={FADE_IN_VARIANTS.hidden}
+      animate={FADE_IN_VARIANTS.enter}
+      exit={FADE_IN_VARIANTS.exit}
+      transition={{ duration: 1, type: 'linear' }}
+    >
+      <HStack justify='space-between' id='hstack'>
+        <Text fontSize='xl' fontWeight='light' color='text-default' maxW='lg'>
+          TEAMS
+        </Text>
+        <HStack>
+          {isDesktop ? (
+            <ButtonGroup spacing='2' id='group'>
+              <Button variant='link'>
+                <Link href='/'>Docs</Link>
               </Button>
-            ) : (
-              <IconButton
-                variant='ghost'
-                icon={<LightningBolt fontSize='1.25rem' />}
-                aria-label='Open Menu'
-              />
-            )}
-          </HStack>
-        </Container>
-      </Box>
-    </Box>
+              <Button variant='default'>Get Started</Button>
+            </ButtonGroup>
+          ) : (
+            <IconButton
+              variant='ghost'
+              icon={<LightningBolt fontSize='1.25rem' />}
+              aria-label='Open Menu'
+            />
+          )}
+        </HStack>
+      </HStack>
+    </motion.div>
   );
 };
