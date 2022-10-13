@@ -5,6 +5,7 @@ export * from './DeployCoreButton';
 export * from './DeployGovernanceTokenButton';
 export * from './DeployICButton';
 export * from './DeployNFTButton';
+export * from './DeployProposalButton';
 export * from './DeploySubmissionButton';
 export * from './DeployVaultButton';
 export * from './DeployVotingButton';

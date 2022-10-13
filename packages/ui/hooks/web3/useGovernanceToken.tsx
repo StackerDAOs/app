@@ -26,7 +26,7 @@ export function useGovernanceToken() {
       return { address, name, symbol, totalSupply, balance };
     },
     {
-      enabled: !!governanceToken?.contract_address,
+      enabled: !!stxAddress && !!governanceToken?.contract_address,
     },
   );
 

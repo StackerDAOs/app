@@ -19,7 +19,7 @@ import {
   Text,
   VStack,
 } from 'ui';
-import { map, round, size } from 'lodash';
+import { defaultTo, map, round, size } from 'lodash';
 import { Card } from 'ui/components/cards';
 // import { SectionHeader } from 'ui/components/layout';
 import { AppLayout } from '@components/layout';
@@ -82,7 +82,10 @@ export default function Dashboard() {
     !dao?.data?.bootstrap_tx_id;
 
   const isActive =
-    dao?.data?.active && activationTransaction?.tx_status === 'success';
+    !dao?.isFetching &&
+    !dao?.isLoading &&
+    dao?.data?.active &&
+    activationTransaction?.tx_status === 'success';
   const onFinish = () => {
     console.log('onFinish');
   };
@@ -123,6 +126,7 @@ export default function Dashboard() {
     bootstrapStatus: string,
     activationStatus: string,
   ) => {
+    console.log({ bootstrapStatus, activationStatus });
     if (bootstrapStatus === 'success' && activationStatus === 'pending') {
       return (
         <>
@@ -202,42 +206,93 @@ export default function Dashboard() {
       );
     }
 
-    return (
-      <>
-        <GridItem colSpan={{ base: 2, md: 4 }}>
-          <Stack spacing='1'>
-            <HStack align='flex-start' spacing='4'>
-              <Circle bg='dark.500' size='10'>
-                <Icon as={LightningBolt} boxSize='6' color='primary.900' />
-              </Circle>
-              <Stack spacing='1' maxW='lg'>
-                <Heading size='md' fontWeight='regular'>
-                  You&apos;re all set!
-                </Heading>
-                <Text fontSize='md' fontWeight='thin' color='text-muted'>
-                  Once you decide to activate your club, {dao?.data?.name} will
-                  be open for deposits for ~ {dao?.data?.config?.durationInDays}{' '}
-                  days .
-                </Text>
-              </Stack>
-            </HStack>
-          </Stack>
-        </GridItem>
-        <GridItem colSpan={{ base: 2, md: 1 }}>
-          <InitializeClubButton
-            variant='primary'
-            isFullWidth
-            title='Start'
-            contractPrincipal={dao?.data?.contract_address}
-            bootstrapPrincipal={dao?.data?.bootstrap_address}
-            onSubmit={() => console.log('init!')}
-          />
-        </GridItem>
-      </>
-    );
+    if (bootstrapStatus === 'success') {
+      return (
+        <>
+          <GridItem colSpan={{ base: 2, md: 4 }}>
+            <Stack spacing='1'>
+              <HStack align='flex-start' spacing='4'>
+                <Circle bg='dark.500' size='10'>
+                  <Icon as={LightningBolt} boxSize='6' color='primary.900' />
+                </Circle>
+                <Stack spacing='1' maxW='lg'>
+                  <Heading size='md' fontWeight='regular'>
+                    You&apos;re all set!
+                  </Heading>
+                  <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                    Once you decide to activate your club, {dao?.data?.name}{' '}
+                    will be open for deposits for ~{' '}
+                    {dao?.data?.config?.durationInDays} days .
+                  </Text>
+                </Stack>
+              </HStack>
+            </Stack>
+          </GridItem>
+          <GridItem colSpan={{ base: 2, md: 1 }}>
+            <InitializeClubButton
+              variant='primary'
+              isFullWidth
+              title='Start'
+              contractPrincipal={dao?.data?.contract_address}
+              bootstrapPrincipal={dao?.data?.bootstrap_address}
+              onSubmit={() => console.log('init!')}
+            />
+          </GridItem>
+        </>
+      );
+    }
+    return null;
   };
 
-  if (dao?.isLoading) {
+  const renderStatusCard = (
+    <Stack spacing='8' mt='6'>
+      <motion.div
+        variants={FADE_IN_VARIANTS}
+        initial={FADE_IN_VARIANTS.hidden}
+        animate={FADE_IN_VARIANTS.enter}
+        exit={FADE_IN_VARIANTS.exit}
+        transition={{ duration: 0.25, type: 'linear' }}
+      >
+        <Stack spacing='6'>
+          <Card h='fit-content' bg='dark.700'>
+            <Stack spacing='0'>
+              <Grid
+                templateColumns='repeat(5, 1fr)'
+                gap={{ base: 0, md: 8 }}
+                alignItems='center'
+                justifyItems='space-between'
+              >
+                <GridItem colSpan={5}>
+                  <Stack
+                    px={{ base: '6', md: '6' }}
+                    py={{ base: '6', md: '6' }}
+                    spacing='2'
+                  >
+                    <Stack mt='2' spacing='3'>
+                      <Stack spacing='0'>
+                        <Grid
+                          templateColumns='repeat(5, 1fr)'
+                          gap={8}
+                          alignItems='center'
+                        >
+                          {renderStatusComponent(
+                            bootstrapTransaction?.tx_status,
+                            activationTransaction?.tx_status,
+                          )}
+                        </Grid>
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                </GridItem>
+              </Grid>
+            </Stack>
+          </Card>
+        </Stack>
+      </motion.div>
+    </Stack>
+  );
+
+  if (dao?.isLoading && dao?.isFetching) {
     return null;
   }
 
@@ -873,53 +928,7 @@ export default function Dashboard() {
     >
       <Wrapper>
         <Stack spacing='6'>
-          {!isActive && (
-            <Stack spacing='8' mt='6'>
-              <motion.div
-                variants={FADE_IN_VARIANTS}
-                initial={FADE_IN_VARIANTS.hidden}
-                animate={FADE_IN_VARIANTS.enter}
-                exit={FADE_IN_VARIANTS.exit}
-                transition={{ duration: 0.25, type: 'linear' }}
-              >
-                <Stack spacing='6'>
-                  <Card h='fit-content' bg='dark.700'>
-                    <Stack spacing='0'>
-                      <Grid
-                        templateColumns='repeat(5, 1fr)'
-                        gap={{ base: 0, md: 8 }}
-                        alignItems='center'
-                        justifyItems='space-between'
-                      >
-                        <GridItem colSpan={5}>
-                          <Stack
-                            px={{ base: '6', md: '6' }}
-                            py={{ base: '6', md: '6' }}
-                            spacing='2'
-                          >
-                            <Stack mt='2' spacing='3'>
-                              <Stack spacing='0'>
-                                <Grid
-                                  templateColumns='repeat(5, 1fr)'
-                                  gap={8}
-                                  alignItems='center'
-                                >
-                                  {renderStatusComponent(
-                                    bootstrapTransaction?.tx_status,
-                                    activationTransaction?.tx_status,
-                                  )}
-                                </Grid>
-                              </Stack>
-                            </Stack>
-                          </Stack>
-                        </GridItem>
-                      </Grid>
-                    </Stack>
-                  </Card>
-                </Stack>
-              </motion.div>
-            </Stack>
-          )}
+          {isActive ? null : renderStatusCard}
           <Stack
             spacing='8'
             pb='16'
@@ -958,10 +967,13 @@ export default function Dashboard() {
                       Amount raised
                     </Text>
                     <Heading mt='0 !important' size='sm' fontWeight='regular'>
-                      {ustxToStx(
-                        String(
-                          investmentClub?.data?.currentRound?.raisedAmount,
+                      {defaultTo(
+                        ustxToStx(
+                          String(
+                            investmentClub?.data?.currentRound?.raisedAmount,
+                          ),
                         ),
+                        '0',
                       )}{' '}
                       STX
                     </Heading>
@@ -971,8 +983,13 @@ export default function Dashboard() {
                       Funding goal
                     </Text>
                     <Heading mt='0 !important' size='sm' fontWeight='regular'>
-                      {ustxToStx(
-                        String(investmentClub?.data?.currentRound?.fundingGoal),
+                      {defaultTo(
+                        ustxToStx(
+                          String(
+                            investmentClub?.data?.currentRound?.fundingGoal,
+                          ),
+                        ),
+                        '0',
                       )}{' '}
                       STX
                     </Heading>
@@ -1093,9 +1110,12 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          {convertToken(
-                            String(governanceToken?.data?.totalSupply),
-                            6,
+                          {defaultTo(
+                            convertToken(
+                              String(governanceToken?.data?.totalSupply),
+                              6,
+                            ),
+                            '0',
                           )}{' '}
                           {governanceToken?.data?.symbol}
                         </Heading>
@@ -1113,9 +1133,12 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          {convertToken(
-                            String(governanceToken?.data?.balance),
-                            6,
+                          {defaultTo(
+                            convertToken(
+                              String(governanceToken?.data?.balance),
+                              6,
+                            ),
+                            '0',
                           )}{' '}
                           {governanceToken?.data?.symbol}
                         </Heading>
@@ -1135,10 +1158,14 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          {ustxToStx(
-                            String(
-                              investmentClub?.data?.currentRound?.raisedAmount,
+                          {defaultTo(
+                            ustxToStx(
+                              String(
+                                investmentClub?.data?.currentRound
+                                  ?.raisedAmount,
+                              ),
                             ),
+                            '0',
                           )}{' '}
                           STX
                         </Heading>
@@ -1156,12 +1183,15 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          {round(
-                            getPercentage(
-                              Number(governanceToken?.data?.totalSupply),
-                              Number(governanceToken?.data?.balance),
+                          {defaultTo(
+                            round(
+                              getPercentage(
+                                Number(governanceToken?.data?.totalSupply),
+                                Number(governanceToken?.data?.balance),
+                              ),
+                              2,
                             ),
-                            2,
+                            '0',
                           )}
                           %
                         </Heading>

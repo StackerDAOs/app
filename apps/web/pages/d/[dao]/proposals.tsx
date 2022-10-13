@@ -20,7 +20,7 @@ import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { EmptyState } from '@components/misc';
 import { Card } from 'ui/components/cards';
-import { capitalize, map, truncate, size } from 'lodash';
+import { capitalize, map, size } from 'lodash';
 import { ArrowRight } from 'ui/components/icons';
 
 const MotionGrid = motion(SimpleGrid);
@@ -120,16 +120,17 @@ export default function Proposals() {
                   animate={FADE_IN_VARIANTS.enter}
                   exit={FADE_IN_VARIANTS.exit}
                   transition={{ duration: 0.5, type: 'linear' }}
-                  columns={{ base: 1, md: 2, lg: 3 }}
-                  spacing='3'
+                  columns={{ base: 1, md: 2, lg: 2 }}
+                  spacing='6'
                   color='white'
                 >
                   {map(
                     proposals?.data,
                     ({
+                      title,
+                      description,
                       contract_address: contractAddress,
                       club: { slug },
-                      submission: { title, description },
                     }) => (
                       <motion.div
                         variants={FADE_IN_VARIANTS}
@@ -147,11 +148,12 @@ export default function Proposals() {
                         <Link href={`/d/${slug}/proposals/${contractAddress}`}>
                           <Card
                             bg='base.900'
-                            minH='auto'
+                            display='flex'
+                            alignItems='flex-start'
+                            minH='200px'
                             position='relative'
                             px={{ base: '6', md: '6' }}
                             py={{ base: '6', md: '6' }}
-                            justifyContent='center'
                             onMouseEnter={() => setHovered(true)}
                             onMouseLeave={() => setHovered(false)}
                             _hover={{
@@ -176,7 +178,7 @@ export default function Proposals() {
                                       size='sm'
                                       py='1'
                                       px='3'
-                                      borderRadius='lg'
+                                      borderRadius='3xl'
                                     >
                                       Pending
                                     </Badge>
@@ -218,11 +220,16 @@ export default function Proposals() {
                                         fontWeight='regular'
                                         fontSize='sm'
                                         color='gray'
+                                        overflow='hidden'
+                                        textOverflow='ellipsis'
+                                        style={{
+                                          display: '-webkit-box',
+                                          WebkitLineClamp: 2,
+                                          lineClamp: 2,
+                                          WebkitBoxOrient: 'vertical',
+                                        }}
                                       >
-                                        {description &&
-                                          truncate(description, {
-                                            length: 70,
-                                          })}
+                                        {description}
                                       </Text>
                                     </Stack>
                                   </HStack>

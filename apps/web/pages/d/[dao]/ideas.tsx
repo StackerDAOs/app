@@ -27,7 +27,7 @@ export default function Ideas() {
   const [filter, setFilter] = React.useState('');
   const submissions = useSubmissions(filter);
 
-  if (submissions.isLoading || submissions?.isFetching || submissions?.isIdle) {
+  if (submissions.isLoading || submissions?.isIdle) {
     return null;
   }
 

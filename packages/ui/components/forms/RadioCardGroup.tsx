@@ -7,6 +7,7 @@ import {
   Icon,
   Stack,
   StackProps,
+  SimpleGrid,
   useId,
   useRadio,
   useRadioGroup,
@@ -70,7 +71,7 @@ export const RadioCard = (props: RadioCardProps) => {
       cursor='pointer'
       borderRadius='lg'
       borderWidth='1px'
-      bg={state.isChecked ? 'dark.700' : 'dark.900'}
+      bg={state.isChecked ? 'dark.500' : 'dark.900'}
       borderColor={state.isChecked ? 'primary.900' : 'dark.500'}
       {...labelProps}
       sx={{

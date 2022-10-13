@@ -121,9 +121,7 @@ export async function getProposals({ queryKey }: any) {
   const [_, organizationId] = queryKey;
   const query = supabase
     .from('proposals')
-    .select(
-      '*, club:clubs!inner(id, name, slug), submission:submissions!inner(id, title, description, body, submitted_by, contract_address)',
-    )
+    .select('*, club:clubs!inner(id, name, slug)')
     .order('created_at', { ascending: false })
     .eq('clubs.id', organizationId);
   try {
@@ -372,7 +370,7 @@ export async function getTokenId(principal: string, assetIdentifier: string) {
       return Number(token?.value);
     }
 
-    return 1;
+    return 0;
   } catch (e: any) {
     console.error({ e });
   }

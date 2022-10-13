@@ -112,6 +112,14 @@ export interface DepositProps extends ButtonProps {
   investmentClubAddress: string;
 }
 
+export interface DeployProposalProps extends ButtonProps {
+  title: string;
+  description: string;
+  body: string;
+  codeBody: string;
+  onDeploy: (data: any) => void;
+}
+
 export interface ProposeProps extends ButtonProps {
   text: string;
   proposalPrincipal: string;

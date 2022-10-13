@@ -18,6 +18,25 @@ type Club = {
   tx_id: string;
 };
 
+type Proposal = {
+  title: string;
+  description: string;
+  body: string;
+  contract_address: string;
+  tx_id: string;
+  proposed_by: string;
+  club_id: string;
+  post_conditions: object;
+};
+
+type Submission = {
+  title: string;
+  description: string;
+  body: string;
+  submitted_by: string;
+  club_id: string;
+};
+
 export async function createClub(club: Club) {
   try {
     const { data, error } = await supabase.from('clubs').insert([{ ...club }]);
@@ -119,6 +138,48 @@ export const useActivateClub = () => {
   return useMutation(activateClub, {
     onSuccess: () => {
       queryClient.invalidateQueries('clubs');
+    },
+  });
+};
+
+export async function createSubmission(submission: Submission) {
+  try {
+    const { data, error } = await supabase
+      .from('submissions')
+      .insert([{ ...submission }]);
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useCreateSubmission = () => {
+  const queryClient = useQueryClient();
+  return useMutation(createSubmission, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('submissions');
+    },
+  });
+};
+
+export async function createProposal(proposal: Proposal) {
+  try {
+    const { data, error } = await supabase
+      .from('proposals')
+      .insert([{ ...proposal }]);
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useCreateProposal = () => {
+  const queryClient = useQueryClient();
+  return useMutation(createProposal, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('proposals');
     },
   });
 };

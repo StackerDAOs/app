@@ -10,7 +10,7 @@ import {
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { getExplorerLink, findExtension } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
-import { ProposalDrawer } from '@components/drawers';
+import { IdeaDrawer, ProposalDrawer } from '@components/drawers';
 import { useDAO } from 'ui/hooks';
 
 import { Wrapper } from '../containers';
@@ -290,7 +290,7 @@ export const ProposalHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer title='Create proposal' variant='default' />
+            <IdeaDrawer title='Create idea' variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
