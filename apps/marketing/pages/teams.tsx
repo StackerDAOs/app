@@ -3,7 +3,12 @@ import { Box, Heading, Text, Image, HStack, Stack } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container } from 'ui/components/layout';
 import { RocketLaunch, UserGroup, Cog6Tooth } from 'ui/components/icons';
-import { CardGrid, FeatureList, BottomHero, TopHero } from '@components/custom';
+import {
+  CardGrid,
+  FeatureList,
+  BottomHero,
+  TopHero,
+} from '@components/marketing';
 import { useScrollPosition } from 'ui/hooks/react';
 import { MainNavbar, LandingNavbar, Footer } from '@components/navigation';
 import { LogoIcon } from 'ui/components/icons';

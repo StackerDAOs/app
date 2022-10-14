@@ -62,7 +62,16 @@ export const FeatureList = (props: any) => {
         justifyContent='center'
         alignItems='center'
       >
-        <GetStartedButton />
+        <GetStartedButton
+          maxW='14rem'
+          bg='light.900'
+          color='dark.500'
+          height='14'
+          px='8'
+          fontSize='md'
+          fontWeight='bold'
+          borderRadius='9999px'
+        />
       </Box>
     </Stack>
   );

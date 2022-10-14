@@ -1,11 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { GetStartedButton } from '@components/buttons';
-import { Button, ButtonGroup, HStack, Text } from 'ui';
+import { Button, ButtonGroup, HStack, Text, useBreakpointValue } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 export const LandingNavbar = (props: any) => {
   const { navTitle } = props;
+  const isDesktop = useBreakpointValue({ base: false, lg: true });
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -18,14 +19,40 @@ export const LandingNavbar = (props: any) => {
         <Text fontSize='xl' fontWeight='light' color='text-default' maxW='lg'>
           {navTitle}
         </Text>
-        <HStack>
-          <ButtonGroup spacing='2' id='group'>
-            <Button variant='link'>
-              <Link href='/'>Docs</Link>
-            </Button>
-            <GetStartedButton />
-          </ButtonGroup>
-        </HStack>
+        {isDesktop ? (
+          <HStack>
+            <ButtonGroup spacing='2' id='group'>
+              <Button variant='link'>
+                <Link href='/'>Docs</Link>
+              </Button>
+              <GetStartedButton
+                maxW='14rem'
+                bg='light.900'
+                color='dark.500'
+                height='14'
+                px='8'
+                fontSize='md'
+                fontWeight='bold'
+                borderRadius='9999px'
+              />
+            </ButtonGroup>
+          </HStack>
+        ) : (
+          <HStack>
+            <ButtonGroup spacing='2'>
+              <Button variant='link'>
+                <Link href='/'>Docs</Link>
+              </Button>
+              <GetStartedButton
+                size='sm'
+                bg='light.900'
+                color='dark.500'
+                fontWeight='bold'
+                borderRadius='9999px'
+              />
+            </ButtonGroup>
+          </HStack>
+        )}
       </HStack>
     </motion.div>
   );

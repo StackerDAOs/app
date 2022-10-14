@@ -33,7 +33,16 @@ export const BottomHero = (props: BottomHeroProps) => {
               </Stack>
             </Stack>
             <Stack direction={{ base: 'column', md: 'row' }} spacing='3'>
-              <GetStartedButton />
+              <GetStartedButton
+                maxW='14rem'
+                bg='light.900'
+                color='dark.500'
+                height='14'
+                px='8'
+                fontSize='md'
+                fontWeight='bold'
+                borderRadius='9999px'
+              />
             </Stack>
           </Stack>
           <Box
