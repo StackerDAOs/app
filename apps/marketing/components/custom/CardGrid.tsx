@@ -1,16 +1,16 @@
-import { Box, Stack, Container, Text, SimpleGrid, Button } from 'ui';
+import { Box, SimpleGrid } from 'ui';
 import * as React from 'react';
+import { GetStartedButton } from '@components/buttons';
 
 interface CardGridProps {
   cardGridProps: any;
-  getStartedButton: any;
 }
 
 export const CardGrid = (props: CardGridProps) => {
-  const { cardGridProps, getStartedButton } = props;
+  const { cardGridProps } = props;
   return (
     <Box>
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={1}>
+      <SimpleGrid columns={1} spacing={20}>
         {cardGridProps.map((x: any, index: any) => (
           <Box py={{ base: '2', md: '4' }} key={index}>
             {x}
@@ -23,7 +23,7 @@ export const CardGrid = (props: CardGridProps) => {
           justifyContent='center'
           alignItems='center'
         >
-          {getStartedButton}
+          <GetStartedButton />
         </Box>
       </SimpleGrid>
     </Box>

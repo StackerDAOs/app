@@ -1,17 +1,30 @@
 import Link from 'next/link';
-import { Box, Heading, Text, Image, HStack, Button } from 'ui';
+import { Box, Heading, Text, Image, HStack, Stack } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container } from 'ui/components/layout';
 import { RocketLaunch, UserGroup, Cog6Tooth } from 'ui/components/icons';
-import { CardGrid, FeatureList, BottomHero, TopHero } from '@components/nate';
+import { CardGrid, FeatureList, BottomHero, TopHero } from '@components/custom';
 import { useScrollPosition } from 'ui/hooks/react';
 import { MainNavbar, LandingNavbar, Footer } from '@components/navigation';
 import { LogoIcon } from 'ui/components/icons';
 import { Nav } from '@components/containers';
 
+// Title of page that will appear next to DAO logo on scroll
+const navTitle = 'TEAMS';
+
+// Copy for Top Hero
+const topHeroProps = {
+  title: 'StackerDAO Teams',
+  description:
+    'Primitive for groups, companies, nonprofits, subDAOs, and early DAOs to manage resources and smart contracts.',
+  link: '/create',
+  linkText: 'Coming soon',
+  color: 'blue',
+};
+
 const sampleText1 = (
-  <Box flex='1' maxW={{ md: 'md' }} mx='3'>
-    <Heading as='h1' size='3xl' fontWeight='black'>
+  <Box flex='1' mx='3'>
+    <Heading as='h1' size='4xl' fontWeight='black'>
       Accessible
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
@@ -21,9 +34,10 @@ const sampleText1 = (
   </Box>
 );
 
+// Card Grid Copy
 const sampleText2 = (
-  <Box flex='1' maxW={{ md: 'md' }} mx='3'>
-    <Heading as='h1' size='3xl' fontWeight='black'>
+  <Box flex='1' mx='3'>
+    <Heading as='h1' size='4xl' fontWeight='black'>
       Collaborate
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
@@ -34,8 +48,8 @@ const sampleText2 = (
 );
 
 const sampleText3 = (
-  <Box flex='1' maxW={{ md: 'md' }} mx='3'>
-    <Heading as='h1' size='3xl' fontWeight='black'>
+  <Box flex='1' mx='3'>
+    <Heading as='h1' size='4xl' fontWeight='black'>
       Extensible
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
@@ -45,58 +59,7 @@ const sampleText3 = (
   </Box>
 );
 
-const sampleText4 = (
-  <Box flex='1' maxW={{ md: 'md' }} mx='3'>
-    <Heading as='h1' size='3xl' fontWeight='black'>
-      Codeless
-    </Heading>
-    <Text color='gray' mt='5' fontSize='xl'>
-      Deploy smart contracts that allow to manage your club
-    </Text>
-  </Box>
-);
-
-const sampleImage = (
-  <Image
-    pos='relative'
-    marginEnd={{ base: '0', lg: '-16rem' }}
-    w='60rem'
-    src='/images/teams.png'
-    alt='Screenshot for Form builder'
-  />
-);
-
-const sampleImage2 = (
-  <Image
-    boxSize='full'
-    objectFit='cover'
-    src='/images/stxImage.png'
-    alt='Screenshot for Stx'
-  />
-);
-
-const noImage = <Box />;
-
-const navTitle = 'TEAMS';
-
-const topHeroProps = {
-  title: 'StackerDAO Teams',
-  description:
-    'Primitive for groups, companies, nonprofits, subDAOs, and early DAOs to manage resources and smart contracts.',
-  link: '/create',
-  linkText: 'Coming soon',
-  color: 'blue',
-};
-
-const cardGridProps = [
-  sampleText1,
-  noImage,
-  noImage,
-  sampleText2,
-  sampleText3,
-  sampleImage,
-  sampleText4,
-];
+const cardGridProps = [sampleText1, sampleText2, sampleText3];
 
 const featureListProps = [
   {
@@ -121,19 +84,13 @@ const bottomHeroProps = {
   description: "Add Extensions to Meet your Teams's Needs",
 };
 
-const getStartedButton = (
-  <Button
-    minW='14rem'
-    bg='light.900'
-    color='dark.500'
-    size='lg'
-    height='14'
-    px='8'
-    fontSize='md'
-    fontWeight='bold'
-  >
-    Get Started
-  </Button>
+const bottomHeroImage = (
+  <Image
+    boxSize='full'
+    objectFit='cover'
+    src='/images/stxImage.png'
+    alt='Screenshot for Stx'
+  />
 );
 
 export default function Teams() {
@@ -173,21 +130,14 @@ export default function Teams() {
       >
         <Container h='full' maxW='5xl'>
           <TopHero topHeroProps={topHeroProps} />
-          <Box>
-            <CardGrid
-              cardGridProps={cardGridProps}
-              getStartedButton={getStartedButton}
+          <Stack spacing='20'>
+            <CardGrid cardGridProps={cardGridProps} />
+            <FeatureList featureListProps={featureListProps} />
+            <BottomHero
+              bottomHeroProps={bottomHeroProps}
+              bottomHeroImage={bottomHeroImage}
             />
-          </Box>
-          <FeatureList
-            featureListProps={featureListProps}
-            getStartedButton={getStartedButton}
-          />
-          <BottomHero
-            bottomHeroProps={bottomHeroProps}
-            getStartedButton={getStartedButton}
-            bottomHeroImage={sampleImage2}
-          />
+          </Stack>
         </Container>
       </Box>
       <Footer />

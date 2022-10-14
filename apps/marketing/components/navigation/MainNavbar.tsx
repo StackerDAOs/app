@@ -4,12 +4,15 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Container,
   HStack,
   IconButton,
   useBreakpointValue,
+  Menu,
+  MenuButton,
+  MenuList,
+  Stack,
 } from 'ui';
-import { LightningBolt, LogoIcon } from 'ui/components/icons';
+import { LightningBolt } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 export const MainNavbar = () => {
@@ -37,11 +40,27 @@ export const MainNavbar = () => {
               </Link>
             </ButtonGroup>
           ) : (
-            <IconButton
-              variant='ghost'
-              icon={<LightningBolt fontSize='1.25rem' />}
-              aria-label='Open Menu'
-            />
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                aria-label='Open Menu'
+                icon={<LightningBolt fontSize='1.25rem' />}
+                variant='ghost'
+              />
+              <MenuList bg='dark.900'>
+                <Stack justify='right' spacing='3'>
+                  <Link href='/teams'>
+                    <Button variant='link'>Teams</Button>
+                  </Link>
+                  <Link href='/clubs'>
+                    <Button variant='link'>Investment Clubs</Button>
+                  </Link>
+                  <Link href='/daos'>
+                    <Button variant='link'>DAOs</Button>
+                  </Link>
+                </Stack>
+              </MenuList>
+            </Menu>
           )}
         </HStack>
       </Box>

@@ -16,7 +16,7 @@ export const TopHero = (props: any) => {
     <SimpleGrid columns={1} spacing='3'>
       <Stack
         spacing='4'
-        h='calc(100vh - 4vh)'
+        h='calc(100vh - 10vh)'
         justify='center'
         align='center'
         textAlign='center'

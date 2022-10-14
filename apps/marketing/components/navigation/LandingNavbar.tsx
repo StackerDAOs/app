@@ -1,23 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
-import {
-  Box,
-  Container,
-  Button,
-  ButtonGroup,
-  HStack,
-  IconButton,
-  useBreakpointValue,
-  Text,
-  Flex,
-} from 'ui';
+import { GetStartedButton } from '@components/buttons';
+import { Button, ButtonGroup, HStack, Text } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-
-import { LightningBolt, LogoIcon } from 'ui/components/icons';
 
 export const LandingNavbar = (props: any) => {
   const { navTitle } = props;
-  const isDesktop = useBreakpointValue({ base: false, lg: true });
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -28,23 +16,15 @@ export const LandingNavbar = (props: any) => {
     >
       <HStack justify='space-between' id='hstack'>
         <Text fontSize='xl' fontWeight='light' color='text-default' maxW='lg'>
-          TEAMS
+          {navTitle}
         </Text>
         <HStack>
-          {isDesktop ? (
-            <ButtonGroup spacing='2' id='group'>
-              <Button variant='link'>
-                <Link href='/'>Docs</Link>
-              </Button>
-              <Button variant='default'>Get Started</Button>
-            </ButtonGroup>
-          ) : (
-            <IconButton
-              variant='ghost'
-              icon={<LightningBolt fontSize='1.25rem' />}
-              aria-label='Open Menu'
-            />
-          )}
+          <ButtonGroup spacing='2' id='group'>
+            <Button variant='link'>
+              <Link href='/'>Docs</Link>
+            </Button>
+            <GetStartedButton />
+          </ButtonGroup>
         </HStack>
       </HStack>
     </motion.div>
