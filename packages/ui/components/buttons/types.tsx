@@ -126,4 +126,9 @@ export interface ProposeProps extends ButtonProps {
   notDeployer: boolean;
 }
 
+export interface SubmitProposalProps extends ButtonProps {
+  proposalContractAddress: string;
+  onSubmit: (data: any) => void;
+}
+
 export type { ButtonProps, IconProps, IconButtonProps };

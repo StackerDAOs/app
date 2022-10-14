@@ -7,6 +7,7 @@ import {
   DrawerBody,
   DrawerOverlay,
   DrawerContent,
+  DrawerCloseButton,
   FormControl,
   FormLabel,
   Heading,
@@ -729,8 +730,7 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
                               1. Deploy proposal contract
                             </Heading>
                             <Text fontSize='sm' fontWeight='light' color='gray'>
-                              Once you decide to activate your club, will be
-                              open for deposits for ~ days .
+                              Deploy your proposal on-chain for submission.
                             </Text>
                           </Stack>
                         </HStack>
@@ -1033,9 +1033,15 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
         size='lg'
         onClose={onClose}
         initialFocusRef={focusField}
+        closeOnOverlayClick={false}
       >
         <DrawerOverlay />
         <DrawerContent bg='dark.900'>
+          <DrawerCloseButton
+            size='lg'
+            color='primary.900'
+            _focus={{ outline: 'none' }}
+          />
           <DrawerBody>
             {currentStep === 0 && SelectTemplate}
             {currentStep === 1 && selectedTemplate === '1' && VaultManagement}

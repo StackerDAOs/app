@@ -84,7 +84,7 @@ export default function Proposals() {
           >
             <Stack spacing='3'>
               <Text fontSize='md' fontWeight='light' color='text-muted'>
-                Explore Submissions
+                Explore
               </Text>
               <Heading mt='0 !important' size='lg' fontWeight='medium'>
                 Proposals
