@@ -29,7 +29,7 @@ const topHeroProps = {
 
 const sampleText1 = (
   <Box flex='1' mx='3'>
-    <Heading as='h1' size='4xl' fontWeight='black'>
+    <Heading as='h1' size='3xl' fontWeight='black'>
       Accessible
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
@@ -42,7 +42,7 @@ const sampleText1 = (
 // Card Grid Copy
 const sampleText2 = (
   <Box flex='1' mx='3'>
-    <Heading as='h1' size='4xl' fontWeight='black'>
+    <Heading as='h1' size='3xl' fontWeight='black'>
       Collaborate
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
@@ -54,7 +54,7 @@ const sampleText2 = (
 
 const sampleText3 = (
   <Box flex='1' mx='3'>
-    <Heading as='h1' size='4xl' fontWeight='black'>
+    <Heading as='h1' size='3xl' fontWeight='black'>
       Extensible
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>

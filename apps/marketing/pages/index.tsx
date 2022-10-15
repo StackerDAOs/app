@@ -1,9 +1,11 @@
+import Link from 'next/link';
 import {
   Box,
   Button,
   ButtonGroup,
   Container,
   Divider,
+  HStack,
   Flex,
   Heading,
   Icon,
@@ -20,6 +22,7 @@ import { MainLayout } from '@components/layout';
 import { LightningBolt, LogoIcon } from 'ui/components/icons';
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa';
 import { MainNavbar, Footer } from '@components/navigation';
+import { Nav } from '@components/containers';
 
 const features = [
   {
@@ -55,7 +58,21 @@ export default function Web() {
         backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
         opacity='1'
       >
-        <MainNavbar />
+        <Nav bg='dark.900'>
+          <HStack justify='space-between' h='40px'>
+            <Link href='/'>
+              <LogoIcon
+                alt='logo'
+                url='https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png'
+                cursor='pointer'
+                height='35px'
+              />
+            </Link>
+            <Box as='section' w='100%'>
+              <MainNavbar />
+            </Box>
+          </HStack>
+        </Nav>
         <Box as='section' color='white' py='12.5rem' h='full'>
           <Box
             maxW={{ base: 'xl', md: '5xl' }}
