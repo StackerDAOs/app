@@ -2,70 +2,90 @@ import type { ButtonProps, IconProps, IconButtonProps } from '@chakra-ui/react';
 
 export interface BootstrapProps extends ButtonProps {
   title: string;
-  address: string;
+  contractPrincipal: string;
+  bootstrapPrincipal: string;
+  onSubmit?: (data: any) => void;
 }
 
 export interface DeployClubProps extends ButtonProps {
   name: string;
   slug: string;
-  onFinish: (data: any) => void;
+  config: {
+    description: string;
+    tokenSymbol: string;
+    nftMembershipPass: string;
+    memberAddresses: string[];
+    durationInDays: string;
+    minimumDeposit: string;
+  };
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployNFTProps extends ButtonProps {
+  coreDao: string;
   name: string;
   clubId: number;
   hasExtension: boolean;
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployGovernanceTokenProps extends ButtonProps {
+  coreDao: string;
   name: string;
+  symbol: string;
   clubId: number;
   hasExtension: boolean;
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployVaultProps extends ButtonProps {
+  coreDao: string;
   name: string;
   clubId: number;
   hasExtension: boolean;
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployICProps extends ButtonProps {
+  coreDao: string;
   name: string;
   clubId: number;
   nftMembershipContractAddress: string;
   governanceTokenContractAddress: string;
   vaultContractAddress: string;
   hasExtension: boolean;
-  onFinish: (data: any) => void;
+  startWindow: string;
+  minimumDeposit: string;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeploySubmissionProps extends ButtonProps {
+  coreDao: string;
   name: string;
   clubId: number;
   nftMembershipContractAddress: string;
   investmentClubContractAddress: string;
   votingContractAddress: string;
   hasExtension: boolean;
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployVotingProps extends ButtonProps {
+  coreDao: string;
   name: string;
   clubId: number;
   nftMembershipContractAddress: string;
   governanceTokenContractAddress: string;
   hasExtension: boolean;
-  onFinish: (data: any) => void;
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployBootstrapProps extends ButtonProps {
-  name: string;
+  coreDao: string;
   slug: string;
   extensions: any[];
-  onFinish: (data: any) => void;
+  memberAddresses: string[];
+  onDeploy: (data: any) => void;
 }
 
 export interface DeployProposalProps extends ButtonProps {
@@ -89,12 +109,26 @@ export interface VoteProposalProps extends ButtonProps {
 export interface DepositProps extends ButtonProps {
   title: string;
   amount: string;
+  investmentClubAddress: string;
+}
+
+export interface DeployProposalProps extends ButtonProps {
+  title: string;
+  description: string;
+  body: string;
+  codeBody: string;
+  onDeploy: (data: any) => void;
 }
 
 export interface ProposeProps extends ButtonProps {
   text: string;
   proposalPrincipal: string;
   notDeployer: boolean;
+}
+
+export interface SubmitProposalProps extends ButtonProps {
+  proposalContractAddress: string;
+  onSubmit: (data: any) => void;
 }
 
 export type { ButtonProps, IconProps, IconButtonProps };

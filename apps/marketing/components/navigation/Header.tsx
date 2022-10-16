@@ -10,7 +10,6 @@ import {
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { getExplorerLink } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
-import Avatar from 'boring-avatars';
 import { ProposalDrawer } from '@components/drawers';
 
 import { Wrapper } from '../containers';
@@ -38,12 +37,6 @@ export const DashboardHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name='Bitcoin Days'
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
               <Heading size='2xl' fontWeight='black' color='light.900'>
                 Bitcoin Days{' '}
               </Heading>
@@ -97,6 +90,7 @@ export const DashboardHeader = () => {
           </Stack>
           <ButtonGroup>
             <ProposalDrawer
+              title='Create proposal'
               variant='default'
               isDisabled
               _hover={{ opacity: 0.9 }}
@@ -130,12 +124,6 @@ export const VaultHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name='Bitcoin Days'
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
               <Heading size='2xl' fontWeight='black' color='light.900'>
                 Bitcoin Days{' '}
                 <Text
@@ -198,6 +186,7 @@ export const VaultHeader = () => {
           </Stack>
           <ButtonGroup>
             <ProposalDrawer
+              title='Create proposal'
               isDisabled
               variant='default'
               _hover={{ opacity: 0.9 }}
@@ -231,12 +220,6 @@ export const ProposalHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name='Bitcoin Days'
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
               <Heading size='2xl' fontWeight='black' color='light.900'>
                 Bitcoin Days{' '}
                 <Text
@@ -299,6 +282,7 @@ export const ProposalHeader = () => {
           </Stack>
           <ButtonGroup>
             <ProposalDrawer
+              title='Create idea'
               isDisabled
               variant='default'
               _hover={{ opacity: 0.9 }}
@@ -332,12 +316,6 @@ export const VotingHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name='Bitcoin Days'
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
               <Heading size='2xl' fontWeight='black' color='light.900'>
                 Bitcoin Days{' '}
                 <Text
@@ -400,6 +378,7 @@ export const VotingHeader = () => {
           </Stack>
           <ButtonGroup>
             <ProposalDrawer
+              title='Create proposal'
               isDisabled
               variant='default'
               _hover={{ opacity: 0.9 }}
@@ -433,12 +412,6 @@ export const ExtensionsHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name='Bitcoin Days'
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
               <Heading size='2xl' fontWeight='black' color='light.900'>
                 Bitcoin Days{' '}
                 <Text
@@ -460,6 +433,7 @@ export const ExtensionsHeader = () => {
           </Stack>
           <ButtonGroup>
             <ProposalDrawer
+              title='Create proposal'
               isDisabled
               variant='default'
               _hover={{ opacity: 0.9 }}

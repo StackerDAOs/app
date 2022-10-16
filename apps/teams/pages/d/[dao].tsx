@@ -198,7 +198,9 @@ export default function Dashboard() {
                           color='light.900'
                           bg='dark.500'
                           onClick={() =>
-                            setDepositAmount(ustxToStx(data?.account?.balance))
+                            setDepositAmount(
+                              String(ustxToStx(data?.account?.balance)),
+                            )
                           }
                           _hover={{ opacity: 0.9 }}
                           _active={{ opacity: 1 }}
@@ -211,6 +213,7 @@ export default function Dashboard() {
                       <DepositButton
                         title='Deposit'
                         variant='primary'
+                        investmentClubAddress=''
                         amount={depositAmount}
                       />
                       <Text

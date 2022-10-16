@@ -5,9 +5,22 @@ import { submissionExtension } from 'utils/contracts';
 import { useCreateExtension } from 'api/clubs/mutations/extensions';
 import { DeploySubmissionProps } from 'ui/components/buttons/types';
 import { useTransaction } from 'ui/hooks';
-import { EXTENSION_TYPES } from 'api/constants';
+import { CLUB_EXTENSION_TYPES } from 'api/constants';
+import { getExplorerLink } from 'utils';
 
 export const DeploySubmissionButton = (props: DeploySubmissionProps) => {
+  const {
+    title,
+    coreDao,
+    name,
+    clubId,
+    hasExtension,
+    nftMembershipContractAddress,
+    investmentClubContractAddress,
+    votingContractAddress,
+    onDeploy,
+    ...rest
+  } = props;
   const [transactionId, setTransactionId] = React.useState('');
   const { openContractDeploy } = useOpenContractDeploy();
   const { stxAddress } = useAccount();
@@ -19,47 +32,53 @@ export const DeploySubmissionButton = (props: DeploySubmissionProps) => {
       try {
         setTransactionId(data.txId);
         createExtension.mutate({
-          club_id: props?.clubId,
-          contract_address: `${stxAddress}.${props?.name}`,
-          extension_type_id: EXTENSION_TYPES.SUBMISSION,
+          club_id: clubId,
+          contract_address: `${stxAddress}.${name}`,
+          extension_type_id: CLUB_EXTENSION_TYPES.SUBMISSION,
+          tx_id: data.txId,
         });
-        props?.onFinish(data);
+        onDeploy(data);
       } catch (e: any) {
         console.error({ e });
       }
     };
 
     const codeBody = submissionExtension(
-      props.nftMembershipContractAddress,
-      props.investmentClubContractAddress,
-      props.votingContractAddress,
+      coreDao,
+      nftMembershipContractAddress,
+      investmentClubContractAddress,
+      votingContractAddress,
       '144',
       '72',
       '144',
     );
     await openContractDeploy({
-      contractName: props?.name,
+      contractName: name,
       codeBody,
       onFinish,
     });
   }, [props]);
 
-  if (transaction.data?.tx_status === 'success' || props?.hasExtension) {
+  if (transaction.data?.tx_status === 'success' || hasExtension) {
+    const transactionLink = getExplorerLink(transaction?.data?.tx_id);
     return (
       <Button
-        {...props}
-        isDisabled
+        as='a'
+        variant='link'
+        textDecoration='underline'
+        href={transactionLink}
+        target='_blank'
         _hover={{ opacity: 0.9 }}
         _active={{ opacity: 1 }}
       >
-        Deployed
+        View transaction
       </Button>
     );
   }
 
   if (transaction.data?.tx_status === 'pending') {
     return (
-      <Button {...props} _hover={{ opacity: 0.9 }} _active={{ opacity: 1 }}>
+      <Button {...rest} _hover={{ opacity: 0.9 }} _active={{ opacity: 1 }}>
         <Spinner />
       </Button>
     );
@@ -67,12 +86,12 @@ export const DeploySubmissionButton = (props: DeploySubmissionProps) => {
 
   return (
     <Button
-      {...props}
+      {...rest}
       onClick={deploySubmission}
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
     >
-      {props?.title || 'Deploy'}
+      {title || 'Deploy'}
     </Button>
   );
 };

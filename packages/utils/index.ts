@@ -15,25 +15,28 @@ import {
   makeContractFungiblePostCondition,
   createAssetInfo,
 } from 'micro-stacks/transactions';
+import { isMainnet, isTestnet } from 'api/constants';
 
 export const contractPrincipal = (address: string): string[] =>
   address.split('.');
 
 export const getExplorerLink = (txId: string) =>
-  process.env.NODE_ENV !== 'production'
-    ? `http://localhost:8000/txid/${txId}?chain=testnet`
-    : `https://explorer.stacks.co/txid/${txId}?chain=mainnet`;
+  isMainnet
+    ? `https://explorer.stacks.co/txid/${txId}?chain=mainnet`
+    : isTestnet
+    ? `https://explorer.stacks.co/txid/${txId}?chain=testnet`
+    : `http://localhost:8000/txid/${txId}?chain=testnet`;
 
 export const truncate = (
   str: string,
-  firstCharCount = str.length,
+  firstCharCount = str?.length,
   endCharCount = 0,
   dotCount = 3,
 ) => {
   let convertedStr = '';
   convertedStr += str.substring(0, firstCharCount);
   convertedStr += '.'.repeat(dotCount);
-  convertedStr += str.substring(str.length - endCharCount, str.length);
+  convertedStr += str.substring(str?.length - endCharCount, str?.length);
   return convertedStr;
 };
 
@@ -47,8 +50,10 @@ export const tokenToNumber = (amount: number, decimals: number) => {
   return amount / convertWithDecimals;
 };
 
-export const ustxToStx = (uStx: string) =>
-  (parseInt(uStx) / 1000000).toLocaleString('en-US');
+export const ustxToStx = (uStx: string, toLocale: boolean = true) =>
+  toLocale
+    ? (parseInt(uStx) / 1000000).toLocaleString('en-US')
+    : parseInt(uStx) / 1000000;
 
 export const microToStacks = (
   amountInMicroStacks: string | number,
@@ -216,4 +221,29 @@ export function findExtension(extensions: Array<any[]>, type: string): any {
   return extensions?.find(
     (extension: any) => extension.extension_types.name === type,
   );
+}
+
+export function nameToSlug(name: string) {
+  return name?.toLowerCase().replace(/ /g, '-');
+}
+
+function hasWhiteSpace(s: string) {
+  return /\s/g.test(s);
+}
+
+export function nameToSymbol(name: string) {
+  if (hasWhiteSpace(name)) {
+    name = name.replace(/\s/g, '');
+    if (name?.length > 3) {
+      return name.toUpperCase().substring(0, 4);
+    } else {
+      return name.toUpperCase().substring(0, 2);
+    }
+  } else {
+    if (name?.length > 3) {
+      return name.toUpperCase().substring(0, 4);
+    } else {
+      return name.toUpperCase().substring(0, 2);
+    }
+  }
 }

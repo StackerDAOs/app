@@ -8,44 +8,50 @@ import {
   FungibleConditionCode,
   makeStandardSTXPostCondition,
 } from 'micro-stacks/transactions';
+import { useAuth } from 'ui/hooks';
 
 // Utils
 import { stxToUstx } from 'utils';
-import { vaultAddress } from 'api/constants';
 import { splitContractAddress } from '@stacks-os/utils';
 import { DepositProps } from './types';
 
 export const DepositButton = (props: DepositProps) => {
+  const { title, amount, investmentClubAddress, ...rest } = props;
+  const auth = useAuth();
   const { stxAddress } = useAccount();
-  const { openContractCall, isRequestPending } = useOpenContractCall();
-  const [contractAddress, contractName] = splitContractAddress(vaultAddress);
-
+  const { openContractCall } = useOpenContractCall();
+  const [contractAddress, contractName] = splitContractAddress(
+    investmentClubAddress ?? '',
+  );
   const deposit = React.useCallback(async () => {
     await openContractCall({
       contractAddress: contractAddress,
       contractName: contractName,
       functionName: 'deposit',
-      functionArgs: [uintCV(stxToUstx(props?.amount))],
+      functionArgs: [
+        uintCV(stxToUstx(amount)),
+        uintCV(auth?.data?.membershipPass?.tokenId as number),
+      ],
       postConditions: stxAddress
         ? [
             makeStandardSTXPostCondition(
-              stxAddress, // Post condition address
-              FungibleConditionCode.Equal, // Post condition code
-              stxToUstx(props?.amount), // Post condition amount
+              stxAddress,
+              FungibleConditionCode.Equal,
+              stxToUstx(amount),
             ),
           ]
         : [],
     });
-  }, [contractAddress, contractName, props]);
+  }, [contractAddress, contractName, props, auth?.data]);
 
   return (
     <Button
-      {...props}
+      {...rest}
       onClick={deposit}
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
     >
-      {isRequestPending ? <Spinner /> : props?.title || 'Init'}
+      {title || 'Deposit'}
     </Button>
   );
 };

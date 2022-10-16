@@ -8,11 +8,15 @@ export {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  Avatar,
+  AvatarGroup,
   Badge,
   Box,
   Button,
   ButtonGroup,
   Circle,
+  CircularProgress,
+  CircularProgressLabel,
   Container,
   Divider,
   Drawer,
@@ -86,6 +90,7 @@ export {
   useBreakpointValue,
   useClipboard,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 export type {
   BoxProps,

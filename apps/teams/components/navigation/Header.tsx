@@ -97,6 +97,7 @@ export const DashboardHeader = () => {
           </Stack>
           <ButtonGroup>
             <ProposalDrawer
+              title='Create proposal'
               variant='default'
               isDisabled
               _hover={{ opacity: 0.9 }}
@@ -198,6 +199,7 @@ export const VaultHeader = () => {
           </Stack>
           <ButtonGroup>
             <ProposalDrawer
+              title='Create proposal'
               isDisabled
               variant='default'
               _hover={{ opacity: 0.9 }}
@@ -299,6 +301,7 @@ export const ProposalHeader = () => {
           </Stack>
           <ButtonGroup>
             <ProposalDrawer
+              title='Create proposal'
               isDisabled
               variant='default'
               _hover={{ opacity: 0.9 }}
@@ -400,6 +403,7 @@ export const VotingHeader = () => {
           </Stack>
           <ButtonGroup>
             <ProposalDrawer
+              title='Create proposal'
               isDisabled
               variant='default'
               _hover={{ opacity: 0.9 }}
@@ -460,6 +464,7 @@ export const ExtensionsHeader = () => {
           </Stack>
           <ButtonGroup>
             <ProposalDrawer
+              title='Create proposal'
               isDisabled
               variant='default'
               _hover={{ opacity: 0.9 }}

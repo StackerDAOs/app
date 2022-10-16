@@ -1,4 +1,12 @@
 module.exports = {
   root: true,
-  extends: ["custom"],
+  extends: ['custom'],
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        'no-undef': 'off',
+      },
+    },
+  ],
 };

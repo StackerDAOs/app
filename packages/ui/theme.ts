@@ -57,6 +57,17 @@ const tokens = {
       800: '#624AF2',
       900: '#624AF2',
     },
+    'primary-accent': {
+      100: '#7301fa',
+      200: '#7301fa',
+      300: '#7301fa',
+      400: '#7301fa',
+      500: '#7301fa',
+      600: '#7301fa',
+      700: '#7301fa',
+      800: '#7301fa',
+      900: '#7301fa',
+    },
     secondary: {
       100: '#eb00ff',
       200: '#eb00ff',
@@ -239,6 +250,26 @@ const semanticTokens = {
       default: tokens.colors.primary['500'],
       _dark: tokens.colors.primary['500'],
     },
+    'primary-accent.900': {
+      default: tokens.colors['primary-accent']['900'],
+      _dark: tokens.colors['primary-accent']['900'],
+    },
+    'primary-accent.800': {
+      default: tokens.colors['primary-accent']['800'],
+      _dark: tokens.colors['primary-accent']['800'],
+    },
+    'primary-accent.700': {
+      default: tokens.colors['primary-accent']['700'],
+      _dark: tokens.colors['primary-accent']['700'],
+    },
+    'primary-accent.600': {
+      default: tokens.colors['primary-accent']['600'],
+      _dark: tokens.colors['primary-accent']['600'],
+    },
+    'primary-accent.500': {
+      default: tokens.colors['primary-accent']['500'],
+      _dark: tokens.colors['primary-accent']['500'],
+    },
     'secondary.900': {
       default: tokens.colors.secondary['900'],
       _dark: tokens.colors.secondary['900'],
@@ -357,9 +388,9 @@ const components = {
   },
   Button: {
     baseStyle: {
-      color: 'fg-default',
-      fontWeight: 'regular',
-      borderRadius: 'md',
+      color: 'light.900',
+      fontWeight: 'medium',
+      borderRadius: '3xl',
       _focus: {
         ring: '0px',
       },
@@ -392,15 +423,15 @@ const components = {
         color: 'dark.900',
         _hover: {
           bg: 'light.500',
+          _disabled: {
+            bg: 'light.500',
+          },
         },
         _active: {
           bg: 'light.500',
         },
         _disabled: {
           bg: 'light.500',
-          _hover: {
-            opacity: 0.4,
-          },
         },
       },
       solid: {
@@ -430,6 +461,12 @@ const components = {
         _active: {
           bg: 'btn-primary-selected-bg',
           borderColor: 'btn-primary-active-border',
+        },
+        _disabled: {
+          bg: 'btn-primary-bg',
+          _hover: {
+            opacity: 0.4,
+          },
         },
       },
       link: {
@@ -502,36 +539,36 @@ const components = {
       boxShadow: 'none',
       control: {
         boxShadow: 'none',
-        borderColor: '#5a44de',
+        borderColor: 'dark.500',
         _checked: {
           boxShadow: 'none',
-          bg: '#5a44de',
-          borderColor: '#5a44de',
-          color: '#0a0a0b',
+          bg: 'primary.900',
+          borderColor: 'primary.900',
+          color: 'dark.500',
           _hover: {
             boxShadow: 'none',
-            bg: '#5a44de',
-            borderColor: '#5a44de',
-            color: '#0a0a0b',
+            bg: 'primary.900',
+            borderColor: 'primary.900',
+            color: 'dark.500',
           },
           _focus: {
             boxShadow: 'none',
-            bg: '#5a44de',
-            borderColor: '#5a44de',
-            color: '#0a0a0b',
+            bg: 'primary.900',
+            borderColor: 'primary.900',
+            color: 'dark.500',
           },
         },
         _focus: {
           boxShadow: 'none',
-          bg: '#0a0a0b',
-          borderColor: '#5a44de',
-          color: '#0a0a0b',
+          bg: 'dark.500',
+          borderColor: 'primary.900',
+          color: 'dark.500',
         },
         _hover: {
           boxShadow: 'none',
-          bg: '#0a0a0b',
-          borderColor: '#5a44de',
-          color: '#0a0a0b',
+          bg: 'dark.500',
+          borderColor: 'primary.900',
+          color: 'dark.500',
         },
       },
     },

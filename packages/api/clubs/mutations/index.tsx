@@ -6,7 +6,35 @@ type Club = {
   contract_address: string;
   creator_address: string | undefined;
   slug: string;
-  type: number;
+  type_id: number;
+  config: {
+    description: string;
+    tokenSymbol: string;
+    nftMembershipPass: string;
+    memberAddresses: string[];
+    durationInDays: string;
+    minimumDeposit: string;
+  };
+  tx_id: string;
+};
+
+type Proposal = {
+  title: string;
+  description: string;
+  body: string;
+  contract_address: string;
+  tx_id: string;
+  proposed_by: string;
+  club_id: string;
+  post_conditions: object;
+};
+
+type Submission = {
+  title: string;
+  description: string;
+  body: string;
+  submitted_by: string;
+  club_id: string;
 };
 
 export async function createClub(club: Club) {
@@ -31,11 +59,15 @@ export const useCreateClub = () => {
 export async function updateBootrapAddress(club: {
   contract_address?: string;
   bootstrap_address?: string;
+  bootstrap_tx_id?: string;
 }) {
   try {
     const { data, error } = await supabase
       .from('clubs')
-      .update({ bootstrap_address: club.bootstrap_address })
+      .update({
+        bootstrap_address: club.bootstrap_address,
+        bootstrap_tx_id: club.bootstrap_tx_id,
+      })
       .match({
         contract_address: club.contract_address,
       });
@@ -50,7 +82,38 @@ export const useUpdateBootstrap = () => {
   const queryClient = useQueryClient();
   return useMutation(updateBootrapAddress, {
     onSuccess: () => {
+      queryClient.invalidateQueries('dao');
       queryClient.invalidateQueries('clubs');
+      queryClient.invalidateQueries('investment-club');
+    },
+  });
+};
+
+export async function updateInitTxId(club: {
+  contract_address?: string;
+  activation_tx_id?: string;
+}) {
+  try {
+    const { data, error } = await supabase
+      .from('clubs')
+      .update({ activation_tx_id: club.activation_tx_id, active: true })
+      .match({
+        contract_address: club.contract_address,
+      });
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useUpdateInitTxId = () => {
+  const queryClient = useQueryClient();
+  return useMutation(updateInitTxId, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('dao');
+      queryClient.invalidateQueries('clubs');
+      queryClient.invalidateQueries('investment-club');
     },
   });
 };
@@ -75,6 +138,48 @@ export const useActivateClub = () => {
   return useMutation(activateClub, {
     onSuccess: () => {
       queryClient.invalidateQueries('clubs');
+    },
+  });
+};
+
+export async function createSubmission(submission: Submission) {
+  try {
+    const { data, error } = await supabase
+      .from('submissions')
+      .insert([{ ...submission }]);
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useCreateSubmission = () => {
+  const queryClient = useQueryClient();
+  return useMutation(createSubmission, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('submissions');
+    },
+  });
+};
+
+export async function createProposal(proposal: Proposal) {
+  try {
+    const { data, error } = await supabase
+      .from('proposals')
+      .insert([{ ...proposal }]);
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useCreateProposal = () => {
+  const queryClient = useQueryClient();
+  return useMutation(createProposal, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('proposals');
     },
   });
 };

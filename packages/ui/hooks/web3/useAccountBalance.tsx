@@ -5,7 +5,6 @@ import { getAccountAndBns } from 'api/clubs';
 
 export function useAccountBalance() {
   const { stxAddress } = useAccount();
-
   const { isFetching, isIdle, isLoading, data } = useQuery(
     ['account-balance', stxAddress],
     getAccountAndBns,

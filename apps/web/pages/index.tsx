@@ -1,114 +1,19 @@
 import Link from 'next/link';
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Heading,
-  HStack,
-  Icon,
-  Image,
-  SimpleGrid,
-  Stack,
-  Text,
-} from 'ui';
-import { useAccount } from 'ui/components';
+import { Box, Button, ButtonGroup, Heading, HStack, Stack, Text } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container, SectionHeader } from 'ui/components/layout';
-import { ConnectButton } from 'ui/components/buttons';
-import { EmptyState } from '@components/misc';
 import { MainLayout } from '@components/layout';
 import { useClubs } from 'ui/hooks';
 import { size } from 'lodash';
 import { Wrapper } from '@components/containers';
-import { ClubsTable } from '@components/tables';
+// import { ClubsTable } from '@components/tables';
 import { ArrowRight } from 'ui/components/icons';
 
 export default function Web() {
-  const { stxAddress } = useAccount();
   const { isLoading, data } = useClubs();
 
   if (isLoading) {
     return null;
-  }
-
-  if (stxAddress && size(data) === 0) {
-    return (
-      <motion.div
-        variants={FADE_IN_VARIANTS}
-        initial={FADE_IN_VARIANTS.hidden}
-        animate={FADE_IN_VARIANTS.enter}
-        exit={FADE_IN_VARIANTS.exit}
-        transition={{ duration: 0.75, type: 'linear' }}
-      >
-        <Box
-          backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
-          opacity='1'
-        >
-          <Container h='full' maxW='5xl'>
-            <SimpleGrid columns={1} spacing='3'>
-              <Stack
-                spacing='4'
-                h='calc(100vh - 5vh)'
-                justify='center'
-                align='center'
-                textAlign='center'
-              >
-                <Heading
-                  size='3xl'
-                  fontWeight='thin'
-                  letterSpacing='tight'
-                  color='white'
-                >
-                  <Text
-                    color='blue'
-                    fontWeight='black'
-                    fontSize={{ base: '7xl', md: '8xl' }}
-                    bgGradient='linear(to-br, bg-primary 65%, dark.500 100%)'
-                    bgClip='text'
-                  >
-                    Investment Clubs
-                  </Text>
-                </Heading>
-
-                <Stack spacing='0'>
-                  <Text
-                    fontSize='2xl'
-                    fontWeight='light'
-                    color='text-default'
-                    maxW='lg'
-                  >
-                    Membership gated primitive to raise funds, govern, and take
-                    action.
-                  </Text>
-                </Stack>
-                <ButtonGroup>
-                  <Link href='/create'>
-                    <Button
-                      variant='link'
-                      color='primary.900'
-                      fontWeight='light'
-                      fontSize={{ base: '2xl', md: '3xl' }}
-                      rightIcon={<Icon as={ArrowRight} />}
-                      size='lg'
-                      borderColor='transparent'
-                      borderBottomWidth='1px'
-                      borderRadius='none'
-                      _hover={{
-                        borderColor: 'primary.900',
-                        borderBottomWidth: '1px',
-                        borderRadius: 'none',
-                      }}
-                    >
-                      Start your club
-                    </Button>
-                  </Link>
-                </ButtonGroup>
-              </Stack>
-            </SimpleGrid>
-          </Container>
-        </Box>
-      </motion.div>
-    );
   }
 
   if (size(data) > 0) {
@@ -121,44 +26,6 @@ export default function Web() {
         transition={{ duration: 0.25, type: 'linear' }}
       >
         <Wrapper>
-          <Stack spacing='6' my='16'>
-            <SectionHeader
-              mb='0'
-              justify={{ base: 'flex-start', md: 'space-between' }}
-              align={{ base: 'flex-start', md: 'space-between' }}
-              color='light.900'
-            >
-              <Stack spacing='3' align='space-between'>
-                <Heading mt='0 !important' size='lg' fontWeight='regular'>
-                  DAOs
-                </Heading>
-              </Stack>
-            </SectionHeader>
-            <Stack spacing='8' pb='16'>
-              <motion.div
-                variants={FADE_IN_VARIANTS}
-                initial={FADE_IN_VARIANTS.hidden}
-                animate={FADE_IN_VARIANTS.enter}
-                exit={FADE_IN_VARIANTS.exit}
-                transition={{ duration: 0.25, type: 'linear' }}
-              >
-                <Stack mt='2' spacing='3'>
-                  <EmptyState align='center' textAlign='center' spacing='3'>
-                    <Stack spacing='1'>
-                      <Heading size='md' fontWeight='light'>
-                        You do not have any DAOs yet
-                      </Heading>
-                      <Text color='gray' maxW='md'>
-                        Organize your purpose-driven community and customize
-                        your DAO across web3.
-                      </Text>
-                    </Stack>
-                    <Button variant='primary'>Create a DAO</Button>
-                  </EmptyState>
-                </Stack>
-              </motion.div>
-            </Stack>
-          </Stack>
           <Stack spacing='6' my='8'>
             <SectionHeader
               mb='0'
@@ -184,7 +51,7 @@ export default function Web() {
                 transition={{ duration: 0.25, type: 'linear' }}
               >
                 <Stack mt='2' spacing='3'>
-                  <ClubsTable color='light.900' size='md' clubs={data} />
+                  {/* <ClubsTable color='light.900' size='md' clubs={data} /> */}
                 </Stack>
               </motion.div>
             </Stack>
@@ -206,62 +73,99 @@ export default function Web() {
         backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
         opacity='1'
       >
-        <Container h='full' maxW='3xl'>
+        <Container>
           <Stack
             spacing='6'
             h='calc(100vh - 5vh)'
             justify='center'
             align='center'
-            textAlign='center'
           >
-            <Stack spacing='3' align='center'>
-              <HStack py='2' px='5'>
-                <Text fontSize='lg' fontWeight='light' color='white'>
-                  Protocol built with{' '}
+            <Stack spacing='6' align='flex-start'>
+              <HStack m='0' px='2'>
+                <Text fontSize='lg' fontWeight='light' color='light.500'>
+                  Protocol built with Stacks
                 </Text>
-                <Image
-                  alt='Stacks Logo'
-                  src='https://assets-global.website-files.com/618b0aafa4afde65f2fe38fe/618b0aafa4afde159efe39d4_Stacks%20logo.svg'
-                  w='13'
-                  h='13'
-                />
               </HStack>
-              <Heading
-                size='2xl'
-                fontWeight='thin'
-                letterSpacing='tight'
-                color='white'
-              >
-                Clubs powered by
-                <Text
-                  color='blue'
+              <Stack spacing='0' mt='0 !important'>
+                <Heading
+                  fontSize={{ base: '4em', md: '6em', lg: '8em' }}
                   fontWeight='black'
-                  fontSize={{ base: '7xl', md: '9xl' }}
-                  bgGradient='linear(to-br, bg-primary 65%, dark.500 100%)'
+                  bgGradient='linear(to-b, primary.900 65%, dark.500 100%)'
                   bgClip='text'
+                  style={{
+                    WebkitTextStrokeWidth: '1px',
+                    WebkitTextStrokeColor: '#121416',
+                  }}
                 >
-                  Bitcoin
+                  Clubs
+                  <Text
+                    as='span'
+                    mx='5'
+                    fontWeight='thin'
+                    bgGradient='linear(to-b, light.900 25%, primary.900 100%)'
+                    bgClip='text'
+                    style={{
+                      WebkitTextStrokeWidth: '0px',
+                      WebkitTextStrokeColor: '#121416',
+                    }}
+                  >
+                    powered by Bitcoin
+                  </Text>
+                </Heading>
+              </Stack>
+              <Stack spacing='8'>
+                <Text
+                  fontSize={{ base: '1.5em', lg: '1.75em' }}
+                  fontWeight='light'
+                  color='light.900'
+                  px='2'
+                >
+                  Invest, fund causes, build products, and more. Together.{' '}
                 </Text>
-              </Heading>
+                <ButtonGroup px='2' spacing='6'>
+                  <Link href='/create'>
+                    <Button
+                      variant='inverted'
+                      size='lg'
+                      bg='primary.900'
+                      borderColor='dark.500'
+                      color='light.900'
+                      fontSize='xl'
+                      fontWeight='medium'
+                      _active={{
+                        color: 'light.900',
+                        bg: 'primary.900',
+                        opacity: 0.9,
+                      }}
+                      _hover={{
+                        color: 'light.900',
+                        bg: 'primary.900',
+                        opacity: 0.9,
+                      }}
+                    >
+                      Create Club
+                    </Button>
+                  </Link>
+                  <Button
+                    variant='link'
+                    size='lg'
+                    color='light.900'
+                    fontWeight='medium'
+                    fontSize='xl'
+                    rightIcon={<ArrowRight />}
+                    _active={{
+                      color: 'light.500',
+                      opacity: 0.9,
+                    }}
+                    _hover={{
+                      color: 'light.500',
+                    }}
+                  >
+                    Read docs
+                  </Button>
+                </ButtonGroup>
+              </Stack>
             </Stack>
-            <Stack spacing='0'>
-              <Text
-                fontSize='2xl'
-                fontWeight='light'
-                color='text-default'
-                maxW='lg'
-              >
-                Invest, fund causes, build products, and more.{' '}
-                <Text as='span' fontWeight='black'>
-                  Together.
-                </Text>
-              </Text>
-            </Stack>
-            <HStack align='space-between' justify='center'>
-              <ConnectButton variant='default' size='lg'>
-                Connect to get started
-              </ConnectButton>
-            </HStack>
           </Stack>
         </Container>
       </Box>

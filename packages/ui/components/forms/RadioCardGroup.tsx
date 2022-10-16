@@ -7,6 +7,7 @@ import {
   Icon,
   Stack,
   StackProps,
+  SimpleGrid,
   useId,
   useRadio,
   useRadioGroup,
@@ -68,6 +69,10 @@ export const RadioCard = (props: RadioCardProps) => {
     <Box
       as='label'
       cursor='pointer'
+      borderRadius='lg'
+      borderWidth='1px'
+      bg={state.isChecked ? 'dark.500' : 'dark.900'}
+      borderColor={state.isChecked ? 'primary.900' : 'dark.500'}
       {...labelProps}
       sx={{
         '.focus-visible + [data-focus]': {
@@ -80,13 +85,6 @@ export const RadioCard = (props: RadioCardProps) => {
       <Box sx={styles} {...checkboxProps} {...rest}>
         <Stack direction='row'>
           <Box flex='1'>{children}</Box>
-          {state.isChecked ? (
-            <Circle bg='accent' size='4'>
-              <Icon as={CheckIcon} boxSize='2.5' color='inverted' />
-            </Circle>
-          ) : (
-            <Circle borderWidth='2px' size='4' />
-          )}
         </Stack>
       </Box>
     </Box>

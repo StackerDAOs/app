@@ -1,8 +1,13 @@
 export { useAccountBalance } from './useAccountBalance';
+export { useAuth } from './useAuth';
+export { useBlocks } from './useBlocks';
 export { useClubs } from './useClubs';
 export { useDAO } from './useDAO';
 export { useExtension } from './useExtension';
-export { useGenerateName } from './useGenerateName';
+export { useGovernanceToken } from './useGovernanceToken';
+export { useInvestmentClub } from './useInvestmentClub';
+export { useProposals } from './useProposals';
+export { useSubmissions } from './useSubmissions';
 export { useToken } from './useToken';
 export { useTransaction } from './useTransaction';
 export { useVaultBalance } from './useVaultBalance';

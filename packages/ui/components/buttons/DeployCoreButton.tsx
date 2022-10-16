@@ -4,9 +4,11 @@ import { useAccount, useOpenContractDeploy } from '@micro-stacks/react';
 import { coreDAO } from 'utils/contracts';
 import { useCreateClub } from 'api/clubs/mutations';
 import { DeployClubProps } from 'ui/components/buttons/types';
+import { CLUB_TYPES } from 'api/constants';
 
 export const DeployCoreButton = (props: DeployClubProps) => {
-  const { openContractDeploy, isRequestPending } = useOpenContractDeploy();
+  const { title, name, slug, config, onDeploy, ...rest } = props;
+  const { openContractDeploy } = useOpenContractDeploy();
   const { stxAddress } = useAccount();
   const createClub = useCreateClub();
 
@@ -14,13 +16,15 @@ export const DeployCoreButton = (props: DeployClubProps) => {
     const onFinish: any = async (data: any) => {
       try {
         createClub.mutate({
-          name: props?.name,
-          slug: props?.slug,
-          type: 1,
-          contract_address: `${stxAddress}.${props?.slug}`,
+          name,
+          slug,
+          type_id: CLUB_TYPES.INVESTMENT_CLUB,
+          contract_address: `${stxAddress}.${slug}`,
           creator_address: stxAddress,
+          config,
+          tx_id: data.txId,
         });
-        props?.onFinish(data);
+        onDeploy?.(data);
       } catch (e: any) {
         console.error({ e });
       }
@@ -28,7 +32,7 @@ export const DeployCoreButton = (props: DeployClubProps) => {
 
     const codeBody = coreDAO();
     await openContractDeploy({
-      contractName: `${props?.slug}`,
+      contractName: `${slug}`,
       codeBody,
       onFinish,
     });
@@ -36,12 +40,12 @@ export const DeployCoreButton = (props: DeployClubProps) => {
 
   return (
     <Button
-      {...props}
+      {...rest}
       onClick={deployCoreDAO}
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
     >
-      {isRequestPending ? <Spinner /> : props?.title || 'Deploy'}
+      {title || 'Deploy'}
     </Button>
   );
 };

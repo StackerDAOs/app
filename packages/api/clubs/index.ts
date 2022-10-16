@@ -5,6 +5,7 @@ import {
   fetchContractEventsById,
   fetchReadOnlyFunction,
   fetchAccountBalances,
+  fetchAccountAssets,
   fetchAccountStxBalance,
   fetchFtMetadataForContractId,
   fetchNamesByAddress,
@@ -16,8 +17,11 @@ import {
   deserializeCV,
   standardPrincipalCV,
   stringAsciiCV,
+  uintCV,
+  hexToCV,
 } from 'micro-stacks/clarity';
 import { defaultTo } from 'lodash';
+import { splitContractAddress } from '@stacks-os/utils';
 import { pluckSourceCode } from 'utils';
 
 export async function getDAO(name: string) {
@@ -25,7 +29,7 @@ export async function getDAO(name: string) {
     const { data, error } = await supabase
       .from('clubs')
       .select(
-        'id, name, slug, contract_address, prefix, creator_address, active, extensions (contract_address, extension_types (name))',
+        'id, name, slug, contract_address, prefix, creator_address, bootstrap_address, active, tx_id, bootstrap_tx_id, activation_tx_id, config, extensions (contract_address, tx_id, extension_types (name))',
       )
       .eq('slug', name);
     if (error) throw error;
@@ -55,7 +59,7 @@ export async function generateContractName(organization: any) {
       .select('contract_address, clubs!inner(id, name, prefix)')
       .eq('clubs.id', organization?.id);
     if (error) throw error;
-    if (Proposals.length > 0) {
+    if (Proposals?.length > 0) {
       const proposalSize = (defaultTo(Proposals?.length, 0) + 1)?.toString();
       const [proposal] = Proposals;
       const targetLength = Proposals?.length + 1 < 1000 ? 3 : 4;
@@ -88,43 +92,42 @@ export async function getExtension(name: string) {
   }
 }
 
-export async function getDBProposals({ queryKey }: any) {
+export async function getSubmissions({ queryKey }: any) {
   const [_, organizationId, filter] = queryKey;
   const query = supabase
-    .from('proposals')
+    .from('submissions')
     .select('*, clubs!inner(id, name)')
     .order('created_at', { ascending: false })
-    .eq('submitted', true)
     .eq('clubs.id', organizationId);
   try {
-    if (filter === 'inactive') {
-      const { data: Proposals, error } = await query.filter(
-        'submitted',
+    if (filter === 'active') {
+      const { data: submissions, error } = await query.filter(
+        'disabled',
         'in',
         `("false")`,
       );
       if (error) throw error;
-      return Proposals;
+      return submissions;
     }
-    if (filter === 'active') {
-      const { data: Proposals, error } = await query
-        .filter('submitted', 'in', `("false")`)
-        .filter('concluded', 'in', `("false")`);
-      if (error) throw error;
-      return Proposals;
-    }
-    if (filter === 'executed') {
-      const { data: Proposals, error } = await query.filter(
-        'concluded',
-        'in',
-        `("true")`,
-      );
-      if (error) throw error;
-      return Proposals;
-    }
-    const { data: Proposals, error } = await query;
+    const { data: submissions, error } = await query;
     if (error) throw error;
-    return Proposals;
+    return submissions;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getProposals({ queryKey }: any) {
+  const [_, organizationId] = queryKey;
+  const query = supabase
+    .from('proposals')
+    .select('*, club:clubs!inner(id, name, slug)')
+    .order('created_at', { ascending: false })
+    .eq('clubs.id', organizationId);
+  try {
+    const { data: proposals, error } = await query;
+    if (error) throw error;
+    return proposals;
   } catch (e: any) {
     console.error({ e });
   }
@@ -158,6 +161,19 @@ export async function getContractProposalByTx(transactionId: string) {
   }
 }
 
+export async function getAccountBalances(address: string) {
+  try {
+    const network = new stacksNetwork();
+    const balance = await fetchAccountBalances({
+      url: network.getCoreApiUrl(),
+      principal: address as string,
+    });
+    return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
 export async function getTokenMetadata(contractId: string) {
   try {
     const network = new stacksNetwork();
@@ -185,12 +201,12 @@ export async function getBns(address: string) {
   }
 }
 
-export async function getAccountBalance(address: string) {
+export async function getAccountStxBalance(address: string) {
   try {
     const network = new stacksNetwork();
     return await fetchAccountStxBalance({
       url: network.getCoreApiUrl(),
-      principal: address,
+      principal: address as string,
     });
   } catch (e: any) {
     console.error({ e });
@@ -201,7 +217,7 @@ export async function getAccountAndBns({ queryKey }: any) {
   const [_, address] = queryKey;
   try {
     const [account, bns] = await Promise.all([
-      await getAccountBalance(address),
+      await getAccountStxBalance(address),
       await getBns(address),
     ]);
     return { account, bns };
@@ -223,18 +239,74 @@ export async function getVaultBalance(address: string) {
   }
 }
 
-export async function getBalanceOf(vaultAddress: string, assetAddress: string) {
+export async function getBalance(
+  stxAddress: string | undefined,
+  principalAddress: string,
+) {
   try {
     const network = new stacksNetwork();
+    const [contractAddress, contractName] =
+      splitContractAddress(principalAddress);
     const balance: any = await fetchReadOnlyFunction({
       network,
-      contractAddress: vaultAddress.split('.')[0],
-      contractName: vaultAddress.split('.')[1],
-      senderAddress: vaultAddress.split('.')[0],
-      functionArgs: [standardPrincipalCV(assetAddress)],
-      functionName: 'get-balance-of',
+      contractAddress,
+      contractName,
+      senderAddress: stxAddress as string,
+      functionArgs: [standardPrincipalCV(stxAddress as string)],
+      functionName: 'get-balance',
     });
     return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getSymbol(principalAddress: string) {
+  try {
+    const network = new stacksNetwork();
+    const [contractAddress, contractName] =
+      splitContractAddress(principalAddress);
+    const balance: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
+      senderAddress: contractAddress,
+      functionArgs: [],
+      functionName: 'get-symbol',
+    });
+    return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getTotalSupply(principalAddress: string) {
+  try {
+    const network = new stacksNetwork();
+    const [contractAddress, contractName] =
+      splitContractAddress(principalAddress);
+    const balance: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
+      senderAddress: contractAddress,
+      functionArgs: [],
+      functionName: 'get-total-supply',
+    });
+    return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getTokenData({ queryKey }: any) {
+  const [_, principalAddress] = queryKey;
+  try {
+    const [symbol, totalSupply] = await Promise.all([
+      await getSymbol(principalAddress),
+      await getTotalSupply(principalAddress),
+    ]);
+    return { symbol, totalSupply };
   } catch (e: any) {
     console.error({ e });
   }
@@ -255,6 +327,50 @@ export async function getTokenBalance(
       functionName: 'get-balance',
     });
     return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getFundingRound(
+  contractPrincipal: string,
+  roundId: string,
+) {
+  try {
+    const network = new stacksNetwork();
+    const [contractAddress, contractName] =
+      splitContractAddress(contractPrincipal);
+    const balance: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
+      senderAddress: contractAddress,
+      functionArgs: [uintCV(roundId)],
+      functionName: 'get-round',
+    });
+    return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getTokenId(principal: string, assetIdentifier: string) {
+  try {
+    const network = new stacksNetwork();
+    const fetchTokenId = await fetch(
+      `${network.getCoreApiUrl()}/extended/v1/tokens/nft/holdings?principal=${principal}&asset_identifiers[]=${assetIdentifier}&limit=1`,
+      {},
+    );
+    const response = await fetchTokenId.json();
+    if (response?.results?.length > 0) {
+      const token = hexToCV(response?.results[0]?.value?.hex) as {
+        type: number;
+        value: any;
+      };
+      return Number(token?.value);
+    }
+
+    return 0;
   } catch (e: any) {
     console.error({ e });
   }
@@ -462,12 +578,56 @@ export async function getPostConditions(proposalPrincipal: string) {
 
 export async function getProjects() {
   try {
-    const { data: Organizations, error } = await supabase
+    const { data: clubs, error } = await supabase
       .from('clubs')
       .select('id, name, slug, contract_address');
     if (error) throw error;
-    if (Organizations.length > 0) {
-      return Organizations;
+    if (clubs?.length > 0) {
+      return clubs;
+    }
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function upvoteProposal(id: any) {
+  try {
+    let { data, error } = await supabase.rpc('upvote', { id });
+    console.log({ data });
+    if (error) throw error;
+    try {
+      let { data: proposals, error: proposalsError }: any = await supabase
+        .from('proposals')
+        .select('upvote')
+        .eq('id', id);
+      if (proposalsError) throw proposalsError;
+      if (proposals?.length > 0) {
+        return proposals[0];
+      }
+    } catch (e: any) {
+      console.error({ e });
+    }
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function downvoteProposal(id: any) {
+  try {
+    let { data, error } = await supabase.rpc('downvote', { id });
+    console.log({ data });
+    if (error) throw error;
+    try {
+      let { data: proposals, error: proposalsError }: any = await supabase
+        .from('proposals')
+        .select('downvote')
+        .eq('id', id);
+      if (proposalsError) throw proposalsError;
+      if (proposals?.length > 0) {
+        return proposals[0];
+      }
+    } catch (e: any) {
+      console.error({ e });
     }
   } catch (e: any) {
     console.error({ e });

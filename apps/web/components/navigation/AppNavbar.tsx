@@ -30,13 +30,20 @@ const Navbar = () => {
     <Flex justify='space-between' flex='1'>
       <Tabs isFitted variant='nav'>
         <TabList>
-          {['Vault', 'Proposals', 'Voting', 'Extensions'].map((item) => (
+          {['Vault', 'Ideas', 'Proposals', 'Extensions'].map((item) => (
             <Link key={item} href={`/d/${dao}/${item?.toLocaleLowerCase()}`}>
               <Tab
                 key={item}
                 fontSize='md'
+                fontWeight={
+                  isSelected(item?.toLocaleLowerCase())
+                    ? 'extrabold'
+                    : 'regular'
+                }
                 color={
-                  isSelected(item.toLowerCase()) ? 'text-default' : 'text-muted'
+                  isSelected(item?.toLocaleLowerCase())
+                    ? 'light.900'
+                    : 'light.500'
                 }
               >
                 {item}

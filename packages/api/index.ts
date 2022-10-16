@@ -42,7 +42,7 @@ export async function generateContractName(organization: any) {
       .select('contractAddress, Organizations!inner(id, name, prefix)')
       .eq('Organizations.id', organization?.id);
     if (error) throw error;
-    if (Proposals.length > 0) {
+    if (Proposals?.length > 0) {
       const proposalSize = (defaultTo(Proposals?.length, 0) + 1)?.toString();
       const [proposal] = Proposals;
       const targetLength = Proposals?.length + 1 < 1000 ? 3 : 4;
@@ -172,7 +172,7 @@ export async function getBns(address: string) {
   }
 }
 
-export async function getAccountBalance(address: string) {
+export async function getAccountStxBalance(address: string) {
   try {
     const network = new stacksNetwork();
     return await fetchAccountStxBalance({
@@ -188,7 +188,7 @@ export async function getAccountAndBns({ queryKey }: any) {
   const [_, address] = queryKey;
   try {
     const [account, bns] = await Promise.all([
-      await getAccountBalance(address),
+      await getAccountStxBalance(address),
       await getBns(address),
     ]);
     return { account, bns };
@@ -473,7 +473,7 @@ export async function getProjects() {
       .from('Organizations')
       .select('id, name, slug, contractAddress');
     if (error) throw error;
-    if (Organizations.length > 0) {
+    if (Organizations?.length > 0) {
       return Organizations;
     }
   } catch (e: any) {

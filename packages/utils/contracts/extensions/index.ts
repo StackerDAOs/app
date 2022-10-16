@@ -1,6 +1,6 @@
 import { traitPrincipal } from 'api/constants';
 
-export const nftMembership = (name: string) => `
+export const nftMembership = (name: string, coreDao: string) => `
 (impl-trait '${traitPrincipal}.club-membership-nft-trait.club-membership-nft-trait)
 
 (define-constant ERR_UNAUTHORIZED (err u2400))
@@ -19,7 +19,7 @@ export const nftMembership = (name: string) => `
 (define-map Members principal bool)
 
 (define-public (is-dao-or-extension)
-  (ok (asserts! (or (is-eq tx-sender .core-dao) (contract-call? .core-dao is-extension contract-caller)) ERR_UNAUTHORIZED))
+  (ok (asserts! (or (is-eq tx-sender '${coreDao}) (contract-call? '${coreDao} is-extension contract-caller)) ERR_UNAUTHORIZED))
 )
 
 (define-public (mint (recipient principal))
@@ -76,7 +76,11 @@ export const nftMembership = (name: string) => `
 )
 `;
 
-export const governanceToken = (name: string, symbol: string) => `
+export const governanceToken = (
+  name: string,
+  symbol: string,
+  coreDao: string,
+) => `
 (impl-trait '${traitPrincipal}.club-governance-token-trait.club-governance-token-trait)
 
 (define-constant ERR_UNAUTHORIZED (err u2400))
@@ -91,7 +95,7 @@ export const governanceToken = (name: string, symbol: string) => `
 (define-data-var tokenDecimals uint u6)
 
 (define-public (is-dao-or-extension)
-  (ok (asserts! (or (is-eq tx-sender .core-dao) (contract-call? .core-dao is-extension contract-caller)) ERR_UNAUTHORIZED))
+  (ok (asserts! (or (is-eq tx-sender '${coreDao}) (contract-call? '${coreDao} is-extension contract-caller)) ERR_UNAUTHORIZED))
 )
 
 (define-public (mint (amount uint) (recipient principal))
@@ -144,7 +148,7 @@ export const governanceToken = (name: string, symbol: string) => `
 )
 `;
 
-export const vault = () => `
+export const vault = (coreDao: string) => `
 (impl-trait '${traitPrincipal}.extension-trait.extension-trait)
 
 (use-trait sip9 '${traitPrincipal}.sip9-trait.sip9-trait)
@@ -158,7 +162,7 @@ export const vault = () => `
 (define-map WhitelistedAssets principal bool)
 
 (define-public (is-dao-or-extension)
-  (ok (asserts! (or (is-eq tx-sender .core-dao) (contract-call? .core-dao is-extension contract-caller)) ERR_UNAUTHORIZED))
+  (ok (asserts! (or (is-eq tx-sender '${coreDao}) (contract-call? '${coreDao} is-extension contract-caller)) ERR_UNAUTHORIZED))
 )
 
 (define-public (set-whitelist (token principal) (enabled bool))
@@ -301,6 +305,7 @@ export const vault = () => `
 `;
 
 export const investmentClub = (
+  coreDao: string,
   nftMembershipContract: string,
   governanceTokenContract: string,
   vaultContract: string,
@@ -326,7 +331,7 @@ export const investmentClub = (
 (map-set Parameters "minimumDepositAmount" u${minimumDepositAmount})
 
 (define-public (is-dao-or-extension)
-  (ok (asserts! (or (is-eq tx-sender .core-dao) (contract-call? .core-dao is-extension contract-caller)) ERR_UNAUTHORIZED))
+  (ok (asserts! (or (is-eq tx-sender '${coreDao}) (contract-call? '${coreDao} is-extension contract-caller)) ERR_UNAUTHORIZED))
 )
 
 (define-public (set-parameter (parameter (string-ascii 34)) (value uint))
@@ -456,6 +461,7 @@ export const investmentClub = (
 `;
 
 export const submissionExtension = (
+  coreDao: string,
   nftMembershipContract: string,
   investmentClubContract: string,
   votingContract: string,
@@ -481,7 +487,7 @@ export const submissionExtension = (
 (map-set Parameters "maximumProposalStartDelay" u${maximumProposalStartDelay})
 
 (define-public (is-dao-or-extension)
-  (ok (asserts! (or (is-eq tx-sender .core-dao) (contract-call? .core-dao is-extension contract-caller)) ERR_UNAUTHORIZED))
+  (ok (asserts! (or (is-eq tx-sender '${coreDao}) (contract-call? '${coreDao} is-extension contract-caller)) ERR_UNAUTHORIZED))
 )
 
 (define-public (set-parameter (parameter (string-ascii 34)) (value uint))
@@ -538,6 +544,7 @@ export const submissionExtension = (
 `;
 
 export const votingExtension = (
+  coreDao: string,
   nftMembershipContract: string,
   governanceTokenContract: string,
   executionDelay: string,
@@ -577,7 +584,7 @@ export const votingExtension = (
 (map-set parameters "executionDelay" u${executionDelay})
 
 (define-public (is-dao-or-extension)
-  (ok (asserts! (or (is-eq tx-sender .core-dao) (contract-call? .core-dao is-extension contract-caller)) ERR_UNAUTHORIZED))
+  (ok (asserts! (or (is-eq tx-sender '${coreDao}) (contract-call? '${coreDao} is-extension contract-caller)) ERR_UNAUTHORIZED))
 )
 
 (define-public (set-parameter (parameter (string-ascii 34)) (value uint))
@@ -591,7 +598,7 @@ export const votingExtension = (
 (define-public (add-proposal (proposal <proposal-trait>) (data {startBlockHeight: uint, endBlockHeight: uint, proposer: principal}))
   (begin
     (try! (is-dao-or-extension))
-    (asserts! (is-none (contract-call? .core-dao executed-at proposal)) ERR_PROPOSAL_ALREADY_EXECUTED)
+    (asserts! (is-none (contract-call? '${coreDao} executed-at proposal)) ERR_PROPOSAL_ALREADY_EXECUTED)
     (asserts! (map-insert Proposals (contract-of proposal) (merge { votesFor: u0, votesAgainst: u0, concluded: false, passed: false } data)) ERR_PROPOSAL_ALREADY_EXISTS)
     (ok (print { event: "propose", proposal: proposal, startBlockHeight: (get startBlockHeight data), endBlockHeight: (get endBlockHeight data), proposer: tx-sender }))
   )
@@ -650,7 +657,7 @@ export const votingExtension = (
     (asserts! (>= block-height (+ (try! (get-parameter "executionDelay")) (get endBlockHeight proposalData))) ERR_END_BLOCK_HEIGHT_NOT_REACHED)
     (map-set Proposals (contract-of proposal) (merge proposalData { concluded: true, passed: passed }))
     (print { event: "conclude", proposal: proposal, totalVotes: totalVotes, passed: passed })
-    (and passed (try! (contract-call? .core-dao execute proposal tx-sender)))
+    (and passed (try! (contract-call? '${coreDao} execute proposal tx-sender)))
     (ok passed)
   )
 )
