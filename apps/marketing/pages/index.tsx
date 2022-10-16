@@ -2,25 +2,18 @@ import Link from 'next/link';
 import {
   Box,
   Button,
-  ButtonGroup,
-  Container,
-  Divider,
   HStack,
   Flex,
   Heading,
   Icon,
-  IconButton,
   Image,
-  Input,
   SimpleGrid,
   Stack,
   Square,
   Text,
 } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { MainLayout } from '@components/layout';
 import { LightningBolt, LogoIcon } from 'ui/components/icons';
-import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa';
 import { MainNavbar, Footer } from '@components/navigation';
 import { Nav } from '@components/containers';
 

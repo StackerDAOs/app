@@ -11,7 +11,6 @@ import {
   Menu,
   MenuButton,
   MenuList,
-  MenuItem,
   VStack,
 } from 'ui';
 import { LightningBolt } from 'ui/components/icons';

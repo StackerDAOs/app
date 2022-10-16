@@ -11,7 +11,6 @@ import {
   Menu,
   MenuButton,
   MenuList,
-  Stack,
 } from 'ui';
 import { LightningBolt } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
