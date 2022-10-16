@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Stack } from 'ui';
 
 export const Wrapper = ({ children }: any) => (
-  <Container maxW='5xl' px='8'>
+  <Container maxW={{ base: '5xl', xl: '7xl' }} px='8' py='2'>
     <Stack spacing={{ base: '8', lg: '6' }}>
       <Stack w='auto'>{children}</Stack>
     </Stack>

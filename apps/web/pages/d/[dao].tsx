@@ -22,9 +22,9 @@ import {
 import { defaultTo, map, round, size } from 'lodash';
 import { Card } from 'ui/components/cards';
 // import { SectionHeader } from 'ui/components/layout';
+import { Wrapper } from '@components/containers';
 import { AppLayout } from '@components/layout';
 import { DashboardHeader } from '@components/navigation';
-import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 import {
@@ -126,7 +126,6 @@ export default function Dashboard() {
     bootstrapStatus: string,
     activationStatus: string,
   ) => {
-    console.log({ bootstrapStatus, activationStatus });
     if (bootstrapStatus === 'success' && activationStatus === 'pending') {
       return (
         <>
@@ -330,7 +329,7 @@ export default function Dashboard() {
                     Follow the order below when deploying extensions.
                   </AlertDescription>
                 </Alert> */}
-                <Card h='fit-content' bg='dark.900'>
+                <Card h='fit-content' bg='dark.800'>
                   <Stack spacing='0'>
                     <Grid
                       templateColumns='repeat(5, 1fr)'
@@ -926,284 +925,246 @@ export default function Dashboard() {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.25, type: 'linear' }}
     >
-      <Wrapper>
-        <Stack spacing='6'>
-          {isActive ? null : renderStatusCard}
-          <Stack
-            spacing='8'
-            pb='16'
-            mt='6'
-            filter={isActive ? 'none' : 'blur(3px)'}
-            pointerEvents={isActive ? 'auto' : 'none'}
+      <Stack spacing='6'>
+        {isActive ? null : renderStatusCard}
+        <Stack
+          spacing='8'
+          pb='16'
+          mt='6'
+          filter={isActive ? 'none' : 'blur(3px)'}
+          pointerEvents={isActive ? 'auto' : 'none'}
+        >
+          <motion.div
+            variants={FADE_IN_VARIANTS}
+            initial={FADE_IN_VARIANTS.hidden}
+            animate={FADE_IN_VARIANTS.enter}
+            exit={FADE_IN_VARIANTS.exit}
+            transition={{ duration: 0.25, type: 'linear' }}
           >
-            <motion.div
-              variants={FADE_IN_VARIANTS}
-              initial={FADE_IN_VARIANTS.hidden}
-              animate={FADE_IN_VARIANTS.enter}
-              exit={FADE_IN_VARIANTS.exit}
-              transition={{ duration: 0.25, type: 'linear' }}
-            >
-              <Stack mt='2' spacing='3'>
-                <Progress
-                  colorScheme='primary'
-                  borderRadius='lg'
-                  size='md'
-                  value={getPercentage(
-                    10000,
-                    Number(
+            <Stack mt='2' spacing='3'>
+              <Progress
+                colorScheme='primary'
+                borderRadius='lg'
+                size='md'
+                value={getPercentage(
+                  10000,
+                  Number(
+                    ustxToStx(
+                      String(investmentClub?.data?.currentRound?.raisedAmount),
+                      false,
+                    ),
+                  ),
+                )}
+                bg='dark.500'
+              />
+              <HStack justify='space-between'>
+                <Stack spacing='3'>
+                  <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                    Amount raised
+                  </Text>
+                  <Heading mt='0 !important' size='sm' fontWeight='regular'>
+                    {defaultTo(
                       ustxToStx(
                         String(
                           investmentClub?.data?.currentRound?.raisedAmount,
                         ),
-                        false,
                       ),
-                    ),
-                  )}
+                      '0',
+                    )}{' '}
+                    STX
+                  </Heading>
+                </Stack>
+                <Stack spacing='3'>
+                  <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                    Funding goal
+                  </Text>
+                  <Heading mt='0 !important' size='sm' fontWeight='regular'>
+                    {defaultTo(
+                      ustxToStx(
+                        String(investmentClub?.data?.currentRound?.fundingGoal),
+                      ),
+                      '0',
+                    )}{' '}
+                    STX
+                  </Heading>
+                </Stack>
+              </HStack>
+            </Stack>
+          </motion.div>
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing='8'>
+            <Card h='fit-content' bg='dark.700'>
+              <Stack spacing='0'>
+                <HStack
+                  justify='space-between'
                   bg='dark.500'
-                />
-                <HStack justify='space-between'>
-                  <Stack spacing='3'>
-                    <Text fontSize='md' fontWeight='thin' color='text-muted'>
-                      Amount raised
-                    </Text>
-                    <Heading mt='0 !important' size='sm' fontWeight='regular'>
-                      {defaultTo(
-                        ustxToStx(
-                          String(
-                            investmentClub?.data?.currentRound?.raisedAmount,
-                          ),
-                        ),
-                        '0',
-                      )}{' '}
-                      STX
-                    </Heading>
-                  </Stack>
-                  <Stack spacing='3'>
-                    <Text fontSize='md' fontWeight='thin' color='text-muted'>
-                      Funding goal
-                    </Text>
-                    <Heading mt='0 !important' size='sm' fontWeight='regular'>
-                      {defaultTo(
-                        ustxToStx(
-                          String(
-                            investmentClub?.data?.currentRound?.fundingGoal,
-                          ),
-                        ),
-                        '0',
-                      )}{' '}
-                      STX
-                    </Heading>
-                  </Stack>
+                  borderRadius='lg'
+                  px={{ base: '6', md: '6' }}
+                  py={{ base: '3', md: '3' }}
+                >
+                  <Text color='light.900' fontSize='lg' fontWeight='regular'>
+                    Open to deposits
+                  </Text>
+                  <Text color='gray' fontSize='md' fontWeight='light'>
+                    Closes in ~ {dao?.data?.config?.durationInDays} days{' '}
+                    {/* TODO: fetch block height and do estimate */}
+                  </Text>
                 </HStack>
-              </Stack>
-            </motion.div>
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing='8'>
-              <Card h='fit-content' bg='dark.700'>
-                <Stack spacing='0'>
-                  <HStack
-                    justify='space-between'
-                    bg='dark.500'
-                    borderRadius='lg'
-                    px={{ base: '6', md: '6' }}
-                    py={{ base: '3', md: '3' }}
-                  >
-                    <Text color='light.900' fontSize='lg' fontWeight='regular'>
-                      Open to deposits
-                    </Text>
-                    <Text color='gray' fontSize='md' fontWeight='light'>
-                      Closes in ~ {dao?.data?.config?.durationInDays} days{' '}
-                      {/* TODO: fetch block height and do estimate */}
-                    </Text>
-                  </HStack>
-                  <Stack
-                    px={{ base: '6', md: '6' }}
-                    py={{ base: '6', md: '6' }}
-                    spacing='6'
-                  >
-                    <HStack justify='space-between' align='center' spacing='2'>
-                      <VStack align='flex-start' spacing='2'>
-                        <FormControl>
-                          <Input
-                            py='1'
-                            px='2'
-                            bg='dark.700'
-                            type='tel'
-                            border='none'
-                            fontSize='2xl'
-                            fontWeight='light'
-                            autoComplete='off'
-                            placeholder='0'
-                            value={depositAmount}
-                            onInput={handleInputDeposit}
-                            _focus={{
-                              border: 'none',
-                            }}
-                          />
-                        </FormControl>
-                      </VStack>
-                      <HStack
-                        bg='dark.600'
-                        borderRadius='lg'
-                        borderColor='dark.500'
-                        py='1'
-                        px='3'
-                      >
-                        <Image
-                          cursor='pointer'
-                          height='16px'
-                          src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
-                          alt='logo'
+                <Stack
+                  px={{ base: '6', md: '6' }}
+                  py={{ base: '6', md: '6' }}
+                  spacing='6'
+                >
+                  <HStack justify='space-between' align='center' spacing='2'>
+                    <VStack align='flex-start' spacing='2'>
+                      <FormControl>
+                        <Input
+                          py='1'
+                          px='2'
+                          bg='dark.700'
+                          type='tel'
+                          border='none'
+                          fontSize='2xl'
+                          fontWeight='light'
+                          autoComplete='off'
+                          placeholder='0'
+                          value={depositAmount}
+                          onInput={handleInputDeposit}
+                          _focus={{
+                            border: 'none',
+                          }}
                         />
-
-                        <Text
-                          fontSize='sm'
-                          fontWeight='semibold'
-                          color='light.500'
-                        >
-                          STX
-                        </Text>
-                      </HStack>
-                    </HStack>
-                    <Stack w='100%'>
-                      <DepositButton
-                        title='Deposit'
-                        variant='primary'
-                        investmentClubAddress={
-                          investmentClubExtension?.contract_address
-                        }
-                        amount={depositAmount}
+                      </FormControl>
+                    </VStack>
+                    <HStack
+                      bg='dark.600'
+                      borderRadius='lg'
+                      borderColor='dark.500'
+                      py='1'
+                      px='3'
+                    >
+                      <Image
+                        cursor='pointer'
+                        height='16px'
+                        src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                        alt='logo'
                       />
+
                       <Text
-                        color='gray'
-                        textAlign='center'
-                        fontSize='md'
-                        fontWeight='light'
+                        fontSize='sm'
+                        fontWeight='semibold'
+                        color='light.500'
                       >
-                        Minimum deposit amount is{' '}
-                        {dao?.data?.config?.minimumDeposit} STX
+                        STX
                       </Text>
-                    </Stack>
-                  </Stack>
-                </Stack>
-              </Card>
-              <Card h='fit-content' bg='dark.700'>
-                <Stack spacing='0'>
-                  <Stack
-                    px={{ base: '6', md: '6' }}
-                    py={{ base: '6', md: '6' }}
-                    spacing='6'
-                  >
-                    <Text color='light.900' fontSize='lg' fontWeight='regular'>
-                      Your holdings
+                    </HStack>
+                  </HStack>
+                  <Stack w='100%'>
+                    <DepositButton
+                      title='Deposit'
+                      variant='primary'
+                      investmentClubAddress={
+                        investmentClubExtension?.contract_address
+                      }
+                      amount={depositAmount}
+                    />
+                    <Text
+                      color='gray'
+                      textAlign='center'
+                      fontSize='md'
+                      fontWeight='light'
+                    >
+                      Minimum deposit amount is{' '}
+                      {dao?.data?.config?.minimumDeposit} STX
                     </Text>
-                    <HStack justify='space-between' spacing='8'>
-                      <Stack spacing='3' w='50%'>
-                        <Text
-                          fontSize='md'
-                          fontWeight='thin'
-                          color='text-muted'
-                        >
-                          Club tokens minted
-                        </Text>
-                        <Heading
-                          mt='0 !important'
-                          size='sm'
-                          fontWeight='regular'
-                        >
-                          {defaultTo(
-                            convertToken(
-                              String(governanceToken?.data?.totalSupply),
-                              6,
-                            ),
-                            '0',
-                          )}{' '}
-                          {governanceToken?.data?.symbol}
-                        </Heading>
-                      </Stack>
-                      <Stack spacing='3' w='50%'>
-                        <Text
-                          fontSize='md'
-                          fontWeight='thin'
-                          color='text-muted'
-                        >
-                          Your tokens
-                        </Text>
-                        <Heading
-                          mt='0 !important'
-                          size='sm'
-                          fontWeight='regular'
-                        >
-                          {defaultTo(
-                            convertToken(
-                              String(governanceToken?.data?.balance),
-                              6,
-                            ),
-                            '0',
-                          )}{' '}
-                          {governanceToken?.data?.symbol}
-                        </Heading>
-                      </Stack>
-                    </HStack>
-                    <HStack justify='space-between' spacing='8'>
-                      <Stack spacing='3' w='50%'>
-                        <Text
-                          fontSize='md'
-                          fontWeight='thin'
-                          color='text-muted'
-                        >
-                          Amount deposited
-                        </Text>
-                        <Heading
-                          mt='0 !important'
-                          size='sm'
-                          fontWeight='regular'
-                        >
-                          {defaultTo(
-                            ustxToStx(
-                              String(
-                                investmentClub?.data?.currentRound
-                                  ?.raisedAmount,
-                              ),
-                            ),
-                            '0',
-                          )}{' '}
-                          STX
-                        </Heading>
-                      </Stack>
-                      <Stack spacing='3' w='50%'>
-                        <Text
-                          fontSize='md'
-                          fontWeight='thin'
-                          color='text-muted'
-                        >
-                          Ownership %
-                        </Text>
-                        <Heading
-                          mt='0 !important'
-                          size='sm'
-                          fontWeight='regular'
-                        >
-                          {defaultTo(
-                            round(
-                              getPercentage(
-                                Number(governanceToken?.data?.totalSupply),
-                                Number(governanceToken?.data?.balance),
-                              ),
-                              2,
-                            ),
-                            '0',
-                          )}
-                          %
-                        </Heading>
-                      </Stack>
-                    </HStack>
                   </Stack>
                 </Stack>
-              </Card>
-            </SimpleGrid>
-          </Stack>
+              </Stack>
+            </Card>
+            <Card h='fit-content' bg='dark.700'>
+              <Stack spacing='0'>
+                <Stack
+                  px={{ base: '6', md: '6' }}
+                  py={{ base: '6', md: '6' }}
+                  spacing='6'
+                >
+                  <Text color='light.900' fontSize='lg' fontWeight='regular'>
+                    Your holdings
+                  </Text>
+                  <HStack justify='space-between' spacing='8'>
+                    <Stack spacing='3' w='50%'>
+                      <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                        Club tokens minted
+                      </Text>
+                      <Heading mt='0 !important' size='sm' fontWeight='regular'>
+                        {defaultTo(
+                          convertToken(
+                            String(governanceToken?.data?.totalSupply),
+                            6,
+                          ),
+                          '0',
+                        )}{' '}
+                        {governanceToken?.data?.symbol}
+                      </Heading>
+                    </Stack>
+                    <Stack spacing='3' w='50%'>
+                      <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                        Your tokens
+                      </Text>
+                      <Heading mt='0 !important' size='sm' fontWeight='regular'>
+                        {defaultTo(
+                          convertToken(
+                            String(governanceToken?.data?.balance),
+                            6,
+                          ),
+                          '0',
+                        )}{' '}
+                        {governanceToken?.data?.symbol}
+                      </Heading>
+                    </Stack>
+                  </HStack>
+                  <HStack justify='space-between' spacing='8'>
+                    <Stack spacing='3' w='50%'>
+                      <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                        Amount deposited
+                      </Text>
+                      <Heading mt='0 !important' size='sm' fontWeight='regular'>
+                        {defaultTo(
+                          ustxToStx(
+                            String(
+                              investmentClub?.data?.currentRound?.raisedAmount,
+                            ),
+                          ),
+                          '0',
+                        )}{' '}
+                        STX
+                      </Heading>
+                    </Stack>
+                    <Stack spacing='3' w='50%'>
+                      <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                        Ownership %
+                      </Text>
+                      <Heading mt='0 !important' size='sm' fontWeight='regular'>
+                        {defaultTo(
+                          round(
+                            getPercentage(
+                              Number(governanceToken?.data?.totalSupply),
+                              Number(governanceToken?.data?.balance),
+                            ),
+                            2,
+                          ),
+                          '0',
+                        )}
+                        %
+                      </Heading>
+                    </Stack>
+                  </HStack>
+                </Stack>
+              </Stack>
+            </Card>
+          </SimpleGrid>
         </Stack>
-        {/* <Stack spacing='6'>
+      </Stack>
+      {/* <Stack spacing='6'>
           <SectionHeader
             justify={{ base: 'flex-start', md: 'space-between' }}
             align={{ base: 'flex-start', md: 'space-between' }}
@@ -1219,7 +1180,7 @@ export default function Dashboard() {
             </Stack>
           </SectionHeader>
         </Stack> */}
-        {/* <Stack spacing='8' pb='16'>
+      {/* <Stack spacing='8' pb='16'>
           <motion.div
             variants={FADE_IN_VARIANTS}
             initial={FADE_IN_VARIANTS.hidden}
@@ -1232,7 +1193,6 @@ export default function Dashboard() {
             </Stack>
           </motion.div>
         </Stack> */}
-      </Wrapper>
     </motion.div>
   );
 }

@@ -51,7 +51,7 @@ export default function Extensions() {
                 </Stack>
               </SectionHeader>
               <SimpleGrid columns={{ base: 1, md: 3 }} spacing='6'>
-                <Card h='fit-content' bg='dark.900'>
+                <Card h='fit-content' bg='dark.800'>
                   <Stack spacing='0'>
                     <Stack
                       px={{ base: '6', md: '6' }}
@@ -91,7 +91,7 @@ export default function Extensions() {
                     </Stack>
                   </Stack>
                 </Card>
-                <Card h='fit-content' bg='dark.900'>
+                <Card h='fit-content' bg='dark.800'>
                   <Stack spacing='0'>
                     <Stack
                       px={{ base: '6', md: '6' }}
@@ -131,7 +131,7 @@ export default function Extensions() {
                     </Stack>
                   </Stack>
                 </Card>
-                <Card h='fit-content' bg='dark.900'>
+                <Card h='fit-content' bg='dark.800'>
                   <Stack spacing='0'>
                     <Stack
                       px={{ base: '6', md: '6' }}

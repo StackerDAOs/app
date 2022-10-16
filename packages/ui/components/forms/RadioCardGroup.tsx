@@ -71,8 +71,8 @@ export const RadioCard = (props: RadioCardProps) => {
       cursor='pointer'
       borderRadius='lg'
       borderWidth='1px'
-      bg={state.isChecked ? 'dark.500' : 'dark.900'}
-      borderColor={state.isChecked ? 'primary.900' : 'dark.500'}
+      bg={state.isChecked ? 'dark.500' : 'dark.800'}
+      borderColor={state.isChecked ? 'primary.800' : 'dark.500'}
       {...labelProps}
       sx={{
         '.focus-visible + [data-focus]': {
