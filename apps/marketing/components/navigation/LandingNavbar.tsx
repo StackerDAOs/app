@@ -13,7 +13,7 @@ import {
   MenuList,
   VStack,
 } from 'ui';
-import { LightningBolt } from 'ui/components/icons';
+import { ThreeBars } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 export const LandingNavbar = (props: any) => {
@@ -48,12 +48,12 @@ export const LandingNavbar = (props: any) => {
                   maxW='14rem'
                   bg='light.900'
                   color='dark.500'
-                  height='14'
-                  px='8'
-                  fontSize='md'
+                  height='10'
+                  px='4'
+                  fontSize='sm'
                   fontWeight='bold'
                   borderRadius='9999px'
-                  size='md'
+                  size='sm'
                 />
               </ButtonGroup>
             </HStack>
@@ -81,7 +81,7 @@ export const LandingNavbar = (props: any) => {
             <MenuButton
               as={IconButton}
               aria-label='Open Menu'
-              icon={<LightningBolt fontSize='1.25rem' />}
+              icon={<ThreeBars fontSize='1.25rem' />}
               variant='ghost'
             />
             <MenuList bg='dark.500' border='none' maxW='sm'>

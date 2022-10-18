@@ -15,6 +15,7 @@ export * from './SwapArrows';
 export * from './Cog6Tooth';
 export * from './RocketLaunch';
 export * from './UserGroup';
+export * from './ThreeBars';
 export * from './TransferIcon';
 export * from './UpgradeIcon';
 export * from './VerifyIcon';

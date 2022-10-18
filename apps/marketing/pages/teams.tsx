@@ -19,12 +19,12 @@ const navTitle = 'TEAMS';
 
 // Copy for Top Hero
 const topHeroProps = {
-  title: 'StackerDAO Teams',
-  description:
-    'Primitive for groups, companies, nonprofits, subDAOs, and early DAOs to manage resources and smart contracts.',
-  link: '/create',
-  linkText: 'Coming soon',
-  color: 'blue',
+  space: 'Teams',
+  primary900: 'secondary.900',
+  color1: 'linear(to-b, secondary.900 65%, dark.500 100%)',
+  color2: 'linear(to-b, light.900 25%, secondary.900 100%)',
+  button: 'Create Team',
+  linkColor: 'secondary.900',
 };
 
 const sampleText1 = (

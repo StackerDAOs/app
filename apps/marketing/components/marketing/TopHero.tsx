@@ -2,9 +2,10 @@ import Link from 'next/link';
 import {
   Button,
   ButtonGroup,
+  Container,
   Heading,
+  HStack,
   Icon,
-  SimpleGrid,
   Stack,
   Text,
 } from 'ui';
@@ -13,64 +14,95 @@ import { ArrowRight } from 'ui/components/icons';
 export const TopHero = (props: any) => {
   const { topHeroProps } = props;
   return (
-    <SimpleGrid columns={1} spacing='3'>
-      <Stack
-        spacing='4'
-        h='calc(100vh - 10vh)'
-        justify='center'
-        align='center'
-        textAlign='center'
-      >
-        <Heading
-          size='3xl'
-          fontWeight='thin'
-          letterSpacing='tight'
-          color='white'
-        >
-          <Text
-            color={topHeroProps.color}
-            fontWeight='black'
-            fontSize={{ base: '7xl', md: '7xl' }}
-            bgGradient='linear(to-br, secondary.900 65%, dark.500 100%)'
-            bgClip='text'
-          >
-            {topHeroProps.title}
-          </Text>
-        </Heading>
-        <Stack spacing='0'>
-          <Text
-            fontSize='2xl'
-            fontWeight='light'
-            color='text-default'
-            maxW='lg'
-          >
-            {topHeroProps.description}
-          </Text>
-        </Stack>
-        <ButtonGroup>
-          <Link href={topHeroProps.link}>
-            <Button
-              variant='link'
-              color='secondary.900'
-              fontWeight='light'
-              fontSize={{ base: '2xl', md: '3xl' }}
-              rightIcon={<Icon as={ArrowRight} />}
-              size='lg'
-              borderColor='transparent'
-              borderBottomWidth='1px'
-              borderRadius='none'
-              isDisabled
-              _hover={{
-                borderColor: 'secondary.900',
-                borderBottomWidth: '1px',
-                borderRadius: 'none',
+    <Container>
+      <Stack spacing='6' h='calc(100vh - 5vh)' justify='center' align='center'>
+        <Stack spacing='6' align='flex-start'>
+          <HStack m='0' px='2'>
+            <Text fontSize='lg' fontWeight='light' color='light.500'>
+              Protocol built with Stacks
+            </Text>
+          </HStack>
+          <Stack spacing='0' mt='0 !important'>
+            <Heading
+              fontSize={{ base: '4em', md: '6em', lg: '8em' }}
+              fontWeight='black'
+              bgGradient={topHeroProps.color1}
+              bgClip='text'
+              style={{
+                WebkitTextStrokeWidth: '1px',
+                WebkitTextStrokeColor: '#121416',
               }}
             >
-              {topHeroProps.linkText}
-            </Button>
-          </Link>
-        </ButtonGroup>
+              {topHeroProps.space}
+              <Text
+                as='span'
+                mx='5'
+                fontWeight='thin'
+                bgGradient={topHeroProps.color2}
+                bgClip='text'
+                style={{
+                  WebkitTextStrokeWidth: '0px',
+                  WebkitTextStrokeColor: '#121416',
+                }}
+              >
+                powered by Bitcoin
+              </Text>
+            </Heading>
+          </Stack>
+          <Stack spacing='8'>
+            <Text
+              fontSize={{ base: '1.5em', lg: '1.75em' }}
+              fontWeight='light'
+              color='light.900'
+              px='2'
+            >
+              Invest, fund causes, build products, and more. Together.{' '}
+            </Text>
+            <ButtonGroup px='2' spacing='6'>
+              <Link href='/create'>
+                <Button
+                  variant='inverted'
+                  size='lg'
+                  bg={topHeroProps.primary900}
+                  borderColor='dark.500'
+                  color='light.900'
+                  fontSize='xl'
+                  fontWeight='medium'
+                  _active={{
+                    color: 'light.900',
+                    bg: topHeroProps.primary900,
+                    opacity: 0.9,
+                  }}
+                  _hover={{
+                    color: 'light.900',
+                    bg: topHeroProps.primary900,
+                    opacity: 0.9,
+                  }}
+                >
+                  {topHeroProps.button}
+                </Button>
+              </Link>
+              <Button
+                variant='link'
+                size='lg'
+                color='light.900'
+                fontWeight='medium'
+                fontSize='xl'
+                rightIcon={<ArrowRight />}
+                _active={{
+                  color: 'light.500',
+                  opacity: 0.9,
+                }}
+                _hover={{
+                  color: 'light.500',
+                }}
+              >
+                Read docs
+              </Button>
+            </ButtonGroup>
+          </Stack>
+        </Stack>
       </Stack>
-    </SimpleGrid>
+    </Container>
   );
 };

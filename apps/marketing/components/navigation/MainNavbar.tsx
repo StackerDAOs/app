@@ -12,7 +12,7 @@ import {
   MenuButton,
   MenuList,
 } from 'ui';
-import { LightningBolt } from 'ui/components/icons';
+import { ThreeBars } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 export const MainNavbar = () => {
@@ -35,9 +35,6 @@ export const MainNavbar = () => {
               <Link href='/clubs'>
                 <Button variant='link'>Investment Clubs</Button>
               </Link>
-              <Link href='/daos'>
-                <Button variant='link'>DAOs</Button>
-              </Link>
             </ButtonGroup>
           </motion.div>
         ) : (
@@ -45,14 +42,13 @@ export const MainNavbar = () => {
             <MenuButton
               as={IconButton}
               aria-label='Open Menu'
-              icon={<LightningBolt fontSize='1.25rem' />}
+              icon={<ThreeBars fontSize='1.25rem' />}
               variant='ghost'
             />
             <MenuList bg='dark.500' border='none' alignItems='right'>
               <VStack alignItems='left'>
                 <Link href='/teams'>Teams</Link>
                 <Link href='/clubs'>Investment Clubs</Link>
-                <Link href='/daos'>DAOs</Link>
               </VStack>
             </MenuList>
           </Menu>
