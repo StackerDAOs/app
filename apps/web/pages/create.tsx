@@ -108,7 +108,7 @@ export default function Create() {
   };
 
   const handleOnFinish = () => {
-    router.push(`/d/${nameToSlug(club?.name)}/setup`);
+    router.push(`/${nameToSlug(club?.name)}/start`);
   };
 
   const config = {

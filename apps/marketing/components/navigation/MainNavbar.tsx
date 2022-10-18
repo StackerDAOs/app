@@ -16,8 +16,8 @@ export const MainNavbar = () => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   return (
     <Box as='section'>
-      <Box as='nav' bg='bg-surface' boxShadow='sm-dark'>
-        <Container py={{ base: '4', lg: '5' }} maxW='7xl'>
+      <Box as='nav' bg='dark.900'>
+        <Container py={{ base: '4', lg: '5' }} maxW='6xl'>
           <HStack spacing='10' justify='space-between'>
             <Link href='/'>
               <LogoIcon

@@ -11,10 +11,12 @@ import {
   Progress,
   Stack,
   Text,
+  useDisclosure,
 } from 'ui';
 import type { ButtonProps } from '@chakra-ui/react';
-import { useAccount } from 'ui/components';
-import { useDAO } from 'ui/hooks';
+import { useAccount, useAuth } from 'ui/components';
+import { ConnectButton } from 'ui/components/buttons';
+import { useDAO, useClubs } from 'ui/hooks';
 import {
   DashboardOutline,
   ProposalOutline,
@@ -26,9 +28,9 @@ import {
   ToggleUpDown,
 } from 'ui/components/icons';
 import Avatar from 'boring-avatars';
-import { getPercentage } from 'utils';
+import { getPercentage, nameToAbbreviation } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
-import { size } from 'lodash';
+import { map, size } from 'lodash';
 
 interface UserProfileProps {
   club: string;
@@ -38,34 +40,74 @@ const EXTENSION_SIZE = 6;
 const OTHER_REQUIREMENTS_SIZE = 1;
 
 export const UserProfile = (props: UserProfileProps) => {
+  const dropdown = useDisclosure();
   const account = useAccount();
   const stxAddress = account?.stxAddress as string;
   const { club } = props;
+
   return (
-    <HStack
-      spacing='3'
-      ps='2'
-      cursor='pointer'
-      borderRadius='lg'
-      p='3'
-      bg='dark.700'
-    >
-      <Avatar
-        size={40}
-        name={stxAddress}
-        variant='marble'
-        colors={['#624AF2', '#7301fa', '#eb00ff', '#50DDC3']}
-      />
-      <Box>
-        <Text color='light.900' fontSize='sm' fontWeight='semibold'>
-          {club}
-        </Text>
-        <Text fontWeight='regular' fontSize='sm' color='light.500'>
-          {truncateAddress(stxAddress)}
-        </Text>
-      </Box>
-      <Icon as={ToggleUpDown} color='light.500' fontSize='2xl' />
-    </HStack>
+    <>
+      <HStack
+        {...dropdown.getButtonProps()}
+        onFocus={dropdown.onOpen}
+        spacing='3'
+        cursor='pointer'
+        borderRadius='lg'
+        p='3'
+        _hover={{
+          bg: 'dark.700',
+        }}
+      >
+        <Avatar
+          size={40}
+          name={stxAddress}
+          variant='marble'
+          colors={['#624AF2', '#7301fa', '#eb00ff', '#50DDC3']}
+        />
+        <Box>
+          <Text color='light.900' fontSize='sm' fontWeight='semibold'>
+            {club}
+          </Text>
+          <Text fontWeight='regular' fontSize='sm' color='light.500'>
+            {truncateAddress(stxAddress)}
+          </Text>
+        </Box>
+        <Icon as={ToggleUpDown} color='light.500' fontSize='2xl' />
+      </HStack>
+      <Stack
+        hidden={!dropdown.isOpen}
+        position='absolute'
+        top='12%'
+        zIndex='1'
+        width='88%'
+        borderWidth='1px'
+        borderColor='dark.500'
+        borderRadius='lg'
+      >
+        <HStack
+          spacing='3'
+          cursor='pointer'
+          borderRadius='lg'
+          p='3'
+          bg='dark.700'
+        >
+          <Box>
+            <Text color='light.900' fontSize='sm' fontWeight='semibold'>
+              {club}
+            </Text>
+            <Text fontWeight='regular' fontSize='sm' color='light.500'>
+              {truncateAddress(stxAddress)}
+            </Text>
+            <ConnectButton
+              variant='link'
+              size='md'
+              _hover={{ opacity: 0.9 }}
+              _active={{ opacity: 1 }}
+            />
+          </Box>
+        </HStack>
+      </Stack>
+    </>
   );
 };
 
@@ -78,19 +120,31 @@ interface NavButtonProps extends ButtonProps {
 export const NavButton = (props: NavButtonProps) => {
   const { icon, label, isSelected, ...buttonProps } = props;
   const selectedStyles = {
-    color: 'primary.900',
+    color: 'light.900',
     fontWeight: 'semibold',
   };
   return (
     <Button
       variant='ghost'
       justifyContent='start'
-      borderRadius='lg'
-      // bg={isSelected ? 'dark.800' : 'transparent'}
-      _hover={{ color: 'light.500' }}
-      _active={{ bg: 'transparent' }}
-      _focus={{ boxShadow: 'inset 6px 0px 0px #624AF2' }}
-      boxShadow={isSelected ? 'inset 6px 0px 0px #624AF2' : 'none'}
+      borderTopLeftRadius='sm'
+      borderBottomLeftRadius='sm'
+      borderTopRightRadius='none'
+      borderBottomRightRadius='none'
+      bg={isSelected ? 'dark.700' : 'transparent'}
+      _hover={{ bg: 'dark.700', color: 'transparent' }}
+      _selected={selectedStyles}
+      _active={{
+        color: 'light.900',
+        bg: 'dark.700',
+        borderColor: 'transparent',
+      }}
+      _focus={{
+        color: 'light.900',
+        bg: 'dark.700',
+        boxShadow: 'inset 4px 0px 0px #624AF2',
+      }}
+      boxShadow={isSelected ? 'inset 4px 0px 0px #624AF2' : 'none'}
       {...buttonProps}
     >
       <HStack spacing='3'>
@@ -114,8 +168,73 @@ export const NavButton = (props: NavButtonProps) => {
 export const Sidebar = () => {
   const router = useRouter();
   const dao = useDAO();
+  const { isSignedIn } = useAuth();
   const { dao: slug } = router.query as any;
-  const isSelected = (path: string) => router.pathname.split('/')[3] === path;
+  const isSelected = (path: string) => router.pathname.split('/')[2] === path;
+  const { isLoading, data: clubs } = useClubs();
+
+  if (isLoading) return null;
+
+  if (!dao?.data || !isSignedIn) {
+    return (
+      <Flex
+        as='section'
+        minH='100vh'
+        bg='dark.900'
+        position='sticky'
+        top='0'
+        zIndex='2'
+        borderRightWidth='1px'
+        borderRightColor='dark.500'
+      >
+        <Flex
+          flex='1'
+          overflowY='auto'
+          boxShadow='sm-dark'
+          maxW={{ base: 'full', sm: 'xs' }}
+          minW='100px'
+          py={{ base: '6', sm: '8' }}
+          px={{ base: '4', sm: '6' }}
+        >
+          <Stack justify='space-between' spacing='1'>
+            <Stack spacing={{ base: '5', sm: '6' }} shouldWrapChildren>
+              {map(clubs, (data, index) => (
+                <Circle
+                  key={index}
+                  bg='primary-accent.900'
+                  borderColor='dark.500'
+                  opacity='0.9'
+                  borderWidth='1px'
+                  size='12'
+                  cursor='pointer'
+                  onClick={() => router.push(`/${data.club?.slug}`)}
+                  _hover={{ opacity: 1 }}
+                >
+                  <Text fontSize='md' fontWeight='medium'>
+                    {nameToAbbreviation(data.club?.slug)}
+                  </Text>
+                </Circle>
+              ))}
+              <Circle
+                hidden={!isSignedIn}
+                bg='light.500'
+                borderColor='dark.500'
+                borderWidth='1px'
+                size='12'
+                cursor='pointer'
+                _hover={{ bg: 'light.900' }}
+              >
+                <Text color='dark.700' fontSize='xl' fontWeight='medium'>
+                  +
+                </Text>
+              </Circle>
+            </Stack>
+          </Stack>
+        </Flex>
+      </Flex>
+    );
+  }
+
   return (
     <>
       <Flex
@@ -138,8 +257,25 @@ export const Sidebar = () => {
         >
           <Stack justify='space-between' spacing='1'>
             <Stack spacing={{ base: '5', sm: '6' }} shouldWrapChildren>
+              {map(clubs, (data, index) => (
+                <Circle
+                  key={index}
+                  bg='primary-accent.900'
+                  borderColor='dark.500'
+                  opacity='0.9'
+                  borderWidth='1px'
+                  size='12'
+                  cursor='pointer'
+                  onClick={() => router.push(`/${data.club?.slug}`)}
+                  _hover={{ opacity: 1 }}
+                >
+                  <Text fontSize='md' fontWeight='medium'>
+                    {nameToAbbreviation(data.club?.slug)}
+                  </Text>
+                </Circle>
+              ))}
               <Circle
-                bg='dark.600'
+                bg='light.500'
                 borderColor='dark.500'
                 opacity='0.9'
                 borderWidth='1px'
@@ -147,33 +283,7 @@ export const Sidebar = () => {
                 cursor='pointer'
                 _hover={{ opacity: 1 }}
               >
-                <Text fontSize='md' fontWeight='medium'>
-                  SD
-                </Text>
-              </Circle>
-              <Circle
-                bg='primary.900'
-                borderColor='dark.500'
-                opacity='0.9'
-                borderWidth='1px'
-                size='12'
-                cursor='pointer'
-                _hover={{ opacity: 1 }}
-              >
-                <Text fontSize='md' fontWeight='medium'>
-                  CD
-                </Text>
-              </Circle>
-              <Circle
-                bg='dark.700'
-                borderColor='dark.500'
-                opacity='0.9'
-                borderWidth='1px'
-                size='12'
-                cursor='pointer'
-                _hover={{ opacity: 1 }}
-              >
-                <Text fontSize='xl' fontWeight='medium'>
+                <Text color='dark.700' fontSize='xl' fontWeight='medium'>
                   +
                 </Text>
               </Circle>
@@ -197,18 +307,19 @@ export const Sidebar = () => {
           boxShadow='sm-dark'
           maxW={{ base: 'full', sm: 'xs' }}
           py={{ base: '6', sm: '8' }}
-          px={{ base: '4', sm: '6' }}
         >
           <Stack justify='space-between' spacing='1'>
             <Stack spacing={{ base: '5', sm: '6' }} shouldWrapChildren>
-              <UserProfile club={dao?.data?.name} />
+              <Stack px={{ base: '4', sm: '4' }}>
+                <UserProfile club={dao?.data?.name} />
+              </Stack>
               <Divider borderColor='dark.500' />
               <Stack spacing='1'>
-                <Link href={`/d/${slug}`}>
+                <Link href={`/${slug}`}>
                   <NavButton
                     icon={DashboardOutline}
                     label='Dashboard'
-                    isSelected={router.pathname.split('/')[3] === undefined}
+                    isSelected={router.pathname.split('/')[2] === undefined}
                   />
                 </Link>
                 {[
@@ -225,7 +336,7 @@ export const Sidebar = () => {
                     icon: ExtensionOutline,
                   },
                 ].map(({ label, route, icon }) => (
-                  <Link key={label} href={`/d/${slug}${route}`}>
+                  <Link key={label} href={`/${slug}${route}`}>
                     <NavButton
                       icon={icon}
                       label={label}
@@ -248,46 +359,48 @@ export const Sidebar = () => {
                   isSelected={isSelected('/settings')}
                 />
               </Stack>
-              <Box
-                bg='dark.700'
-                px='4'
-                py='5'
-                borderRadius='lg'
-                borderWidth='1px'
-                borderColor='dark.500'
-              >
-                <Stack spacing='4'>
-                  <Stack spacing='1'>
-                    <Text fontSize='sm' fontWeight='semibold'>
-                      You still have a few steps left
-                    </Text>
-                    <Text fontSize='sm' color='gray'>
-                      Finish deploying your Club contracts to get started.
-                    </Text>
-                  </Stack>
+              <Stack px={{ base: '4', sm: '4' }}>
+                <Box
+                  bg='dark.700'
+                  px='4'
+                  py='5'
+                  borderRadius='lg'
+                  borderWidth='1px'
+                  borderColor='dark.500'
+                >
+                  <Stack spacing='4'>
+                    <Stack spacing='1'>
+                      <Text fontSize='sm' fontWeight='semibold'>
+                        You still have a few steps left
+                      </Text>
+                      <Text fontSize='sm' color='gray'>
+                        Finish deploying your Club contracts to get started.
+                      </Text>
+                    </Stack>
 
-                  <Progress
-                    colorScheme='primary'
-                    borderRadius='lg'
-                    size='md'
-                    value={getPercentage(
-                      EXTENSION_SIZE + OTHER_REQUIREMENTS_SIZE,
-                      size(dao?.data?.extensions),
-                    )}
-                    bg='dark.500'
-                  />
-                  <HStack spacing='3'>
-                    <Button variant='link' size='sm'>
-                      Setup guide
-                    </Button>
-                    <Link href={`/d/${slug}/setup`}>
-                      <Button variant='primary' size='sm'>
-                        Finish setup
+                    <Progress
+                      colorScheme='primary'
+                      borderRadius='lg'
+                      size='md'
+                      value={getPercentage(
+                        EXTENSION_SIZE + OTHER_REQUIREMENTS_SIZE,
+                        size(dao?.data?.extensions),
+                      )}
+                      bg='dark.500'
+                    />
+                    <HStack spacing='3'>
+                      <Button variant='link' size='sm'>
+                        Setup guide
                       </Button>
-                    </Link>
-                  </HStack>
-                </Stack>
-              </Box>
+                      <Link href={`/${slug}/start`}>
+                        <Button variant='primary' size='sm'>
+                          Finish setup
+                        </Button>
+                      </Link>
+                    </HStack>
+                  </Stack>
+                </Box>
+              </Stack>
             </Stack>
           </Stack>
         </Flex>

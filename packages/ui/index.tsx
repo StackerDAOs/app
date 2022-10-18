@@ -42,6 +42,12 @@ export {
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  MenuItemOption,
+  MenuList,
+  MenuOptionGroup,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -87,6 +93,7 @@ export {
   useClipboard,
   useDisclosure,
   useToast,
+  useMenuButton,
 } from '@chakra-ui/react';
 export type {
   BoxProps,

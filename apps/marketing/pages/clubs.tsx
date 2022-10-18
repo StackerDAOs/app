@@ -1,18 +1,10 @@
 import Link from 'next/link';
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Heading,
-  Icon,
-  SimpleGrid,
-  Stack,
-  Text,
-} from 'ui';
+import { Box, Button, ButtonGroup, Heading, HStack, Stack, Text } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container } from 'ui/components/layout';
 import { MainLayout } from '@components/layout';
 import { ArrowRight } from 'ui/components/icons';
+import { appUrl } from 'utils';
 
 export default function Clubs() {
   return (
@@ -27,67 +19,100 @@ export default function Clubs() {
         backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
         opacity='1'
       >
-        <Container h='full' maxW='5xl'>
-          <SimpleGrid columns={1} spacing='3'>
-            <Stack
-              spacing='4'
-              h='calc(100vh - 5vh)'
-              justify='center'
-              align='center'
-              textAlign='center'
-            >
-              <Heading
-                size='3xl'
-                fontWeight='thin'
-                letterSpacing='tight'
-                color='white'
-              >
-                <Text
-                  color='blue'
+        <Container>
+          <Stack
+            spacing='6'
+            h='calc(100vh - 5vh)'
+            justify='center'
+            align='center'
+          >
+            <Stack spacing='6' align='flex-start'>
+              <HStack m='0' px='2'>
+                <Text fontSize='lg' fontWeight='light' color='light.500'>
+                  Protocol built with Stacks
+                </Text>
+              </HStack>
+              <Stack spacing='0' mt='0 !important'>
+                <Heading
+                  fontSize={{ base: '4em', md: '6em', lg: '8em' }}
                   fontWeight='black'
-                  fontSize={{ base: '7xl', md: '8xl' }}
-                  bgGradient='linear(to-br, bg-primary 65%, dark.500 100%)'
+                  bgGradient='linear(to-b, primary.900 65%, dark.500 100%)'
                   bgClip='text'
+                  style={{
+                    WebkitTextStrokeWidth: '1px',
+                    WebkitTextStrokeColor: '#121416',
+                  }}
                 >
-                  Investment Clubs
-                </Text>
-              </Heading>
-
-              <Stack spacing='0'>
-                <Text
-                  fontSize='2xl'
-                  fontWeight='light'
-                  color='text-default'
-                  maxW='lg'
-                >
-                  Membership gated primitive to raise funds, govern, and take
-                  action.
-                </Text>
-              </Stack>
-              <ButtonGroup>
-                <Link href='/create'>
-                  <Button
-                    variant='link'
-                    color='primary.900'
-                    fontWeight='light'
-                    fontSize={{ base: '2xl', md: '3xl' }}
-                    rightIcon={<Icon as={ArrowRight} />}
-                    size='lg'
-                    borderColor='transparent'
-                    borderBottomWidth='1px'
-                    borderRadius='none'
-                    _hover={{
-                      borderColor: 'primary.900',
-                      borderBottomWidth: '1px',
-                      borderRadius: 'none',
+                  Clubs
+                  <Text
+                    as='span'
+                    mx='5'
+                    fontWeight='thin'
+                    bgGradient='linear(to-b, light.900 25%, primary.900 100%)'
+                    bgClip='text'
+                    style={{
+                      WebkitTextStrokeWidth: '0px',
+                      WebkitTextStrokeColor: '#121416',
                     }}
                   >
-                    Start your club
+                    powered by Bitcoin
+                  </Text>
+                </Heading>
+              </Stack>
+              <Stack spacing='8'>
+                <Text
+                  fontSize={{ base: '1.5em', lg: '1.75em' }}
+                  fontWeight='light'
+                  color='light.900'
+                  px='2'
+                >
+                  Invest, fund causes, build products, and more. Together.{' '}
+                </Text>
+                <ButtonGroup px='2' spacing='6'>
+                  <Link href={`${appUrl.clubs}/create`}>
+                    <Button
+                      variant='inverted'
+                      size='lg'
+                      bg='primary.900'
+                      borderColor='dark.500'
+                      color='light.900'
+                      fontSize='xl'
+                      fontWeight='medium'
+                      _active={{
+                        color: 'light.900',
+                        bg: 'primary.900',
+                        opacity: 0.9,
+                      }}
+                      _hover={{
+                        color: 'light.900',
+                        bg: 'primary.900',
+                        opacity: 0.9,
+                      }}
+                    >
+                      Create Club
+                    </Button>
+                  </Link>
+                  <Button
+                    variant='link'
+                    size='lg'
+                    color='light.900'
+                    fontWeight='medium'
+                    fontSize='xl'
+                    rightIcon={<ArrowRight />}
+                    _active={{
+                      color: 'light.500',
+                      opacity: 0.9,
+                    }}
+                    _hover={{
+                      color: 'light.500',
+                    }}
+                  >
+                    Read docs
                   </Button>
-                </Link>
-              </ButtonGroup>
+                </ButtonGroup>
+              </Stack>
             </Stack>
-          </SimpleGrid>
+          </Stack>
         </Container>
       </Box>
     </motion.div>

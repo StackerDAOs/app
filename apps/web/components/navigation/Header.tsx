@@ -15,6 +15,7 @@ import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { getExplorerLink, findExtension } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
 import { IdeaDrawer, ProposalDrawer } from '@components/drawers';
+import { useAuth } from 'ui/components';
 import { useDAO } from 'ui/hooks';
 
 import { Wrapper } from '../containers';
@@ -83,6 +84,9 @@ export const SetupHeader = () => {
 export const DashboardHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const dao = useDAO();
+  const { isSignedIn } = useAuth();
+
+  if (!dao?.data || !isSignedIn) return null;
 
   return (
     <Wrapper>
@@ -103,7 +107,6 @@ export const DashboardHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              {/*  */}
               <Heading
                 size='2xl'
                 fontWeight='black'

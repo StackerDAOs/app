@@ -1033,7 +1033,6 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
         size='lg'
         onClose={onClose}
         initialFocusRef={focusField}
-        closeOnOverlayClick={false}
       >
         <DrawerOverlay />
         <DrawerContent bg='dark.800'>

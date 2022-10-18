@@ -25,14 +25,37 @@ import {
   DeploySubmissionButton,
   DeployVotingButton,
 } from 'ui/components/buttons';
-import { useDAO } from 'ui/hooks';
+import {
+  useDAO,
+  // useTransaction,
+  // useInvestmentClub,
+  // useGovernanceToken,
+} from 'ui/hooks';
 import { getPercentage, findExtension, nameToSlug } from 'utils';
 import { InfoIcon } from 'ui/components/icons';
 import { CustomAccordianItem } from '@components/disclosure';
 
+// const EXTENSION_SIZE = 6;
+
 export default function Setup() {
   const dao = useDAO();
+  // const governanceToken = useGovernanceToken();
+  // const investmentClub = useInvestmentClub();
+  // const { data: bootstrapTransaction } = useTransaction(
+  //   dao?.data?.bootstrap_tx_id,
+  // );
+  // const { data: activationTransaction } = useTransaction(
+  //   dao?.data?.activation_tx_id,
+  // );
+  // const isInitializing =
+  //   dao?.data?.extensions?.length !== EXTENSION_SIZE ||
+  //   !dao?.data?.bootstrap_tx_id;
 
+  // const isActive =
+  //   !dao?.isFetching &&
+  //   !dao?.isLoading &&
+  //   dao?.data?.active &&
+  //   activationTransaction?.tx_status === 'success';
   const onFinish = () => {
     console.log('onFinish');
   };

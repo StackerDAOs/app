@@ -108,9 +108,9 @@ export default function Web() {
           </Stack>
         </Box>
       </Box>
-      <Box as='section' py='24' bgGradient='linear(to-b, dark.900, dark.800)'>
+      <Box as='section' py='24' bgGradient='linear(to-b, dark.700, dark.800)'>
         <Box
-          maxW={{ base: 'xl', md: '7xl' }}
+          maxW={{ base: 'xl', md: '6xl' }}
           mx='auto'
           px={{ base: '6', md: '8' }}
         >
@@ -173,13 +173,10 @@ export default function Web() {
           </Stack>
         </Box>
       </Box>
-      <Box
-        backgroundImage='linear-gradient(#171717 1px, transparent 1px), linear-gradient(to right, #171717 1px, #111111 1px)'
-        backgroundSize='20px 20px'
-      >
+      <Box bg='dark.900'>
         <Box as='section' pt='24' pb='12' overflow='hidden'>
           <Box
-            maxW={{ base: 'xl', md: '7xl' }}
+            maxW={{ base: 'xl', md: '6xl' }}
             mx='auto'
             px={{ base: '6', md: '8' }}
           >
@@ -189,7 +186,7 @@ export default function Web() {
               justify='space-between'
               mb='20'
             >
-              <Box flex='1' maxW={{ lg: 'lg' }} pt='6'>
+              <Box flex='1' maxW={{ lg: '6xl' }} pt='6'>
                 <Heading as='h1' size='3xl' mt='8' fontWeight='black'>
                   Teams
                 </Heading>
@@ -223,7 +220,7 @@ export default function Web() {
         </Box>
         <Box as='section' pt='24' pb='12' overflow='hidden'>
           <Box
-            maxW={{ base: 'xl', md: '7xl' }}
+            maxW={{ base: 'xl', md: '6xl' }}
             mx='auto'
             px={{ base: '6', md: '8' }}
           >
@@ -266,9 +263,9 @@ export default function Web() {
             </Flex>
           </Box>
         </Box>
-        <Box as='section' pt='24' pb='12' overflow='hidden'>
+        <Box as='section' pt='24' pb='12'>
           <Box
-            maxW={{ base: 'xl', md: '7xl' }}
+            maxW={{ base: 'xl', md: '6xl' }}
             mx='auto'
             px={{ base: '6', md: '8' }}
           >
@@ -311,7 +308,7 @@ export default function Web() {
           </Box>
         </Box>
       </Box>
-      <Container as='footer' role='contentinfo' maxW='7xl'>
+      <Container as='footer' role='contentinfo' maxW='6xl'>
         <Stack
           spacing='8'
           direction={{ base: 'column', md: 'row' }}
@@ -325,7 +322,7 @@ export default function Web() {
               cursor='pointer'
               height='35px'
             />
-            <Text color='muted'>
+            <Text color='light.900'>
               Create beautiful websites remarkably fast.
             </Text>
           </Stack>
