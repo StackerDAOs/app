@@ -15,7 +15,7 @@ export const ExtensionModal = (props: any) => {
 
   return (
     <>
-      <Button variant='dark' onClick={onOpen}>
+      <Button variant='link' size='sm' onClick={onOpen}>
         {title}
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size='xl' isCentered>

@@ -17,6 +17,11 @@ import {
 } from 'micro-stacks/transactions';
 import { isMainnet, isTestnet } from 'api/constants';
 
+export const appUrl = {
+  clubs: isMainnet ? 'https://clubs.stackerdaos.com' : 'http://localhost:3000',
+  teams: isMainnet ? 'https://teams.stackerdaos.com' : 'http://localhost:3000',
+};
+
 export const contractPrincipal = (address: string): string[] =>
   address.split('.');
 
@@ -245,5 +250,14 @@ export function nameToSymbol(name: string) {
     } else {
       return name.toUpperCase().substring(0, 2);
     }
+  }
+}
+
+export function nameToAbbreviation(name: string) {
+  if (hasWhiteSpace(name)) {
+    name = name.replace(/\s/g, '');
+    return name.toUpperCase().substring(0, 2);
+  } else {
+    return name.toUpperCase().substring(0, 2);
   }
 }

@@ -121,9 +121,11 @@ export async function getProposals({ queryKey }: any) {
   const [_, organizationId] = queryKey;
   const query = supabase
     .from('proposals')
-    .select('*, club:clubs!inner(id, name, slug)')
+    .select(
+      '*, submission:submissions!inner(id, title, description, body, club_id)',
+    )
     .order('created_at', { ascending: false })
-    .eq('clubs.id', organizationId);
+    .eq('submissions.club_id', organizationId);
   try {
     const { data: proposals, error } = await query;
     if (error) throw error;
@@ -629,6 +631,24 @@ export async function downvoteProposal(id: any) {
     } catch (e: any) {
       console.error({ e });
     }
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getUserClubs(address: string | undefined) {
+  try {
+    const { data: clubs, error } = await supabase
+      .from('users_clubs')
+      .select(
+        'user_address, club_id, club:clubs!inner(id, name, slug, contract_address)',
+      )
+      .eq('user_address', address);
+    if (error) throw error;
+    if (clubs?.length > 0) {
+      return clubs;
+    }
+    return [];
   } catch (e: any) {
     console.error({ e });
   }

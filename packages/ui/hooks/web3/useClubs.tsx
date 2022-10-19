@@ -1,6 +1,6 @@
 // Hook (use-clubs.tsx)
 import { useQuery } from 'react-query';
-import { getClubs } from 'api/clubs';
+import { getClubs, getUserClubs } from 'api/clubs';
 import { useAccount } from '@micro-stacks/react';
 
 export function useClubs() {
@@ -8,7 +8,7 @@ export function useClubs() {
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
     ['clubs', stxAddress],
     async () => {
-      return await getClubs(stxAddress);
+      return await getUserClubs(stxAddress);
     },
     {
       enabled: !!stxAddress,

@@ -262,7 +262,7 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
                   defaultValue='1'
                   onChange={onChange}
                   value={value}
-                  spacing='6'
+                  spacing='3'
                   direction='row'
                 >
                   {vaultOptions?.map((option) => (
@@ -708,7 +708,7 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
         </Stack>
       </Stack> */}
       <Stack spacing='3'>
-        <Card h='fit-content' bg='dark.900'>
+        <Card h='fit-content' bg='dark.800'>
           <Stack spacing='0'>
             <Stack
               px={{ base: '6', md: '6' }}
@@ -756,7 +756,7 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
             </Stack>
           </Stack>
         </Card>
-        <Card h='fit-content' bg='dark.900'>
+        <Card h='fit-content' bg='dark.800'>
           <Stack spacing='0'>
             <Stack
               px={{ base: '6', md: '6' }}
@@ -1033,10 +1033,9 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
         size='lg'
         onClose={onClose}
         initialFocusRef={focusField}
-        closeOnOverlayClick={false}
       >
         <DrawerOverlay />
-        <DrawerContent bg='dark.900'>
+        <DrawerContent bg='dark.800'>
           <DrawerCloseButton
             size='lg'
             color='primary.900'

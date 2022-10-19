@@ -1,9 +1,10 @@
 import {
   AccordionItem,
+  AccordionIcon,
   AccordionButton,
   Box,
   Button,
-  CircularProgress,
+  Circle,
   Icon,
   Heading,
   HStack,
@@ -19,7 +20,7 @@ import { truncateAddress } from '@stacks-os/utils';
 import { ExtensionModal } from '@components/overlay';
 
 export const CustomAccordianItem = (props: any) => {
-  const { title, isPending, hasCompleted, progressValue, children } = props;
+  const { title, isPending, hasCompleted, children } = props;
   const dao = useDAO();
   const nftMembershipExtension = findExtension(
     dao.data?.extensions,
@@ -39,7 +40,7 @@ export const CustomAccordianItem = (props: any) => {
 
   const renderStep = (name: string) => {
     switch (name) {
-      case 'Create an account':
+      case 'Deploy Core DAO':
         return (
           <>
             <Box py='8'>
@@ -410,12 +411,12 @@ export const CustomAccordianItem = (props: any) => {
 
   if (hasCompleted) {
     return (
-      <AccordionItem p='2' bg='dark.900' borderColor='transparent'>
+      <AccordionItem p='3' bg='dark.700' borderColor='dark.500'>
         <HStack align='center' justify='space-between'>
           <HStack align='center'>
             <Icon as={CheckCircle} fontSize='xl' color='primary.900' />
             <Text textAlign='left' fontSize='lg' fontWeight='regular'>
-              <Text as='span' fontWeight='black'>
+              <Text as='span' fontWeight='semibold'>
                 {title}
               </Text>
             </Text>
@@ -432,13 +433,11 @@ export const CustomAccordianItem = (props: any) => {
 
   if (isPending) {
     return (
-      <AccordionItem p='2' bg='dark.700' borderColor='transparent'>
+      <AccordionItem p='2' bg='dark.900' borderColor='transparent'>
         <HStack align='center' justify='flex-start'>
           <Spinner size='sm' color='primary.900' mr='2' />
-          <Text textAlign='left' fontSize='lg' fontWeight='regular'>
-            <Text as='span' fontWeight='black'>
-              {title}
-            </Text>{' '}
+          <Text textAlign='left' fontSize='lg' fontWeight='semibold'>
+            {title}
           </Text>
         </HStack>
       </AccordionItem>
@@ -446,20 +445,20 @@ export const CustomAccordianItem = (props: any) => {
   }
 
   return (
-    <AccordionItem p='2' bg='dark.700'>
-      <AccordionButton px='0'>
-        <HStack align='center' justify='flex-start'>
-          <CircularProgress
-            value={progressValue}
-            color='primary.900'
-            size='32px'
+    <AccordionItem p='1' bg='dark.900' borderColor='dark.500'>
+      <AccordionButton px='3'>
+        <HStack flex='1' align='center' justify='flex-start' spacing='2'>
+          <Circle
+            bg='dark.900'
+            borderColor='light.500'
+            borderWidth='1px'
+            size='4'
           />
-          <Text textAlign='left' fontSize='lg' fontWeight='regular'>
-            <Text as='span' fontWeight='black'>
-              {title}
-            </Text>{' '}
+          <Text textAlign='left' fontSize='lg' fontWeight='semibold'>
+            {title}
           </Text>
         </HStack>
+        <AccordionIcon />
       </AccordionButton>
       {children}
     </AccordionItem>

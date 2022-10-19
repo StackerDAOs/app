@@ -1,4 +1,8 @@
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
   Badge,
   ButtonGroup,
   Heading,
@@ -11,6 +15,7 @@ import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { getExplorerLink, findExtension } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
 import { IdeaDrawer, ProposalDrawer } from '@components/drawers';
+import { useAuth } from 'ui/components';
 import { useDAO } from 'ui/hooks';
 
 import { Wrapper } from '../containers';
@@ -19,9 +24,69 @@ import { Clipboard } from '../feedback';
 const hasExtension = (extensions: any, extensionToFind: string) =>
   findExtension(extensions, extensionToFind);
 
+export const SetupHeader = () => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
+  return (
+    <Wrapper>
+      <motion.div
+        variants={FADE_IN_VARIANTS}
+        initial={FADE_IN_VARIANTS.hidden}
+        animate={FADE_IN_VARIANTS.enter}
+        exit={FADE_IN_VARIANTS.exit}
+        transition={{ duration: 0.75, type: 'linear' }}
+      >
+        <Stack
+          pt='12'
+          display={isMobile ? 'block' : 'flex'}
+          direction={{ base: 'column', md: 'row' }}
+          justify='space-between'
+          align='flex-start'
+        >
+          <Stack justify='space-between' spacing='6'>
+            <HStack>
+              <Heading
+                size='2xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
+                bgClip='text'
+              >
+                Deployment and Setup
+              </Heading>
+            </HStack>
+
+            <Alert
+              bg='dark.700'
+              status='warning'
+              borderRadius='lg'
+              variant='left-accent'
+            >
+              <Stack>
+                <HStack spacing='2'>
+                  <AlertIcon m='0' />
+                  <AlertTitle>Required Extensions</AlertTitle>
+                </HStack>
+                <AlertDescription>
+                  You will deploy 6 contracts before you can go live with your
+                  Club. You must deploy the following contracts in the order
+                  below to complete the setup.
+                </AlertDescription>
+              </Stack>
+            </Alert>
+          </Stack>
+        </Stack>
+      </motion.div>
+    </Wrapper>
+  );
+};
+
 export const DashboardHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const dao = useDAO();
+  const { isSignedIn } = useAuth();
+
+  if (!dao?.data || !isSignedIn) return null;
 
   return (
     <Wrapper>
@@ -42,9 +107,8 @@ export const DashboardHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              {/*  */}
               <Heading
-                size='3xl'
+                size='2xl'
                 fontWeight='black'
                 color='light.900'
                 bgGradient='linear(to-b, light.900 25%, light.500 100%)'
@@ -128,7 +192,7 @@ export const VaultHeader = () => {
           <Stack justify='space-between' spacing='3'>
             <HStack>
               <Heading
-                size='3xl'
+                size='2xl'
                 fontWeight='black'
                 color='light.900'
                 bgGradient='linear(to-b, light.900 25%, light.500 100%)'
@@ -226,7 +290,7 @@ export const ProposalHeader = () => {
           <Stack justify='space-between' spacing='3'>
             <HStack>
               <Heading
-                size='3xl'
+                size='2xl'
                 fontWeight='black'
                 color='light.900'
                 bgGradient='linear(to-b, light.900 25%, light.500 100%)'
@@ -323,7 +387,7 @@ export const VotingHeader = () => {
           <Stack justify='space-between' spacing='3'>
             <HStack>
               <Heading
-                size='3xl'
+                size='2xl'
                 fontWeight='black'
                 color='light.900'
                 bgGradient='linear(to-b, light.900 25%, light.500 100%)'
@@ -416,7 +480,7 @@ export const ExtensionsHeader = () => {
           <Stack justify='space-between' spacing='3'>
             <HStack>
               <Heading
-                size='3xl'
+                size='2xl'
                 fontWeight='black'
                 color='light.900'
                 bgGradient='linear(to-b, light.900 25%, light.500 100%)'
