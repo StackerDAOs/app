@@ -15,23 +15,7 @@ import {
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { LightningBolt, LogoIcon } from 'ui/components/icons';
 import { MainNavbar, Footer } from '@components/navigation';
-import {
-  CardGrid,
-  FeatureList,
-  BottomHero,
-  TopHero,
-} from '@components/marketing';
 import { Nav } from '@components/containers';
-
-const topHeroProps = {
-  title: 'Web3 primitives to raise funds, govern, and take action.',
-  secondaryTitle: 'Together',
-  titleJustify: 'left',
-  description: '',
-  link: 'https://form.typeform.com/to/zfYJYLgV',
-  linkText: 'Join our beta',
-  color: 'linear(to-br, bg-primary 65%, dark.500 100%)',
-};
 
 const features = [
   {
@@ -101,7 +85,7 @@ export default function Web() {
                 letterSpacing='tight'
                 bg='light.900'
                 bgClip='text'
-                align='center'
+                textAlign='center'
               >
                 Web3 primitives to raise funds, govern, and take action.
               </Heading>
@@ -115,7 +99,7 @@ export default function Web() {
                 letterSpacing='tight'
                 bgGradient='linear(to-b, light.900 65%, dark.500 100%)'
                 bgClip='text'
-                align='center'
+                textAlign='center'
               >
                 Together.
               </Heading>

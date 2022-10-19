@@ -5,7 +5,6 @@ import {
   Container,
   Heading,
   HStack,
-  Icon,
   Stack,
   Text,
 } from 'ui';

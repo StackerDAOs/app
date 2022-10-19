@@ -2,7 +2,12 @@ import Link from 'next/link';
 import { Box, Heading, Text, Image, HStack, Stack } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container } from 'ui/components/layout';
-import { RocketLaunch, UserGroup, Cog6Tooth } from 'ui/components/icons';
+import {
+  RocketLaunch,
+  UserGroup,
+  Cog6Tooth,
+  LogoIcon,
+} from 'ui/components/icons';
 import {
   CardGrid,
   FeatureList,
@@ -11,7 +16,6 @@ import {
 } from '@components/marketing';
 import { useScrollPosition } from 'ui/hooks/react';
 import { MainNavbar, LandingNavbar, Footer } from '@components/navigation';
-import { LogoIcon } from 'ui/components/icons';
 import { Nav } from '@components/containers';
 
 // Title of page that will appear next to DAO logo on scroll

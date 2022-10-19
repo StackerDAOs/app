@@ -11,8 +11,8 @@ export const CardGrid = (props: CardGridProps) => {
   return (
     <Box>
       <SimpleGrid columns={1} spacing={20}>
-        {cardGridProps.map((x: any, index: any) => (
-          <Box py={{ base: '2', md: '4' }} key={index}>
+        {cardGridProps.map((x: any) => (
+          <Box py={{ base: '2', md: '4' }} key={x.title}>
             {x}
           </Box>
         ))}
