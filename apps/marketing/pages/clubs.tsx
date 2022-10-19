@@ -1,5 +1,4 @@
 import Link from 'next/link';
-<<<<<<< HEAD
 import { Box, Heading, Text, Image, HStack, Stack } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container } from 'ui/components/layout';
@@ -98,14 +97,6 @@ const bottomHeroImage = (
     alt='Screenshot for Stx'
   />
 );
-=======
-import { Box, Button, ButtonGroup, Heading, HStack, Stack, Text } from 'ui';
-import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { Container } from 'ui/components/layout';
-import { MainLayout } from '@components/layout';
-import { ArrowRight } from 'ui/components/icons';
-import { appUrl } from 'utils';
->>>>>>> develop
 
 export default function Clubs() {
   const scrollPosition = useScrollPosition();
