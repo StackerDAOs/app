@@ -43,17 +43,12 @@ export {
   InputLeftElement,
   InputRightElement,
   Menu,
-<<<<<<< HEAD
   MenuButton,
-  MenuItem,
-  MenuList,
-=======
   MenuDivider,
   MenuItem,
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
->>>>>>> develop
   Modal,
   ModalOverlay,
   ModalContent,
