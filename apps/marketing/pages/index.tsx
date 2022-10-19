@@ -91,8 +91,7 @@ export default function Web() {
               mx='auto'
               px={{ base: '6', md: '8' }}
             >
-              <TopHero topHeroProps={topHeroProps} />
-              {/* <Heading
+              <Heading
                 as='h1'
                 size='3xl'
                 fontWeight='black'
@@ -119,7 +118,7 @@ export default function Web() {
                 Together.
               </Heading>
             </Box>
-          <Stack
+            <Stack
               justify='center'
               direction={{ base: 'column', md: 'row' }}
               mt='10'
@@ -137,8 +136,7 @@ export default function Web() {
               >
                 Join our beta
               </Button>
-            </Stack> */}
-            </Box>
+            </Stack>
           </Box>
         </Box>
         <Box as='section' py='24' bgGradient='linear(to-b, dark.900, dark.800)'>
