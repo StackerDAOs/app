@@ -81,15 +81,15 @@ export default function Web() {
         </Nav>
         <Box
           as='section'
-          py='12.5rem'
+          py='8rem'
           backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
           opacity='1'
         >
-          <Box as='section' color='white' h='calc(100vh - 10vh)'>
+          <Box as='section' color='white' h='calc(100vh - 55vh)'>
             <Box
               maxW={{ base: 'xl', md: '5xl' }}
               mx='auto'
-              px={{ base: '6', md: '8' }}
+              px={{ base: '2', md: '4' }}
             >
               <Heading
                 as='h1'
@@ -99,8 +99,9 @@ export default function Web() {
                 mx='auto'
                 lineHeight='1.2'
                 letterSpacing='tight'
-                bgGradient='linear(to-br, bg-primary 65%, dark.500 100%)'
+                bg='light.900'
                 bgClip='text'
+                align='center'
               >
                 Web3 primitives to raise funds, govern, and take action.
               </Heading>
@@ -112,8 +113,9 @@ export default function Web() {
                 mx='auto'
                 lineHeight='1.2'
                 letterSpacing='tight'
-                bgGradient='linear(to-br, bg-primary 65%, dark.500 100%)'
+                bgGradient='linear(to-b, light.900 65%, dark.500 100%)'
                 bgClip='text'
+                align='center'
               >
                 Together.
               </Heading>
