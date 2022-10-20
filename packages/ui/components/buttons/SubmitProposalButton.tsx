@@ -1,10 +1,14 @@
 import React from 'react';
-import { Button, Spinner } from '@chakra-ui/react';
-import { useOpenContractCall } from '@micro-stacks/react';
+import { Button } from 'ui';
+import {
+  useAccount,
+  useOpenContractCall,
+  contractPrincipalCV,
+  uintCV,
+} from 'ui/components';
 import { useExtension } from 'ui/hooks';
-// import { useCreateProposal } from 'api/clubs/mutations';
+import { useCreateProposal } from 'api/clubs/mutations';
 import { SubmitProposalProps } from 'ui/components/buttons/types';
-import { contractPrincipalCV, uintCV } from 'micro-stacks/clarity';
 import {
   splitContractAddress,
   validateContractAddress,
@@ -12,11 +16,10 @@ import {
 
 export const SubmitProposalButton = (props: SubmitProposalProps) => {
   const { proposalContractAddress, onSubmit, ...rest } = props;
-  // const dao = useDAO();
   const submissionExtension = useExtension('Submission');
   const { openContractCall } = useOpenContractCall();
-  // const { stxAddress } = useAccount();
-  // const createProposal = useCreateProposal();
+  const { stxAddress } = useAccount();
+  const createProposal = useCreateProposal();
   // const startBlockHeight =
   //   currentBlockHeight + Number(submissionData?.minimumProposalStartDelay) + 25; // TODO: pull in submission data and add block delay param
   const [contractAddress, contractName] = splitContractAddress(
@@ -28,16 +31,11 @@ export const SubmitProposalButton = (props: SubmitProposalProps) => {
   const submitProposal = React.useCallback(async () => {
     const onFinish: any = async (data: any) => {
       try {
-        // createProposal.mutate({
-        //   title: title,
-        //   description: description,
-        //   body: body,
-        //   contract_address: `${stxAddress}.${contractName}`,
-        //   proposed_by: stxAddress as string,
-        //   post_conditions: {},
-        //   tx_id: data.txId,
-        //   club_id: dao?.data?.id,
-        // });
+        createProposal.mutate({
+          contract_address: proposalContractAddress,
+          proposed_by: stxAddress as string,
+          tx_id: data.txId,
+        });
         onSubmit?.(data);
       } catch (e: any) {
         console.error({ e });
@@ -46,22 +44,21 @@ export const SubmitProposalButton = (props: SubmitProposalProps) => {
 
     const functionArgs = [
       contractPrincipalCV(contractAddress, contractName),
-      uintCV(144),
+      uintCV(650),
+      uintCV(1), // TODO: pass tokenID
     ];
     const functionName = 'propose';
     const postConditions: any = [];
 
-    if (validateContractAddress(contractAddress)) {
-      await openContractCall({
-        contractAddress: submissionContractAddress,
-        contractName: submissionContractName,
-        functionName,
-        functionArgs,
-        postConditions,
-        onFinish,
-      });
-    }
-  }, [props]);
+    await openContractCall({
+      contractAddress: submissionContractAddress,
+      contractName: submissionContractName,
+      functionName,
+      functionArgs,
+      postConditions,
+      onFinish,
+    });
+  }, [proposalContractAddress]);
 
   return (
     <Button
@@ -70,7 +67,7 @@ export const SubmitProposalButton = (props: SubmitProposalProps) => {
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
     >
-      Deploy
+      Submit
     </Button>
   );
 };

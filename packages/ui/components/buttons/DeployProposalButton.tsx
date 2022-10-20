@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Spinner } from '@chakra-ui/react';
 import { useAccount, useOpenContractDeploy } from '@micro-stacks/react';
 import { useDAO, useGenerateName } from 'ui/hooks';
-import { useCreateProposal } from 'api/clubs/mutations';
+import { useCreateSubmission } from 'api/clubs/mutations';
 import { DeployProposalProps } from 'ui/components/buttons/types';
 
 export const DeployProposalButton = (props: DeployProposalProps) => {
@@ -11,18 +11,17 @@ export const DeployProposalButton = (props: DeployProposalProps) => {
   const { randomName: contractName } = useGenerateName();
   const { openContractDeploy } = useOpenContractDeploy();
   const { stxAddress } = useAccount();
-  const createProposal = useCreateProposal();
-  console.log({ title, description, body });
+  const createSubmission = useCreateSubmission();
 
   const deployProposal = React.useCallback(async () => {
     const onFinish: any = async (data: any) => {
       try {
-        createProposal.mutate({
+        createSubmission.mutate({
           title: title,
           description: description,
           body: body,
           contract_address: `${stxAddress}.${contractName}`,
-          proposed_by: stxAddress as string,
+          submitted_by: stxAddress as string,
           post_conditions: {},
           tx_id: data.txId,
           club_id: dao?.data?.id,

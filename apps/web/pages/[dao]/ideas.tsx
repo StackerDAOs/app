@@ -24,7 +24,7 @@ import { truncateAddress } from '@stacks-os/utils';
 import { ChevronDown, ChevronUp } from 'ui/components/icons';
 
 export default function Ideas() {
-  const [filter, setFilter] = React.useState('');
+  const [filter, setFilter] = React.useState('recent');
   const submissions = useSubmissions(filter);
 
   if (submissions.isLoading || submissions?.isIdle) {
@@ -91,14 +91,11 @@ export default function Ideas() {
             <Stack align='center' direction='row' spacing='3'>
               <RadioGroup onChange={setFilter} value={filter}>
                 <Stack direction='row'>
-                  {map(
-                    ['recent', 'most popular', 'submitted'],
-                    (tab: string) => (
-                      <Radio size='md' value={tab} _focus={{ outline: 'none' }}>
-                        {capitalize(tab)}
-                      </Radio>
-                    ),
-                  )}
+                  {map(['recent', 'most popular'], (tab: string) => (
+                    <Radio size='md' value={tab} _focus={{ outline: 'none' }}>
+                      {capitalize(tab)}
+                    </Radio>
+                  ))}
                 </Stack>
               </RadioGroup>
             </Stack>
@@ -115,35 +112,35 @@ export default function Ideas() {
                 {map(submissions?.data, (submission) => (
                   <Card
                     h='fit-content'
-                    bg='dark.900'
-                    px={{ base: '3', md: '3' }}
+                    bg='dark.800'
+                    px={{ base: '6', md: '6' }}
                     py={{ base: '3', md: '3' }}
-                    _hover={{ bg: 'dark.800', cursor: 'pointer' }}
+                    _hover={{ cursor: 'pointer' }}
                   >
                     <HStack justify='space-between' align='center' spacing='3'>
                       <HStack align='center' spacing='3'>
-                        <Text
-                          maxW='xl'
-                          mx='auto'
-                          color='light.500'
-                          fontSize='3xl'
-                          fontWeight='light'
-                        >
-                          {padStart(submission?.id, 3, '0')}.
-                        </Text>
-                        <Stack spacing='0'>
+                        <Stack spacing='0' align='flex-start'>
+                          <HStack align='flex-start' spacing='1'>
+                            <Text
+                              maxW='xl'
+                              mx='auto'
+                              color='light.900'
+                              fontSize='lg'
+                              fontWeight='black'
+                            >
+                              {padStart(submission?.id, 2, '0')}.{' '}
+                            </Text>
+                            <Text
+                              maxW='xl'
+                              color='light.900'
+                              fontSize='lg'
+                              fontWeight='black'
+                            >
+                              {submission.title}
+                            </Text>
+                          </HStack>
                           <Text
                             maxW='xl'
-                            mx='auto'
-                            color='light.900'
-                            fontSize='lg'
-                            fontWeight='black'
-                          >
-                            {submission.title}
-                          </Text>
-                          <Text
-                            maxW='xl'
-                            mx='auto'
                             color='gray'
                             fontSize='sm'
                             fontWeight='regular'
@@ -154,7 +151,21 @@ export default function Ideas() {
                         </Stack>
                       </HStack>
                       <HStack align='center' justify='flex-end' spacing='6'>
-                        <AvatarGroup size='md' max={2}>
+                        <AvatarGroup size='sm' max={3}>
+                          <ChakraAvatar>
+                            <Avatar
+                              size={1000}
+                              name={`${submission?.id}-${submission?.submitted_by}`}
+                              variant='beam'
+                              colors={[
+                                '#50DDC3',
+                                '#624AF2',
+                                '#EB00FF',
+                                '#7301FA',
+                                '#25C2A0',
+                              ]}
+                            />
+                          </ChakraAvatar>
                           <ChakraAvatar>
                             <Avatar
                               size={1000}
@@ -207,7 +218,7 @@ export default function Ideas() {
                             fontSize='xl'
                             fontWeight='black'
                           >
-                            {submission.votes}
+                            {submission.votes || 0}
                           </Text>
                           <ChevronDown fontSize='lg' />
                         </Stack>

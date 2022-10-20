@@ -15,7 +15,7 @@ export const DeployCoreButton = (props: DeployClubProps) => {
   const deployCoreDAO = React.useCallback(async () => {
     const onFinish: any = async (data: any) => {
       try {
-        createClub.mutate({
+        const club = {
           name,
           slug,
           type_id: CLUB_TYPES.INVESTMENT_CLUB,
@@ -23,7 +23,9 @@ export const DeployCoreButton = (props: DeployClubProps) => {
           creator_address: stxAddress,
           config,
           tx_id: data.txId,
-        });
+        };
+        const userAddress = stxAddress as string;
+        createClub.mutate({ club, userAddress });
         onDeploy?.(data);
       } catch (e: any) {
         console.error({ e });

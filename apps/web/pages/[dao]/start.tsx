@@ -1,22 +1,33 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import {
   Accordion,
   AccordionPanel,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  Button,
+  Circle,
   Icon,
+  Heading,
   HStack,
+  Grid,
+  GridItem,
   SimpleGrid,
   Stack,
+  Spinner,
   Text,
 } from 'ui';
 import { map, size } from 'lodash';
-// import { Card } from 'ui/components/cards';
-// import { SectionHeader } from 'ui/components/layout';
+import { Card } from 'ui/components/cards';
 import { Wrapper } from '@components/containers';
 import { AppLayout } from '@components/layout';
 import { SetupHeader } from '@components/navigation';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 import {
+  InitializeClubButton,
   DeployBootstrapButton,
   DeployNFTButton,
   DeployGovernanceTokenButton,
@@ -25,37 +36,31 @@ import {
   DeploySubmissionButton,
   DeployVotingButton,
 } from 'ui/components/buttons';
+import { useDAO, useTransaction } from 'ui/hooks';
 import {
-  useDAO,
-  // useTransaction,
-  // useInvestmentClub,
-  // useGovernanceToken,
-} from 'ui/hooks';
-import { getPercentage, findExtension, nameToSlug } from 'utils';
-import { InfoIcon } from 'ui/components/icons';
+  getPercentage,
+  findExtension,
+  nameToSlug,
+  getExplorerLink,
+} from 'utils';
+import { InfoIcon, LightningBolt } from 'ui/components/icons';
 import { CustomAccordianItem } from '@components/disclosure';
 
-// const EXTENSION_SIZE = 6;
+const EXTENSION_SIZE = 6;
 
-export default function Setup() {
+export default function Start() {
+  const router = useRouter();
   const dao = useDAO();
-  // const governanceToken = useGovernanceToken();
-  // const investmentClub = useInvestmentClub();
-  // const { data: bootstrapTransaction } = useTransaction(
-  //   dao?.data?.bootstrap_tx_id,
-  // );
-  // const { data: activationTransaction } = useTransaction(
-  //   dao?.data?.activation_tx_id,
-  // );
-  // const isInitializing =
-  //   dao?.data?.extensions?.length !== EXTENSION_SIZE ||
-  //   !dao?.data?.bootstrap_tx_id;
+  const { data: bootstrapTransaction } = useTransaction(
+    dao?.data?.bootstrap_tx_id,
+  );
+  const { data: activationTransaction } = useTransaction(
+    dao?.data?.activation_tx_id,
+  );
+  const isReady = dao?.data?.extensions?.length === EXTENSION_SIZE;
 
-  // const isActive =
-  //   !dao?.isFetching &&
-  //   !dao?.isLoading &&
-  //   dao?.data?.active &&
-  //   activationTransaction?.tx_status === 'success';
+  const isActive =
+    dao?.data?.active && activationTransaction?.tx_status === 'success';
   const onFinish = () => {
     console.log('onFinish');
   };
@@ -92,174 +97,210 @@ export default function Setup() {
     ),
   );
 
-  // const renderStatusComponent = (
-  //   bootstrapStatus: string,
-  //   activationStatus: string,
-  // ) => {
-  //   if (bootstrapStatus === 'success' && activationStatus === 'pending') {
-  //     return (
-  //       <>
-  //         <GridItem colSpan={{ base: 2, md: 4 }}>
-  //           <Stack spacing='1'>
-  //             <HStack align='flex-start' spacing='4'>
-  //               <Circle bg='dark.500' size='10'>
-  //                 <Icon as={LightningBolt} boxSize='6' color='primary.900' />
-  //               </Circle>
-  //               <Stack spacing='1' maxW='lg'>
-  //                 <Heading size='md' fontWeight='regular'>
-  //                   Launching club
-  //                 </Heading>
-  //                 <Text fontSize='md' fontWeight='thin' color='text-muted'>
-  //                   Once your bootstrap contract is deployed, you can activate
-  //                   your Club.{' '}
-  //                   <Text
-  //                     fontWeight='semibold'
-  //                     color='light.900'
-  //                     display='inline'
-  //                   >
-  //                     <a href={getExplorerLink(activationTransaction?.tx_id)}>
-  //                       View transaction
-  //                     </a>
-  //                   </Text>
-  //                   .
-  //                 </Text>
-  //               </Stack>
-  //             </HStack>
-  //           </Stack>
-  //         </GridItem>
-  //         <GridItem colSpan={{ base: 2, md: 1 }}>
-  //           <Button variant='primary' isFullWidth>
-  //             <Spinner />
-  //           </Button>
-  //         </GridItem>
-  //       </>
-  //     );
-  //   }
-  //   if (bootstrapStatus === 'pending') {
-  //     return (
-  //       <>
-  //         <GridItem colSpan={{ base: 2, md: 4 }}>
-  //           <Stack spacing='1'>
-  //             <HStack align='flex-start' spacing='4'>
-  //               <Circle bg='dark.500' size='10'>
-  //                 <Icon as={LightningBolt} boxSize='6' color='primary.900' />
-  //               </Circle>
-  //               <Stack spacing='1' maxW='lg'>
-  //                 <Heading size='md' fontWeight='regular'>
-  //                   Preparing your club for launch
-  //                 </Heading>
-  //                 <Text fontSize='md' fontWeight='thin' color='text-muted'>
-  //                   Once your bootstrap contract is deployed, you can activate
-  //                   your Club.{' '}
-  //                   <Text
-  //                     fontWeight='semibold'
-  //                     color='light.900'
-  //                     display='inline'
-  //                   >
-  //                     <a href={getExplorerLink(bootstrapTransaction?.tx_id)}>
-  //                       View transaction
-  //                     </a>
-  //                   </Text>
-  //                   .
-  //                 </Text>
-  //               </Stack>
-  //             </HStack>
-  //           </Stack>
-  //         </GridItem>
-  //         <GridItem colSpan={{ base: 2, md: 1 }}>
-  //           <Button variant='primary' isFullWidth>
-  //             <Spinner />
-  //           </Button>
-  //         </GridItem>
-  //       </>
-  //     );
-  //   }
+  const renderStatusComponent = (
+    bootstrapStatus: string,
+    activationStatus: string,
+  ) => {
+    if (
+      bootstrapStatus === 'success' &&
+      activationStatus === 'success' &&
+      isActive
+    ) {
+      return (
+        <>
+          <GridItem colSpan={{ base: 2, md: 4 }}>
+            <Stack spacing='1'>
+              <HStack align='flex-start' spacing='4'>
+                <Circle bg='dark.500' size='10'>
+                  <Icon as={LightningBolt} boxSize='6' color='primary.900' />
+                </Circle>
+                <Stack spacing='1' maxW='lg'>
+                  <Heading size='md' fontWeight='regular'>
+                    Congratulations!
+                  </Heading>
+                  <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                    You are ready to start fundraising for your Club{' '}
+                  </Text>
+                </Stack>
+              </HStack>
+            </Stack>
+          </GridItem>
+          <GridItem colSpan={{ base: 2, md: 1 }}>
+            <Button
+              variant='primary'
+              onClick={() => router.push(`/${router.query?.dao}`)}
+              isFullWidth
+            >
+              Go to dashboard
+            </Button>
+          </GridItem>
+        </>
+      );
+    }
+    if (bootstrapStatus === 'success' && activationStatus === 'pending') {
+      return (
+        <>
+          <GridItem colSpan={{ base: 2, md: 4 }}>
+            <Stack spacing='1'>
+              <HStack align='flex-start' spacing='4'>
+                <Circle bg='dark.500' size='10'>
+                  <Icon as={LightningBolt} boxSize='6' color='primary.900' />
+                </Circle>
+                <Stack spacing='1' maxW='lg'>
+                  <Heading size='md' fontWeight='regular'>
+                    Launching club
+                  </Heading>
+                  <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                    Once your bootstrap contract is deployed, you can activate
+                    your Club.{' '}
+                    <Text
+                      fontWeight='semibold'
+                      color='light.900'
+                      display='inline'
+                    >
+                      <a href={getExplorerLink(activationTransaction?.tx_id)}>
+                        View transaction
+                      </a>
+                    </Text>
+                    .
+                  </Text>
+                </Stack>
+              </HStack>
+            </Stack>
+          </GridItem>
+          <GridItem colSpan={{ base: 2, md: 1 }}>
+            <Button variant='primary' isFullWidth>
+              <Spinner />
+            </Button>
+          </GridItem>
+        </>
+      );
+    }
+    if (bootstrapStatus === 'pending') {
+      return (
+        <>
+          <GridItem colSpan={{ base: 2, md: 4 }}>
+            <Stack spacing='1'>
+              <HStack align='flex-start' spacing='4'>
+                <Circle bg='dark.500' size='10'>
+                  <Icon as={LightningBolt} boxSize='6' color='primary.900' />
+                </Circle>
+                <Stack spacing='1' maxW='lg'>
+                  <Heading size='md' fontWeight='regular'>
+                    Preparing your club for launch
+                  </Heading>
+                  <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                    Once your bootstrap contract is deployed, you can activate
+                    your Club.{' '}
+                    <Text
+                      fontWeight='semibold'
+                      color='light.900'
+                      display='inline'
+                    >
+                      <a href={getExplorerLink(bootstrapTransaction?.tx_id)}>
+                        View transaction
+                      </a>
+                    </Text>
+                    .
+                  </Text>
+                </Stack>
+              </HStack>
+            </Stack>
+          </GridItem>
+          <GridItem colSpan={{ base: 2, md: 1 }}>
+            <Button variant='primary' isFullWidth>
+              <Spinner />
+            </Button>
+          </GridItem>
+        </>
+      );
+    }
 
-  //   if (bootstrapStatus === 'success') {
-  //     return (
-  //       <>
-  //         <GridItem colSpan={{ base: 2, md: 4 }}>
-  //           <Stack spacing='1'>
-  //             <HStack align='flex-start' spacing='4'>
-  //               <Circle bg='dark.500' size='10'>
-  //                 <Icon as={LightningBolt} boxSize='6' color='primary.900' />
-  //               </Circle>
-  //               <Stack spacing='1' maxW='lg'>
-  //                 <Heading size='md' fontWeight='regular'>
-  //                   You&apos;re all set!
-  //                 </Heading>
-  //                 <Text fontSize='md' fontWeight='thin' color='text-muted'>
-  //                   Once you decide to activate your club, {dao?.data?.name}{' '}
-  //                   will be open for deposits for ~{' '}
-  //                   {dao?.data?.config?.durationInDays} days .
-  //                 </Text>
-  //               </Stack>
-  //             </HStack>
-  //           </Stack>
-  //         </GridItem>
-  //         <GridItem colSpan={{ base: 2, md: 1 }}>
-  //           <InitializeClubButton
-  //             variant='primary'
-  //             isFullWidth
-  //             title='Start'
-  //             contractPrincipal={dao?.data?.contract_address}
-  //             bootstrapPrincipal={dao?.data?.bootstrap_address}
-  //             onSubmit={() => console.log('init!')}
-  //           />
-  //         </GridItem>
-  //       </>
-  //     );
-  //   }
-  //   return null;
-  // };
+    if (bootstrapStatus === 'success') {
+      return (
+        <>
+          <GridItem colSpan={{ base: 2, md: 4 }}>
+            <Stack spacing='1'>
+              <HStack align='flex-start' spacing='4'>
+                <Circle bg='dark.500' size='10'>
+                  <Icon as={LightningBolt} boxSize='6' color='primary.900' />
+                </Circle>
+                <Stack spacing='1' maxW='lg'>
+                  <Heading size='md' fontWeight='regular'>
+                    You&apos;re all set!
+                  </Heading>
+                  <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                    Once you decide to activate your club, {dao?.data?.name}{' '}
+                    will be open for deposits for ~{' '}
+                    {dao?.data?.config?.durationInDays} days .
+                  </Text>
+                </Stack>
+              </HStack>
+            </Stack>
+          </GridItem>
+          <GridItem colSpan={{ base: 2, md: 1 }}>
+            <InitializeClubButton
+              variant='primary'
+              isFullWidth
+              title='Start'
+              contractPrincipal={dao?.data?.contract_address}
+              bootstrapPrincipal={dao?.data?.bootstrap_address}
+              onSubmit={() => console.log('init!')}
+            />
+          </GridItem>
+        </>
+      );
+    }
+    return null;
+  };
 
-  // const renderStatusCard = (
-  //   <Stack spacing='8' mt='6'>
-  //     <motion.div
-  //       variants={FADE_IN_VARIANTS}
-  //       initial={FADE_IN_VARIANTS.hidden}
-  //       animate={FADE_IN_VARIANTS.enter}
-  //       exit={FADE_IN_VARIANTS.exit}
-  //       transition={{ duration: 0.25, type: 'linear' }}
-  //     >
-  //       <Stack spacing='6'>
-  //         <Card h='fit-content' bg='dark.700'>
-  //           <Stack spacing='0'>
-  //             <Grid
-  //               templateColumns='repeat(5, 1fr)'
-  //               gap={{ base: 0, md: 8 }}
-  //               alignItems='center'
-  //               justifyItems='space-between'
-  //             >
-  //               <GridItem colSpan={5}>
-  //                 <Stack
-  //                   px={{ base: '6', md: '6' }}
-  //                   py={{ base: '6', md: '6' }}
-  //                   spacing='2'
-  //                 >
-  //                   <Stack mt='2' spacing='3'>
-  //                     <Stack spacing='0'>
-  //                       <Grid
-  //                         templateColumns='repeat(5, 1fr)'
-  //                         gap={8}
-  //                         alignItems='center'
-  //                       >
-  //                         {renderStatusComponent(
-  //                           bootstrapTransaction?.tx_status,
-  //                           activationTransaction?.tx_status,
-  //                         )}
-  //                       </Grid>
-  //                     </Stack>
-  //                   </Stack>
-  //                 </Stack>
-  //               </GridItem>
-  //             </Grid>
-  //           </Stack>
-  //         </Card>
-  //       </Stack>
-  //     </motion.div>
-  //   </Stack>
-  // );
+  const renderStatusCard = (
+    <Stack spacing='8' mt='6'>
+      <motion.div
+        variants={FADE_IN_VARIANTS}
+        initial={FADE_IN_VARIANTS.hidden}
+        animate={FADE_IN_VARIANTS.enter}
+        exit={FADE_IN_VARIANTS.exit}
+        transition={{ duration: 0.25, type: 'linear' }}
+      >
+        <Stack spacing='6'>
+          <Card h='fit-content' bg='dark.700'>
+            <Stack spacing='0'>
+              <Grid
+                templateColumns='repeat(5, 1fr)'
+                gap={{ base: 0, md: 8 }}
+                alignItems='center'
+                justifyItems='space-between'
+              >
+                <GridItem colSpan={5}>
+                  <Stack
+                    px={{ base: '6', md: '6' }}
+                    py={{ base: '6', md: '6' }}
+                    spacing='2'
+                  >
+                    <Stack mt='2' spacing='3'>
+                      <Stack spacing='0'>
+                        <Grid
+                          templateColumns='repeat(5, 1fr)'
+                          gap={8}
+                          alignItems='center'
+                        >
+                          {renderStatusComponent(
+                            bootstrapTransaction?.tx_status,
+                            activationTransaction?.tx_status,
+                          )}
+                        </Grid>
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                </GridItem>
+              </Grid>
+            </Stack>
+          </Card>
+        </Stack>
+      </motion.div>
+    </Stack>
+  );
 
   if (dao?.isLoading && dao?.isFetching) {
     return null;
@@ -274,7 +315,7 @@ export default function Setup() {
       transition={{ duration: 0.25, type: 'linear' }}
     >
       <Wrapper>
-        <Stack spacing='8' pb='16' mt='6'>
+        <Stack spacing='8' pb='16'>
           <motion.div
             variants={FADE_IN_VARIANTS}
             initial={FADE_IN_VARIANTS.hidden}
@@ -282,7 +323,29 @@ export default function Setup() {
             exit={FADE_IN_VARIANTS.exit}
             transition={{ duration: 0.25, type: 'linear' }}
           >
-            <Stack spacing='6'>
+            <Stack spacing='3'>
+              {isReady ? (
+                renderStatusCard
+              ) : (
+                <Alert
+                  bg='dark.700'
+                  status='warning'
+                  borderRadius='lg'
+                  variant='left-accent'
+                >
+                  <Stack>
+                    <HStack spacing='2'>
+                      <AlertIcon m='0' />
+                      <AlertTitle>Required Extensions</AlertTitle>
+                    </HStack>
+                    <AlertDescription>
+                      You will deploy 6 contracts before you can go live with
+                      your Club. You must deploy the following contracts in the
+                      order below to complete the setup.
+                    </AlertDescription>
+                  </Stack>
+                </Alert>
+              )}
               <Stack spacing='0'>
                 <Stack py={{ base: '6', md: '6' }} spacing='2'>
                   <Stack spacing='3'>
@@ -720,6 +783,6 @@ export default function Setup() {
   );
 }
 
-Setup.getLayout = (page: any) => (
+Start.getLayout = (page: any) => (
   <AppLayout header={<SetupHeader />}>{page}</AppLayout>
 );

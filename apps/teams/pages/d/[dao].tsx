@@ -24,8 +24,6 @@ import { ustxToStx } from 'utils';
 import { ClubsTable } from '@components/tables';
 import { EmptyState } from '@components/misc';
 
-// const EXTENSION_SIZE = 6;
-
 export default function Dashboard() {
   const dao = useDAO();
   const { data } = useAccountBalance();
@@ -38,7 +36,6 @@ export default function Dashboard() {
   };
 
   const isInactive = !dao.data?.active;
-  // const isReadyToInitialize = dao.data?.extensions.length === EXTENSION_SIZE;
 
   if (dao.isLoading || dao.isFetching) {
     return null;

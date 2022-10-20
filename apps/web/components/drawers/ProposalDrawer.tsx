@@ -29,6 +29,7 @@ import {
   Textarea,
   useDisclosure,
 } from 'ui';
+import { useExtension } from 'ui/hooks';
 import { useForm, Controller } from 'ui/components';
 import { RadioCardGroup, RadioCard } from 'ui/components/forms';
 import {
@@ -42,7 +43,10 @@ import {
 import { useSteps } from 'ui/store';
 import { shortenAddress, truncateAddress } from '@stacks-os/utils';
 import { Card } from 'ui/components/cards';
-import { DeployProposalButton } from 'ui/components/buttons';
+import {
+  DeployProposalButton,
+  SubmitProposalButton,
+} from 'ui/components/buttons';
 import { sendFunds } from 'utils/contracts';
 
 interface ProposalDrawerProps extends ButtonProps {
@@ -51,6 +55,7 @@ interface ProposalDrawerProps extends ButtonProps {
 
 export const ProposalDrawer = (props: ProposalDrawerProps) => {
   const { title } = props;
+  const { data: vault } = useExtension('Vault');
   const [proposalContractAddress, setProposalContractAddress] =
     React.useState('');
   const focusField = React.useRef<HTMLInputElement>(null);
@@ -69,6 +74,7 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
   });
   const selectedTemplate = getValues('template');
   const selectedVaultType = getValues('vaultType');
+  console.log({ vault });
   let codeBody: string = '';
   switch (selectedVaultType) {
     case '1':
@@ -77,7 +83,7 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
           'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
           'ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50',
         ],
-        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.stackerdao-vault',
+        vault?.contract_address,
         '10000000',
       );
       break;
@@ -88,7 +94,7 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
           'ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50',
           'ST2Y2SFNVZBT8SSZ00XXKH930MCN0RFREB2GQG7CJ',
         ],
-        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.stackerdao-vault',
+        vault?.contract_address,
         '10000000',
       );
       break;
@@ -139,8 +145,7 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
 
   const SelectTemplate = (
     <form
-      onSubmit={handleSubmit((data: any) => {
-        console.log('step', data);
+      onSubmit={handleSubmit(() => {
         setStep(currentStep + 1);
       })}
     >
@@ -802,14 +807,13 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
                       </Stack>
                     </GridItem>
                     <GridItem colSpan={{ base: 1, md: 1 }}>
-                      <Button
+                      <SubmitProposalButton
                         variant='primary'
                         size='md'
-                        type='submit'
+                        proposalContractAddress={proposalContractAddress}
                         isDisabled={!proposalContractAddress ?? false}
-                      >
-                        Submit
-                      </Button>
+                        onSubmit={() => console.log('submitted')}
+                      />
                     </GridItem>
                   </Grid>
                 </Stack>

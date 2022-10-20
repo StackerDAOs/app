@@ -93,12 +93,13 @@ export async function getExtension(name: string) {
 }
 
 export async function getSubmissions({ queryKey }: any) {
-  const [_, organizationId, filter] = queryKey;
+  const [_, organizationId, stxAddress, filter] = queryKey;
   const query = supabase
     .from('submissions')
     .select('*, clubs!inner(id, name)')
     .order('created_at', { ascending: false })
-    .eq('clubs.id', organizationId);
+    .eq('clubs.id', organizationId)
+    .eq('submitted_by', stxAddress);
   try {
     if (filter === 'active') {
       const { data: submissions, error } = await query.filter(

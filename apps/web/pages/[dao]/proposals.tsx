@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import {
   Badge,
   Button,
@@ -26,11 +27,13 @@ import { ArrowRight } from 'ui/components/icons';
 const MotionGrid = motion(SimpleGrid);
 
 export default function Proposals() {
+  const router = useRouter();
+  const { dao } = router.query as any;
   const [isHovered, setHovered] = React.useState(false);
-  const [filter, setFilter] = React.useState('');
+  const [filter, setFilter] = React.useState('active');
   const proposals = useProposals();
 
-  if (proposals.isLoading || proposals?.isFetching || proposals?.isIdle) {
+  if (proposals.isLoading) {
     return null;
   }
 
@@ -93,14 +96,11 @@ export default function Proposals() {
             <Stack align='center' direction='row' spacing='3'>
               <RadioGroup onChange={setFilter} value={filter}>
                 <Stack direction='row'>
-                  {map(
-                    ['recent', 'most popular', 'submitted'],
-                    (tab: string) => (
-                      <Radio size='md' value={tab} _focus={{ outline: 'none' }}>
-                        {capitalize(tab)}
-                      </Radio>
-                    ),
-                  )}
+                  {map(['active', 'pending', 'executed'], (tab: string) => (
+                    <Radio size='md' value={tab} _focus={{ outline: 'none' }}>
+                      {capitalize(tab)}
+                    </Radio>
+                  ))}
                 </Stack>
               </RadioGroup>
             </Stack>
@@ -127,10 +127,8 @@ export default function Proposals() {
                   {map(
                     proposals?.data,
                     ({
-                      title,
-                      description,
                       contract_address: contractAddress,
-                      club: { slug },
+                      submission: { title, description },
                     }) => (
                       <motion.div
                         variants={FADE_IN_VARIANTS}
@@ -145,9 +143,9 @@ export default function Proposals() {
                           scale: 1,
                         }}
                       >
-                        <Link href={`/d/${slug}/proposals/${contractAddress}`}>
+                        <Link href={`/${dao}/proposals/${contractAddress}`}>
                           <Card
-                            bg='base.900'
+                            bg='dark.800'
                             display='flex'
                             alignItems='flex-start'
                             minH='200px'
