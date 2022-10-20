@@ -19,21 +19,21 @@ import { Nav } from '@components/containers';
 
 const features = [
   {
-    name: 'Native Bitcoin',
+    name: 'Powered by Bitcoin',
     description:
-      'Chakra UI Pro has 210+ componentsto help you develop your project faster.',
+      'Leverage cryptos most secure, decentralized, and valuable network for security and capital. Native Bitcoin fundraising coming soon.',
     icon: LightningBolt,
   },
   {
-    name: 'Cant be evil. Not dont be evil',
+    name: 'Decentralized, modular, and powerful',
     description:
-      'Effortlessly create your next production-ready experience with Chakra UI Pro components.',
+      'Our products automatically execute on-chains actions based on voter approved proposals, easily interact and integrate with other applications--making them extremely powerful.',
     icon: LightningBolt,
   },
   {
-    name: 'Flexible, modular, and customizable',
+    name: 'Quick Legal Setup',
     description:
-      'All components support a light and a dark color mode out of the box.',
+      'Form a legal entity with a few clicks, generate form legal docs, and receive compliance assistance. Coming soon.',
     icon: LightningBolt,
   },
 ];

@@ -33,7 +33,7 @@ export const MainNavbar = () => {
                 <Button variant='link'>Teams</Button>
               </Link>
               <Link href='/clubs'>
-                <Button variant='link'>Investment Clubs</Button>
+                <Button variant='link'>Clubs</Button>
               </Link>
             </ButtonGroup>
           </motion.div>
