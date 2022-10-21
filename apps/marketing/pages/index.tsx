@@ -25,9 +25,9 @@ const features = [
     icon: LightningBolt,
   },
   {
-    name: 'Decentralized, modular, and powerful',
+    name: 'Decentralized, composable, and powerful',
     description:
-      'Our products automatically execute on-chains actions based on voter approved proposals, easily interact and integrate with other applications--making them extremely powerful.',
+      ' Execute voter approved on-chain proposals automatically, easily interact with and integrate other applications, and do almost anything an individual wallet can do.',
     icon: LightningBolt,
   },
   {
@@ -87,22 +87,17 @@ export default function Web() {
                 bgClip='text'
                 textAlign='center'
               >
-                Web3 primitives to raise funds, govern, and take action.
+                Create a Web3 organization powered by Bitcoin
               </Heading>
-              <Heading
-                as='h1'
-                size='3xl'
-                fontWeight='black'
-                maxW='48rem'
-                mx='auto'
-                lineHeight='1.2'
-                letterSpacing='tight'
-                bgGradient='linear(to-b, light.900 65%, dark.500 100%)'
-                bgClip='text'
-                textAlign='center'
+              <Text
+                color='text-muted'
+                fontSize={{ base: 'lg', md: 'xl' }}
+                maxW='3xl'
               >
-                Together.
-              </Heading>
+                StackerDAOs is eliminating barriers to collective ownership by
+                transforming how people coordinate and take action through
+                decentralized and trustless technologies.
+              </Text>
             </Box>
             <Stack
               justify='center'
@@ -147,17 +142,9 @@ export default function Web() {
                     lineHeight='1.2'
                     letterSpacing='tight'
                   >
-                    Transform any wallet into a powerful web3 investment club
+                    Create a DAO, Club, or Team in just a few easy steps
                   </Heading>
                 </Stack>
-                <Text
-                  color='text-muted'
-                  fontSize={{ base: 'lg', md: 'xl' }}
-                  maxW='3xl'
-                >
-                  A bundle of 210+ ready-to-use, responsive and accessible
-                  components with clever structured sourcode files.
-                </Text>
               </Stack>
               <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} columnGap={8}>
                 {features.map((feature) => (
@@ -214,8 +201,9 @@ export default function Web() {
                     Teams
                   </Heading>
                   <Text color='gray' mt='5' fontSize='xl'>
-                    Primitive for groups, companies, nonprofits, subDAOs, and
-                    early DAOs to manage resources and smart contracts.
+                    Multisig tool for working groups to manage assets and smart
+                    contracts. Perfect for working groups, subDAOs, and early
+                    DAOs progressively decentralizing.
                   </Text>
                   <Button
                     mt='8'
@@ -258,8 +246,9 @@ export default function Web() {
                     Clubs
                   </Heading>
                   <Text color='gray' mt='5' fontSize='xl'>
-                    Membership gated primitive to raise funds, govern, and take
-                    action.
+                    Membership gated DAOs to raise funds, govern, and take
+                    action. Perfect for investment DAOs, impact DAOs, service
+                    DAOs, and more.
                   </Text>
                   <Button
                     mt='8'
@@ -303,8 +292,9 @@ export default function Web() {
                     DAOs
                   </Heading>
                   <Text color='gray' mt='5' fontSize='xl'>
-                    Primitive for groups, companies, nonprofits, subDAOs, and
-                    early DAOs to manage resources and smart contracts.
+                    Permissionless DAOs that use an existing fungible token or
+                    NFT for governance. Perfect for protocol DAOs, NFT
+                    communities, ecosystem DAOs, and more.
                   </Text>
                   <Button
                     mt='8'
