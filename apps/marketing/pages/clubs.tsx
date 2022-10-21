@@ -34,11 +34,15 @@ const topHeroProps = {
 const sampleText1 = (
   <Box flex='1' mx='3'>
     <Heading as='h1' size='3xl' fontWeight='black'>
-      Accessible
+      1. Create
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
-      Gate access and define membership with NFTs that members receive once your
-      club has been deployed.
+      Turn your community into a powerful Web3 Club
+    </Text>
+    <Text color='gray' mt='5' fontSize='xl'>
+      In just a few clicks, set up rules, decide who will receive a Club Pass,
+      and launch your Club. Club Passes are NFTs that define your Club’s
+      membership and enable your Club’s integration with other NFT powered apps.
     </Text>
   </Box>
 );
@@ -47,11 +51,14 @@ const sampleText1 = (
 const sampleText2 = (
   <Box flex='1' mx='3'>
     <Heading as='h1' size='3xl' fontWeight='black'>
-      Collaborate
+      2. Deposit
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
-      Track deposited assets and tokenize participation with fungible tokens
-      disbursed to club members. Use tokens to vote on and execute proposals.
+      Members fund the Club and get voting power.
+    </Text>
+    <Text color='gray' mt='5' fontSize='xl'>
+      Send members a Club link to deposit and receive governance tokens which
+      provide voting power equal to their pro-rata share of the treasury.
     </Text>
   </Box>
 );
@@ -59,11 +66,14 @@ const sampleText2 = (
 const sampleText3 = (
   <Box flex='1' mx='3'>
     <Heading as='h1' size='3xl' fontWeight='black'>
-      Extensible
+      3. Take Action
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
-      Deploy extensions to seemlessly intract with smart contracts across the
-      Stacks ecosystem.
+      Transfer funds, buy and sell assets, add members, and more. Together.
+    </Text>
+    <Text color='gray' mt='5' fontSize='xl'>
+      Submit proposals, vote, and collectively take action—all programmatically.{' '}
+      Never rely on a centralized group of actors for on-chain activity.
     </Text>
   </Box>
 );
@@ -72,19 +82,39 @@ const cardGridProps = [sampleText1, sampleText2, sampleText3];
 
 const featureListProps = [
   {
-    name: 'Feature 1',
-    description: 'Create your club and set fundraising goals.',
+    name: 'Treasury',
+    description:
+      'Manage fungible tokens and NFTs. Whitelist assets to protect your treasury. View your assets on our dashboard.',
     icon: Cog6Tooth,
   },
   {
-    name: 'Feature 2',
-    description: 'Invite members.',
+    name: 'Proposals & Automatic Execution',
+    description:
+      'Members can create, deploy, and submit proposals. Proposals are smart contracts—allowing the Club to automatically execute approved proposals for on-chain activity.',
     icon: UserGroup,
   },
   {
-    name: 'Feature 3',
-    description: 'Codelessly deploy smart contracts.',
+    name: 'On-chain Voting',
+    description: 'Members that have deposited funds can vote on-chain.',
     icon: RocketLaunch,
+  },
+  {
+    name: 'Temperature Checks',
+    description:
+      'Members can create Ideas to receive guidance from the rest of the Club through upvotes and downvotes before submitting a formal on-chain proposal—all powered by off-chain authenticated wallet signatures.',
+    icon: Cog6Tooth,
+  },
+  {
+    name: 'Composable Extensions',
+    description:
+      'Buy and sell NFTs, swap tokens, borrow and lend, and more. Extensions provide your Club’s structure and allow it to do almost anything an individual wallet can do.',
+    icon: Cog6Tooth,
+  },
+  {
+    name: 'Ragequit',
+    description:
+      'Members can exit the Club at anytime (or "ragequit") by burning their Club Pass and governance tokens in return for their pro-rata share of liquid STX in the Club’s treasury.',
+    icon: Cog6Tooth,
   },
 ];
 
@@ -142,10 +172,6 @@ export default function Clubs() {
           <Stack spacing='20'>
             <CardGrid cardGridProps={cardGridProps} />
             <FeatureList featureListProps={featureListProps} />
-            <BottomHero
-              bottomHeroProps={bottomHeroProps}
-              bottomHeroImage={bottomHeroImage}
-            />
           </Stack>
         </Container>
       </Box>

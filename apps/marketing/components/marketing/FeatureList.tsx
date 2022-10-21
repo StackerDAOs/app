@@ -19,13 +19,11 @@ export const FeatureList = (props: any) => {
         <Box borderRadius='lg' w='full'>
           <Stack spacing='3'>
             <Heading size={useBreakpointValue({ base: 'lg', md: '3xl' })}>
-              Placeholder - The How: Simple steps to launch
+              Complete suite of powerful DAO tools or Powerful suite of Web3
+              collaborative Tools
             </Heading>
           </Stack>
         </Box>
-        <Text color='muted' fontSize={{ base: 'lg', md: 'xl' }} maxW='3xl'>
-          Placeholder - Subtext for The How
-        </Text>
       </Stack>
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing='12'>
         {featureListProps.map((feature: any) => (

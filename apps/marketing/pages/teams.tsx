@@ -34,11 +34,13 @@ const topHeroProps = {
 const sampleText1 = (
   <Box flex='1' mx='3'>
     <Heading as='h1' size='3xl' fontWeight='black'>
-      Accessible
+      1. Create
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
-      Gate access and define membership with NFTs that members receive once your
-      club has been deployed.
+      Turn your working group into a powerful Web3 Team.
+    </Text>
+    <Text color='gray' mt='5' fontSize='xl'>
+      In just a few clicks, add your team members and launch.
     </Text>
   </Box>
 );
@@ -47,11 +49,14 @@ const sampleText1 = (
 const sampleText2 = (
   <Box flex='1' mx='3'>
     <Heading as='h1' size='3xl' fontWeight='black'>
-      Collaborate
+      2. Manage
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
-      Track deposited assets and tokenize participation with fungible tokens
-      disbursed to club members. Use tokens to vote on and execute proposals.
+      Manage assets & smart contracts.
+    </Text>
+    <Text color='gray' mt='5' fontSize='xl'>
+      Send team members a Team link and manage fungible tokens and NTFs. Have
+      complete power over smart contracts—own, manage, and call them. Together.
     </Text>
   </Box>
 );
@@ -59,11 +64,15 @@ const sampleText2 = (
 const sampleText3 = (
   <Box flex='1' mx='3'>
     <Heading as='h1' size='3xl' fontWeight='black'>
-      Extensible
+      3. Upgrade
     </Heading>
     <Text color='gray' mt='5' fontSize='xl'>
-      Deploy extensions to seemlessly intract with smart contracts across the
-      Stacks ecosystem.
+      Our modular design allows you to upgrade your Team as your needs change.
+    </Text>
+    <Text color='gray' mt='5' fontSize='xl'>
+      Our products’ modular design lets you to easily upgrade your Team to a
+      full DAO or Club—without having to move your assets or change smart
+      contract addresses.
     </Text>
   </Box>
 );
@@ -72,19 +81,33 @@ const cardGridProps = [sampleText1, sampleText2, sampleText3];
 
 const featureListProps = [
   {
-    name: 'Feature 1',
-    description: 'Create your club and set fundraising goals.',
+    name: 'Treasury',
+    description:
+      'Manage fungible tokens and NFTs. Whitelist assets to protect your treasury. View your assets on our dashboard.',
     icon: Cog6Tooth,
   },
   {
-    name: 'Feature 2',
-    description: 'Invite members.',
+    name: 'Proposals & Automatic Execution',
+    description:
+      'Members can create, deploy, and submit proposals. Proposals are smart contracts—allowing the Club to automatically execute approved proposals for on-chain activity.',
     icon: UserGroup,
   },
   {
-    name: 'Feature 3',
-    description: 'Codelessly deploy smart contracts.',
+    name: 'On-chain Voting',
+    description: 'Members that have deposited funds can vote on-chain.',
     icon: RocketLaunch,
+  },
+  {
+    name: 'Temperature Checks',
+    description:
+      'Members can create Ideas to receive guidance from the rest of the Club through upvotes and downvotes before submitting a formal on-chain proposal—all powered by off-chain authenticated wallet signatures.',
+    icon: Cog6Tooth,
+  },
+  {
+    name: 'Composable Extensions',
+    description:
+      'Buy and sell NFTs, swap tokens, borrow and lend, and more. Extensions provide your Club’s structure and allow it to do almost anything an individual wallet can do.',
+    icon: Cog6Tooth,
   },
 ];
 
@@ -142,10 +165,6 @@ export default function Teams() {
           <Stack spacing='20'>
             <CardGrid cardGridProps={cardGridProps} />
             <FeatureList featureListProps={featureListProps} />
-            <BottomHero
-              bottomHeroProps={bottomHeroProps}
-              bottomHeroImage={bottomHeroImage}
-            />
           </Stack>
         </Container>
       </Box>

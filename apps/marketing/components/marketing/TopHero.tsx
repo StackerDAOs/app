@@ -15,15 +15,16 @@ export const TopHero = (props: any) => {
   return (
     <Container>
       <Stack spacing='6' h='calc(100vh - 5vh)' justify='center' align='center'>
-        <Stack spacing='6' align='flex-start'>
+        <Stack spacing='6' align='center'>
           <HStack m='0' px='2'>
             <Text fontSize='lg' fontWeight='light' color='light.500'>
               Protocol built with Stacks
             </Text>
           </HStack>
-          <Stack spacing='0' mt='0 !important'>
+          <Stack spacing='0' mt='0 !important' justify='center'>
             <Heading
-              fontSize={{ base: '4em', md: '6em', lg: '8em' }}
+              textAlign='center'
+              fontSize={{ base: '4em', md: '6em', lg: '7em' }}
               fontWeight='black'
               bgGradient={topHeroProps.color1}
               bgClip='text'
@@ -50,14 +51,16 @@ export const TopHero = (props: any) => {
           </Stack>
           <Stack spacing='8'>
             <Text
+              textAlign='center'
               fontSize={{ base: '1.5em', lg: '1.75em' }}
               fontWeight='light'
               color='light.900'
               px='2'
             >
-              Invest, fund causes, build products, and more. Together.{' '}
+              Invest, fund causes, build products, and more. Together. Manage
+              resources, take on-chain action, and more. Together.
             </Text>
-            <ButtonGroup px='2' spacing='6'>
+            <ButtonGroup px='2' spacing='6' m='0 auto'>
               <Link href='/create'>
                 <Button
                   variant='inverted'
