@@ -6,6 +6,7 @@ export { useDAO } from './useDAO';
 export { useExtension } from './useExtension';
 export { useGovernanceToken } from './useGovernanceToken';
 export { useInvestmentClub } from './useInvestmentClub';
+export { useProposal } from './useProposal';
 export { useProposals } from './useProposals';
 export { useSubmissions } from './useSubmissions';
 export { useToken } from './useToken';

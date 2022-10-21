@@ -1,8 +1,4 @@
 import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
   Badge,
   ButtonGroup,
   Heading,
@@ -55,25 +51,6 @@ export const SetupHeader = () => {
                 Deployment and Setup
               </Heading>
             </HStack>
-
-            <Alert
-              bg='dark.700'
-              status='warning'
-              borderRadius='lg'
-              variant='left-accent'
-            >
-              <Stack>
-                <HStack spacing='2'>
-                  <AlertIcon m='0' />
-                  <AlertTitle>Required Extensions</AlertTitle>
-                </HStack>
-                <AlertDescription>
-                  You will deploy 6 contracts before you can go live with your
-                  Club. You must deploy the following contracts in the order
-                  below to complete the setup.
-                </AlertDescription>
-              </Stack>
-            </Alert>
           </Stack>
         </Stack>
       </motion.div>
@@ -354,7 +331,7 @@ export const ProposalHeader = () => {
             </Text>
           </Stack>
           <ButtonGroup>
-            <IdeaDrawer title='Create idea' variant='default' />
+            <IdeaDrawer title='Create an idea' variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>

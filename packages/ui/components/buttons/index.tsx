@@ -11,3 +11,6 @@ export * from './DeployVaultButton';
 export * from './DeployVotingButton';
 export * from './InitializeClubButton';
 export * from './SignMessageButton';
+export * from './SubmitProposalButton';
+export * from './VoteButton';
+export * from './VoteManyButton';

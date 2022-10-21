@@ -142,7 +142,6 @@ export default function Dashboard() {
           <Stack
             spacing='8'
             pb='16'
-            mt='6'
             filter={dao?.data?.active ? 'none' : 'blur(3px)'}
             pointerEvents={dao?.data?.active ? 'auto' : 'none'}
           >
@@ -153,7 +152,7 @@ export default function Dashboard() {
               exit={FADE_IN_VARIANTS.exit}
               transition={{ duration: 0.25, type: 'linear' }}
             >
-              <Stack mt='2' spacing='3'>
+              <Stack spacing='3'>
                 <Progress
                   colorScheme='primary'
                   borderRadius='lg'
@@ -240,9 +239,9 @@ export default function Dashboard() {
                             type='tel'
                             border='none'
                             fontSize='2xl'
-                            fontWeight='light'
+                            fontWeight='regular'
                             autoComplete='off'
-                            placeholder='0'
+                            placeholder='0.0'
                             value={depositAmount}
                             onInput={handleInputDeposit}
                             _focus={{
@@ -413,7 +412,7 @@ export default function Dashboard() {
             </SimpleGrid>
           </Stack>
         </Stack>
-        <Stack spacing='6'>
+        {/* <Stack spacing='6'>
           <SectionHeader
             justify={{ base: 'flex-start', md: 'space-between' }}
             align={{ base: 'flex-start', md: 'space-between' }}
@@ -428,20 +427,7 @@ export default function Dashboard() {
               </Heading>
             </Stack>
           </SectionHeader>
-        </Stack>
-        <Stack spacing='8' pb='16'>
-          <motion.div
-            variants={FADE_IN_VARIANTS}
-            initial={FADE_IN_VARIANTS.hidden}
-            animate={FADE_IN_VARIANTS.enter}
-            exit={FADE_IN_VARIANTS.exit}
-            transition={{ duration: 0.25, type: 'linear' }}
-          >
-            <Stack spacing='3'>
-              {/* <ClubsTable color='light.900' size='md' clubs={[]} /> */}
-            </Stack>
-          </motion.div>
-        </Stack>
+        </Stack> */}
       </Wrapper>
     </motion.div>
   );

@@ -93,12 +93,13 @@ export async function getExtension(name: string) {
 }
 
 export async function getSubmissions({ queryKey }: any) {
-  const [_, organizationId, filter] = queryKey;
+  const [_, organizationId, stxAddress, filter] = queryKey;
   const query = supabase
     .from('submissions')
     .select('*, clubs!inner(id, name)')
     .order('created_at', { ascending: false })
-    .eq('clubs.id', organizationId);
+    .eq('clubs.id', organizationId)
+    .eq('submitted_by', stxAddress);
   try {
     if (filter === 'active') {
       const { data: submissions, error } = await query.filter(
@@ -263,6 +264,25 @@ export async function getBalance(
   }
 }
 
+export async function getDecimal(principalAddress: string) {
+  try {
+    const network = new stacksNetwork();
+    const [contractAddress, contractName] =
+      splitContractAddress(principalAddress);
+    const balance: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
+      senderAddress: contractAddress,
+      functionArgs: [],
+      functionName: 'get-decimals',
+    });
+    return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
 export async function getSymbol(principalAddress: string) {
   try {
     const network = new stacksNetwork();
@@ -382,6 +402,8 @@ export async function getProposal(
   contractAddress: string,
   proposalAddress: string,
 ) {
+  const [proposalContractAddress, proposalContractName] =
+    splitContractAddress(proposalAddress);
   try {
     const network = new stacksNetwork();
     const proposal: any = await fetchReadOnlyFunction({
@@ -390,29 +412,19 @@ export async function getProposal(
       contractName: contractAddress?.split('.')[1],
       senderAddress: contractAddress,
       functionArgs: [
-        contractPrincipalCV(
-          proposalAddress?.split('.')[0],
-          proposalAddress?.split('.')[1],
-        ),
+        contractPrincipalCV(proposalContractAddress, proposalContractName),
       ],
       functionName: 'get-proposal-data',
     });
 
-    const proposalContractAddress = proposalAddress?.split('.')[0];
-    const proposalContractName = proposalAddress?.split('.')[1];
-
-    // Fetch the source code for the proposal
-    const contractSource = await fetchContractSource({
-      url: network.getCoreApiUrl(),
-      contract_address: proposalContractAddress,
-      contract_name: proposalContractName,
-      proof: 0x0,
-      tip: '',
-    });
-    const { source } = contractSource;
-    const title = pluckSourceCode(source, 'title');
-    const description = pluckSourceCode(source, 'description');
-    const type = pluckSourceCode(source, 'type');
+    const { data, error } = await supabase
+      .from('proposals')
+      .select(
+        '*, submission:submissions!inner(id, title, description, body, club_id)',
+      )
+      .order('created_at', { ascending: false })
+      .eq('submissions.contract_address', proposalAddress);
+    if (error) throw error;
 
     // Fetch quorum threshold for proposals
     const quorumThreshold: any = await fetchReadOnlyFunction({
@@ -433,12 +445,11 @@ export async function getProposal(
       functionArgs: [stringAsciiCV('executionDelay')],
       functionName: 'get-parameter',
     });
+
     return {
       contractAddress: proposalAddress,
-      title,
-      description,
-      type,
-      proposal,
+      details: data[0],
+      info: proposal,
       quorumThreshold,
       executionDelay,
     };

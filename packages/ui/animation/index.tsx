@@ -67,6 +67,12 @@ export const SLIDE_UP_ANIMATION = {
   },
 };
 
+export const SLIDE_UP_BUTTON_VARIANTS = {
+  hidden: { opacity: 0, x: 0, y: 15 },
+  enter: { opacity: 1, x: 0, y: 0 },
+  exit: { opacity: 0, x: 0, y: -15 },
+};
+
 export const FAST_SLIDE_UP_ANIMATION = {
   initial: {
     opacity: 0,

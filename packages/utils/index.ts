@@ -8,13 +8,13 @@ import {
   tupleCV,
   someCV,
   noneCV,
-} from 'micro-stacks/clarity';
+} from 'ui/components';
 import {
   FungibleConditionCode,
   makeContractSTXPostCondition,
   makeContractFungiblePostCondition,
   createAssetInfo,
-} from 'micro-stacks/transactions';
+} from 'ui/components';
 import { isMainnet, isTestnet } from 'api/constants';
 
 export const appUrl = {
@@ -169,58 +169,58 @@ export const generateWithDelegators = ({
   }
 };
 
-// export const generatePostConditions = ({
-//   postConditions,
-//   isPassing,
-//   assetName,
-//   fungibleTokenDecimals,
-// }: any) => {
-//   if (postConditions) {
-//     const { from, amount } = postConditions;
-//     const isFungible = has(postConditions, 'assetAddress');
-//     if (isFungible) {
-//       // Token Post Condition
-//       const { assetAddress } = postConditions;
-//       const contractAddress = from?.split('.')[0];
-//       const contractName = from?.split('.')[1];
-//       const contractAssetAddress = assetAddress?.split('.')[0];
-//       const contractAssetName = assetAddress?.split('.')[1];
-//       const fungibleAssetInfo =
-//         contractAssetAddress &&
-//         contractAssetName &&
-//         createAssetInfo(contractAssetAddress, contractAssetName, assetName);
-//       const pc = isPassing
-//         ? [
-//             makeContractFungiblePostCondition(
-//               contractAddress,
-//               contractName,
-//               FungibleConditionCode.Equal,
-//               tokenToDecimals(Number(amount), fungibleTokenDecimals),
-//               fungibleAssetInfo,
-//             ),
-//           ]
-//         : [];
-//       return pc;
-//     } else {
-//       // STX Post Condition
-//       const contractAddress = from?.split('.')[0];
-//       const contractName = from?.split('.')[1];
-//       const postConditionCode = FungibleConditionCode.Equal;
-//       const postConditionAmount = stxToUstx(amount);
-//       const postConditions = isPassing
-//         ? [
-//             makeContractSTXPostCondition(
-//               contractAddress,
-//               contractName,
-//               postConditionCode,
-//               postConditionAmount,
-//             ),
-//           ]
-//         : [];
-//       return postConditions;
-//     }
-//   }
-// };
+export const generatePostConditions: any = ({
+  postConditions,
+  isPassing,
+  assetName,
+  fungibleTokenDecimals,
+}: any) => {
+  if (postConditions) {
+    const { from, amount } = postConditions;
+    const isFungible = has(postConditions, 'assetAddress');
+    if (isFungible) {
+      // Token Post Condition
+      const { assetAddress } = postConditions;
+      const contractAddress = from?.split('.')[0];
+      const contractName = from?.split('.')[1];
+      const contractAssetAddress = assetAddress?.split('.')[0];
+      const contractAssetName = assetAddress?.split('.')[1];
+      const fungibleAssetInfo =
+        contractAssetAddress &&
+        contractAssetName &&
+        createAssetInfo(contractAssetAddress, contractAssetName, assetName);
+      const pc = isPassing
+        ? [
+            makeContractFungiblePostCondition(
+              contractAddress,
+              contractName,
+              FungibleConditionCode.Equal,
+              tokenToDecimals(Number(amount), fungibleTokenDecimals),
+              fungibleAssetInfo,
+            ),
+          ]
+        : [];
+      return pc;
+    } else {
+      // STX Post Condition
+      const contractAddress = from?.split('.')[0];
+      const contractName = from?.split('.')[1];
+      const postConditionCode = FungibleConditionCode.Equal;
+      const postConditionAmount = stxToUstx(amount);
+      const postConditions = isPassing
+        ? [
+            makeContractSTXPostCondition(
+              contractAddress,
+              contractName,
+              postConditionCode,
+              postConditionAmount,
+            ),
+          ]
+        : [];
+      return postConditions;
+    }
+  }
+};
 
 export function findExtension(extensions: Array<any[]>, type: string): any {
   return extensions?.find(

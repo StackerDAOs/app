@@ -3,11 +3,6 @@ import type { StackProps } from '@chakra-ui/react';
 
 export const SectionHeader = (props: StackProps) => {
   return (
-    <Stack
-      spacing='4'
-      mt='6'
-      direction={{ base: 'column', md: 'row' }}
-      {...props}
-    />
+    <Stack spacing='4' direction={{ base: 'column', md: 'row' }} {...props} />
   );
 };

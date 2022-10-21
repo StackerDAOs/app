@@ -131,4 +131,10 @@ export interface SubmitProposalProps extends ButtonProps {
   onSubmit: (data: any) => void;
 }
 
+export interface VoteProposalProps extends ButtonProps {
+  text: string;
+  proposalPrincipal: string;
+  voteFor: boolean;
+}
+
 export type { ButtonProps, IconProps, IconButtonProps };

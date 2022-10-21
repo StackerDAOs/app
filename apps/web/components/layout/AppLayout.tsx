@@ -11,7 +11,9 @@ export const AppLayout = ({ header, children }: any) => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   const clubExists = dao?.data;
   const conditionalStyling =
-    !clubExists || !isSignedIn ? { justify: 'center', m: '0 auto' } : {};
+    !clubExists || !isSignedIn
+      ? { justify: 'center', m: '0 auto' }
+      : { flex: 'auto' };
   return (
     <Flex
       as='section'
@@ -26,8 +28,8 @@ export const AppLayout = ({ header, children }: any) => {
 
       <Stack
         spacing={{ base: '8', lg: '6' }}
-        className='whre'
         {...conditionalStyling}
+        maxW='6xl'
       >
         <Wrapper flex='1'>
           {header}
