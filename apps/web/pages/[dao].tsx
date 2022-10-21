@@ -142,7 +142,6 @@ export default function Dashboard() {
           <Stack
             spacing='8'
             pb='16'
-            mt='6'
             filter={dao?.data?.active ? 'none' : 'blur(3px)'}
             pointerEvents={dao?.data?.active ? 'auto' : 'none'}
           >
@@ -153,7 +152,7 @@ export default function Dashboard() {
               exit={FADE_IN_VARIANTS.exit}
               transition={{ duration: 0.25, type: 'linear' }}
             >
-              <Stack mt='2' spacing='3'>
+              <Stack spacing='3'>
                 <Progress
                   colorScheme='primary'
                   borderRadius='lg'

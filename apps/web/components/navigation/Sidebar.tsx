@@ -42,9 +42,13 @@ const EXTENSION_SIZE = 6;
 
 export const UserProfile = (props: UserProfileProps) => {
   const account = useAccount();
+  const { openAuthRequest } = useAuth();
   const stxAddress = account?.stxAddress as string;
   const { club } = props;
   const { data } = useAccountBalance();
+  const switchAccount = () => {
+    openAuthRequest();
+  };
 
   return (
     <>
@@ -58,7 +62,7 @@ export const UserProfile = (props: UserProfileProps) => {
             justify='center'
           >
             <Avatar
-              size={40}
+              size={35}
               name={stxAddress}
               variant='marble'
               colors={['#624AF2', '#7301fa', '#eb00ff', '#50DDC3']}
@@ -78,7 +82,7 @@ export const UserProfile = (props: UserProfileProps) => {
           borderColor='dark.500'
           borderWidth='1px'
           bg='dark.900'
-          maxWidth='77%'
+          maxWidth='78.5%'
           _focus={{ outline: 'none' }}
         >
           <PopoverHeader
@@ -114,6 +118,7 @@ export const UserProfile = (props: UserProfileProps) => {
                 variant='link'
                 size='sm'
                 fontWeight='light'
+                onClick={switchAccount}
                 _hover={{ opacity: 0.9 }}
               >
                 Switch account
@@ -212,6 +217,7 @@ export const Sidebar = () => {
         borderRadius='lg'
         borderWidth='1px'
         borderColor='dark.500'
+        maxW='225px'
       >
         <Stack spacing='4'>
           <Stack spacing='1'>
@@ -251,6 +257,7 @@ export const Sidebar = () => {
         borderRadius='lg'
         borderWidth='1px'
         borderColor='dark.500'
+        maxW='300px'
       >
         <Stack spacing='4'>
           <Stack spacing='1'>
@@ -392,7 +399,6 @@ export const Sidebar = () => {
       <Flex
         as='section'
         minH='100vh'
-        w='35vh'
         bg='dark.900'
         position='sticky'
         top='0'
@@ -400,13 +406,8 @@ export const Sidebar = () => {
         borderRightWidth='1px'
         borderRightColor='dark.500'
       >
-        <Flex
-          flex='1'
-          overflowY='auto'
-          maxW={{ base: 'full', sm: 'xs' }}
-          py={{ base: '6', sm: '8' }}
-        >
-          <Stack justify='space-between' spacing='1'>
+        <Flex flex='1' overflowY='auto' w='250px' py={{ base: '6', sm: '8' }}>
+          <Stack justify='space-between' spacing='1' w='100%'>
             <Stack spacing={{ base: '3', sm: '3' }} shouldWrapChildren>
               <UserProfile club={dao?.data?.name} />
               <Divider borderColor='dark.500' />

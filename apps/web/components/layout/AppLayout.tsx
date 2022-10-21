@@ -26,7 +26,11 @@ export const AppLayout = ({ header, children }: any) => {
     >
       {isDesktop ? <Sidebar /> : <Navbar />}
 
-      <Stack spacing={{ base: '8', lg: '6' }} {...conditionalStyling}>
+      <Stack
+        spacing={{ base: '8', lg: '6' }}
+        {...conditionalStyling}
+        maxW='6xl'
+      >
         <Wrapper flex='1'>
           {header}
           <Stack spacing={{ base: '5', lg: '6' }}>

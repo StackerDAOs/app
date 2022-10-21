@@ -2,7 +2,7 @@
 import { useQuery } from 'react-query';
 import { useAccount } from '@micro-stacks/react';
 import { useExtension } from 'ui/hooks';
-import { getBalance, getSymbol, getTotalSupply } from 'api/clubs';
+import { getBalance, getDecimal, getSymbol, getTotalSupply } from 'api/clubs';
 import { splitContractAddress } from '@stacks-os/utils';
 
 export function useGovernanceToken() {
@@ -19,11 +19,12 @@ export function useGovernanceToken() {
         stxAddress,
         governanceToken?.contract_address,
       );
+      const decimal = await getDecimal(governanceToken?.contract_address);
       const symbol = await getSymbol(governanceToken?.contract_address);
       const totalSupply = await getTotalSupply(
         governanceToken?.contract_address,
       );
-      return { address, name, symbol, totalSupply, balance };
+      return { address, name, decimal, symbol, totalSupply, balance };
     },
     {
       enabled: !!stxAddress && !!governanceToken?.contract_address,
