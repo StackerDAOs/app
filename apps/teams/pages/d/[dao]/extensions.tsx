@@ -122,7 +122,7 @@ export default function Extensions() {
                           color='text-default'
                         >
                           Bring DeFi to your team by adding token swap
-                          integration straight from your vault.
+                          integration.
                         </Text>
                       </Stack>
                       <Button variant='default' isDisabled>

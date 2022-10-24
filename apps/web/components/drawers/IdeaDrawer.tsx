@@ -22,7 +22,7 @@ import {
 import { useAccount, useForm } from 'ui/components';
 import { LightBulbIcon } from 'ui/components/icons';
 import { useDAO } from 'ui/hooks';
-import { useCreateSubmission } from 'api/clubs/mutations';
+import { useCreateIdea } from 'api/clubs/mutations';
 
 interface IdeaDrawerProps extends ButtonProps {
   title: string;
@@ -41,17 +41,17 @@ export const IdeaDrawer = (props: IdeaDrawerProps) => {
       body: '',
     },
   });
-  const createSubmission = useCreateSubmission();
-  const handleCreateSubmission = React.useCallback(async () => {
+  const createIdea = useCreateIdea();
+  const handleCreateIdea = React.useCallback(async () => {
     try {
-      createSubmission.mutate({
+      createIdea.mutate({
         title: getValues('title'),
         description: getValues('description'),
         body: getValues('body'),
         submitted_by: stxAddress as string,
         club_id: dao?.data?.id,
       });
-      if (createSubmission.isSuccess) {
+      if (createIdea.isSuccess) {
         setValue('title', '');
         setValue('description', '');
         setValue('body', '');
@@ -161,8 +161,8 @@ export const IdeaDrawer = (props: IdeaDrawerProps) => {
             size='lg'
             variant='primary'
             type='submit'
-            isLoading={createSubmission.isLoading}
-            onClick={handleCreateSubmission}
+            isLoading={createIdea.isLoading}
+            onClick={handleCreateIdea}
           >
             Submit
           </Button>

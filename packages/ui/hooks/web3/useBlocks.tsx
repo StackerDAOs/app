@@ -1,7 +1,6 @@
 // Hook (use-blocks.tsx)
 import React from 'react';
-import { useNetwork } from '@micro-stacks/react';
-import { fetchBlocks } from 'micro-stacks/api';
+import { useNetwork, fetchBlocks } from 'ui/components';
 
 export function useBlocks() {
   const [state, setState] = React.useState<any>({

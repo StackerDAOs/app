@@ -1,44 +1,45 @@
+import React from 'react';
 import Link from 'next/link';
 import {
   Box,
   Button,
-  HStack,
+  ButtonGroup,
   Flex,
   Heading,
-  Icon,
   Image,
   SimpleGrid,
   Stack,
-  Square,
   Text,
 } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { LightningBolt, LogoIcon } from 'ui/components/icons';
+import { ArrowRight } from 'ui/components/icons';
 import { MainNavbar, Footer } from '@components/navigation';
-import { Nav } from '@components/containers';
+import { appUrl } from 'utils';
 
 const features = [
   {
     name: 'Powered by Bitcoin',
     description:
       'Leverage cryptos most secure, decentralized, and valuable network for security and capital. Native Bitcoin fundraising coming soon.',
-    icon: LightningBolt,
   },
   {
     name: 'Decentralized, composable, and powerful',
     description:
       ' Execute voter approved on-chain proposals automatically, easily interact with and integrate other applications, and do almost anything an individual wallet can do.',
-    icon: LightningBolt,
   },
   {
     name: 'Quick Legal Setup',
     description:
       'Form a legal entity with a few clicks, generate form legal docs, and receive compliance assistance. Coming soon.',
-    icon: LightningBolt,
   },
 ];
 
 export default function Web() {
+  const ref = React.useRef(null);
+  const handleScrollTo = () => {
+    const current = ref?.current as any;
+    current.scrollIntoView({ behavior: 'smooth' });
+  };
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -48,273 +49,312 @@ export default function Web() {
       transition={{ duration: 0.75, type: 'linear' }}
     >
       <Box as='section'>
-        <Nav bg='dark.900'>
-          <HStack justify='space-between' h='40px'>
-            <Link href='/'>
-              <LogoIcon
-                alt='logo'
-                url='https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png'
-                cursor='pointer'
-                height='35px'
-              />
-            </Link>
-            <Box as='section' w='100%'>
-              <MainNavbar />
-            </Box>
-          </HStack>
-        </Nav>
-        <Box
+        <MainNavbar />
+        <Stack
+          justify='center'
+          h='100vh'
           as='section'
-          py='8rem'
           backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
           opacity='1'
         >
-          <Box as='section' color='white' h='calc(100vh - 55vh)'>
-            <Box
-              maxW={{ base: 'xl', md: '5xl' }}
-              mx='auto'
-              px={{ base: '2', md: '4' }}
-            >
+          <Box as='section' py='6' px='12'>
+            <Stack spacing='6' align='flex-start'>
+              <Text fontSize='xl' fontWeight='thin' color='light.500'>
+                Protocol built with Stacks
+              </Text>
               <Heading
-                as='h1'
-                size='3xl'
-                fontWeight='black'
-                maxW='48rem'
-                mx='auto'
+                fontSize={{ base: '6xl', lg: '8xl' }}
+                fontWeight='medium'
                 lineHeight='1.2'
-                letterSpacing='tight'
                 bg='light.900'
                 bgClip='text'
-                textAlign='center'
+                letterSpacing='tight'
               >
-                Create a Web3 organization powered by Bitcoin
+                Create a web3 organization powered by{' '}
+                <Text
+                  as='span'
+                  fontWeight='black'
+                  bgGradient='linear(to-b, primary.900, primary-accent.900)'
+                  bgClip='text'
+                >
+                  Bitcoin
+                </Text>
               </Heading>
               <Text
-                color='text-muted'
-                fontSize={{ base: 'lg', md: 'xl' }}
-                maxW='3xl'
+                color='light.500'
+                fontWeight='light'
+                fontSize={{ base: 'lg', md: 'xl', lg: '3xl' }}
+                maxW='6xl'
+                letterSpacing='tight'
               >
-                StackerDAOs is eliminating barriers to collective ownership by
-                transforming how people coordinate and take action through
-                decentralized and trustless technologies.
+                <Text
+                  as='span'
+                  fontWeight='regular'
+                  _selection={{ color: 'light.900', bg: 'primary-accent.900' }}
+                >
+                  StackerDAOs
+                </Text>{' '}
+                is eliminating barriers to collective ownership by transforming
+                how people coordinate and take action through{' '}
+                <Text
+                  as='span'
+                  fontWeight='regular'
+                  _selection={{ color: 'light.900', bg: 'primary-accent.900' }}
+                >
+                  decentralized
+                </Text>{' '}
+                and trustless technologies.
               </Text>
-            </Box>
+              <ButtonGroup>
+                <Button
+                  size='lg'
+                  variant='default'
+                  px='8'
+                  onClick={handleScrollTo}
+                >
+                  Get started
+                </Button>
+                <Button
+                  as='a'
+                  href='https://form.typeform.com/to/zfYJYLgV'
+                  target='_blank'
+                  rel='noreferrer'
+                  size='lg'
+                  variant='inverted'
+                  px='8'
+                >
+                  Join our beta
+                </Button>
+              </ButtonGroup>
+            </Stack>
+          </Box>
+        </Stack>
+        <Box as='section' py='24' bgGradient='linear(to-b, dark.700, dark.900)'>
+          <Stack spacing={{ base: '12', md: '16' }} px='12'>
             <Stack
-              justify='center'
-              direction={{ base: 'column', md: 'row' }}
-              mt='10'
-              mb='20'
-              spacing='4'
+              spacing={{ base: '4', md: '5' }}
+              align='center'
+              textAlign='center'
             >
-              <Button
-                as='a'
-                href='https://form.typeform.com/to/zfYJYLgV'
-                target='_blank'
-                rel='noreferrer'
-                size='lg'
-                variant='inverted'
-                px='8'
-              >
-                Join our beta
-              </Button>
-            </Stack>
-          </Box>
-        </Box>
-        <Box as='section' py='24' bgGradient='linear(to-b, dark.900, dark.800)'>
-          <Box
-            maxW={{ base: 'xl', md: '7xl' }}
-            mx='auto'
-            px={{ base: '6', md: '8' }}
-          >
-            <Stack spacing={{ base: '12', md: '16' }}>
-              <Stack
-                spacing={{ base: '4', md: '5' }}
-                align='center'
-                textAlign='center'
-              >
-                <Stack spacing='3'>
-                  <Heading
-                    as='h1'
-                    size='2xl'
-                    fontWeight='thin'
-                    maxW='48rem'
-                    mx='auto'
-                    lineHeight='1.2'
-                    letterSpacing='tight'
-                  >
-                    Create a DAO, Club, or Team in just a few easy steps
-                  </Heading>
-                </Stack>
+              <Stack spacing='3'>
+                <Heading
+                  as='h1'
+                  size='3xl'
+                  fontWeight='thin'
+                  lineHeight='1.2'
+                  letterSpacing='tight'
+                >
+                  Create a{' '}
+                  <Text as='span' color='light.900' fontWeight='semibold'>
+                    Club
+                  </Text>
+                  ,{' '}
+                  <Text as='span' color='light.900' fontWeight='semibold'>
+                    Team
+                  </Text>
+                  , or{' '}
+                  <Text as='span' color='light.900' fontWeight='semibold'>
+                    DAO
+                  </Text>{' '}
+                  in just a few steps
+                </Heading>
               </Stack>
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} columnGap={8}>
-                {features.map((feature) => (
-                  <Stack
-                    key={feature.name}
-                    spacing={{ base: '4', md: '5' }}
-                    align='center'
-                    textAlign='center'
-                  >
-                    <Square
-                      size={{ base: '10', md: '12' }}
-                      bg='accent'
-                      color='inverted'
-                      borderRadius='lg'
-                    >
-                      <Icon
-                        as={feature.icon}
-                        boxSize={{ base: '5', md: '6' }}
-                      />
-                    </Square>
-                    <Stack spacing={{ base: '1', md: '2' }}>
-                      <Text
-                        fontSize={{ base: 'lg', md: 'xl' }}
-                        fontWeight='medium'
-                      >
-                        {feature.name}
-                      </Text>
-                      <Text color='muted'>{feature.description}</Text>
-                    </Stack>
-                  </Stack>
-                ))}
-              </SimpleGrid>
             </Stack>
-          </Box>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing='6'>
+              {features.map((feature) => (
+                <Stack
+                  key={feature.name}
+                  spacing={{ base: '4', md: '5' }}
+                  align='center'
+                  textAlign='center'
+                >
+                  <Stack spacing={{ base: '1', md: '2' }}>
+                    <Text
+                      fontSize={{ base: 'lg', md: 'xl' }}
+                      fontWeight='semibold'
+                    >
+                      {feature.name}
+                    </Text>
+                    <Text fontSize='lg' color='light.500' letterSpacing='tight'>
+                      {feature.description}
+                    </Text>
+                  </Stack>
+                </Stack>
+              ))}
+            </SimpleGrid>
+          </Stack>
         </Box>
-        <Box
-          backgroundImage='linear-gradient(#171717 1px, transparent 1px), linear-gradient(to right, #171717 1px, #111111 1px)'
-          backgroundSize='20px 20px'
-        >
+        <Box bg='dark.900' ref={ref}>
           <Box as='section' pt='24' pb='12' overflow='hidden'>
-            <Box
-              maxW={{ base: 'xl', md: '7xl' }}
-              mx='auto'
-              px={{ base: '6', md: '8' }}
-            >
+            <Box py='3' px='12'>
               <Flex
                 align='flex-start'
                 direction={{ base: 'column', lg: 'row' }}
                 justify='space-between'
-                mb='20'
               >
-                <Box flex='1' maxW={{ lg: 'lg' }} pt='6'>
-                  <Heading as='h1' size='3xl' mt='8' fontWeight='black'>
-                    Teams
-                  </Heading>
-                  <Text color='gray' mt='5' fontSize='xl'>
-                    Multisig tool for working groups to manage assets and smart
-                    contracts. Perfect for working groups, subDAOs, and early
-                    DAOs progressively decentralizing.
-                  </Text>
-                  <Button
-                    mt='8'
-                    minW='14rem'
-                    colorScheme='blue'
-                    size='lg'
-                    height='14'
-                    px='8'
-                    fontSize='md'
-                    fontWeight='bold'
+                <Stack flex='1' maxW={{ lg: 'lg' }} pt='6' spacing='6'>
+                  <Heading
+                    as='h1'
+                    color='primary.900'
+                    size='4xl'
+                    mt='12'
+                    fontWeight='black'
                   >
-                    Get Started for free
-                  </Button>
-                </Box>
-                <Box boxSize={{ base: '20', lg: '8' }} />
-                <Image
-                  pos='relative'
-                  marginEnd={{ base: '0', lg: '-16rem' }}
-                  w='60rem'
-                  src='/images/teams.png'
-                  alt='Screenshot for Form builder'
-                />
-              </Flex>
-            </Box>
-          </Box>
-          <Box as='section' pt='24' pb='12' overflow='hidden'>
-            <Box
-              maxW={{ base: 'xl', md: '7xl' }}
-              mx='auto'
-              px={{ base: '6', md: '8' }}
-            >
-              <Flex
-                align='flex-start'
-                direction={{ base: 'column', lg: 'row-reverse' }}
-                justify='space-between'
-                mb='20'
-              >
-                <Box flex='1' maxW={{ lg: 'lg' }} pt='6'>
-                  <Heading as='h1' size='3xl' mt='8' fontWeight='black'>
                     Clubs
                   </Heading>
-                  <Text color='gray' mt='5' fontSize='xl'>
+                  <Text
+                    color='light.500'
+                    fontWeight='light'
+                    fontSize={{ base: 'lg', md: 'xl', lg: '2xl' }}
+                    maxW='5xl'
+                    letterSpacing='tight'
+                  >
                     Membership gated DAOs to raise funds, govern, and take
                     action. Perfect for investment DAOs, impact DAOs, service
                     DAOs, and more.
                   </Text>
-                  <Button
-                    mt='8'
-                    minW='14rem'
-                    colorScheme='blue'
-                    size='lg'
-                    height='14'
-                    px='8'
-                    fontSize='md'
-                    fontWeight='bold'
-                  >
-                    Get Started for free
-                  </Button>
-                </Box>
+                  <ButtonGroup spacing='6'>
+                    <Button
+                      as='a'
+                      href={`${appUrl.clubs}/create`}
+                      variant='default'
+                      size='lg'
+                      fontWeight='medium'
+                    >
+                      Create Club
+                    </Button>
+                    <Link href='/clubs'>
+                      <Button
+                        variant='link'
+                        size='lg'
+                        fontWeight='medium'
+                        rightIcon={<ArrowRight />}
+                      >
+                        Learn more
+                      </Button>
+                    </Link>
+                  </ButtonGroup>
+                </Stack>
                 <Box boxSize={{ base: '20', lg: '8' }} />
                 <Image
                   pos='relative'
-                  marginStart={{ base: '0', lg: '-16rem' }}
-                  marginEnd={{ base: '-16rem', lg: '0' }}
-                  w='60rem'
-                  src='/images/clubs.png'
+                  marginEnd={{ base: '0', lg: '-20rem' }}
+                  w='65rem'
+                  src='/images/clubs-hero.png'
                   alt='Screenshot for Form builder'
                 />
               </Flex>
             </Box>
           </Box>
           <Box as='section' pt='24' pb='12' overflow='hidden'>
-            <Box
-              maxW={{ base: 'xl', md: '7xl' }}
-              mx='auto'
-              px={{ base: '6', md: '8' }}
-            >
+            <Box py='3' px='12'>
               <Flex
                 align='flex-start'
                 direction={{ base: 'column', lg: 'row' }}
                 justify='space-between'
-                mb='20'
               >
-                <Box flex='1' maxW={{ lg: 'lg' }} pt='6'>
-                  <Heading as='h1' size='3xl' mt='8' fontWeight='black'>
+                <Stack flex='1' maxW={{ lg: 'lg' }} pt='6' spacing='6'>
+                  <Heading
+                    as='h1'
+                    color='secondary.900'
+                    size='4xl'
+                    mt='12'
+                    fontWeight='black'
+                  >
+                    Teams
+                  </Heading>
+                  <Text
+                    color='light.500'
+                    fontWeight='light'
+                    fontSize={{ base: 'lg', md: 'xl', lg: '2xl' }}
+                    maxW='5xl'
+                    letterSpacing='tight'
+                  >
+                    Multisig tool for working groups to manage assets and smart
+                    contracts. Perfect for working groups, subDAOs, and early
+                    DAOs progressively decentralizing.
+                  </Text>
+                  <ButtonGroup spacing='6'>
+                    <Button
+                      as='a'
+                      href={`${appUrl.teams}/create`}
+                      variant='default'
+                      size='lg'
+                      fontWeight='medium'
+                    >
+                      Create Team
+                    </Button>
+                    <Link href='/clubs'>
+                      <Button
+                        variant='link'
+                        size='lg'
+                        fontWeight='medium'
+                        rightIcon={<ArrowRight />}
+                      >
+                        Learn more
+                      </Button>
+                    </Link>
+                  </ButtonGroup>
+                </Stack>
+                <Box boxSize={{ base: '20', lg: '8' }} />
+                <Image
+                  pos='relative'
+                  marginEnd={{ base: '0', lg: '-20rem' }}
+                  w='62.5rem'
+                  src='/images/teams-hero.png'
+                  alt='Screenshot for Form builder'
+                />
+              </Flex>
+            </Box>
+          </Box>
+          <Box as='section' pt='24' pb='12' overflow='hidden'>
+            <Box py='3' px='12'>
+              <Flex
+                align='flex-start'
+                direction={{ base: 'column', lg: 'row' }}
+                justify='space-between'
+              >
+                <Stack flex='1' maxW={{ lg: 'lg' }} pt='6' spacing='6'>
+                  <Heading
+                    as='h1'
+                    color='light.900'
+                    size='4xl'
+                    mt='12'
+                    fontWeight='black'
+                  >
                     DAOs
                   </Heading>
-                  <Text color='gray' mt='5' fontSize='xl'>
+                  <Text
+                    color='light.500'
+                    fontWeight='light'
+                    fontSize={{ base: 'lg', md: 'xl', lg: '2xl' }}
+                    maxW='5xl'
+                    letterSpacing='tight'
+                  >
                     Permissionless DAOs that use an existing fungible token or
                     NFT for governance. Perfect for protocol DAOs, NFT
                     communities, ecosystem DAOs, and more.
                   </Text>
-                  <Button
-                    mt='8'
-                    minW='14rem'
-                    colorScheme='blue'
-                    size='lg'
-                    height='14'
-                    px='8'
-                    fontSize='md'
-                    fontWeight='bold'
-                  >
-                    Get Started for free
-                  </Button>
-                </Box>
+                  <ButtonGroup spacing='6'>
+                    <Button
+                      variant='default'
+                      size='lg'
+                      fontWeight='medium'
+                      as='a'
+                      href='https://form.typeform.com/to/zfYJYLgV'
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      Get in touch
+                    </Button>
+                  </ButtonGroup>
+                </Stack>
                 <Box boxSize={{ base: '20', lg: '8' }} />
                 <Image
                   pos='relative'
-                  marginEnd={{ base: '0', lg: '-16rem' }}
-                  w='60rem'
-                  src='/images/teams.png'
+                  marginEnd={{ base: '0', lg: '-20rem' }}
+                  w='62.5rem'
+                  src='/images/proposal-hero.png'
                   alt='Screenshot for Form builder'
                 />
               </Flex>

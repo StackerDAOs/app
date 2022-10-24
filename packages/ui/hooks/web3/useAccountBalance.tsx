@@ -1,6 +1,6 @@
 // Hook (use-account-balance.tsx)
 import { useQuery } from 'react-query';
-import { useAccount } from '@micro-stacks/react';
+import { useAccount } from 'ui/components';
 import { getAccountAndBns } from 'api/clubs';
 
 export function useAccountBalance() {

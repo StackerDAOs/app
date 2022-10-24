@@ -1,6 +1,6 @@
 // Hook (use-governance-token.tsx)
 import { useQuery } from 'react-query';
-import { useAccount } from '@micro-stacks/react';
+import { useAccount } from 'ui/components';
 import { useExtension } from 'ui/hooks';
 import { getBalance, getDecimal, getSymbol, getTotalSupply } from 'api/clubs';
 import { splitContractAddress } from '@stacks-os/utils';

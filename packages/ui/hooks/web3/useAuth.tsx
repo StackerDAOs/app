@@ -1,7 +1,7 @@
 // Hook (use-auth.tsx)
 import React from 'react';
 import { useQuery } from 'react-query';
-import { useAccount, useAuth as useMicroStacksAuth } from '@micro-stacks/react';
+import { useAccount, useAuth as useMicroStacksAuth } from 'ui/components';
 import { useExtension } from 'ui/hooks';
 import { getAccountBalances, getTokenId } from 'api/clubs';
 

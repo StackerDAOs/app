@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
   Badge,
-  Button,
   Heading,
   HStack,
   Icon,
@@ -62,7 +61,6 @@ export default function Proposals() {
                     You can start by submitting a proposal here.
                   </Text>
                 </Stack>
-                <Button variant='default'>Create proposal</Button>
               </EmptyState>
             </Stack>
           </Stack>
@@ -145,7 +143,7 @@ export default function Proposals() {
                       >
                         <Link href={`/${dao}/proposals/${contractAddress}`}>
                           <Card
-                            bg='dark.800'
+                            bg='dark.700'
                             display='flex'
                             alignItems='flex-start'
                             minH='200px'
@@ -158,7 +156,7 @@ export default function Proposals() {
                               cursor: 'pointer',
                             }}
                           >
-                            <Stack direction='row' minH='15vh' justify='center'>
+                            <Stack direction='row' justify='center'>
                               <Stack
                                 spacing='4'
                                 direction={{
@@ -171,11 +169,11 @@ export default function Proposals() {
                                 <HStack justify='space-between'>
                                   <HStack>
                                     <Badge
-                                      bg='dark.700'
+                                      bg='dark.500'
                                       color='primary.900'
                                       size='sm'
                                       py='1'
-                                      px='3'
+                                      px='5'
                                       borderRadius='3xl'
                                     >
                                       Pending

@@ -21,14 +21,7 @@ import type { ButtonProps } from '@chakra-ui/react';
 import { useAccount, useAuth } from 'ui/components';
 import { ConnectButton } from 'ui/components/buttons';
 import { useAccountBalance, useDAO, useClubs, useSubmissions } from 'ui/hooks';
-import {
-  DashboardOutline,
-  ProposalOutline,
-  ExtensionOutline,
-  VaultOutline,
-  LightBulbOutline,
-  ToggleUpDown,
-} from 'ui/components/icons';
+import { ToggleUpDown } from 'ui/components/icons';
 import Avatar from 'boring-avatars';
 import { getPercentage, nameToAbbreviation, ustxToStx } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
@@ -51,106 +44,103 @@ export const UserProfile = (props: UserProfileProps) => {
   };
 
   return (
-    <>
-      <Popover trigger='click' placement='bottom-start'>
-        <PopoverTrigger>
-          <HStack
-            spacing='3'
-            cursor='pointer'
-            borderRadius='lg'
-            p='3'
-            justify='center'
-          >
-            <Avatar
-              size={35}
-              name={stxAddress}
-              variant='marble'
-              colors={['#624AF2', '#7301fa', '#eb00ff', '#50DDC3']}
-            />
-            <Box>
-              <Text color='light.900' fontSize='sm' fontWeight='semibold'>
-                {club}
-              </Text>
-              <Text fontWeight='regular' fontSize='sm' color='light.500'>
-                {truncateAddress(stxAddress)}
-              </Text>
-            </Box>
-            <Icon as={ToggleUpDown} color='light.500' fontSize='2xl' />
-          </HStack>
-        </PopoverTrigger>
-        <PopoverContent
-          borderColor='dark.500'
-          borderWidth='1px'
-          bg='dark.900'
-          maxWidth='78.5%'
-          _focus={{ outline: 'none' }}
+    <Popover trigger='click' placement='bottom-start'>
+      <PopoverTrigger>
+        <HStack
+          spacing='3'
+          cursor='pointer'
+          borderRadius='lg'
+          p='3'
+          justify='center'
         >
-          <PopoverHeader
-            bg='dark.500'
-            borderColor='dark.500'
-            // borderTopLeftRadius='lg'
-            // borderTopRightRadius='lg'
-          >
-            <HStack spacing='5' color='light.900'>
-              <HStack spacing='1'>
-                <Text fontSize='sm' fontWeight='regular' color='light.900'>
-                  Balance {ustxToStx(data?.account?.balance)}{' '}
-                </Text>
-                <Text
-                  as='span'
-                  fontSize='sm'
-                  fontWeight='regular'
-                  color='light.900'
-                >
-                  STX
-                </Text>
-              </HStack>
-            </HStack>
-          </PopoverHeader>
-          <Stack>
-            <Stack
-              align='flex-start'
-              spacing='3'
-              p='3'
-              _hover={{ cursor: 'pointer', bg: 'dark.700' }}
-            >
-              <Button
-                variant='link'
-                size='sm'
-                fontWeight='light'
-                onClick={switchAccount}
-                _hover={{ opacity: 0.9 }}
+          <Avatar
+            size={35}
+            name={stxAddress}
+            variant='marble'
+            colors={['#624AF2', '#7301fa', '#eb00ff', '#50DDC3']}
+          />
+          <Box>
+            <Text color='light.900' fontSize='sm' fontWeight='semibold'>
+              {club}
+            </Text>
+            <Text fontWeight='regular' fontSize='sm' color='light.500'>
+              {truncateAddress(stxAddress)}
+            </Text>
+          </Box>
+          <Icon as={ToggleUpDown} color='light.500' fontSize='2xl' />
+        </HStack>
+      </PopoverTrigger>
+      <PopoverContent
+        borderColor='dark.500'
+        borderWidth='1px'
+        bg='dark.900'
+        maxWidth='78.5%'
+        _focus={{ outline: 'none' }}
+      >
+        <PopoverHeader
+          bg='dark.500'
+          borderColor='dark.500'
+          // borderTopLeftRadius='lg'
+          // borderTopRightRadius='lg'
+        >
+          <HStack spacing='5' color='light.900'>
+            <HStack spacing='1'>
+              <Text fontSize='sm' fontWeight='regular' color='light.900'>
+                Balance {ustxToStx(data?.account?.balance)}{' '}
+              </Text>
+              <Text
+                as='span'
+                fontSize='sm'
+                fontWeight='regular'
+                color='light.900'
               >
-                Switch account
-              </Button>
-            </Stack>
-          </Stack>
-          <PopoverFooter
-            borderColor='dark.500'
+                STX
+              </Text>
+            </HStack>
+          </HStack>
+        </PopoverHeader>
+        <Stack>
+          <Stack
+            align='flex-start'
+            spacing='3'
+            p='3'
             _hover={{ cursor: 'pointer', bg: 'dark.700' }}
           >
-            <ConnectButton
+            <Button
               variant='link'
               size='sm'
               fontWeight='light'
+              onClick={switchAccount}
               _hover={{ opacity: 0.9 }}
-              _active={{ opacity: 1 }}
-            />
-          </PopoverFooter>
-        </PopoverContent>
-      </Popover>
-    </>
+            >
+              Switch account
+            </Button>
+          </Stack>
+        </Stack>
+        <PopoverFooter
+          borderColor='dark.500'
+          _hover={{ cursor: 'pointer', bg: 'dark.700' }}
+        >
+          <ConnectButton
+            variant='link'
+            size='sm'
+            fontWeight='light'
+            _hover={{ opacity: 0.9 }}
+            _active={{ opacity: 1 }}
+          />
+        </PopoverFooter>
+      </PopoverContent>
+    </Popover>
   );
 };
 
 interface NavButtonProps extends ButtonProps {
-  icon?: any;
   label: string;
   isSelected: boolean;
 }
 
 export const NavButton = (props: NavButtonProps) => {
-  const { icon, label, isSelected, ...buttonProps } = props;
+  const { label, isSelected, ...buttonProps } = props;
   const selectedStyles = {
     color: 'light.900',
     fontWeight: 'semibold',
@@ -180,11 +170,6 @@ export const NavButton = (props: NavButtonProps) => {
       {...buttonProps}
     >
       <HStack spacing='3'>
-        {/* <Icon
-          as={icon}
-          boxSize='6'
-          color={isSelected ? 'primary.900' : 'light.500'}
-        /> */}
         {isSelected ? (
           <Text {...selectedStyles}>{label}</Text>
         ) : (
@@ -414,28 +399,24 @@ export const Sidebar = () => {
               <Stack spacing='1'>
                 <Link href={`/${slug}`}>
                   <NavButton
-                    icon={DashboardOutline}
                     label='Dashboard'
                     isSelected={router.pathname.split('/')[2] === undefined}
                   />
                 </Link>
                 {[
-                  { label: 'Vault', route: '/vault', icon: VaultOutline },
-                  { label: 'Ideas', route: '/ideas', icon: LightBulbOutline },
+                  { label: 'Vault', route: '/vault' },
+                  { label: 'Ideas', route: '/ideas' },
                   {
                     label: 'Proposals',
                     route: '/proposals',
-                    icon: ProposalOutline,
                   },
                   {
                     label: 'Extensions',
                     route: '/extensions',
-                    icon: ExtensionOutline,
                   },
-                ].map(({ label, route, icon }) => (
+                ].map(({ label, route }) => (
                   <Link key={label} href={`/${slug}${route}`}>
                     <NavButton
-                      icon={icon}
                       label={label}
                       isSelected={isSelected(label?.toLocaleLowerCase())}
                     />

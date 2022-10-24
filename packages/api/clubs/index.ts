@@ -118,6 +118,32 @@ export async function getSubmissions({ queryKey }: any) {
   }
 }
 
+export async function getIdeas({ queryKey }: any) {
+  const [_, organizationId, stxAddress, filter] = queryKey;
+  const query = supabase
+    .from('ideas')
+    .select('*, clubs!inner(id, name)')
+    .order('created_at', { ascending: false })
+    .eq('clubs.id', organizationId)
+    .eq('submitted_by', stxAddress);
+  try {
+    if (filter === 'active') {
+      const { data: ideas, error } = await query.filter(
+        'disabled',
+        'in',
+        `("false")`,
+      );
+      if (error) throw error;
+      return ideas;
+    }
+    const { data: ideas, error } = await query;
+    if (error) throw error;
+    return ideas;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
 export async function getProposals({ queryKey }: any) {
   const [_, organizationId] = queryKey;
   const query = supabase

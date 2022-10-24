@@ -79,6 +79,7 @@ const tokens = {
       800: '#eb00ff',
       900: '#eb00ff',
     },
+    bitcoin: '#f2a900',
   },
 };
 
@@ -306,6 +307,10 @@ const semanticTokens = {
       default: tokens.colors.secondary['100'],
       _dark: tokens.colors.secondary['100'],
     },
+    bitcoin: {
+      default: tokens.colors.bitcoin,
+      _dark: tokens.colors.bitcoin,
+    },
   },
 };
 
@@ -472,11 +477,11 @@ const components = {
       link: {
         color: 'light.900',
         _hover: {
-          color: 'fg-accent',
+          color: 'primary.900',
           textDecoration: 'none',
         },
         _active: {
-          color: 'fg-accent',
+          color: 'primary.900',
           textDecoration: 'none',
         },
       },
@@ -504,6 +509,14 @@ const components = {
   FormLabel: {
     baseStyle: {
       color: 'fg-muted',
+    },
+  },
+  Heading: {
+    baseStyle: {
+      _selection: {
+        color: 'primary.900',
+        bg: 'dark.800',
+      },
     },
   },
   Input: {
@@ -597,6 +610,14 @@ const components = {
             borderColor: '#fff',
           },
         },
+      },
+    },
+  },
+  Text: {
+    baseStyle: {
+      _selection: {
+        color: 'primary.900',
+        bg: 'dark.800',
       },
     },
   },

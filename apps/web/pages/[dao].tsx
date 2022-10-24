@@ -17,7 +17,7 @@ import {
 import { useAuth } from 'ui/components';
 import { defaultTo, round } from 'lodash';
 import { Card } from 'ui/components/cards';
-import { SectionHeader } from 'ui/components/layout';
+// import { SectionHeader } from 'ui/components/layout';
 import { Wrapper } from '@components/containers';
 import { AppLayout } from '@components/layout';
 import { DashboardHeader } from '@components/navigation';

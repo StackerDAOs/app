@@ -1,15 +1,15 @@
-// Hook (use-submissions.tsx)
+// Hook (use-ideas.tsx)
 import { useQuery } from 'react-query';
 import { useAccount } from 'ui/components';
 import { useDAO } from 'ui/hooks';
-import { getSubmissions } from 'api/clubs';
+import { getIdeas } from 'api/clubs';
 
-export function useSubmissions(filter = 'active') {
+export function useIdeas(filter = 'active') {
   const { stxAddress } = useAccount();
   const { data: dao } = useDAO();
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
-    ['submissions', dao?.id, stxAddress, filter],
-    getSubmissions,
+    ['ideas', dao?.id, stxAddress, filter],
+    getIdeas,
     {
       enabled: !!dao,
     },

@@ -1,7 +1,7 @@
 // Hook (use-clubs.tsx)
 import { useQuery } from 'react-query';
-import { getClubs, getUserClubs } from 'api/clubs';
-import { useAccount } from '@micro-stacks/react';
+import { useAccount } from 'ui/components';
+import { getUserClubs } from 'api/clubs';
 
 export function useClubs() {
   const { stxAddress } = useAccount();

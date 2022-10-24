@@ -20,6 +20,7 @@ import { isMainnet, isTestnet } from 'api/constants';
 export const appUrl = {
   clubs: isMainnet ? 'https://clubs.stackerdaos.com' : 'http://localhost:3000',
   teams: isMainnet ? 'https://teams.stackerdaos.com' : 'http://localhost:3000',
+  daos: isMainnet ? 'https://app.stackerdaos.com' : 'http://localhost:3000',
 };
 
 export const contractPrincipal = (address: string): string[] =>

@@ -251,7 +251,41 @@ export default function Start() {
         </>
       );
     }
-    return null;
+    return (
+      <>
+        <GridItem colSpan={{ base: 2, md: 4 }}>
+          <Stack spacing='1'>
+            <HStack align='flex-start' spacing='4'>
+              <Circle bg='dark.500' size='10'>
+                <Icon as={LightningBolt} boxSize='6' color='primary.900' />
+              </Circle>
+              <Stack spacing='1' maxW='lg'>
+                <Heading size='md' fontWeight='regular'>
+                  Finalize Club Setup
+                </Heading>
+                <Text fontSize='md' fontWeight='thin' color='text-muted'>
+                  The boostrap contract initializes your Club. Once deployed,
+                  you&apos;ll have to make a contract call, and your Club will
+                  be ready to raise funds!
+                </Text>
+              </Stack>
+            </HStack>
+          </Stack>
+        </GridItem>
+        <GridItem colSpan={{ base: 2, md: 1 }}>
+          <DeployBootstrapButton
+            variant='primary'
+            coreDao={dao?.data?.contract_address}
+            title='Deploy Bootstrap'
+            slug={nameToSlug(dao?.data?.name)}
+            extensions={map(dao?.data?.extensions)}
+            isDisabled={!hasExtension('Voting')}
+            memberAddresses={dao?.data?.config?.memberAddresses}
+            onDeploy={() => console.log('init!')}
+          />
+        </GridItem>
+      </>
+    );
   };
 
   const renderStatusCard = (
@@ -726,44 +760,6 @@ export default function Start() {
                                     isDisabled={!hasExtension('Voting')}
                                     variant='primary'
                                     onDeploy={onFinish}
-                                  />
-                                </Stack>
-                              </Stack>
-                            </AccordionPanel>
-                          </CustomAccordianItem>
-                          <CustomAccordianItem
-                            title='Finalize Club configuration '
-                            progressValue={getPercentage(
-                              1,
-                              dao?.data?.bootstrap_address ? 1 : 0,
-                            )}
-                            isPending={false}
-                            hasCompleted={!!dao?.data?.bootstrap_address}
-                          >
-                            <AccordionPanel pb={4}>
-                              <Stack spacing='2'>
-                                <Text
-                                  textAlign='left'
-                                  fontSize='lg'
-                                  fontWeight='regular'
-                                >
-                                  The boostrap contract initializes your Club.
-                                  Once deployed, you&apos;ll have to make a
-                                  contract call, and your Club will be ready to
-                                  raise funds!
-                                </Text>
-                                <Stack justify='space-between' direction='row'>
-                                  <DeployBootstrapButton
-                                    variant='primary'
-                                    coreDao={dao?.data?.contract_address}
-                                    title='Deploy Bootstrap'
-                                    slug={nameToSlug(dao?.data?.name)}
-                                    extensions={map(dao?.data?.extensions)}
-                                    isDisabled={!hasExtension('Voting')}
-                                    memberAddresses={
-                                      dao?.data?.config?.memberAddresses
-                                    }
-                                    onDeploy={() => console.log('init!')}
                                   />
                                 </Stack>
                               </Stack>

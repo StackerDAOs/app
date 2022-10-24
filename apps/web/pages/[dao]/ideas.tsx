@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Avatar as ChakraAvatar,
   AvatarGroup,
-  Button,
   Heading,
   HStack,
   Radio,
@@ -11,7 +10,7 @@ import {
   Text,
 } from 'ui';
 import Avatar from 'boring-avatars';
-import { useSubmissions } from 'ui/hooks';
+import { useIdeas } from 'ui/hooks';
 import { SectionHeader } from 'ui/components/layout';
 import { AppLayout } from '@components/layout';
 import { ProposalHeader } from '@components/navigation';
@@ -25,13 +24,13 @@ import { ChevronDown, ChevronUp } from 'ui/components/icons';
 
 export default function Ideas() {
   const [filter, setFilter] = React.useState('recent');
-  const submissions = useSubmissions(filter);
+  const ideas = useIdeas(filter);
 
-  if (submissions.isLoading || submissions?.isIdle) {
+  if (ideas.isLoading || ideas?.isIdle) {
     return null;
   }
 
-  if (size(submissions?.data) < 1) {
+  if (size(ideas?.data) < 1) {
     return (
       <Stack spacing='8' pb='16' mt='6'>
         <motion.div
@@ -50,13 +49,12 @@ export default function Ideas() {
               <EmptyState align='center' textAlign='center' spacing='3'>
                 <Stack spacing='1'>
                   <Heading size='md' fontWeight='light'>
-                    No submissions found
+                    No ideas found
                   </Heading>
                   <Text color='gray' maxW='md'>
                     Deploy the first proposal submission to get started.
                   </Text>
                 </Stack>
-                <Button variant='default'>Create proposal</Button>
               </EmptyState>
             </Stack>
           </Stack>
@@ -109,10 +107,10 @@ export default function Ideas() {
               transition={{ duration: 0.25, type: 'linear' }}
             >
               <Stack py={{ base: '6', md: '6' }} spacing='6'>
-                {map(submissions?.data, (submission) => (
+                {map(ideas?.data, (submission) => (
                   <Card
                     h='fit-content'
-                    bg='dark.800'
+                    bg='dark.700'
                     px={{ base: '6', md: '6' }}
                     py={{ base: '3', md: '3' }}
                     _hover={{ cursor: 'pointer' }}

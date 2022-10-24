@@ -62,6 +62,7 @@ export const DashboardHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const dao = useDAO();
   const { isSignedIn } = useAuth();
+  const isActive = dao?.data?.active;
 
   if (!dao?.data || !isSignedIn) return null;
 
@@ -129,15 +130,17 @@ export const DashboardHeader = () => {
                 </HStack>
               </Badge>
             </HStack>
-            <Text fontSize='lg' fontWeight='light' color='text-default'>
+            <Text fontSize='lg' fontWeight='light' color='light.500' maxW='3xl'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
             </Text>
           </Stack>
-          <ButtonGroup>
-            <ProposalDrawer title='Create proposal' variant='default' />
-          </ButtonGroup>
+          {isActive && (
+            <ButtonGroup>
+              <ProposalDrawer title='Create proposal' variant='default' />
+            </ButtonGroup>
+          )}
         </Stack>
       </motion.div>
     </Wrapper>
@@ -224,7 +227,7 @@ export const VaultHeader = () => {
                 )}
               </Badge>
             </HStack>
-            <Text fontSize='lg' fontWeight='light' color='text-default'>
+            <Text fontSize='lg' fontWeight='light' color='light.500' maxW='3xl'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
@@ -324,7 +327,7 @@ export const ProposalHeader = () => {
                 )}
               </Badge>
             </HStack>
-            <Text fontSize='lg' fontWeight='light' color='text-default'>
+            <Text fontSize='lg' fontWeight='light' color='light.500' maxW='3xl'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
@@ -419,7 +422,7 @@ export const VotingHeader = () => {
                 )}
               </Badge>
             </HStack>
-            <Text fontSize='lg' fontWeight='light' color='text-default'>
+            <Text fontSize='lg' fontWeight='light' color='light.500' maxW='3xl'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
@@ -454,7 +457,7 @@ export const ExtensionsHeader = () => {
           justify='space-between'
           align='flex-start'
         >
-          <Stack justify='space-between' spacing='3'>
+          <Stack justify='flex-start' spacing='3'>
             <HStack>
               <Heading
                 size='2xl'
@@ -466,15 +469,12 @@ export const ExtensionsHeader = () => {
                 Extensions
               </Heading>
             </HStack>
-            <Text fontSize='lg' fontWeight='light' color='text-default'>
+            <Text fontSize='lg' fontWeight='light' color='light.500' maxW='3xl'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
             </Text>
           </Stack>
-          <ButtonGroup>
-            <ProposalDrawer title='Create proposal' variant='default' />
-          </ButtonGroup>
         </Stack>
       </motion.div>
     </Wrapper>
