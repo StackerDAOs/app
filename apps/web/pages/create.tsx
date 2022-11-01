@@ -724,9 +724,8 @@ export default function Create() {
           display='flex'
           justify='center'
           h='calc(100vh - 7px)'
-          backgroundImage='radial-gradient(#2e3336 0.75px, transparent 0.75px), radial-gradient(#2e3336 0.75px, #111111 0.75px)'
-          backgroundSize='30px 30px'
-          backgroundPosition='0 0, 15px 15px'
+          backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #121416)'
+          opacity='1'
         >
           {renderStep(currentStep)}
         </Stack>

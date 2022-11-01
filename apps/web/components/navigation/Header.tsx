@@ -328,9 +328,9 @@ export const ProposalHeader = () => {
               </Badge>
             </HStack>
             <Text fontSize='lg' fontWeight='light' color='light.500' maxW='3xl'>
-              Members with a Club Pass can deposit funds and submit proposals
-              once the initial fundraise window ends. Only members who have
-              deposited funds can vote.
+              A Club Pass is required to submit an idea and vote on others.
+              There is no limit to the number of ideas you can submit and vote
+              on.
             </Text>
           </Stack>
           <ButtonGroup>

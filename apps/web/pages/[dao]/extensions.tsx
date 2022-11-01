@@ -81,8 +81,7 @@ export default function Extensions() {
                           fontWeight='thin'
                           color='text-default'
                         >
-                          Add the ability for your team to buy and sell NFTs via
-                          proposal submissions.
+                          Buy and sell NFTs via proposal submissions.
                         </Text>
                       </Stack>
                       <Button variant='default' isDisabled>
@@ -161,8 +160,7 @@ export default function Extensions() {
                           fontWeight='thin'
                           color='text-default'
                         >
-                          Give your team the ability to auction off NFTs via the
-                          Gamma auction protocol.
+                          Auction off NFTs via the Gamma auction protocol.
                         </Text>
                       </Stack>
                       <Button variant='default' isDisabled>

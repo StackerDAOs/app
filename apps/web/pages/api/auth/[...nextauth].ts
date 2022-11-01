@@ -27,24 +27,21 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       },
       async authorize(credentials) {
         try {
-          const message =
-            'Verify that you own this address by signing this message so that you can vote.';
-          const { signature, publicKey } = credentials as {
+          const { signature, publicKey, message } = credentials as {
             signature: string;
             publicKey: string;
+            message: string;
           };
 
           const authURL: URL = new URL(
             process.env.NEXT_PUBLIC_NEXTAUTH_URL as string,
           );
 
-          const payload = {
+          const isValid = verifyMessageSignature({
             message,
             signature,
             publicKey,
-          };
-
-          const isValid = verifyMessageSignature({ ...payload });
+          });
 
           if (req?.headers?.host !== authURL.host) {
             return null;

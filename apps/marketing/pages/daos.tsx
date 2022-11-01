@@ -75,12 +75,20 @@ export default function Clubs() {
         <Stack spacing='3' align='center'>
           <Heading
             textAlign='center'
-            fontSize={{ base: '4em', md: '8em', lg: '12em' }}
+            fontSize={{ base: '4em', md: '8em', lg: '10em' }}
             fontWeight='black'
-            bgGradient='linear(to-r, light.900, light.500)'
-            bgClip='text'
             w='100%'
           >
+            <Text
+              display='inline-block'
+              fontWeight='light'
+              bgGradient='linear(to-br, #624AF2 5%, #50DDC3 100%)'
+              bgClip='text'
+              letterSpacing='tight'
+              mr='-5'
+            >
+              Stacker
+            </Text>{' '}
             DAOs
           </Heading>
           <Stack spacing='8'>

@@ -1,17 +1,5 @@
 import React from 'react';
 
-export const updateAction = (state: any, payload: any) => {
-  console.log({ state, payload });
-  return {
-    ...state,
-    data: {
-      ...payload,
-    },
-  };
-};
-
-// TODO: Example actions for making client side api calls
-
 export const upvote = React.useCallback(async (status, authCallback) => {
   if (status !== 'authenticated') {
     authCallback();

@@ -87,6 +87,8 @@ export default function Web() {
                 maxW='6xl'
                 letterSpacing='tight'
               >
+                Whether it’s to build products, fund causes, invest, or manage a
+                protocol,{' '}
                 <Text
                   as='span'
                   fontWeight='regular'
@@ -94,8 +96,7 @@ export default function Web() {
                 >
                   StackerDAOs
                 </Text>{' '}
-                is eliminating barriers to collective ownership by transforming
-                how people coordinate and take action through{' '}
+                provides{' '}
                 <Text
                   as='span'
                   fontWeight='regular'
@@ -103,7 +104,8 @@ export default function Web() {
                 >
                   decentralized
                 </Text>{' '}
-                and trustless technologies.
+                and trustless coordination so communities can have true
+                ownership and take action. Together.
               </Text>
               <ButtonGroup>
                 <Button
@@ -322,6 +324,16 @@ export default function Web() {
                     mt='12'
                     fontWeight='black'
                   >
+                    <Text
+                      as='span'
+                      fontWeight='light'
+                      bgGradient='linear(to-br, #624AF2 5%, #50DDC3 100%)'
+                      bgClip='text'
+                      letterSpacing='tight'
+                      pr='1'
+                    >
+                      Stacker
+                    </Text>
                     DAOs
                   </Heading>
                   <Text
@@ -331,9 +343,9 @@ export default function Web() {
                     maxW='5xl'
                     letterSpacing='tight'
                   >
-                    Permissionless DAOs that use an existing fungible token or
-                    NFT for governance. Perfect for protocol DAOs, NFT
-                    communities, ecosystem DAOs, and more.
+                    Permissionless DAOs to govern open networks and communities.
+                    Perfect for protocol DAOs, NFT communities, ecosystem DAOs,
+                    and more.
                   </Text>
                   <ButtonGroup spacing='6'>
                     <Button

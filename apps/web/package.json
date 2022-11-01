@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@micro-stacks/react": "^1.0.4",
+    "@micro-stacks/react": "^1.0.6",
     "@stacks-os/utils": "^1.0.2",
     "boring-avatars": "^1.7.0",
     "lodash": "^4.17.21",

@@ -283,6 +283,7 @@ export const Sidebar = () => {
           boxShadow='sm-dark'
           maxW={{ base: 'full', sm: 'xs' }}
           minW='100px'
+          justify='center'
           py={{ base: '6', sm: '8' }}
           px={{ base: '4', sm: '6' }}
         >

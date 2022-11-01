@@ -179,7 +179,7 @@ export const IdeaDrawer = (props: IdeaDrawerProps) => {
       <Drawer
         isOpen={isOpen}
         placement='right'
-        size='lg'
+        size='xl'
         onClose={onClose}
         initialFocusRef={focusField}
       >

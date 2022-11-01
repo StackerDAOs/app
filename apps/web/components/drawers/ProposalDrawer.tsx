@@ -1034,12 +1034,12 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
       <Drawer
         isOpen={isOpen}
         placement='right'
-        size='lg'
+        size='xl'
         onClose={onClose}
         initialFocusRef={focusField}
       >
         <DrawerOverlay />
-        <DrawerContent bg='dark.800'>
+        <DrawerContent bg='dark.900'>
           <DrawerCloseButton
             size='lg'
             color='primary.900'

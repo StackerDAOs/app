@@ -1,4 +1,6 @@
 export * from './ArrowRight';
+export * from './ArrowUp';
+export * from './ArrowDown';
 export * from './CheckCircle';
 export * from './ChevronDown';
 export * from './ChevronDownMini';

@@ -539,7 +539,7 @@ const components = {
     variants: {
       brand: {
         field: {
-          bg: 'dark.800',
+          bg: 'dark.900',
         },
       },
     },
@@ -624,7 +624,7 @@ const components = {
   Textarea: {
     baseStyle: {
       resize: 'none',
-      bg: 'dark.800',
+      bg: 'dark.900',
       color: 'white',
       fontWeight: 'regular',
       borderRadius: 'md',
@@ -641,7 +641,7 @@ const components = {
     variants: {
       brand: {
         field: {
-          bg: 'dark.800',
+          bg: 'dark.900',
         },
       },
     },

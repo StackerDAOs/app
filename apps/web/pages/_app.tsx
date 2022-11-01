@@ -19,23 +19,24 @@ const queryClient = new QueryClient({
   },
 });
 
+const getNetwork = (): StacksNetwork => {
+  if (isMainnet) {
+    return new StacksMainnet({
+      url: 'https://capable-yolo-moon.stacks-mainnet.discover.quiknode.pro/',
+    });
+  }
+  if (isTestnet) {
+    return new StacksTestnet();
+  }
+  return new StacksMocknet();
+};
+
+const noWalletFound = () => {
+  alert('Please install Hiro Wallet');
+};
+
 function App({ Component, pageProps: { session, ...pageProps } }: any) {
   const getLayout = Component.getLayout || ((page: any) => page);
-  const getNetwork = (): StacksNetwork => {
-    if (isMainnet) {
-      return new StacksMainnet({
-        url: 'https://capable-yolo-moon.stacks-mainnet.discover.quiknode.pro/',
-      });
-    }
-    if (isTestnet) {
-      return new StacksTestnet();
-    }
-    return new StacksMocknet();
-  };
-
-  const noWalletFound = () => {
-    alert('Please install Hiro Wallet');
-  };
 
   return (
     <SessionProvider session={session}>
