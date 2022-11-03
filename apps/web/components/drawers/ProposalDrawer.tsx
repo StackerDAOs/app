@@ -790,8 +790,7 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
                               >
                                 Submit{' '}
                                 {truncateAddress(proposalContractAddress)}{' '}
-                                proposal. Your proposal will be open for voting
-                                in ~ 2 days.
+                                proposal.
                               </Text>
                             ) : (
                               <Text

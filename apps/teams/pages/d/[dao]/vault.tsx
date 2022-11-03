@@ -14,6 +14,7 @@ import { SectionHeader } from 'ui/components/layout';
 import { AppLayout } from '@components/layout';
 import { VaultHeader } from '@components/navigation';
 import { Wrapper } from '@components/containers';
+import { AssetTable } from '@components/tables';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { map } from 'lodash';
 
@@ -80,7 +81,7 @@ export default function Vault() {
                   exit={FADE_IN_VARIANTS.exit}
                   transition={{ duration: 0.25, type: 'linear' }}
                 >
-                  {/* <AssetTable color='light.900' size='md' type='fungible' /> */}
+                  <AssetTable color='light.900' size='md' type='fungible' />
                 </motion.div>
               </TabPanel>
               <TabPanel px='0'>
@@ -91,7 +92,7 @@ export default function Vault() {
                   exit={FADE_IN_VARIANTS.exit}
                   transition={{ duration: 0.25, type: 'linear' }}
                 >
-                  {/* <AssetTable color='light.900' size='md' type='nonFungible' /> */}
+                  <AssetTable color='light.900' size='md' type='nonFungible' />
                 </motion.div>
               </TabPanel>
             </TabPanels>

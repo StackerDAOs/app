@@ -5,7 +5,6 @@ import {
   Badge,
   Heading,
   HStack,
-  Icon,
   Radio,
   RadioGroup,
   SimpleGrid,
@@ -21,14 +20,12 @@ import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { EmptyState } from '@components/misc';
 import { Card } from 'ui/components/cards';
 import { capitalize, map, size } from 'lodash';
-import { ArrowRight } from 'ui/components/icons';
 
 const MotionGrid = motion(SimpleGrid);
 
 export default function Proposals() {
   const router = useRouter();
   const { dao } = router.query as any;
-  const [isHovered, setHovered] = React.useState(false);
   const [filter, setFilter] = React.useState('active');
   const proposals = useProposals();
 
@@ -57,9 +54,6 @@ export default function Proposals() {
                   <Heading size='md' fontWeight='light'>
                     No proposals found
                   </Heading>
-                  <Text color='gray' maxW='md'>
-                    You can start by submitting a proposal here.
-                  </Text>
                 </Stack>
               </EmptyState>
             </Stack>
@@ -150,8 +144,6 @@ export default function Proposals() {
                             position='relative'
                             px={{ base: '6', md: '6' }}
                             py={{ base: '6', md: '6' }}
-                            onMouseEnter={() => setHovered(true)}
-                            onMouseLeave={() => setHovered(false)}
                             _hover={{
                               cursor: 'pointer',
                             }}
@@ -178,26 +170,6 @@ export default function Proposals() {
                                     >
                                       Pending
                                     </Badge>
-                                  </HStack>
-                                  <HStack>
-                                    {isHovered && (
-                                      <motion.div
-                                        variants={FADE_IN_VARIANTS}
-                                        initial={FADE_IN_VARIANTS.hidden}
-                                        animate={FADE_IN_VARIANTS.enter}
-                                        exit={FADE_IN_VARIANTS.exit}
-                                        transition={{
-                                          duration: 0.5,
-                                          type: 'linear',
-                                        }}
-                                      >
-                                        <Icon
-                                          as={ArrowRight}
-                                          boxSize='5'
-                                          color='light.900'
-                                        />
-                                      </motion.div>
-                                    )}
                                   </HStack>
                                 </HStack>
                                 <Stack>

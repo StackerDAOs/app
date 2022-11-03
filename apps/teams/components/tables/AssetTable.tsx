@@ -1,6 +1,8 @@
 import React from 'react';
 import {
+  Heading,
   HStack,
+  Stack,
   Table,
   TableContainer,
   Thead,
@@ -14,6 +16,7 @@ import {
 import { ustxToStx, convertToken } from 'utils';
 import { useVaultBalance } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
+import { EmptyState } from '@components/misc';
 
 type AssetTableProps = {
   type: string;
@@ -22,10 +25,12 @@ type AssetTableProps = {
 export const AssetTable = (props: TableProps & AssetTableProps) => {
   const { type } = props;
 
-  const { data } = useVaultBalance();
+  const vaultBalance = useVaultBalance();
 
-  const fungibleTokens: any = { ...data.fungible_tokens };
-  const nonFungibleTokens: any = { ...data?.balance?.non_fungible_tokens };
+  const fungibleTokens: any = { ...vaultBalance?.data?.fungible_tokens };
+  const nonFungibleTokens: any = {
+    ...vaultBalance?.data?.balance?.non_fungible_tokens,
+  };
   const fungibleTokensList: any = Object.keys(fungibleTokens).map((key) => {
     const tokenKey = key.split('::')[1];
     const tokenValue = fungibleTokens[key];
@@ -47,38 +52,105 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
     };
   });
 
+  const stacks: any = {
+    contractAddress: null,
+    name: 'Stacks',
+    symbol: 'STX',
+    balance: vaultBalance?.data?.stx?.balance,
+    totalSent: vaultBalance?.data?.stx?.total_sent,
+    totalReceived: vaultBalance?.data?.stx?.total_received,
+  };
+  console.log(vaultBalance?.data?.stx?.balance);
+  const withStacks = fungibleTokensList.concat(stacks);
+
   const listItems =
-    type === 'fungible' ? fungibleTokensList : nonFungibleTokensList;
+    type === 'fungible'
+      ? fungibleTokensList.concat(withStacks)
+      : nonFungibleTokensList;
 
-  // if (state.isLoading && isLoading) {
-  //   return (
-  //     <EmptyState
-  //       heading={
-  //         type === 'fungible' ? 'Loading assets...' : 'Loading assets...'
-  //       }
-  //     />
-  //   );
-  // }
+  if (vaultBalance.isLoading) {
+    return (
+      <motion.div
+        variants={FADE_IN_VARIANTS}
+        initial={FADE_IN_VARIANTS.hidden}
+        animate={FADE_IN_VARIANTS.enter}
+        exit={FADE_IN_VARIANTS.exit}
+        transition={{ duration: 0.25, type: 'linear' }}
+      >
+        <Stack spacing='0'>
+          <Stack
+            px={{ base: '6', md: '6' }}
+            py={{ base: '6', md: '6' }}
+            spacing='2'
+          >
+            <EmptyState align='center' textAlign='center' spacing='3'>
+              <Stack spacing='1'>
+                <Heading size='md' fontWeight='light'>
+                  Loading tokens...
+                </Heading>
+              </Stack>
+            </EmptyState>
+          </Stack>
+        </Stack>
+      </motion.div>
+    );
+  }
 
-  // if (listItems.length === 0) {
-  //   return (
-  //     <EmptyState
-  //       heading={
-  //         type === 'fungible' ? 'No coins found' : 'No collectibles found'
-  //       }
-  //     />
-  //   );
-  // }
+  if (listItems.length === 0) {
+    return (
+      <motion.div
+        variants={FADE_IN_VARIANTS}
+        initial={FADE_IN_VARIANTS.hidden}
+        animate={FADE_IN_VARIANTS.enter}
+        exit={FADE_IN_VARIANTS.exit}
+        transition={{ duration: 0.25, type: 'linear' }}
+      >
+        <Stack spacing='0'>
+          <Stack
+            px={{ base: '6', md: '6' }}
+            py={{ base: '6', md: '6' }}
+            spacing='2'
+          >
+            <EmptyState align='center' textAlign='center' spacing='3'>
+              <Stack spacing='1'>
+                <Heading size='md' fontWeight='light'>
+                  No assets found
+                </Heading>
+              </Stack>
+            </EmptyState>
+          </Stack>
+        </Stack>
+      </motion.div>
+    );
+  }
 
-  // if (isError) {
-  //   return (
-  //     <EmptyState
-  //       heading={
-  //         type === 'fungible' ? 'Error loading assets' : 'Error loading assets'
-  //       }
-  //     />
-  //   );
-  // }
+  if (vaultBalance?.isError) {
+    return (
+      <motion.div
+        variants={FADE_IN_VARIANTS}
+        initial={FADE_IN_VARIANTS.hidden}
+        animate={FADE_IN_VARIANTS.enter}
+        exit={FADE_IN_VARIANTS.exit}
+        transition={{ duration: 0.25, type: 'linear' }}
+      >
+        <Stack spacing='0'>
+          <Stack
+            px={{ base: '6', md: '6' }}
+            py={{ base: '6', md: '6' }}
+            spacing='2'
+          >
+            <EmptyState align='center' textAlign='center' spacing='3'>
+              <Stack spacing='1'>
+                <Heading size='md' fontWeight='light'>
+                  Error loading vault
+                </Heading>
+              </Stack>
+            </EmptyState>
+          </Stack>
+        </Stack>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -88,8 +160,13 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 1, type: 'linear' }}
     >
-      <TableContainer>
-        <Table {...props} bg='transparent'>
+      <TableContainer
+        bg='dark.900'
+        borderWidth='1px'
+        borderColor='dark.500'
+        borderRadius='lg'
+      >
+        <Table {...props}>
           <Thead color='light.900'>
             <Tr>
               <Th
@@ -138,6 +215,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
             {listItems.map((item: any) => {
               const { contractAddress, name, decimals } = item;
               let { balance, totalSent, totalReceived } = item;
+              console.log({ item, balance, totalSent, totalReceived });
               switch (name) {
                 case 'Stacks':
                   balance = ustxToStx(item.balance);
@@ -154,8 +232,8 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
                   }
               }
               return (
-                <Tr key={item.name} cursor='pointer'>
-                  <Td fontSize='md' borderColor='dark.500'>
+                <Tr key={item.name}>
+                  <Td fontSize='md' border='none'>
                     <HStack spacing='2' align='center'>
                       <HStack align='baseline'>
                         <Text color='light.900' fontWeight='medium'>
@@ -164,13 +242,13 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
                       </HStack>
                     </HStack>
                   </Td>
-                  <Td fontSize='md' borderColor='dark.500'>
+                  <Td fontSize='md' border='none'>
                     {balance}
                   </Td>
-                  <Td fontSize='md' borderColor='dark.500'>
+                  <Td fontSize='md' border='none'>
                     {totalSent}
                   </Td>
-                  <Td fontSize='md' borderColor='dark.500'>
+                  <Td fontSize='md' border='none'>
                     {totalReceived}
                   </Td>
                 </Tr>

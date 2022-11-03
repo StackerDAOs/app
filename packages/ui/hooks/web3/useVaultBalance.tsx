@@ -5,6 +5,7 @@ import { getVaultBalance } from 'api/clubs';
 
 export function useVaultBalance() {
   const { data: vault } = useExtension('Vault');
+  console.log({ vault });
 
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
     'vault-balance',

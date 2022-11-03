@@ -2,7 +2,6 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
-  Badge,
   Divider,
   Grid,
   GridItem,
@@ -47,196 +46,101 @@ const CurrentBadge = ({
 }: any) => {
   if (isConcluded) {
     return (
-      <Badge
-        bg='dark.700'
-        color='primary.900'
-        size='sm'
-        border='1px solid'
-        borderColor='dark.500'
-        borderRadius='lg'
-        py='1'
-        px='3'
-      >
-        <HStack>
-          <Icon as={CheckCircle} fontSize='0.9rem' />
-          <Text fontSize='sm' fontWeight='medium'>
-            Proposal is concluded
-          </Text>
-        </HStack>
-      </Badge>
+      <HStack spacing='1' color='primary.900'>
+        <Icon as={CheckCircle} />
+        <Text fontSize='lg' fontWeight='extrabold'>
+          Proposal is concluded
+        </Text>
+      </HStack>
     );
   }
 
   if (isExecutable && !isEligible) {
     return (
-      <Badge
-        bg='dark.700'
-        color='primary.900'
-        size='sm'
-        border='1px solid'
-        borderColor='dark.500'
-        borderRadius='lg'
-        py='1'
-        px='3'
-      >
-        <HStack>
-          <Icon as={CheckCircle} fontSize='0.9rem' />
-          <Text fontSize='sm' fontWeight='medium'>
-            At least required to execute
-          </Text>
-        </HStack>
-      </Badge>
+      <HStack spacing='1' color='primary.900'>
+        <Icon as={CheckCircle} />
+        <Text fontSize='lg' fontWeight='extrabold'>
+          At least x required to execute
+        </Text>
+      </HStack>
     );
   }
 
   if (isClosed && !canExecute) {
     return (
-      <Badge
-        bg='dark.700'
-        color='primary.900'
-        size='sm'
-        border='1px solid'
-        borderColor='dark.500'
-        borderRadius='lg'
-        py='1'
-        px='3'
-      >
-        <HStack>
-          <Icon as={CheckCircle} fontSize='0.9rem' />
-          <Text fontSize='sm' fontWeight='medium'>
-            Open for execution in ~{' '}
-            {Number(endBlockHeight) +
-              Number(executionDelay) -
-              Number(currentBlockHeight)}{' '}
-            blocks
-          </Text>
-        </HStack>
-      </Badge>
+      <HStack spacing='1' color='primary.900'>
+        <Icon as={CheckCircle} />
+        <Text fontSize='lg' fontWeight='extrabold'>
+          Open for execution in ~{' '}
+          {Number(endBlockHeight) +
+            Number(executionDelay) -
+            Number(currentBlockHeight)}{' '}
+          blocks
+        </Text>
+      </HStack>
     );
   }
 
   if (canExecute && isConcluded) {
-    <Badge
-      bg='dark.700'
-      color='primary.900'
-      size='sm'
-      border='1px solid'
-      borderColor='dark.500'
-      borderRadius='lg'
-      py='1'
-      px='3'
-    >
-      <HStack>
-        <Icon as={CheckCircle} fontSize='0.9rem' />
-        <Text fontSize='sm' fontWeight='medium'>
-          Ready to {isPassing ? `execute` : `conclude`}
-        </Text>
-      </HStack>
-    </Badge>;
+    <HStack spacing='1' color='primary.900'>
+      <Icon as={CheckCircle} />
+      <Text fontSize='lg' fontWeight='extrabold'>
+        Ready to {isPassing ? `execute` : `conclude`}
+      </Text>
+    </HStack>;
   }
 
   if (hasVoted) {
     return (
-      <Badge
-        bg='dark.700'
-        color='primary.900'
-        size='sm'
-        border='1px solid'
-        borderColor='dark.500'
-        borderRadius='lg'
-        py='1'
-        px='3'
-      >
-        <HStack>
-          <Icon as={CheckCircle} fontSize='0.9rem' />
-          <Text fontSize='sm' fontWeight='medium'>
-            Voted
-          </Text>
-        </HStack>
-      </Badge>
+      <HStack spacing='1' color='primary.900'>
+        <Icon as={CheckCircle} />
+        <Text fontSize='lg' fontWeight='extrabold'>
+          Voted
+        </Text>
+      </HStack>
     );
   }
 
   if (isInactive) {
     return (
-      <Badge
-        bg='dark.700'
-        color='primary.900'
-        size='sm'
-        border='1px solid'
-        borderColor='dark.500'
-        borderRadius='lg'
-        py='1'
-        px='3'
-      >
-        <HStack>
-          <Icon as={CheckCircle} fontSize='0.9rem' />
-          <Text fontSize='sm' fontWeight='medium'>
-            Voting begins in ~{' '}
-            {Number(startBlockHeight) - Number(currentBlockHeight)} blocks{' '}
-          </Text>
-        </HStack>
-      </Badge>
+      <HStack spacing='1' color='primary.900'>
+        <Icon as={CheckCircle} />
+        <Text fontSize='lg' fontWeight='extrabold'>
+          Voting begins in ~{' '}
+          {Number(startBlockHeight) - Number(currentBlockHeight)} blocks{' '}
+        </Text>
+      </HStack>
     );
   }
 
   if (!isEligible && stxAddress) {
     return (
-      <Badge
-        bg='dark.700'
-        color='primary.900'
-        size='sm'
-        border='1px solid'
-        borderColor='dark.500'
-        borderRadius='lg'
-        py='1'
-        px='3'
-      >
-        <HStack>
-          <Icon as={CheckCircle} fontSize='0.9rem' />
-          <Text fontSize='sm' fontWeight='medium'>
-            At least required to vote
-          </Text>
-        </HStack>
-      </Badge>
+      <HStack spacing='1' color='primary.900'>
+        <Icon as={CheckCircle} />
+        <Text fontSize='lg' fontWeight='extrabold'>
+          At least x required to vote
+        </Text>
+      </HStack>
     );
   }
 
   if (isOpen) {
     return (
-      <Badge
-        bg='dark.700'
-        color='primary.900'
-        size='sm'
-        border='1px solid'
-        borderColor='dark.500'
-        borderRadius='lg'
-        py='1'
-        px='3'
-      >
-        Pending
-      </Badge>
+      <HStack spacing='1' color='primary.900'>
+        <Text fontSize='lg' fontWeight='extrabold'>
+          Pending
+        </Text>
+      </HStack>
     );
   }
 
   return (
-    <Badge
-      bg='dark.700'
-      color='primary.900'
-      size='sm'
-      border='1px solid'
-      borderColor='dark.500'
-      borderRadius='lg'
-      py='1'
-      px='3'
-    >
-      <HStack>
-        <Icon as={CheckCircle} fontSize='0.9rem' />
-        <Text fontSize='sm' fontWeight='medium'>
-          Inactive
-        </Text>
-      </HStack>
-    </Badge>
+    <HStack spacing='1' color='primary.900'>
+      <Icon as={CheckCircle} />
+      <Text fontSize='lg' fontWeight='extrabold'>
+        Inactive
+      </Text>
+    </HStack>
   );
 };
 
@@ -251,7 +155,7 @@ export default function ProposalView() {
   //   address ? address : '',
   // );
 
-  const isEligible = false; // TODO: check if user is eligible to vote
+  const isEligible = true; // TODO: check if user is eligible to vote
   const totalVotes =
     Number(proposal?.data?.info?.votesFor) +
     Number(proposal?.data?.info?.votesAgainst);

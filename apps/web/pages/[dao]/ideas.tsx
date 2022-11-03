@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Button,
   Divider,
   Grid,
   GridItem,
@@ -30,6 +31,7 @@ export default function Ideas() {
   const ideas = useIdeas(filter);
   const { stxAddress } = useAccount();
   const { openSignMessage } = useOpenSignMessage();
+  console.log({ ideas });
 
   const handleResult = React.useCallback(async (response: any) => {
     if (response?.status === 200) {
@@ -73,17 +75,15 @@ export default function Ideas() {
     );
   };
 
-  const handleDownvote = () => {
-    fetch('/api/downvote', {
+  const handleDownvote = (ideaId: string) => {
+    fetch(`/api/downvote/${ideaId}`, {
       method: 'post',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id: 1 }),
     }).then((res) =>
       res.json().then((data) => {
-        console.log({ data });
         if (data?.error) {
           popupMessageSign('Sign in to downvote');
         }
@@ -116,9 +116,6 @@ export default function Ideas() {
                   <Heading size='md' fontWeight='light'>
                     No ideas found
                   </Heading>
-                  <Text color='gray' maxW='md'>
-                    Deploy the first proposal submission to get started.
-                  </Text>
                 </Stack>
               </EmptyState>
             </Stack>
@@ -193,7 +190,7 @@ export default function Ideas() {
                           cursor='pointer'
                         >
                           <Stack>
-                            <Stack p={{ base: '3', md: '3' }}>
+                            <Stack px={{ base: '3', md: '3' }}>
                               <HStack
                                 justify='flex-start'
                                 align='flex-start'
@@ -208,25 +205,47 @@ export default function Ideas() {
                                 >
                                   <ArrowUp
                                     fontSize='xl'
-                                    color='primary.900'
-                                    onClick={() => handleUpvote(submission.id)}
+                                    color={
+                                      submission.votes[0] &&
+                                      submission.votes[0].direction === 1
+                                        ? 'primary.900'
+                                        : 'gray'
+                                    }
+                                    onClick={
+                                      size(submission.votes) !== 0
+                                        ? () => handleUpvote(submission.id)
+                                        : () => alert('You already voted')
+                                    }
                                   />
                                   <Text
                                     maxW='xl'
                                     mx='auto'
-                                    color='primary.900'
+                                    color={
+                                      submission.votes[0]
+                                        ? 'primary.900'
+                                        : 'light.900'
+                                    }
                                     fontSize='xl'
                                     fontWeight='medium'
                                   >
-                                    {submission.votes || '0'}
+                                    {submission.votes.length || '0'}
                                   </Text>
                                   <ArrowDown
                                     fontSize='xl'
-                                    color='gray'
-                                    onClick={handleDownvote}
+                                    color={
+                                      submission.votes[0] &&
+                                      submission.votes[0].direction === 2
+                                        ? 'primary.900'
+                                        : 'gray'
+                                    }
+                                    onClick={
+                                      size(submission.votes) === 0
+                                        ? () => handleDownvote(submission.id)
+                                        : () => alert('You already voted')
+                                    }
                                   />
                                 </Stack>
-                                <Stack spacing='0' align='flex-start'>
+                                <Stack spacing='1' align='flex-start'>
                                   <Text
                                     maxW='xl'
                                     color='light.900'
@@ -248,7 +267,8 @@ export default function Ideas() {
                             <Divider borderColor='dark.500' />
                             <HStack
                               justify='space-between'
-                              p={{ base: '3', md: '3' }}
+                              py='0'
+                              px={{ base: '3', md: '3' }}
                             >
                               <HStack spacing='3'>
                                 <Avatar
@@ -278,13 +298,9 @@ export default function Ideas() {
                                   </Text>
                                 </Text>
                               </HStack>
-                              <Text
-                                color='light.500'
-                                fontSize='sm'
-                                fontWeight='regular'
-                              >
-                                ~ 3 hours ago{' '}
-                              </Text>
+                              <Button variant='dark' size='sm'>
+                                Read more
+                              </Button>
                             </HStack>
                           </Stack>
                         </Card>

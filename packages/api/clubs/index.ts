@@ -122,7 +122,9 @@ export async function getIdeas({ queryKey }: any) {
   const [_, organizationId, stxAddress, filter] = queryKey;
   const query = supabase
     .from('ideas')
-    .select('*, clubs!inner(id, name)')
+    .select(
+      '*, clubs!inner(id, name), votes!inner(user_address, idea_id, direction)',
+    )
     .order('created_at', { ascending: false })
     .eq('clubs.id', organizationId)
     .eq('submitted_by', stxAddress);

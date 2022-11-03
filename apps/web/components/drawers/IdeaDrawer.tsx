@@ -10,17 +10,14 @@ import {
   FormLabel,
   Heading,
   Input,
-  Icon,
   Grid,
   GridItem,
   Stack,
-  Square,
   Text,
   Textarea,
   useDisclosure,
 } from 'ui';
 import { useAccount, useForm } from 'ui/components';
-import { LightBulbIcon } from 'ui/components/icons';
 import { useDAO } from 'ui/hooks';
 import { useCreateIdea } from 'api/clubs/mutations';
 
@@ -72,13 +69,6 @@ export const IdeaDrawer = (props: IdeaDrawerProps) => {
         px={{ base: '6', md: '8' }}
         py={{ base: '12', md: '16' }}
       >
-        <Square size='12' bg='dark.500' color='inverted' borderRadius='lg'>
-          <Icon
-            as={LightBulbIcon}
-            boxSize={{ base: '6', md: '7' }}
-            color='primary.900'
-          />
-        </Square>
         <Stack>
           <Heading size='lg' fontWeight='black' color='light.900'>
             Submit your idea
@@ -117,10 +107,10 @@ export const IdeaDrawer = (props: IdeaDrawerProps) => {
                     <FormLabel htmlFor='name' fontWeight='light' color='gray'>
                       TL;DR
                     </FormLabel>
-                    <Input
+                    <Textarea
                       id='description'
-                      autoComplete='off'
                       placeholder='In three sentences or less, explain your idea'
+                      rows={3}
                       size='lg'
                       {...register('description', {
                         required: 'This is required',
@@ -141,6 +131,7 @@ export const IdeaDrawer = (props: IdeaDrawerProps) => {
                       id='body'
                       autoComplete='off'
                       placeholder='Describe your idea in detail'
+                      rows={6}
                       size='lg'
                       {...register('body', {
                         required: 'This is required',
