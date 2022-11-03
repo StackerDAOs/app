@@ -24,13 +24,19 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           type: 'text',
           placeholder: '0x0',
         },
+        stxAddress: {
+          label: 'STX Address',
+          type: 'text',
+          placeholder: 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE',
+        },
       },
       async authorize(credentials) {
         try {
-          const { signature, publicKey, message } = credentials as {
+          const { signature, publicKey, message, stxAddress } = credentials as {
             signature: string;
             publicKey: string;
             message: string;
+            stxAddress: string;
           };
 
           const authURL: URL = new URL(
@@ -52,7 +58,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           }
 
           return {
-            id: req?.body?.address,
+            id: stxAddress,
           };
         } catch (e: any) {
           throw new Error(e);
@@ -71,8 +77,10 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     },
     secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET,
     callbacks: {
-      async jwt({ token }) {
-        return token;
+      async session({ session, token }: { session: any; token: any }) {
+        const result = { ...session };
+        result.user.address = token.sub;
+        return result;
       },
     },
   });

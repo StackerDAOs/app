@@ -47,6 +47,7 @@ export default function Ideas() {
         message,
         signature,
         publicKey,
+        stxAddress,
         redirect: false,
       });
 
@@ -56,17 +57,15 @@ export default function Ideas() {
     }
   }, []);
 
-  const handleUpvote = () => {
-    fetch('/api/upvote', {
+  const handleUpvote = (ideaId: string) => {
+    fetch(`/api/upvote/${ideaId}`, {
       method: 'post',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id: 1 }),
     }).then((res) =>
       res.json().then((data) => {
-        console.log({ data });
         if (data?.error) {
           popupMessageSign('Sign in to upvote');
         }
@@ -175,7 +174,6 @@ export default function Ideas() {
               <Grid
                 templateColumns='repeat(5, 1fr)'
                 gap='5'
-                justifyItems='center'
                 py={{ base: '6', md: '6' }}
               >
                 <GridItem colSpan={5}>
@@ -211,7 +209,7 @@ export default function Ideas() {
                                   <ArrowUp
                                     fontSize='xl'
                                     color='primary.900'
-                                    onClick={handleUpvote}
+                                    onClick={() => handleUpvote(submission.id)}
                                   />
                                   <Text
                                     maxW='xl'

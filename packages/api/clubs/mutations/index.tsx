@@ -43,6 +43,12 @@ type Submission = {
   post_conditions: object;
 };
 
+type Vote = {
+  idea_id: string | string[] | undefined;
+  direction: number;
+  user_address: string;
+};
+
 export async function createClub({
   club,
   userAddress,
@@ -216,6 +222,47 @@ export const useCreateProposal = () => {
   return useMutation(createProposal, {
     onSuccess: () => {
       queryClient.invalidateQueries('proposals');
+    },
+  });
+};
+
+export async function handleIdeaVote(vote: Vote) {
+  try {
+    const { data, error } = await supabase.from('votes').insert([{ ...vote }]);
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useIdeaVote = () => {
+  const queryClient = useQueryClient();
+  return useMutation(handleIdeaVote, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('ideas');
+    },
+  });
+};
+
+export async function handleUpdateIdeaVote(vote: Vote) {
+  try {
+    const { data, error } = await supabase
+      .from('votes')
+      .update({ direction: vote.direction })
+      .eq('idea_id', vote.idea_id);
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useUpdateIdeaVote = () => {
+  const queryClient = useQueryClient();
+  return useMutation(handleUpdateIdeaVote, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('ideas');
     },
   });
 };

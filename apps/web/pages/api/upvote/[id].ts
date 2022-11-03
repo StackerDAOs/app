@@ -7,11 +7,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (!session) {
     res.status(401).json({ error: 'Unauthenticated user' });
   } else {
+    const userSession = session.user as any;
     const response = await handleIdeaVote({
-      idea_id: req.body?.idea_id,
-      direction: req.body?.direction,
-      user_address: '0x',
+      idea_id: req.query?.id,
+      direction: 1,
+      user_address: userSession.address,
     });
-    res.status(200).json({ message: 'Success', response });
+    console.log(response);
+
+    res.status(200).json({ message: 'Success' });
+
+    // if (submitIdea.isSuccess) {
+    //   res.status(200).json({ message: 'Success' });
+    // } else {
+    //   res.status(500).json({ message: 'Error', error: submitIdea.error });
+    // }
   }
 };
