@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Button, Stack, Text } from 'ui';
+import { Button, Stack, SimpleGrid, Text } from 'ui';
 import { Banner } from '@components/misc';
 import { LogoIcon, InfoIcon } from 'ui/components/icons';
 
@@ -24,10 +24,14 @@ export const Footer = () => (
         </Text>
       </Stack>
       <Stack
-        direction={{ base: 'column-reverse', md: 'column', lg: 'row' }}
+        direction={{ base: 'column', lg: 'row' }}
         spacing={{ base: '12', md: '8' }}
       >
-        <Stack direction='row' spacing='8'>
+        <SimpleGrid
+          columns={{ base: 2, md: 4 }}
+          gap='8'
+          width={{ base: 'full', lg: 'auto' }}
+        >
           <Stack spacing='4' minW='36' flex='1'>
             <Text fontSize='md' fontWeight='semibold'>
               Product
@@ -105,7 +109,7 @@ export const Footer = () => (
               </Button>
             </Stack>
           </Stack>
-        </Stack>
+        </SimpleGrid>
       </Stack>
     </Stack>
     <Banner

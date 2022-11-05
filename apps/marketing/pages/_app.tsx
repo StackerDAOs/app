@@ -18,10 +18,7 @@ function App({ Component, pageProps }: any) {
         <Head>
           <title>StackerDAO</title>
           <meta name='description' content='StackerDAO Labs' />
-          <meta
-            name='viewport'
-            content='initial-scale=1.0, width=device-width'
-          />
+          <meta name='viewport' content='width=device-width' />
         </Head>
         <AnimatePresence
           exitBeforeEnter
