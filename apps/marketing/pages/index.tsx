@@ -60,7 +60,7 @@ export default function Web() {
           <Box as='section' py='6' px='12'>
             <Stack spacing='6' align='flex-start'>
               <Heading
-                fontSize={{ base: '6xl', lg: '8xl' }}
+                fontSize={{ base: '5xl', sm: '7xl', lg: '8xl' }}
                 fontWeight='medium'
                 lineHeight='1.2'
                 bg='light.900'
@@ -80,8 +80,8 @@ export default function Web() {
               <Text
                 color='light.500'
                 fontWeight='light'
-                fontSize={{ base: 'lg', md: 'xl', lg: '3xl' }}
-                maxW='6xl'
+                fontSize={{ base: 'xl', md: '2xl', lg: '3xl' }}
+                maxW='4xl'
                 letterSpacing='tight'
               >
                 Whether it’s to govern a protocol, invest, fund causes, or build

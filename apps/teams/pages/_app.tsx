@@ -32,6 +32,10 @@ function App({ Component, pageProps }: any) {
           <Head>
             <title>StackerDAO | Teams</title>
             <meta name='description' content='StackerDAO Labs' />
+            <meta
+              name='viewport'
+              content='initial-scale=1.0, width=device-width'
+            />
           </Head>
           <AnimatePresence
             exitBeforeEnter

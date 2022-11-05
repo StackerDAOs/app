@@ -52,6 +52,10 @@ function App({ Component, pageProps: { session, ...pageProps } }: any) {
             <Head>
               <title>StackerDAO | Clubs</title>
               <meta name='description' content='StackerDAO Labs' />
+              <meta
+                name='viewport'
+                content='initial-scale=1.0, width=device-width'
+              />
             </Head>
             <AnimatePresence
               exitBeforeEnter
