@@ -25,24 +25,25 @@ const features = [
   {
     name: 'Proposals & Automatic Execution',
     description:
-      'Members can create, deploy, and submit proposals. Proposals are smart contracts—allowing the Club to automatically execute approved proposals for on-chain activity.',
+      'Members can create, deploy, and submit proposals. Proposals are smart contracts—allowing the Team to automatically execute approved proposals for on-chain activity.',
     image: '/images/proposal-hero.png',
   },
   {
-    name: 'On-chain Voting',
-    description: 'Members that have deposited funds can vote on-chain.',
-    image: '/images/proposal-hero.png',
-  },
-  {
-    name: 'Temperature Checks',
+    name: 'On-Chain Voting',
     description:
-      'Members can create Ideas to receive guidance from the rest of the Club through upvotes and downvotes before submitting a formal on-chain proposal—all powered by off-chain authenticated wallet signatures.',
+      'Members vote on-chain, with Member approved proposals automatically executing.',
+    image: '/images/proposal-hero.png',
+  },
+  {
+    name: 'Off-Chain Temperature Checks',
+    description:
+      'Members can create Ideas to receive guidance from the rest of the Team through upvotes and downvotes before submitting a formal on-chain proposal—all powered by off-chain authenticated wallet signatures.',
     image: '/images/proposal-hero.png',
   },
   {
     name: 'Composable Extensions',
     description:
-      'Buy and sell NFTs, swap tokens, borrow and lend, and more. Extensions provide your Club’s structure and allow it to do almost anything an individual wallet can do.',
+      'Buy and sell NFTs, swap tokens, borrow and lend, and more. Extensions provide your Team’s structure and allow it to do almost anything an individual wallet can do.',
     image: '/images/proposal-hero.png',
   },
 ];
@@ -67,6 +68,9 @@ export default function Clubs() {
         opacity='1'
       >
         <Stack spacing='3' align='center'>
+          <Text fontSize='xl' fontWeight='thin' color='light.500'>
+            Protocol built with Stacks
+          </Text>
           <Heading
             textAlign='center'
             fontSize={{ base: '4em', md: '8em', lg: '12em' }}
@@ -85,7 +89,7 @@ export default function Clubs() {
               letterSpacing='tight'
               maxW='3xl'
             >
-              Manage resources, take on-chain action, and more. Together.
+              Manage resources, take action, and more. Together.
             </Text>
             <ButtonGroup
               spacing='6'
@@ -136,7 +140,12 @@ export default function Clubs() {
           py='12'
         >
           <Stack flex='1' maxW={{ lg: 'lg' }} spacing='3'>
-            <Heading as='h1' color='primary.900' size='4xl' fontWeight='black'>
+            <Heading
+              as='h1'
+              color='secondary.900'
+              size='4xl'
+              fontWeight='black'
+            >
               Create
             </Heading>
             <Text
@@ -177,7 +186,12 @@ export default function Clubs() {
             h='auto'
           />
           <Stack flex='1'>
-            <Heading as='h1' color='primary.900' size='4xl' fontWeight='black'>
+            <Heading
+              as='h1'
+              color='secondary.900'
+              size='4xl'
+              fontWeight='black'
+            >
               Manage
             </Heading>
             <Text
@@ -187,7 +201,7 @@ export default function Clubs() {
               maxW='6xl'
               letterSpacing='tight'
             >
-              Manage assets & resources, take on-chain action, and more.
+              Manage assets and resources, take on-chain action, and more.
             </Text>
             <Text
               color='gray'
@@ -196,9 +210,7 @@ export default function Clubs() {
               maxW='6xl'
               letterSpacing='tight'
             >
-              Send team members a Team link and manage fungible tokens and NTFs.
-              Have complete power over smart contracts—own, manage, and call
-              them. Together.
+              Manage fungible tokens and NFTs with your Team members.
             </Text>
           </Stack>
         </SimpleGrid>
@@ -210,7 +222,12 @@ export default function Clubs() {
           py='12'
         >
           <Stack flex='1'>
-            <Heading as='h1' color='primary.900' size='4xl' fontWeight='black'>
+            <Heading
+              as='h1'
+              color='secondary.900'
+              size='4xl'
+              fontWeight='black'
+            >
               Upgrade
             </Heading>
             <Text
@@ -256,7 +273,7 @@ export default function Clubs() {
               lineHeight='1.2'
               letterSpacing='tight'
             >
-              Powerful suite of web3 DAO tools
+              Powerful suite of web3 org tools
             </Heading>
           </Stack>
         </Stack>

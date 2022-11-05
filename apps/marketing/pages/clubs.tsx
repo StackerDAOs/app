@@ -29,12 +29,13 @@ const features = [
       'Members can create, deploy, and submit proposals. Proposals are smart contracts—allowing the Club to automatically execute approved proposals for on-chain activity.',
   },
   {
-    name: 'On-chain Voting',
+    name: 'On-Chain Voting',
     image: '/images/proposal-hero.png',
-    description: 'Members that have deposited funds can vote on-chain.',
+    description:
+      'Members that have deposited funds can vote on-chain with voter approved proposals automatically executing.',
   },
   {
-    name: 'Temperature Checks',
+    name: 'Off-Chain Temperature Checks',
     image: '/images/proposal-hero.png',
     description:
       'Members can create Ideas to receive guidance from the rest of the Club through upvotes and downvotes before submitting a formal on-chain proposal—all powered by off-chain authenticated wallet signatures.',
@@ -73,6 +74,9 @@ export default function Clubs() {
         opacity='1'
       >
         <Stack spacing='3' align='center'>
+          <Text fontSize='xl' fontWeight='thin' color='light.500'>
+            Protocol built with Stacks
+          </Text>
           <Heading
             textAlign='center'
             fontSize={{ base: '4em', md: '8em', lg: '12em' }}
@@ -151,7 +155,7 @@ export default function Clubs() {
               maxW='6xl'
               letterSpacing='tight'
             >
-              Turn your community into a powerful Web3 Club
+              Turn your community into a powerful Web3 Club.
             </Text>
             <Text
               color='gray'

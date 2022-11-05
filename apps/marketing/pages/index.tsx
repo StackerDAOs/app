@@ -12,7 +12,7 @@ import {
   Text,
 } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { ArrowRight } from 'ui/components/icons';
+import { ArrowRight, ChevronDown } from 'ui/components/icons';
 import { MainNavbar, Footer } from '@components/navigation';
 import { appUrl } from 'utils';
 
@@ -59,9 +59,6 @@ export default function Web() {
         >
           <Box as='section' py='6' px='12'>
             <Stack spacing='6' align='flex-start'>
-              <Text fontSize='xl' fontWeight='thin' color='light.500'>
-                Protocol built with Stacks
-              </Text>
               <Heading
                 fontSize={{ base: '6xl', lg: '8xl' }}
                 fontWeight='medium'
@@ -87,8 +84,8 @@ export default function Web() {
                 maxW='6xl'
                 letterSpacing='tight'
               >
-                Whether it’s to build products, fund causes, invest, or manage a
-                protocol,{' '}
+                Whether it’s to govern a protocol, invest, fund causes, or build
+                products,{' '}
                 <Text
                   as='span'
                   fontWeight='regular'
@@ -105,27 +102,26 @@ export default function Web() {
                   decentralized
                 </Text>{' '}
                 and trustless coordination so communities can have true
-                ownership and take action. Together.
+                ownership and take action.{' '}
+                <Text as='span' fontWeight='semibold'>
+                  Together
+                </Text>
+                .
               </Text>
-              <ButtonGroup>
+              <ButtonGroup spacing='8'>
+                <Link href='/get-started' passHref>
+                  <Button size='lg' variant='default' px='8'>
+                    Get started
+                  </Button>
+                </Link>
                 <Button
-                  size='lg'
-                  variant='default'
-                  px='8'
                   onClick={handleScrollTo}
-                >
-                  Get started
-                </Button>
-                <Button
-                  as='a'
-                  href='https://form.typeform.com/to/zfYJYLgV'
-                  target='_blank'
-                  rel='noreferrer'
                   size='lg'
-                  variant='inverted'
+                  variant='link'
                   px='8'
+                  rightIcon={<ChevronDown />}
                 >
-                  Join our beta
+                  Learn more
                 </Button>
               </ButtonGroup>
             </Stack>
@@ -141,21 +137,21 @@ export default function Web() {
               <Stack spacing='3'>
                 <Heading
                   as='h1'
-                  size='3xl'
-                  fontWeight='thin'
+                  size='4xl'
+                  fontWeight='medium'
                   lineHeight='1.2'
                   letterSpacing='tight'
                 >
                   Create a{' '}
-                  <Text as='span' color='light.900' fontWeight='semibold'>
+                  <Text as='span' color='light.900' fontWeight='extrabold'>
                     Club
                   </Text>
                   ,{' '}
-                  <Text as='span' color='light.900' fontWeight='semibold'>
+                  <Text as='span' color='light.900' fontWeight='extrabold'>
                     Team
                   </Text>
                   , or{' '}
-                  <Text as='span' color='light.900' fontWeight='semibold'>
+                  <Text as='span' color='light.900' fontWeight='extrabold'>
                     DAO
                   </Text>{' '}
                   in just a few steps
@@ -177,7 +173,7 @@ export default function Web() {
                     >
                       {feature.name}
                     </Text>
-                    <Text fontSize='lg' color='light.500' letterSpacing='tight'>
+                    <Text fontSize='lg' color='gray' letterSpacing='tight'>
                       {feature.description}
                     </Text>
                   </Stack>
@@ -232,7 +228,7 @@ export default function Web() {
                         fontWeight='medium'
                         rightIcon={<ArrowRight />}
                       >
-                        Learn more
+                        More details
                       </Button>
                     </Link>
                   </ButtonGroup>
@@ -273,8 +269,8 @@ export default function Web() {
                     letterSpacing='tight'
                   >
                     Multisig tool for working groups to manage assets and smart
-                    contracts. Perfect for working groups, subDAOs, and early
-                    DAOs progressively decentralizing.
+                    contracts. Perfect for companies, projects, subDAOs, and
+                    early DAOs progressively decentralizing.
                   </Text>
                   <ButtonGroup spacing='6'>
                     <Button
@@ -293,7 +289,7 @@ export default function Web() {
                         fontWeight='medium'
                         rightIcon={<ArrowRight />}
                       >
-                        Learn more
+                        More details
                       </Button>
                     </Link>
                   </ButtonGroup>
@@ -343,7 +339,7 @@ export default function Web() {
                     maxW='5xl'
                     letterSpacing='tight'
                   >
-                    Permissionless DAOs to govern open networks and communities.
+                    Permissionless DAOs to govern open communities and networks.
                     Perfect for protocol DAOs, NFT communities, ecosystem DAOs,
                     and more.
                   </Text>
@@ -359,6 +355,16 @@ export default function Web() {
                     >
                       Get in touch
                     </Button>
+                    <Link href='/daos'>
+                      <Button
+                        variant='link'
+                        size='lg'
+                        fontWeight='medium'
+                        rightIcon={<ArrowRight />}
+                      >
+                        More details
+                      </Button>
+                    </Link>
                   </ButtonGroup>
                 </Stack>
                 <Box boxSize={{ base: '20', lg: '8' }} />

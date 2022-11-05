@@ -26,30 +26,30 @@ const features = [
     name: 'Proposals & Automatic Execution',
     image: '/images/proposal-hero.png',
     description:
-      'Members can create, deploy, and submit proposals. Proposals are smart contracts—allowing the Club to automatically execute approved proposals for on-chain activity.',
+      'Members can create, deploy, and submit proposals. Proposals are smart contracts—allowing the StackerDAO to automatically execute approved proposals for on-chain activity.',
   },
   {
-    name: 'On-chain Voting',
-    image: '/images/proposal-hero.png',
-    description: 'Members that have deposited funds can vote on-chain.',
-  },
-  {
-    name: 'Temperature Checks',
+    name: 'On-Chain Voting',
     image: '/images/proposal-hero.png',
     description:
-      'Members can create Ideas to receive guidance from the rest of the Club through upvotes and downvotes before submitting a formal on-chain proposal—all powered by off-chain authenticated wallet signatures.',
+      'Members that have deposited funds can vote on-chain with voter approved proposals automatically executing.',
+  },
+  {
+    name: 'Off-Chain Temperature Checks',
+    image: '/images/proposal-hero.png',
+    description:
+      'Members can create Ideas to receive guidance from the rest of the StackerDAO through upvotes and downvotes before submitting a formal on-chain proposal—all powered by off-chain authenticated wallet signatures.',
   },
   {
     name: 'Composable Extensions',
     image: '/images/proposal-hero.png',
     description:
-      'Buy and sell NFTs, swap tokens, borrow and lend, and more. Extensions provide your Club’s structure and allow it to do almost anything an individual wallet can do.',
+      'Buy and sell NFTs, swap tokens, borrow and lend, and more. Extensions provide your StackerDAOs structure and allow it to do almost anything an individual wallet can do.',
   },
   {
-    name: 'Ragequit',
+    name: 'Delegation',
     image: '/images/proposal-hero.png',
-    description:
-      'Members can exit the Club at anytime (or "ragequit") by burning their Club Pass and governance tokens in return for their pro-rata share of liquid STX in the Club’s treasury.',
+    description: 'Members can delegate their voting power to other members.',
   },
 ];
 
@@ -73,6 +73,9 @@ export default function Clubs() {
         opacity='1'
       >
         <Stack spacing='3' align='center'>
+          <Text fontSize='xl' fontWeight='thin' color='light.500'>
+            Protocol built with Stacks
+          </Text>
           <Heading
             textAlign='center'
             fontSize={{ base: '4em', md: '8em', lg: '10em' }}
@@ -100,7 +103,7 @@ export default function Clubs() {
               letterSpacing='tight'
               maxW='3xl'
             >
-              Invest, fund causes, build products, and more. Together.
+              Govern open communities and networks. Together.
             </Text>
             <ButtonGroup
               spacing='6'
@@ -150,7 +153,14 @@ export default function Clubs() {
           py='12'
         >
           <Stack flex='1' maxW={{ lg: 'lg' }} spacing='3'>
-            <Heading as='h1' color='primary.900' size='4xl' fontWeight='black'>
+            <Heading
+              as='h1'
+              bgGradient='linear(to-br, #624AF2 5%, #50DDC3 100%)'
+              bgClip='text'
+              letterSpacing='tight'
+              size='4xl'
+              fontWeight='black'
+            >
               Create
             </Heading>
             <Text
@@ -160,7 +170,7 @@ export default function Clubs() {
               maxW='6xl'
               letterSpacing='tight'
             >
-              Turn your community into a powerful Web3 Club
+              Turn your web3 community or network into a powerful DAO.
             </Text>
             <Text
               color='gray'
@@ -194,8 +204,15 @@ export default function Clubs() {
             h='auto'
           />
           <Stack flex='1'>
-            <Heading as='h1' color='primary.900' size='4xl' fontWeight='black'>
-              Deposit
+            <Heading
+              as='h1'
+              bgGradient='linear(to-br, #624AF2 5%, #50DDC3 100%)'
+              bgClip='text'
+              letterSpacing='tight'
+              size='4xl'
+              fontWeight='black'
+            >
+              Take Action
             </Heading>
             <Text
               color='light.500'
@@ -204,7 +221,8 @@ export default function Clubs() {
               maxW='6xl'
               letterSpacing='tight'
             >
-              Members fund the Club and get voting power.
+              Transfer funds, manage underlying smart contracts, and more.
+              Together.
             </Text>
             <Text
               color='gray'
@@ -213,9 +231,9 @@ export default function Clubs() {
               maxW='6xl'
               letterSpacing='tight'
             >
-              Send members a Club link to deposit and receive governance tokens
-              which provide voting power equal to their pro-rata share of the
-              treasury.
+              Submit proposals, vote, delegate, and collectively take action—all
+              programatically. Never rely on individuals or centralized groups
+              of for on-chain activity.
             </Text>
           </Stack>
         </SimpleGrid>
@@ -227,8 +245,15 @@ export default function Clubs() {
           py='12'
         >
           <Stack flex='1'>
-            <Heading as='h1' color='primary.900' size='4xl' fontWeight='black'>
-              Take Action
+            <Heading
+              as='h1'
+              bgGradient='linear(to-br, #624AF2 5%, #50DDC3 100%)'
+              bgClip='text'
+              letterSpacing='tight'
+              size='4xl'
+              fontWeight='black'
+            >
+              Customize
             </Heading>
             <Text
               color='light.500'
@@ -237,8 +262,8 @@ export default function Clubs() {
               maxW='6xl'
               letterSpacing='tight'
             >
-              Transfer funds, buy and sell assets, add members, and more.
-              Together.
+              Our modular design allows your to customize or upgrade your
+              StackerDAO to optimize for your mission.
             </Text>
             <Text
               color='gray'
@@ -247,9 +272,9 @@ export default function Clubs() {
               maxW='6xl'
               letterSpacing='tight'
             >
-              Submit proposals, vote, and collectively take action—all
-              programmatically. Never rely on a centralized group of actors for
-              on-chain activity.
+              Customize or upgrade your StackerDAO&apos;s governance structure,
+              such as tiers of membership, different proposal submission and
+              voting rules, and more.
             </Text>
           </Stack>
           <Image

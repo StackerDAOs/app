@@ -77,12 +77,7 @@ export const UserProfile = (props: UserProfileProps) => {
         maxWidth='78.5%'
         _focus={{ outline: 'none' }}
       >
-        <PopoverHeader
-          bg='dark.500'
-          borderColor='dark.500'
-          // borderTopLeftRadius='lg'
-          // borderTopRightRadius='lg'
-        >
+        <PopoverHeader bg='dark.500' borderColor='dark.500'>
           <HStack spacing='5' color='light.900'>
             <HStack spacing='1'>
               <Text fontSize='sm' fontWeight='regular' color='light.900'>

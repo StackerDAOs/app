@@ -6,7 +6,7 @@ export const Nav = (props: BoxProps) => (
     as='nav'
     position='fixed'
     w='100%'
-    py='3'
+    py='6'
     px='12'
     zIndex='2'
     {...props}

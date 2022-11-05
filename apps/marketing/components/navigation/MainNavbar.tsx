@@ -5,15 +5,15 @@ import {
   Button,
   ButtonGroup,
   HStack,
-  VStack,
-  IconButton,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Stack,
+  Text,
   useBreakpointValue,
-  Menu,
-  MenuButton,
-  MenuList,
 } from 'ui';
 import { Nav } from '@components/containers';
-import { ThreeBars, LogoIcon } from 'ui/components/icons';
+import { LogoIcon, ArrowRight } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { appUrl } from 'utils';
 
@@ -26,18 +26,21 @@ export const MainNavbar = (props: any) => {
     switch (path) {
       case '/clubs':
         return {
-          getStarted: `${appUrl.clubs}/create`,
+          getStarted: appUrl.clubs,
+          create: `${appUrl.clubs}/create`,
           docs: 'https://stackerdaos.gitbook.io/stackerdao-labs-wiki/stackerdao-labs-offerings/products-stackerdao-clubs-teams/clubs',
         };
 
       case '/teams':
         return {
-          getStarted: `${appUrl.teams}/create`,
+          getStarted: appUrl.teams,
+          create: `${appUrl.teams}/create`,
           docs: 'https://stackerdaos.gitbook.io/stackerdao-labs-wiki/stackerdao-labs-offerings/products-stackerdao-clubs-teams/teams',
         };
       case '/daos':
         return {
           getStarted: appUrl.daos,
+          create: `${appUrl.daos}/create`,
           docs: 'https://stackerdaos.gitbook.io/stackerdao-labs-wiki/stackerdao-labs-offerings/products-stackerdao-clubs-teams/stackerdao',
         };
       default:
@@ -45,6 +48,24 @@ export const MainNavbar = (props: any) => {
     }
   };
   const selectedPath = currentPath(router.pathname);
+
+  const products = [
+    {
+      title: 'Clubs',
+      href: appUrl.clubs,
+      icon: ArrowRight,
+    },
+    {
+      title: 'Teams',
+      href: appUrl.teams,
+      icon: ArrowRight,
+    },
+    {
+      title: 'StackerDAOs',
+      href: appUrl.daos,
+      icon: ArrowRight,
+    },
+  ];
 
   return (
     <Nav bg='dark.900'>
@@ -96,45 +117,73 @@ export const MainNavbar = (props: any) => {
                   </ButtonGroup>
                 </motion.div>
               ) : (
-                <ButtonGroup variant='link' spacing='8'>
-                  <Link href='/clubs'>
-                    <Button variant='link' size='lg' fontWeight='semibold'>
-                      Clubs
-                    </Button>
-                  </Link>
-                  <Link href='/teams'>
-                    <Button variant='link' size='lg' fontWeight='semibold'>
-                      Teams
-                    </Button>
-                  </Link>
-                  <Link href='/daos'>
-                    <Button variant='link' size='lg' fontWeight='semibold'>
-                      DAOs
-                    </Button>
-                  </Link>
-                </ButtonGroup>
+                <HStack justify='space-between' spacing='8'>
+                  <ButtonGroup variant='link' spacing='8'>
+                    <Link href='/clubs'>
+                      <Button variant='link' size='lg' fontWeight='semibold'>
+                        Clubs
+                      </Button>
+                    </Link>
+                    <Link href='/teams'>
+                      <Button variant='link' size='lg' fontWeight='semibold'>
+                        Teams
+                      </Button>
+                    </Link>
+                    <Link href='/daos'>
+                      <Button variant='link' size='lg' fontWeight='semibold'>
+                        DAOs
+                      </Button>
+                    </Link>
+                  </ButtonGroup>
+                  <Popover trigger='click' placement='bottom' gutter={12}>
+                    {({ isOpen }) => (
+                      <>
+                        <PopoverTrigger>
+                          <Button
+                            variant='default'
+                            color={isOpen ? 'primary.900' : 'dark.900'}
+                          >
+                            Launch app
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          width='xs'
+                          p='5'
+                          borderColor='dark.500'
+                          borderWidth='1px'
+                          bg='dark.900'
+                          maxWidth='78.5%'
+                          _focus={{ outline: 'none' }}
+                        >
+                          <Stack>
+                            {products.map((product) => (
+                              <Link key={product.title} href={product.href}>
+                                <Stack
+                                  spacing='4'
+                                  direction='row'
+                                  justify='space-between'
+                                  p='2'
+                                  _hover={{
+                                    cursor: 'pointer',
+                                    bg: 'dark.800',
+                                    color: 'primary.900',
+                                  }}
+                                >
+                                  <Text fontWeight='medium'>
+                                    {product.title}
+                                  </Text>
+                                </Stack>
+                              </Link>
+                            ))}
+                          </Stack>
+                        </PopoverContent>
+                      </>
+                    )}
+                  </Popover>
+                </HStack>
               )}
             </>
-          ) : (
-            <Menu>
-              <MenuButton
-                as={IconButton}
-                aria-label='Open Menu'
-                icon={<ThreeBars fontSize='1.25rem' />}
-                variant='ghost'
-              />
-              <MenuList bg='dark.500' border='none' alignItems='right'>
-                <VStack alignItems='left'>
-                  <Link href='/teams'>
-                    <Button variant='link'>Teams</Button>
-                  </Link>
-                  <Link href='/clubs'>
-                    <Button variant='link'>Clubs</Button>
-                  </Link>
-                </VStack>
-              </MenuList>
-            </Menu>
-          )}
+          ) : null}
         </HStack>
       </motion.div>
     </Nav>
