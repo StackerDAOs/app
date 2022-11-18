@@ -1,4 +1,4 @@
-import type { FinishedTxData } from 'micro-stacks/connect';
+import type { FinishedTxData } from 'ui/components';
 
 export interface ContractCallParams {
   onFinish?: (payload: FinishedTxData) => void;

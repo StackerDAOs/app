@@ -1,6 +1,5 @@
 import React from 'react';
-import { useMicroStacksClient } from '@micro-stacks/react';
-import { MicroStacksClient } from '@micro-stacks/client';
+import { MicroStacksClient, useMicroStacksClient } from 'ui/components';
 import { contracts } from './contracts';
 import { OptionalParams } from './common/types';
 

@@ -1,10 +1,11 @@
-import { uintCV, contractPrincipalCV } from 'micro-stacks/clarity';
-import { FinishedTxData } from 'micro-stacks/connect';
 import {
+  uintCV,
+  contractPrincipalCV,
+  FinishedTxData,
   ContractCallParams,
   MicroStacksClient,
   TxType,
-} from '@micro-stacks/client';
+} from 'ui/components';
 import { splitContractAddress } from '@stacks-os/utils';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import type { OptionalParams } from '../common/types';

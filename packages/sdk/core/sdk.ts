@@ -1,6 +1,6 @@
 import { Deployer } from './classes';
-import { getClient } from '@micro-stacks/client';
-import type { MicroStacksClient } from '@micro-stacks/client';
+import { getClient } from 'ui/components';
+import type { MicroStacksClient } from 'ui/components';
 
 export class StacksSDK {
   public client: MicroStacksClient;

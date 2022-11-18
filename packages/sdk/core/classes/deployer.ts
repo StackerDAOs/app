@@ -1,4 +1,4 @@
-import { getClient, TxType, ContractDeployParams } from '@micro-stacks/client';
+import { getClient, TxType, ContractDeployParams } from 'ui/components';
 import { kebabCase, replace, upperCase } from 'lodash';
 import {
   clubExtension,
@@ -11,8 +11,7 @@ import {
   vaultExtension,
   votingExtension,
 } from 'utils/contracts';
-import type { MicroStacksClient } from '@micro-stacks/client';
-import type { FinishedTxData } from 'micro-stacks/connect';
+import type { MicroStacksClient, FinishedTxData } from 'ui/components';
 import type {
   ClubParams,
   ClubMembershipPassParams,

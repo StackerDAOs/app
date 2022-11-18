@@ -1,13 +1,14 @@
 import React from 'react';
-import { useMicroStacksClient, useStatuses } from '@micro-stacks/react';
 import {
+  useMicroStacksClient,
+  useStatuses,
   ContractCallParams,
   MicroStacksClient,
   Status,
   StatusKeys,
   TxType,
-} from '@micro-stacks/client';
-import type { FinishedTxData } from 'micro-stacks/connect';
+} from 'ui/components';
+import type { FinishedTxData } from 'ui/components';
 import { OptionalParams } from './common/types';
 
 interface UseOpenContractCall {

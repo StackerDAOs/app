@@ -1,4 +1,5 @@
 export * from '@micro-stacks/react';
+export * from '@micro-stacks/client';
 export * from 'micro-stacks/network';
 export * from 'micro-stacks/clarity';
 export * from 'micro-stacks/connect';

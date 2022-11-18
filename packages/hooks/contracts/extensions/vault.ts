@@ -1,12 +1,13 @@
-import { uintCV, contractPrincipalCV } from 'micro-stacks/clarity';
-import { FinishedTxData } from 'micro-stacks/connect';
 import {
+  uintCV,
+  contractPrincipalCV,
+  FinishedTxData,
   ContractCallParams,
   MicroStacksClient,
   TxType,
-} from '@micro-stacks/client';
-import { splitContractAddress } from '@stacks-os/utils';
+} from 'ui/components';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
+import { splitContractAddress } from '@stacks-os/utils';
 import type { OptionalParams } from '../../common/types';
 
 export const vault = (
