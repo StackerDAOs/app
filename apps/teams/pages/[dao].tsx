@@ -1,4 +1,6 @@
 import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import {
   Button,
   FormControl,
@@ -12,21 +14,25 @@ import {
   Text,
   VStack,
 } from 'ui';
+import { useAuth } from 'ui/components';
+import { defaultTo, round } from 'lodash';
 import { Card } from 'ui/components/cards';
-import { SectionHeader } from 'ui/components/layout';
+// import { SectionHeader } from 'ui/components/layout';
+import { Wrapper } from '@components/containers';
 import { AppLayout } from '@components/layout';
 import { DashboardHeader } from '@components/navigation';
-import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { DepositButton } from 'ui/components/buttons';
-import { useAccountBalance, useDAO } from 'ui/hooks';
-import { ustxToStx } from 'utils';
-import { ClubsTable } from '@components/tables';
-import { EmptyState } from '@components/misc';
+
+import { ConnectButton, DepositButton } from 'ui/components/buttons';
+import { useGovernanceToken, useDAO } from 'ui/hooks/teams';
+import { ustxToStx, getPercentage, findExtension, convertToken } from 'utils';
 
 export default function Dashboard() {
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
   const dao = useDAO();
-  const { data } = useAccountBalance();
+  const governanceToken = useGovernanceToken();
+
   const [depositAmount, setDepositAmount] = React.useState('');
   const handleInputDeposit = (e: any) => {
     const re = /^[0-9.\b]+$/;
@@ -34,57 +40,88 @@ export default function Dashboard() {
       setDepositAmount(e.target.value);
     }
   };
+  const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
 
-  const isInactive = !dao.data?.active;
-
-  if (dao.isLoading || dao.isFetching) {
+  if (dao?.isLoading && dao?.isFetching) {
     return null;
   }
 
-  if (isInactive) {
+  if (!isSignedIn) {
     return (
-      <motion.div
-        variants={FADE_IN_VARIANTS}
-        initial={FADE_IN_VARIANTS.hidden}
-        animate={FADE_IN_VARIANTS.enter}
-        exit={FADE_IN_VARIANTS.exit}
-        transition={{ duration: 0.25, type: 'linear' }}
-      >
-        <Wrapper>
-          <Stack spacing='8' pb='16' mt='6'>
-            <motion.div
-              variants={FADE_IN_VARIANTS}
-              initial={FADE_IN_VARIANTS.hidden}
-              animate={FADE_IN_VARIANTS.enter}
-              exit={FADE_IN_VARIANTS.exit}
-              transition={{ duration: 0.25, type: 'linear' }}
-            >
-              <Stack spacing='0'>
-                <Stack
-                  px={{ base: '6', md: '6' }}
-                  py={{ base: '6', md: '6' }}
-                  spacing='2'
-                >
-                  <EmptyState align='center' textAlign='center' spacing='3'>
-                    <Stack spacing='1'>
-                      <Heading size='md' fontWeight='light'>
-                        Your team is still inactive
-                      </Heading>
-                      <Text color='gray' maxW='md'>
-                        You are ready to initialize your team. Once you do, you
-                        will be able to submit and vote on proposals.
-                      </Text>
-                    </Stack>
-                    <Button variant='primary' isDisabled>
-                      Initialize your team
-                    </Button>
-                  </EmptyState>
-                </Stack>
+      <Wrapper m='0 auto' align='center'>
+        <motion.div
+          variants={FADE_IN_VARIANTS}
+          initial={FADE_IN_VARIANTS.hidden}
+          animate={FADE_IN_VARIANTS.enter}
+          exit={FADE_IN_VARIANTS.exit}
+          transition={{ duration: 0.75, type: 'linear' }}
+        >
+          <Stack
+            direction={{ base: 'column', md: 'row' }}
+            justify='space-between'
+            align='flex-start'
+          >
+            <Stack align='center' textAlign='center' spacing='3'>
+              <Stack spacing='1'>
+                <Heading size='md' fontWeight='light'>
+                  Connect your wallet
+                </Heading>
+                <Text color='gray' maxW='md'>
+                  Sign in to verify your membership and access to the Club.
+                </Text>
               </Stack>
-            </motion.div>
+              <ConnectButton
+                variant='default'
+                size='md'
+                _hover={{ opacity: 0.9 }}
+                _active={{ opacity: 1 }}
+              />
+            </Stack>
           </Stack>
-        </Wrapper>
-      </motion.div>
+        </motion.div>
+      </Wrapper>
+    );
+  }
+
+  if (!dao?.data) {
+    return (
+      <Wrapper m='0 auto' align='center'>
+        <motion.div
+          variants={FADE_IN_VARIANTS}
+          initial={FADE_IN_VARIANTS.hidden}
+          animate={FADE_IN_VARIANTS.enter}
+          exit={FADE_IN_VARIANTS.exit}
+          transition={{ duration: 0.75, type: 'linear' }}
+        >
+          <Stack
+            direction={{ base: 'column', md: 'row' }}
+            justify='space-between'
+            align='flex-start'
+          >
+            <Stack align='center' textAlign='center' spacing='3'>
+              <Stack spacing='1'>
+                <Heading size='md' fontWeight='light'>
+                  No teams found for{' '}
+                  <Text
+                    as='span'
+                    fontWeight='black'
+                    bgGradient='linear(to-br, primary.900 25%, primary-accent.900 100%)'
+                    bgClip='text'
+                  >
+                    {router.query?.dao}
+                  </Text>
+                </Heading>
+                <Text color='gray' maxW='md'>
+                  Make sure you have the correct Team name and try again.
+                </Text>
+              </Stack>
+              <Link href='/create'>
+                <Button variant='default'>Create a Team</Button>
+              </Link>
+            </Stack>
+          </Stack>
+        </motion.div>
+      </Wrapper>
     );
   }
 
@@ -96,44 +133,21 @@ export default function Dashboard() {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.25, type: 'linear' }}
     >
-      <Wrapper>
+      <Wrapper m='0 auto' align='center'>
         <Stack spacing='6'>
-          <Stack spacing='8' pb='16' mt='6'>
+          <Stack
+            spacing='8'
+            pb='16'
+            filter={dao?.data?.active ? 'none' : 'blur(3px)'}
+            pointerEvents={dao?.data?.active ? 'auto' : 'none'}
+          >
             <motion.div
               variants={FADE_IN_VARIANTS}
               initial={FADE_IN_VARIANTS.hidden}
               animate={FADE_IN_VARIANTS.enter}
               exit={FADE_IN_VARIANTS.exit}
               transition={{ duration: 0.25, type: 'linear' }}
-            >
-              <Stack mt='2' spacing='3'>
-                <Progress
-                  colorScheme='primary'
-                  borderRadius='lg'
-                  size='md'
-                  value={12}
-                  bg='dark.500'
-                />
-                <HStack justify='space-between'>
-                  <Stack spacing='3'>
-                    <Text fontSize='md' fontWeight='thin' color='text-muted'>
-                      Amount raised
-                    </Text>
-                    <Heading mt='0 !important' size='sm' fontWeight='regular'>
-                      12,044 STX
-                    </Heading>
-                  </Stack>
-                  <Stack spacing='3'>
-                    <Text fontSize='md' fontWeight='thin' color='text-muted'>
-                      Funding goal
-                    </Text>
-                    <Heading mt='0 !important' size='sm' fontWeight='regular'>
-                      100,000 STX
-                    </Heading>
-                  </Stack>
-                </HStack>
-              </Stack>
-            </motion.div>
+            ></motion.div>
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing='8'>
               <Card h='fit-content' bg='dark.700'>
                 <Stack spacing='0'>
@@ -148,7 +162,8 @@ export default function Dashboard() {
                       Open to deposits
                     </Text>
                     <Text color='gray' fontSize='md' fontWeight='light'>
-                      Closes in ~ 2 weeks
+                      Closes in ~ {dao?.data?.config?.durationInDays} days{' '}
+                      {/* TODO: fetch block height and do estimate */}
                     </Text>
                   </HStack>
                   <Stack
@@ -162,14 +177,13 @@ export default function Dashboard() {
                           <Input
                             py='1'
                             px='2'
-                            maxW='8em'
                             bg='dark.700'
                             type='tel'
                             border='none'
                             fontSize='2xl'
-                            fontWeight='light'
+                            fontWeight='regular'
                             autoComplete='off'
-                            placeholder='0'
+                            placeholder='0.0'
                             value={depositAmount}
                             onInput={handleInputDeposit}
                             _focus={{
@@ -177,50 +191,45 @@ export default function Dashboard() {
                             }}
                           />
                         </FormControl>
-                        <HStack px='2'>
-                          <Image
-                            cursor='pointer'
-                            height='18px'
-                            src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
-                            alt='logo'
-                          />
-
-                          <Text fontSize='md' fontWeight='regular' color='gray'>
-                            STX
-                          </Text>
-                        </HStack>
                       </VStack>
-                      <HStack>
-                        <Button
-                          color='light.900'
-                          bg='dark.500'
-                          onClick={() =>
-                            setDepositAmount(
-                              String(ustxToStx(data?.account?.balance)),
-                            )
-                          }
-                          _hover={{ opacity: 0.9 }}
-                          _active={{ opacity: 1 }}
+                      <HStack
+                        bg='dark.600'
+                        borderRadius='lg'
+                        borderColor='dark.500'
+                        py='1'
+                        px='3'
+                      >
+                        <Image
+                          cursor='pointer'
+                          height='16px'
+                          src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                          alt='logo'
+                        />
+
+                        <Text
+                          fontSize='sm'
+                          fontWeight='semibold'
+                          color='light.500'
                         >
-                          Max
-                        </Button>
+                          STX
+                        </Text>
                       </HStack>
                     </HStack>
                     <Stack w='100%'>
                       <DepositButton
                         title='Deposit'
                         variant='primary'
-                        investmentClubAddress=''
+                        investmentClubAddress={vaultExtension?.contract_address}
                         amount={depositAmount}
                       />
                       <Text
                         color='gray'
                         textAlign='center'
                         fontSize='md'
-                        fontWeight='regular'
+                        fontWeight='light'
                       >
-                        Your wallet balance: {ustxToStx(data?.account?.balance)}{' '}
-                        STX
+                        Minimum deposit amount is{' '}
+                        {dao?.data?.config?.minimumDeposit} STX
                       </Text>
                     </Stack>
                   </Stack>
@@ -250,7 +259,14 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          12,044 STACK
+                          {defaultTo(
+                            convertToken(
+                              String(governanceToken?.data?.totalSupply),
+                              6,
+                            ),
+                            '0',
+                          )}{' '}
+                          {governanceToken?.data?.symbol}
                         </Heading>
                       </Stack>
                       <Stack spacing='3' w='50%'>
@@ -266,11 +282,18 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          12,044 STACK
+                          {defaultTo(
+                            convertToken(
+                              String(governanceToken?.data?.balance),
+                              6,
+                            ),
+                            '0',
+                          )}{' '}
+                          {governanceToken?.data?.symbol}
                         </Heading>
                       </Stack>
                     </HStack>
-                    <HStack justify='space-between' spacing='8'>
+                    {/* <HStack justify='space-between' spacing='8'>
                       <Stack spacing='3' w='50%'>
                         <Text
                           fontSize='md'
@@ -284,7 +307,16 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          12,044 STX
+                          {defaultTo(
+                            ustxToStx(
+                              String(
+                                investmentClub?.data?.currentRound
+                                  ?.raisedAmount,
+                              ),
+                            ),
+                            '0',
+                          )}{' '}
+                          STX
                         </Heading>
                       </Stack>
                       <Stack spacing='3' w='50%'>
@@ -300,17 +332,27 @@ export default function Dashboard() {
                           size='sm'
                           fontWeight='regular'
                         >
-                          100%
+                          {defaultTo(
+                            round(
+                              getPercentage(
+                                Number(governanceToken?.data?.totalSupply),
+                                Number(governanceToken?.data?.balance),
+                              ),
+                              2,
+                            ),
+                            '0',
+                          )}
+                          %
                         </Heading>
                       </Stack>
-                    </HStack>
+                    </HStack> */}
                   </Stack>
                 </Stack>
               </Card>
             </SimpleGrid>
           </Stack>
         </Stack>
-        <Stack spacing='6'>
+        {/* <Stack spacing='6'>
           <SectionHeader
             justify={{ base: 'flex-start', md: 'space-between' }}
             align={{ base: 'flex-start', md: 'space-between' }}
@@ -325,20 +367,7 @@ export default function Dashboard() {
               </Heading>
             </Stack>
           </SectionHeader>
-        </Stack>
-        <Stack spacing='8' pb='16'>
-          <motion.div
-            variants={FADE_IN_VARIANTS}
-            initial={FADE_IN_VARIANTS.hidden}
-            animate={FADE_IN_VARIANTS.enter}
-            exit={FADE_IN_VARIANTS.exit}
-            transition={{ duration: 0.25, type: 'linear' }}
-          >
-            <Stack mt='2' spacing='3'>
-              <ClubsTable color='light.900' size='md' clubs={[]} />
-            </Stack>
-          </motion.div>
-        </Stack>
+        </Stack> */}
       </Wrapper>
     </motion.div>
   );

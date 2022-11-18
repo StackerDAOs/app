@@ -38,3 +38,8 @@ export enum CLUB_TYPES {
   INVESTMENT_CLUB = 1,
   IMPACT_CLUB = 2,
 }
+
+export enum TEAM_EXTENSION_TYPES {
+  VAULT = 7,
+  TEAM = 8,
+}

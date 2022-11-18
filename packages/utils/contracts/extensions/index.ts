@@ -1,6 +1,6 @@
 import { traitPrincipal } from 'api/constants';
 
-export const nftMembership = (name: string, coreDao: string) => `
+export const clubMembershipExtension = (name: string, coreDao: string) => `
 (impl-trait '${traitPrincipal}.club-membership-nft-trait.club-membership-nft-trait)
 
 (define-constant ERR_UNAUTHORIZED (err u2400))
@@ -76,9 +76,17 @@ export const nftMembership = (name: string, coreDao: string) => `
 )
 `;
 
-export const governanceToken = (
+const getTokenUri = (tokenUri: string | undefined) => {
+  if (tokenUri) {
+    return `(define-data-var tokenUri (optional (string-utf8 256)) "${tokenUri}")`;
+  }
+  return `(define-data-var tokenUri (optional (string-utf8 256)) none)`;
+};
+
+export const governanceTokenExtension = (
   name: string,
   symbol: string,
+  tokenUri: string | undefined,
   coreDao: string,
 ) => `
 (impl-trait '${traitPrincipal}.club-governance-token-trait.club-governance-token-trait)
@@ -91,7 +99,7 @@ export const governanceToken = (
 
 (define-data-var tokenName (string-ascii 32) "${name}")
 (define-data-var tokenSymbol (string-ascii 10) "${symbol}")
-(define-data-var tokenUri (optional (string-utf8 256)) none)
+${getTokenUri(tokenUri)}
 (define-data-var tokenDecimals uint u6)
 
 (define-public (is-dao-or-extension)
@@ -148,169 +156,240 @@ export const governanceToken = (
 )
 `;
 
-export const vault = (coreDao: string) => `
+export const vaultExtension = (coreDao: string) => `
+;; TRAITS
+
 (impl-trait '${traitPrincipal}.extension-trait.extension-trait)
+
+;; CONSTANTS
 
 (use-trait sip9 '${traitPrincipal}.sip9-trait.sip9-trait)
 (use-trait sip10 '${traitPrincipal}.sip10-trait.sip10-trait)
 
-(define-constant ERR_UNAUTHORIZED (err u3200))
-(define-constant ERR_ASSET_NOT_WHITELISTED (err u3201))
+(define-constant ERR_UNAUTHORIZED (err u2000))
+(define-constant ERR_ASSET_NOT_ALLOWED (err u2001))
+(define-constant TREASURY (as-contract tx-sender))
 
-(define-constant TREASURY_ADDRESS (as-contract tx-sender))
+;; DATA MAPS AND VARS
 
-(define-map WhitelistedAssets principal bool)
+(define-map AllowedAssets
+  principal ;; token contract
+  bool      ;; enabled
+)
+
+;; Authorization Check
 
 (define-public (is-dao-or-extension)
-  (ok (asserts! (or (is-eq tx-sender '${coreDao}) (contract-call? '${coreDao} is-extension contract-caller)) ERR_UNAUTHORIZED))
+  (ok (asserts!
+    (or
+      (is-eq tx-sender '${coreDao})
+      (contract-call? '${coreDao} is-extension contract-caller))
+    ERR_UNAUTHORIZED
+  ))
 )
 
-(define-public (set-whitelist (token principal) (enabled bool))
+;; Internal DAO functions
+
+(define-public (set-allowed (token principal) (enabled bool))
   (begin
     (try! (is-dao-or-extension))
-    (print { event: "whitelist", token: token, enabled: enabled, caller: tx-sender })
-    (ok (map-set WhitelistedAssets token enabled))
+    (print {
+      event: "allow-asset",
+      token: token,
+      enabled: enabled
+    })
+    (ok (map-set AllowedAssets token enabled))
   )
 )
 
-(define-public (set-whitelists (whitelist (list 100 { token: principal, enabled: bool })))
+(define-private (set-allowed-iter (item {token: principal, enabled: bool}))
   (begin
-    (try! (is-dao-or-extension))
-    (ok (map set-whitelist-iter whitelist))
+    (print {
+      event: "allow-asset",
+      token: (get token item),
+      enabled: (get enabled item)
+    })
+    (map-set AllowedAssets (get token item) (get enabled item))
   )
 )
 
-(define-public (stx-deposit (amount uint))
+(define-public (set-allowed-list (allowList (list 100 {token: principal, enabled: bool})))
   (begin
-    (try! (stx-transfer? amount tx-sender TREASURY_ADDRESS))
-    (print { event: "stx-deposit", amount: amount, caller: tx-sender })
+    (try! (is-dao-or-extension))
+    (ok (map set-allowed-iter allowList))
+  )
+)
+
+;; Deposit functions
+
+(define-public (deposit-stx (amount uint))
+  (begin
+    (try! (stx-transfer? amount tx-sender TREASURY))
+    (print {
+      event: "deposit-stx",
+      amount: amount,
+      caller: contract-caller,
+      sender: tx-sender,
+      recipient: TREASURY
+    })
     (ok true)
   )
 )
 
-(define-public (sip9-deposit (asset <sip9>) (id uint))
+(define-public (deposit-ft (ft <sip10>) (amount uint))
   (begin
-    (asserts! (is-whitelisted (contract-of asset)) ERR_ASSET_NOT_WHITELISTED)
-    (try! (contract-call? asset transfer id tx-sender TREASURY_ADDRESS))
-    (print { event: "sip9-deposit", assetContract: (contract-of asset), tokenId: id, caller: tx-sender })
+    (asserts! (is-allowed (contract-of ft)) ERR_ASSET_NOT_ALLOWED)
+    (try! (contract-call? ft transfer amount tx-sender TREASURY none))
+    (print {
+      event: "deposit-ft",
+      amount: amount,
+      assetContract: (contract-of ft),
+      caller: contract-caller,
+      sender: tx-sender,
+      recipient: TREASURY
+    })
     (ok true)
   )
 )
 
-(define-public (sip10-deposit (asset <sip10>) (amount uint))
+(define-public (deposit-nft (nft <sip9>) (id uint))
   (begin
-    (asserts! (is-whitelisted (contract-of asset)) ERR_ASSET_NOT_WHITELISTED)
-    (try! (contract-call? asset transfer amount tx-sender TREASURY_ADDRESS none))
-    (print { event: "sip10-deposit", amount: amount, assetContract: (contract-of asset), caller: tx-sender })
+    (asserts! (is-allowed (contract-of nft)) ERR_ASSET_NOT_ALLOWED)
+    (try! (contract-call? nft transfer id tx-sender TREASURY))
+    (print {
+      event: "deposit-nft",
+      assetContract: (contract-of nft),
+      tokenId: id,
+      caller: contract-caller,
+      sender: tx-sender,
+      recipient: TREASURY
+    })
     (ok true)
   )
 )
 
-(define-public (stx-transfer (amount uint) (recipient principal) (memo (optional (buff 34))))
+;; Withdraw functions
+
+(define-public (withdraw-stx (amount uint) (recipient principal))
   (begin
     (try! (is-dao-or-extension))
-    (match memo with-memo (print with-memo) 0x)
-    (try! (as-contract (stx-transfer? amount TREASURY_ADDRESS recipient)))
-    (print { event: "stx-transfer", amount: amount, recipient: recipient, memo: (if (is-none memo) none (some memo)), caller: tx-sender })
+    (try! (as-contract (stx-transfer? amount TREASURY recipient)))
+    (print {
+      event: "withdraw-stx",
+      amount: amount,
+      caller: contract-caller,
+      sender: tx-sender,
+      recipient: recipient
+    })
     (ok true)
   )
 )
 
-(define-public (sip9-transfer (tokenId uint) (recipient principal) (asset <sip9>))
+(define-public (withdraw-ft (ft <sip10>) (amount uint) (recipient principal))
   (begin
     (try! (is-dao-or-extension))
-    (asserts! (is-whitelisted (contract-of asset)) ERR_ASSET_NOT_WHITELISTED)
-    (try! (as-contract (contract-call? asset transfer tokenId TREASURY_ADDRESS recipient)))
-    (print { event: "sip9-transfer", tokenId: tokenId, recipient: recipient, caller: tx-sender })
+    (asserts! (is-allowed (contract-of ft)) ERR_ASSET_NOT_ALLOWED)
+    (try! (as-contract (contract-call? ft transfer amount TREASURY recipient none)))
+    (print {
+      event: "withdraw-ft",
+      assetContract: (contract-of ft),
+      caller: contract-caller,
+      sender: tx-sender,
+      recipient: recipient
+    })
     (ok true)
   )
 )
 
-(define-public (sip10-transfer (amount uint) (recipient principal) (memo (optional (buff 34))) (asset <sip10>))
+(define-public (withdraw-nft (nft <sip9>) (id uint) (recipient principal))
   (begin
     (try! (is-dao-or-extension))
-    (asserts! (is-whitelisted (contract-of asset)) ERR_ASSET_NOT_WHITELISTED)
-    (try! (as-contract (contract-call? asset transfer amount TREASURY_ADDRESS recipient memo)))
-    (print { event: "sip10-transfer", assetContract: (contract-of asset), recipient: recipient, caller: tx-sender })
+    (asserts! (is-allowed (contract-of nft)) ERR_ASSET_NOT_ALLOWED)
+    (try! (as-contract (contract-call? nft transfer id TREASURY recipient)))
+    (print {
+      event: "withdraw-nft",
+      assetContract: (contract-of nft),
+      tokenId: id,
+      caller: contract-caller,
+      sender: tx-sender,
+      recipient: recipient
+    })
     (ok true)
   )
 )
 
-(define-public (stx-transfer-many (payload (list 200 { amount: uint, recipient: principal, memo: (optional (buff 34)) })))
+(define-public (withdraw-many-stx (payload (list 200 { amount: uint, recipient: principal, memo: (optional (buff 34)) })))
   (begin
     (try! (is-dao-or-extension))
-    (as-contract (fold stx-transfer-many-iter payload (ok true)))
+    (as-contract (fold withdraw-many-stx-iter payload (ok true)))
   )
 )
 
-(define-public (sip9-transfer-many (payload (list 200 { tokenId: uint, recipient: principal })) (asset <sip9>))
+(define-public (withdraw-many-nft (payload (list 200 { tokenId: uint, recipient: principal })) (asset <sip9>))
   (begin
     (try! (is-dao-or-extension))
-    (ok (as-contract (fold sip9-transfer-many-iter payload asset)))
+    (ok (as-contract (fold withdraw-many-nft-iter payload asset)))
   )
 )
 
-(define-public (sip10-transfer-many (payload (list 200 { amount: uint, recipient: principal, memo: (optional (buff 34)) })) (asset <sip10>))
+(define-public (withdraw-many-ft (payload (list 200 { amount: uint, recipient: principal, memo: (optional (buff 34)) })) (asset <sip10>))
   (begin
     (try! (is-dao-or-extension))
-    (ok (as-contract (fold sip10-transfer-many-iter payload asset)))
+    (ok (as-contract (fold withdraw-many-ft-iter payload asset)))
   )
 )
 
-(define-read-only (is-whitelisted (assetContract principal))
-  (default-to false (get-whitelisted-asset assetContract))
-)
-
-(define-read-only (get-whitelisted-asset (assetContract principal))
-  (map-get? WhitelistedAssets assetContract)
-)
-
-(define-read-only (get-balance)
-  (stx-get-balance TREASURY_ADDRESS)
-)
-
-(define-private (set-whitelist-iter (data { token: principal, enabled: bool }))
-  (begin
-    (print { event: "whitelist", token: (get token data), enabled: (get enabled data) })
-    (map-set WhitelistedAssets (get token data) (get enabled data))
-  )
-)
-
-(define-private (stx-transfer-many-iter (data { amount: uint, recipient: principal, memo: (optional (buff 34)) }) (previousResult (response bool uint)))
+(define-private (withdraw-many-stx-iter (data { amount: uint, recipient: principal, memo: (optional (buff 34)) }) (previousResult (response bool uint)))
   (begin
     (try! previousResult)
     (match (get memo data) with-memo (print with-memo) 0x)
-    (print { event: "stx-transfer", amount: (get amount data), recipient: (get recipient data), memo: (if (is-none (get memo data)) none (some (get memo data))), caller: tx-sender })
-    (stx-transfer? (get amount data) TREASURY_ADDRESS (get recipient data))
+    (print { event: "withdraw-stx", amount: (get amount data), recipient: (get recipient data), memo: (if (is-none (get memo data)) none (some (get memo data))), caller: tx-sender })
+    (stx-transfer? (get amount data) TREASURY (get recipient data))
   )
 )
 
-(define-private (sip9-transfer-many-iter (data { tokenId: uint, recipient: principal }) (asset <sip9>))
+(define-private (withdraw-many-nft-iter (data { tokenId: uint, recipient: principal }) (asset <sip9>))
   (begin
     (unwrap-panic (contract-call? asset transfer (get tokenId data) tx-sender (get recipient data)))
     asset
   )
 )
 
-(define-private (sip10-transfer-many-iter (data { amount: uint, recipient: principal, memo: (optional (buff 34)) }) (asset <sip10>))
+(define-private (withdraw-many-ft-iter (data { amount: uint, recipient: principal, memo: (optional (buff 34)) }) (asset <sip10>))
   (begin
     (unwrap-panic (contract-call? asset transfer (get amount data) tx-sender (get recipient data) (get memo data)))
     asset
   )
 )
 
+;; Read only functions
+
+(define-read-only (is-allowed (assetContract principal))
+  (default-to false (get-allowed-asset assetContract))
+)
+
+(define-read-only (get-allowed-asset (assetContract principal))
+  (map-get? AllowedAssets assetContract)
+)
+
+(define-read-only (get-balance-stx)
+  (stx-get-balance TREASURY)
+)
+
+;; Extension callback
+
 (define-public (callback (sender principal) (memo (buff 34)))
   (ok true)
 )
 `;
 
-export const investmentClub = (
-  coreDao: string,
+export const clubExtension = (
   nftMembershipContract: string,
   governanceTokenContract: string,
   vaultContract: string,
-  startWindow: string,
-  minimumDepositAmount: string,
+  startWindow: number,
+  minimumDepositAmount: number = 0,
+  coreDao: string,
 ) => `
 (impl-trait '${traitPrincipal}.extension-trait.extension-trait)
 
@@ -461,13 +540,13 @@ export const investmentClub = (
 `;
 
 export const submissionExtension = (
-  coreDao: string,
   nftMembershipContract: string,
   investmentClubContract: string,
   votingContract: string,
-  proposalDuration: string,
-  minimumProposalStartDelay: string,
-  maximumProposalStartDelay: string,
+  proposalDuration: number,
+  minimumProposalStartDelay: number,
+  maximumProposalStartDelay: number,
+  coreDao: string,
 ) => `
 (impl-trait '${traitPrincipal}.extension-trait.extension-trait)
 
@@ -544,10 +623,10 @@ export const submissionExtension = (
 `;
 
 export const votingExtension = (
-  coreDao: string,
   nftMembershipContract: string,
   governanceTokenContract: string,
-  executionDelay: string,
+  executionDelay: number = 0,
+  coreDao: string,
 ) => `
 (impl-trait '${traitPrincipal}.extension-trait.extension-trait)
 

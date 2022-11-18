@@ -22,6 +22,7 @@ export * from './PlusIcon';
 export * from './ProposalOutline';
 export * from './SettingsIcon';
 export * from './SwapArrows';
+export * from './TrashIcon';
 export * from './Cog6Tooth';
 export * from './RocketLaunch';
 export * from './UserGroup';

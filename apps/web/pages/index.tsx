@@ -5,9 +5,13 @@ import { AppLayout } from '@components/layout';
 import { Wrapper } from '@components/containers';
 import { ConnectButton } from 'ui/components/buttons';
 import { useAuth } from 'ui/components';
+import { StacksSDK } from 'sdk';
 
 export default function Web() {
   const { isSignedIn } = useAuth();
+  const sdk = new StacksSDK(
+    'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.stackerdao',
+  );
 
   return (
     <Wrapper m='0 auto' align='center'>
@@ -36,6 +40,25 @@ export default function Web() {
               <Link href='/create'>
                 <Button variant='default'>Create a Club</Button>
               </Link>
+              <Button
+                variant='secondary'
+                onClick={() =>
+                  sdk.deployer.deployAllowListUpgrade({
+                    contractName: 'upgrade allowlist',
+                    vaultAddress:
+                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.vault',
+                    allowed: [
+                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.miamicoin',
+                    ],
+                    onFinish: (data: any) => {
+                      console.log('create a new record in the api');
+                      console.log(data);
+                    },
+                  })
+                }
+              >
+                Upgrade allowlist
+              </Button>
             </Stack>
           ) : (
             <Stack align='center' textAlign='center' spacing='3'>

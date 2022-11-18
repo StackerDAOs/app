@@ -20,28 +20,36 @@ import {
   Text,
 } from 'ui';
 import { map, size } from 'lodash';
+import { useAccount } from 'ui/components';
 import { Card } from 'ui/components/cards';
 import { Wrapper } from '@components/containers';
 import { AppLayout } from '@components/layout';
 import { SetupHeader } from '@components/navigation';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-
+import {
+  governanceToken,
+  investmentClub,
+  nftMembership,
+  vault,
+  votingExtension as votingTemplate,
+  submissionExtension as submissionTemplate,
+  bootstrapProposal,
+} from 'utils/contracts';
 import {
   InitializeClubButton,
   DeployBootstrapButton,
-  DeployNFTButton,
-  DeployGovernanceTokenButton,
-  DeployVaultButton,
-  DeployICButton,
-  DeploySubmissionButton,
-  DeployVotingButton,
+  StacksDeploy,
 } from 'ui/components/buttons';
-import { useDAO, useTransaction } from 'ui/hooks';
+import { useDAO, useTransaction, useContract } from 'ui/hooks';
+import { useCreateExtension } from 'api/clubs/mutations/extensions';
+import { useUpdateBootstrap } from 'api/clubs/mutations';
+import { CLUB_EXTENSION_TYPES } from 'api/constants';
 import {
   getPercentage,
   findExtension,
   nameToSlug,
   getExplorerLink,
+  stxToUstx,
 } from 'utils';
 import { InfoIcon, LightningBolt } from 'ui/components/icons';
 import { CustomAccordianItem } from '@components/disclosure';
@@ -49,8 +57,60 @@ import { CustomAccordianItem } from '@components/disclosure';
 const EXTENSION_SIZE = 6;
 
 export default function Start() {
+  const contract = useContract(
+    'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.stackerdao-club-submission',
+    'submission',
+  );
+  console.log({ contract });
   const router = useRouter();
   const dao = useDAO();
+  const { stxAddress } = useAccount();
+  const createExtension = useCreateExtension();
+  const updateBootstrap = useUpdateBootstrap();
+  const contractExtensionDetails = {
+    clubPass: {
+      name: 'NFT Membership',
+      description: 'A non-fungible token that represents membership.',
+      contractAddress: `${stxAddress}.${dao?.data?.slug}-club-pass`,
+      contractName: `${dao?.data?.slug}-club-pass`,
+    },
+    clubToken: {
+      name: 'Governance Token',
+      description: 'A fungible token that represents governance.',
+      contractAddress: `${stxAddress}.${dao?.data?.slug}-club-token`,
+      contractName: `${dao?.data?.slug}-club-token`,
+    },
+    clubVault: {
+      name: 'Vault',
+      description: 'A contract that holds funds.',
+      contractAddress: `${stxAddress}.${dao?.data?.slug}-club-vault`,
+      contractName: `${dao?.data?.slug}-club-vault`,
+    },
+    clubIC: {
+      name: 'IC',
+      description: 'A contract that holds funds.',
+      contractAddress: `${stxAddress}.${dao?.data?.slug}-club-ic`,
+      contractName: `${dao?.data?.slug}-club-ic`,
+    },
+    clubVoting: {
+      name: 'Voting',
+      description: 'A contract that holds funds.',
+      contractAddress: `${stxAddress}.${dao?.data?.slug}-club-voting`,
+      contractName: `${dao?.data?.slug}-club-voting`,
+    },
+    clubSubmission: {
+      name: 'Submission',
+      description: 'A contract that holds funds.',
+      contractAddress: `${stxAddress}.${dao?.data?.slug}-club-submission`,
+      contractName: `${dao?.data?.slug}-club-submission`,
+    },
+    clubBootstrap: {
+      name: 'Bootstrap',
+      description: 'A contract that holds funds.',
+      contractAddress: `${stxAddress}.${dao?.data?.slug}-club-bootstrap`,
+      contractName: `${dao?.data?.slug}-club-bootstrap`,
+    },
+  };
   const { data: bootstrapTransaction } = useTransaction(
     dao?.data?.bootstrap_tx_id,
   );
@@ -273,15 +333,34 @@ export default function Start() {
           </Stack>
         </GridItem>
         <GridItem colSpan={{ base: 2, md: 1 }}>
-          <DeployBootstrapButton
+          <StacksDeploy
             variant='primary'
-            coreDao={dao?.data?.contract_address}
-            title='Deploy Bootstrap'
-            slug={nameToSlug(dao?.data?.name)}
-            extensions={map(dao?.data?.extensions)}
-            isDisabled={!hasExtension('Voting')}
-            memberAddresses={dao?.data?.config?.memberAddresses}
-            onDeploy={() => console.log('init!')}
+            buttonName='Deploy Setup'
+            contractName={contractExtensionDetails?.clubBootstrap.contractName}
+            template={bootstrapProposal(
+              dao?.data?.contract_address,
+              {
+                vaultContract: vaultExtension?.contract_address,
+                governanceTokenContract: governanceExtension?.contract_address,
+                nftMembershipContract: nftExtension?.contract_address,
+                investmentClubContract:
+                  investmentClubExtension?.contract_address,
+                submissionContract: submissionExtension?.contract_address,
+                votingContract: votingExtension?.contract_address,
+              },
+              dao?.data?.config?.memberAddresses?.length > 0
+                ? dao?.data?.config?.memberAddresses
+                : [],
+            )}
+            onSuccess={(data: any) => {
+              updateBootstrap.mutate({
+                contract_address: `${stxAddress}.${dao?.data?.slug}`,
+                bootstrap_address:
+                  contractExtensionDetails?.clubBootstrap.contractAddress,
+                bootstrap_tx_id: data.txId,
+              });
+            }}
+            isDisabled={!hasExtension('Submission')}
           />
         </GridItem>
       </>
@@ -458,16 +537,30 @@ export default function Start() {
                                   </SimpleGrid>
                                 </Stack>
                                 <Stack justify='space-between' direction='row'>
-                                  <DeployNFTButton
-                                    title='Deploy NFT'
-                                    coreDao={dao?.data?.contract_address}
-                                    name={`${dao?.data?.slug}-nft-membership-pass`}
-                                    clubId={dao?.data?.id}
-                                    hasExtension={hasExtension(
-                                      'NFT Membership',
-                                    )}
+                                  <StacksDeploy
                                     variant='primary'
-                                    onDeploy={onFinish}
+                                    buttonName='Deploy Club Pass'
+                                    contractName={
+                                      contractExtensionDetails?.clubPass
+                                        .contractName
+                                    }
+                                    template={nftMembership(
+                                      contractExtensionDetails?.clubPass
+                                        .contractName,
+                                      dao?.data?.contract_address,
+                                    )}
+                                    onSuccess={(data: any) => {
+                                      createExtension.mutate({
+                                        club_id: dao?.data?.id,
+                                        contract_address:
+                                          contractExtensionDetails?.clubPass
+                                            .contractAddress,
+                                        extension_type_id:
+                                          CLUB_EXTENSION_TYPES.NFT_MEMBERSHIP,
+                                        tx_id: data.txId,
+                                      });
+                                    }}
+                                    isDisabled={hasExtension('NFT Membership')}
                                   />
                                 </Stack>
                                 <Stack py={{ base: '3', md: '3' }} spacing='2'>
@@ -507,18 +600,34 @@ export default function Start() {
                                   </SimpleGrid>
                                 </Stack>
                                 <Stack justify='space-between' direction='row'>
-                                  <DeployGovernanceTokenButton
-                                    title='Deploy Token'
-                                    coreDao={dao?.data?.contract_address}
-                                    name={`${dao?.data?.slug}-governance-token`}
-                                    symbol={dao?.data?.config?.tokenSymbol}
-                                    clubId={dao?.data?.id}
-                                    hasExtension={hasExtension(
-                                      'Governance Token',
-                                    )}
-                                    isDisabled={!hasExtension('NFT Membership')}
+                                  <StacksDeploy
                                     variant='primary'
-                                    onDeploy={onFinish}
+                                    buttonName='Deploy Token'
+                                    contractName={
+                                      contractExtensionDetails?.clubToken
+                                        .contractName
+                                    }
+                                    template={governanceToken(
+                                      contractExtensionDetails?.clubToken
+                                        .contractName,
+                                      dao?.data?.config?.tokenSymbol,
+                                      dao?.data?.contract_address,
+                                    )}
+                                    onSuccess={(data: any) => {
+                                      createExtension.mutate({
+                                        club_id: dao?.data?.id,
+                                        contract_address:
+                                          contractExtensionDetails?.clubToken
+                                            .contractAddress,
+                                        extension_type_id:
+                                          CLUB_EXTENSION_TYPES.GOVERNANCE_TOKEN,
+                                        tx_id: data.txId,
+                                      });
+                                    }}
+                                    isDisabled={
+                                      hasExtension('Governance Token') ||
+                                      !hasExtension('NFT Membership')
+                                    }
                                   />
                                 </Stack>
                               </Stack>
@@ -570,17 +679,31 @@ export default function Start() {
                                   </SimpleGrid>
                                 </Stack>
                                 <Stack justify='space-between' direction='row'>
-                                  <DeployVaultButton
-                                    title='Deploy Vault'
-                                    coreDao={dao?.data?.contract_address}
-                                    name={`${dao?.data?.slug}-vault`}
-                                    clubId={dao?.data?.id}
-                                    hasExtension={hasExtension('Vault')}
+                                  <StacksDeploy
+                                    variant='primary'
+                                    buttonName='Deploy Vault'
+                                    contractName={
+                                      contractExtensionDetails?.clubVault
+                                        .contractName
+                                    }
+                                    template={vault(
+                                      dao?.data?.contract_address,
+                                    )}
+                                    onSuccess={(data: any) => {
+                                      createExtension.mutate({
+                                        club_id: dao?.data?.id,
+                                        contract_address:
+                                          contractExtensionDetails?.clubVault
+                                            .contractAddress,
+                                        extension_type_id:
+                                          CLUB_EXTENSION_TYPES.VAULT,
+                                        tx_id: data.txId,
+                                      });
+                                    }}
                                     isDisabled={
+                                      hasExtension('Vault') ||
                                       !hasExtension('Governance Token')
                                     }
-                                    variant='primary'
-                                    onDeploy={onFinish}
                                   />
                                 </Stack>
                                 <Stack py={{ base: '3', md: '3' }} spacing='2'>
@@ -621,32 +744,47 @@ export default function Start() {
                                   </SimpleGrid>
                                 </Stack>
                                 <Stack justify='space-between' direction='row'>
-                                  <DeployICButton
-                                    coreDao={dao?.data?.contract_address}
-                                    title='Deploy Investment Club'
-                                    name={`${dao?.data?.slug}-investment-club`}
-                                    clubId={dao?.data?.id}
-                                    nftMembershipContractAddress={
-                                      nftExtension?.contract_address
-                                    }
-                                    governanceTokenContractAddress={
-                                      governanceExtension?.contract_address
-                                    }
-                                    vaultContractAddress={
-                                      vaultExtension?.contract_address
-                                    }
-                                    hasExtension={hasExtension(
-                                      'Investment Club',
-                                    )}
-                                    isDisabled={!hasExtension('Vault')}
-                                    startWindow={
-                                      dao?.data?.config?.durationInDays
-                                    }
-                                    minimumDeposit={
-                                      dao?.data?.config?.minimumDeposit
-                                    }
+                                  <StacksDeploy
                                     variant='primary'
-                                    onDeploy={onFinish}
+                                    buttonName='Deploy Investment Club'
+                                    contractName={
+                                      contractExtensionDetails?.clubIC
+                                        .contractName
+                                    }
+                                    template={investmentClub(
+                                      dao?.data?.contract_address,
+                                      contractExtensionDetails?.clubPass
+                                        .contractAddress,
+                                      contractExtensionDetails?.clubToken
+                                        .contractAddress,
+                                      contractExtensionDetails?.clubVault
+                                        .contractAddress,
+                                      String(
+                                        Number(
+                                          dao?.data?.config?.durationInDays,
+                                        ) * 144,
+                                      ),
+                                      String(
+                                        stxToUstx(
+                                          dao?.data?.config?.minimumDeposit,
+                                        ),
+                                      ),
+                                    )}
+                                    onSuccess={(data: any) => {
+                                      createExtension.mutate({
+                                        club_id: dao?.data?.id,
+                                        contract_address:
+                                          contractExtensionDetails?.clubIC
+                                            .contractAddress,
+                                        extension_type_id:
+                                          CLUB_EXTENSION_TYPES.INVESTMENT_CLUB,
+                                        tx_id: data.txId,
+                                      });
+                                    }}
+                                    isDisabled={
+                                      hasExtension('Investment Club') ||
+                                      !hasExtension('Vault')
+                                    }
                                   />
                                 </Stack>
                               </Stack>
@@ -702,23 +840,37 @@ export default function Start() {
                                   </SimpleGrid>
                                 </Stack>
                                 <Stack justify='space-between' direction='row'>
-                                  <DeployVotingButton
-                                    title='Deploy Voting'
-                                    coreDao={dao?.data?.contract_address}
-                                    name={`${dao?.data?.slug}-voting`}
-                                    clubId={dao?.data?.id}
-                                    nftMembershipContractAddress={
-                                      nftExtension?.contract_address
+                                  <StacksDeploy
+                                    variant='primary'
+                                    buttonName='Deploy Voting'
+                                    contractName={
+                                      contractExtensionDetails?.clubVoting
+                                        .contractName
                                     }
-                                    governanceTokenContractAddress={
-                                      governanceExtension?.contract_address
-                                    }
-                                    hasExtension={hasExtension('Voting')}
+                                    template={votingTemplate(
+                                      dao?.data?.contract_address,
+                                      contractExtensionDetails?.clubPass
+                                        .contractAddress,
+                                      contractExtensionDetails?.clubToken
+                                        .contractAddress,
+
+                                      '144',
+                                    )}
+                                    onSuccess={(data: any) => {
+                                      createExtension.mutate({
+                                        club_id: dao?.data?.id,
+                                        contract_address:
+                                          contractExtensionDetails?.clubVoting
+                                            .contractAddress,
+                                        extension_type_id:
+                                          CLUB_EXTENSION_TYPES.VOTING,
+                                        tx_id: data.txId,
+                                      });
+                                    }}
                                     isDisabled={
+                                      hasExtension('Voting') ||
                                       !hasExtension('Investment Club')
                                     }
-                                    variant='primary'
-                                    onDeploy={onFinish}
                                   />
                                 </Stack>
                                 <Stack py={{ base: '3', md: '3' }} spacing='2'>
@@ -742,24 +894,40 @@ export default function Start() {
                                   </SimpleGrid>
                                 </Stack>
                                 <Stack justify='space-between' direction='row'>
-                                  <DeploySubmissionButton
-                                    title='Deploy Submission'
-                                    coreDao={dao?.data?.contract_address}
-                                    name={`${dao?.data?.slug}-submission`}
-                                    clubId={dao?.data?.id}
-                                    nftMembershipContractAddress={
-                                      nftExtension?.contract_address
-                                    }
-                                    investmentClubContractAddress={
-                                      investmentClubExtension?.contract_address
-                                    }
-                                    votingContractAddress={
-                                      votingExtension?.contract_address
-                                    }
-                                    hasExtension={hasExtension('Submission')}
-                                    isDisabled={!hasExtension('Voting')}
+                                  <StacksDeploy
                                     variant='primary'
-                                    onDeploy={onFinish}
+                                    buttonName='Deploy Submission'
+                                    contractName={
+                                      contractExtensionDetails?.clubSubmission
+                                        .contractName
+                                    }
+                                    template={submissionTemplate(
+                                      dao?.data?.contract_address,
+                                      contractExtensionDetails?.clubPass
+                                        .contractAddress,
+                                      contractExtensionDetails?.clubIC
+                                        .contractAddress,
+                                      contractExtensionDetails?.clubVoting
+                                        .contractAddress,
+                                      '144',
+                                      '72',
+                                      '144',
+                                    )}
+                                    onSuccess={(data: any) => {
+                                      createExtension.mutate({
+                                        club_id: dao?.data?.id,
+                                        contract_address:
+                                          contractExtensionDetails
+                                            ?.clubSubmission.contractAddress,
+                                        extension_type_id:
+                                          CLUB_EXTENSION_TYPES.SUBMISSION,
+                                        tx_id: data.txId,
+                                      });
+                                    }}
+                                    isDisabled={
+                                      hasExtension('Submission') ||
+                                      !hasExtension('Voting')
+                                    }
                                   />
                                 </Stack>
                               </Stack>

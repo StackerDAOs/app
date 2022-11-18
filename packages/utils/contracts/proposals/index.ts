@@ -1,13 +1,14 @@
 import { traitPrincipal } from 'api/constants';
+import { size } from 'lodash';
 
 const generateClarityList = (
   recipients: string[],
   vaultContract: string,
-  amount: string,
+  amount: number,
 ) => {
   let recipientList = '';
   recipients.forEach((recipientAddress, index) => {
-    recipientList += `(try! (contract-call? '${vaultContract} stx-transfer u${amount} '${recipientAddress} none))`;
+    recipientList += `(try! (contract-call? '${vaultContract} withdraw-stx u${amount} '${recipientAddress} none))`;
     if (index !== recipients?.length - 1) {
       recipientList += `  \n    `;
     }
@@ -15,10 +16,10 @@ const generateClarityList = (
   return recipientList;
 };
 
-export const sendFunds = (
-  recipients: string[],
+export const transferProposal = (
   vaultContract: string,
-  amount: string,
+  recipients: string[],
+  amount: number,
 ) => {
   return `
 (impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
@@ -26,6 +27,128 @@ export const sendFunds = (
 (define-public (execute (sender principal))
   (begin
     ${generateClarityList(recipients, vaultContract, amount)}
+    (print {event: "execute", sender: sender})
+    (ok true)
+  )
+)
+`;
+};
+
+export const transferStxProposal = (
+  vaultContract: string,
+  recipients: string[],
+  amount: number,
+  memo?: any,
+) => {
+  return `
+(impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
+
+(define-public (execute (sender principal))
+  (begin
+    ${generateClarityList(recipients, vaultContract, amount)}
+    (print {event: "execute", sender: sender})
+    (ok true)
+  )
+)
+`;
+};
+
+const protocolUpgrades = (params: any) => {
+  const {
+    enabledExtensions,
+    disabledExtensions,
+    clubExtension,
+    submissionExtension,
+    votingExtension,
+    coreAddress,
+  } = params;
+  let upgrades = '';
+  if (size(enabledExtensions) > 0) {
+    let enabledExtensionList = '';
+    enabledExtensions.forEach((enabledExtension: any, index: number) => {
+      upgrades += `(try! (contract-call? '${coreAddress} set-extension '${enabledExtension} true))`;
+      upgrades += `  \n    `;
+    });
+    upgrades += enabledExtensionList;
+  }
+  if (size(disabledExtensions) > 0) {
+    let disabledExtensionList = '';
+    disabledExtensions.forEach((disabledExtension: any, index: number) => {
+      upgrades += `(try! (contract-call? '${coreAddress} set-extension '${disabledExtension} false))`;
+      upgrades += `  \n    `;
+    });
+    upgrades += disabledExtensionList;
+  }
+  if (clubExtension?.fundraisingDurationInBlocks) {
+    upgrades += `(try! (contract-call? '${clubExtension?.contractAddress} set-parameter "startWindow" u${clubExtension?.fundraisingDurationInBlocks}))`;
+    upgrades += `  \n    `;
+  }
+  if (clubExtension?.minimumDepositAmount) {
+    upgrades += `(try! (contract-call? '${clubExtension?.contractAddress} set-parameter "minimumDepositAmount" u${clubExtension?.minimumDepositAmount}))`;
+    upgrades += `  \n    `;
+  }
+  if (submissionExtension?.proposalDurationInBlocks) {
+    upgrades += `(try! (contract-call? '${submissionExtension?.contractAddress} set-parameter "proposalDuration" u${submissionExtension?.proposalDurationInBlocks}))`;
+    upgrades += `  \n    `;
+  }
+  if (submissionExtension?.minimumProposalStartDelay) {
+    upgrades += `(try! (contract-call? '${submissionExtension?.contractAddress} set-parameter "minimumProposalStartDelay" u${submissionExtension?.minimumProposalStartDelay}))`;
+    upgrades += `  \n    `;
+  }
+  if (submissionExtension?.maximumProposalStartDelay) {
+    upgrades += `(try! (contract-call? '${submissionExtension?.contractAddress} set-parameter "maximumProposalStartDelay" u${submissionExtension?.maximumProposalStartDelay}))`;
+    upgrades += `  \n    `;
+  }
+  if (votingExtension?.executionDelay) {
+    upgrades += `(try! (contract-call? '${votingExtension?.contractAddress} set-parameter "executionDelay" u${votingExtension?.executionDelay}))`;
+    upgrades += `  \n    `;
+  }
+  return upgrades;
+};
+
+export const upgradeProtocolProposal = (params: any) => {
+  return `
+(impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
+
+(define-public (execute (sender principal))
+  (begin
+    ${protocolUpgrades(params)}
+    (print {event: "execute", sender: sender})
+    (ok true)
+  )
+)
+`;
+};
+
+const allowedAssets = (params: any) => {
+  const { vaultAddress, allowed, disabled } = params;
+  let assets = '';
+  if (size(allowed) > 0) {
+    let allowList = '';
+    allowed.forEach((asset: any, index: number) => {
+      assets += `(try! (contract-call? '${vaultAddress} set-allowed '${asset} true))`;
+      assets += `  \n    `;
+    });
+    assets += allowList;
+  }
+  if (size(disabled) > 0) {
+    let disabledExtensionList = '';
+    disabled.forEach((asset: any, index: number) => {
+      assets += `(try! (contract-call? '${vaultAddress} set-allowed '${asset} false))`;
+      assets += `  \n    `;
+    });
+    assets += disabledExtensionList;
+  }
+  return assets;
+};
+
+export const upgradeAllowedAssetsProposal = (params: any) => {
+  return `
+(impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
+
+(define-public (execute (sender principal))
+  (begin
+    ${allowedAssets(params)}
     (print {event: "execute", sender: sender})
     (ok true)
   )

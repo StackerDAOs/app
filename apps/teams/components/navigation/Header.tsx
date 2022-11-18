@@ -8,16 +8,63 @@ import {
   useBreakpointValue,
 } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { getExplorerLink } from 'utils';
+import { getExplorerLink, findExtension } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
-import Avatar from 'boring-avatars';
-import { ProposalDrawer } from '@components/drawers';
+import { IdeaDrawer, ProposalDrawer } from '@components/drawers';
+import { useAuth } from 'ui/components';
+import { useDAO } from 'ui/hooks';
 
 import { Wrapper } from '../containers';
 import { Clipboard } from '../feedback';
 
+const hasExtension = (extensions: any, extensionToFind: string) =>
+  findExtension(extensions, extensionToFind);
+
+export const SetupHeader = () => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
+  return (
+    <Wrapper>
+      <motion.div
+        variants={FADE_IN_VARIANTS}
+        initial={FADE_IN_VARIANTS.hidden}
+        animate={FADE_IN_VARIANTS.enter}
+        exit={FADE_IN_VARIANTS.exit}
+        transition={{ duration: 0.75, type: 'linear' }}
+      >
+        <Stack
+          pt='12'
+          display={isMobile ? 'block' : 'flex'}
+          direction={{ base: 'column', md: 'row' }}
+          justify='space-between'
+          align='flex-start'
+        >
+          <Stack justify='space-between' spacing='6'>
+            <HStack>
+              <Heading
+                size='2xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
+                bgClip='text'
+              >
+                Deployment and Setup
+              </Heading>
+            </HStack>
+          </Stack>
+        </Stack>
+      </motion.div>
+    </Wrapper>
+  );
+};
+
 export const DashboardHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const dao = useDAO();
+  const { isSignedIn } = useAuth();
+  const isActive = dao?.data?.active;
+
+  if (!dao?.data || !isSignedIn) return null;
 
   return (
     <Wrapper>
@@ -38,14 +85,14 @@ export const DashboardHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name='Bitcoin Days'
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Heading size='2xl' fontWeight='black' color='light.900'>
-                Bitcoin Days{' '}
+              <Heading
+                size='2xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
+                bgClip='text'
+              >
+                {dao?.data?.name}{' '}
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -58,13 +105,10 @@ export const DashboardHeader = () => {
                 borderRadius='lg'
                 py='1'
                 px='3'
-                _hover={{ opacity: 0.9 }}
               >
                 <HStack>
                   <a
-                    href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-core',
-                    )}
+                    href={getExplorerLink(dao?.data?.contract_address)}
                     target='_blank'
                     rel='noreferrer'
                   >
@@ -74,35 +118,29 @@ export const DashboardHeader = () => {
                       fontSize='sm'
                       fontWeight='light'
                     >
-                      {truncateAddress(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-core',
-                      )}
+                      {truncateAddress(dao?.data?.contract_address)}
                     </Text>
                   </a>
-
                   <Clipboard
                     color='light.900'
                     fontSize='sm'
-                    content='address' // TODO: replace with address
+                    content={dao?.data?.contract_address}
                     _hover={{ cursor: 'pointer', color: 'light.900' }}
                   />
                 </HStack>
               </Badge>
             </HStack>
-            {/* <Text fontSize='lg' fontWeight='light' color='text-default'>
+            <Text fontSize='lg' fontWeight='light' color='light.500' maxW='3xl'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
-            </Text> */}
+            </Text>
           </Stack>
-          <ButtonGroup>
-            <ProposalDrawer
-              title='Create proposal'
-              variant='default'
-              isDisabled
-              _hover={{ opacity: 0.9 }}
-            />
-          </ButtonGroup>
+          {isActive && (
+            <ButtonGroup>
+              <ProposalDrawer title='Create proposal' variant='default' />
+            </ButtonGroup>
+          )}
         </Stack>
       </motion.div>
     </Wrapper>
@@ -111,6 +149,8 @@ export const DashboardHeader = () => {
 
 export const VaultHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const dao = useDAO();
+  const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
 
   return (
     <Wrapper>
@@ -131,23 +171,14 @@ export const VaultHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name='Bitcoin Days'
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Heading size='2xl' fontWeight='black' color='light.900'>
-                Bitcoin Days{' '}
-                <Text
-                  as='span'
-                  maxW='2xl'
-                  mx='auto'
-                  color='gray'
-                  fontWeight='thin'
-                >
-                  Vault
-                </Text>
+              <Heading
+                size='2xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
+                bgClip='text'
+              >
+                Vault
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -160,50 +191,50 @@ export const VaultHeader = () => {
                 borderRadius='lg'
                 py='1'
                 px='3'
-                _hover={{ opacity: 0.9 }}
               >
-                <HStack>
-                  <a
-                    href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-vault',
-                    )}
-                    target='_blank'
-                    rel='noreferrer'
-                  >
-                    <Text
-                      as='span'
-                      cursor='pointer'
-                      fontSize='sm'
-                      fontWeight='light'
+                {hasExtension(dao?.data?.extensions, 'Vault') ? (
+                  <HStack>
+                    <a
+                      href={getExplorerLink(vaultExtension?.contract_address)}
+                      target='_blank'
+                      rel='noreferrer'
                     >
-                      {truncateAddress(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-vault',
-                      )}
-                    </Text>
-                  </a>
-
-                  <Clipboard
-                    color='light.900'
+                      <Text
+                        as='span'
+                        cursor='pointer'
+                        fontSize='sm'
+                        fontWeight='light'
+                      >
+                        {truncateAddress(vaultExtension?.contract_address)}
+                      </Text>
+                    </a>
+                    <Clipboard
+                      color='light.900'
+                      fontSize='sm'
+                      content={vaultExtension?.contract_address}
+                      _hover={{ cursor: 'pointer', color: 'light.900' }}
+                    />
+                  </HStack>
+                ) : (
+                  <Text
+                    as='span'
+                    cursor='pointer'
                     fontSize='sm'
-                    content='address' // TODO: add dao address
-                    _hover={{ cursor: 'pointer', color: 'light.900' }}
-                  />
-                </HStack>
+                    fontWeight='light'
+                  >
+                    No contract found
+                  </Text>
+                )}
               </Badge>
             </HStack>
-            {/* <Text fontSize='lg' fontWeight='light' color='text-default'>
+            <Text fontSize='lg' fontWeight='light' color='light.500' maxW='3xl'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
-            </Text> */}
+            </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer
-              title='Create proposal'
-              isDisabled
-              variant='default'
-              _hover={{ opacity: 0.9 }}
-            />
+            <ProposalDrawer title='Create proposal' variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -213,6 +244,11 @@ export const VaultHeader = () => {
 
 export const ProposalHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const dao = useDAO();
+  const submissionExtension = findExtension(
+    dao?.data?.extensions,
+    'Submission',
+  );
 
   return (
     <Wrapper>
@@ -233,23 +269,14 @@ export const ProposalHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name='Bitcoin Days'
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Heading size='2xl' fontWeight='black' color='light.900'>
-                Bitcoin Days{' '}
-                <Text
-                  as='span'
-                  maxW='2xl'
-                  mx='auto'
-                  color='gray'
-                  fontWeight='thin'
-                >
-                  Proposals
-                </Text>
+              <Heading
+                size='2xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
+                bgClip='text'
+              >
+                Ideas
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -262,50 +289,52 @@ export const ProposalHeader = () => {
                 borderRadius='lg'
                 py='1'
                 px='3'
-                _hover={{ opacity: 0.9 }}
               >
-                <HStack>
-                  <a
-                    href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-submission',
-                    )}
-                    target='_blank'
-                    rel='noreferrer'
-                  >
-                    <Text
-                      as='span'
-                      cursor='pointer'
-                      fontSize='sm'
-                      fontWeight='light'
-                    >
-                      {truncateAddress(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-submission',
+                {hasExtension(dao?.data?.extensions, 'Submission') ? (
+                  <HStack>
+                    <a
+                      href={getExplorerLink(
+                        submissionExtension?.contract_address,
                       )}
-                    </Text>
-                  </a>
-
-                  <Clipboard
-                    color='light.900'
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      <Text
+                        as='span'
+                        cursor='pointer'
+                        fontSize='sm'
+                        fontWeight='light'
+                      >
+                        {truncateAddress(submissionExtension?.contract_address)}
+                      </Text>
+                    </a>
+                    <Clipboard
+                      color='light.900'
+                      fontSize='sm'
+                      content={submissionExtension?.contract_address}
+                      _hover={{ cursor: 'pointer', color: 'light.900' }}
+                    />
+                  </HStack>
+                ) : (
+                  <Text
+                    as='span'
+                    cursor='pointer'
                     fontSize='sm'
-                    content='address' // TODO: add dao address
-                    _hover={{ cursor: 'pointer', color: 'light.900' }}
-                  />
-                </HStack>
+                    fontWeight='light'
+                  >
+                    No contract found
+                  </Text>
+                )}
               </Badge>
             </HStack>
-            {/* <Text fontSize='lg' fontWeight='light' color='text-default'>
-              Members with a Club Pass can deposit funds and submit proposals
-              once the initial fundraise window ends. Only members who have
-              deposited funds can vote.
-            </Text> */}
+            <Text fontSize='lg' fontWeight='light' color='light.500' maxW='3xl'>
+              A Club Pass is required to submit an idea and vote on others.
+              There is no limit to the number of ideas you can submit and vote
+              on.
+            </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer
-              title='Create proposal'
-              isDisabled
-              variant='default'
-              _hover={{ opacity: 0.9 }}
-            />
+            <IdeaDrawer title='Create an idea' variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -315,6 +344,8 @@ export const ProposalHeader = () => {
 
 export const VotingHeader = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const dao = useDAO();
+  const votingExtension = findExtension(dao?.data?.extensions, 'Voting');
 
   return (
     <Wrapper>
@@ -335,23 +366,14 @@ export const VotingHeader = () => {
         >
           <Stack justify='space-between' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name='Bitcoin Days'
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Heading size='2xl' fontWeight='black' color='light.900'>
-                Bitcoin Days{' '}
-                <Text
-                  as='span'
-                  maxW='2xl'
-                  mx='auto'
-                  color='gray'
-                  fontWeight='thin'
-                >
-                  Voting
-                </Text>
+              <Heading
+                size='2xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
+                bgClip='text'
+              >
+                Proposals
               </Heading>
             </HStack>
             <HStack spacing='3'>
@@ -364,50 +386,50 @@ export const VotingHeader = () => {
                 borderRadius='lg'
                 py='1'
                 px='3'
-                _hover={{ opacity: 0.9 }}
               >
-                <HStack>
-                  <a
-                    href={getExplorerLink(
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-voting',
-                    )}
-                    target='_blank'
-                    rel='noreferrer'
-                  >
-                    <Text
-                      as='span'
-                      cursor='pointer'
-                      fontSize='sm'
-                      fontWeight='light'
+                {hasExtension(dao?.data?.extensions, 'Voting') ? (
+                  <HStack>
+                    <a
+                      href={getExplorerLink(votingExtension?.contract_address)}
+                      target='_blank'
+                      rel='noreferrer'
                     >
-                      {truncateAddress(
-                        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bitcoindays-voting',
-                      )}
-                    </Text>
-                  </a>
-
-                  <Clipboard
-                    color='light.900'
+                      <Text
+                        as='span'
+                        cursor='pointer'
+                        fontSize='sm'
+                        fontWeight='light'
+                      >
+                        {truncateAddress(votingExtension?.contract_address)}
+                      </Text>
+                    </a>
+                    <Clipboard
+                      color='light.900'
+                      fontSize='sm'
+                      content={votingExtension?.contract_address}
+                      _hover={{ cursor: 'pointer', color: 'light.900' }}
+                    />
+                  </HStack>
+                ) : (
+                  <Text
+                    as='span'
+                    cursor='pointer'
                     fontSize='sm'
-                    content='address' // TODO: add dao address
-                    _hover={{ cursor: 'pointer', color: 'light.900' }}
-                  />
-                </HStack>
+                    fontWeight='light'
+                  >
+                    No contract found
+                  </Text>
+                )}
               </Badge>
             </HStack>
-            {/* <Text fontSize='lg' fontWeight='light' color='text-default'>
+            <Text fontSize='lg' fontWeight='light' color='light.500' maxW='3xl'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
-            </Text> */}
+            </Text>
           </Stack>
           <ButtonGroup>
-            <ProposalDrawer
-              title='Create proposal'
-              isDisabled
-              variant='default'
-              _hover={{ opacity: 0.9 }}
-            />
+            <ProposalDrawer title='Create proposal' variant='default' />
           </ButtonGroup>
         </Stack>
       </motion.div>
@@ -435,41 +457,24 @@ export const ExtensionsHeader = () => {
           justify='space-between'
           align='flex-start'
         >
-          <Stack justify='space-between' spacing='3'>
+          <Stack justify='flex-start' spacing='3'>
             <HStack>
-              <Avatar
-                size={40}
-                name='Bitcoin Days'
-                variant='marble'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Heading size='2xl' fontWeight='black' color='light.900'>
-                Bitcoin Days{' '}
-                <Text
-                  as='span'
-                  maxW='2xl'
-                  mx='auto'
-                  color='gray'
-                  fontWeight='thin'
-                >
-                  Extensions
-                </Text>
+              <Heading
+                size='2xl'
+                fontWeight='black'
+                color='light.900'
+                bgGradient='linear(to-b, light.900 25%, light.500 100%)'
+                bgClip='text'
+              >
+                Extensions
               </Heading>
             </HStack>
-            {/* <Text fontSize='lg' fontWeight='light' color='text-default'>
+            <Text fontSize='lg' fontWeight='light' color='light.500' maxW='3xl'>
               Members with a Club Pass can deposit funds and submit proposals
               once the initial fundraise window ends. Only members who have
               deposited funds can vote.
-            </Text> */}
+            </Text>
           </Stack>
-          <ButtonGroup>
-            <ProposalDrawer
-              title='Create proposal'
-              isDisabled
-              variant='default'
-              _hover={{ opacity: 0.9 }}
-            />
-          </ButtonGroup>
         </Stack>
       </motion.div>
     </Wrapper>

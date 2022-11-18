@@ -474,6 +474,27 @@ const components = {
           },
         },
       },
+      secondary: {
+        bg: 'secondary.900',
+        borderColor: 'secondary.900',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        color: 'white',
+        _hover: {
+          bg: 'secondary.900',
+          borderColor: 'secondary.900',
+        },
+        _active: {
+          bg: 'secondary.900',
+          borderColor: 'secondary.900',
+        },
+        _disabled: {
+          bg: 'secondary.900',
+          _hover: {
+            opacity: 0.4,
+          },
+        },
+      },
       link: {
         color: 'light.900',
         _hover: {

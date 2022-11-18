@@ -257,8 +257,8 @@ export function nameToSymbol(name: string) {
 export function nameToAbbreviation(name: string) {
   if (hasWhiteSpace(name)) {
     name = name.replace(/\s/g, '');
-    return name.toUpperCase().substring(0, 2);
+    return name?.toUpperCase().substring(0, 2);
   } else {
-    return name.toUpperCase().substring(0, 2);
+    return name?.toUpperCase().substring(0, 2);
   }
 }

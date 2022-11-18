@@ -1,7 +1,5 @@
 import React from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { Box, ButtonGroup, Flex, HStack, Tab, Tabs, TabList, Text } from 'ui';
+import { Box, ButtonGroup, Flex, HStack, Text } from 'ui';
 
 // Hooks
 import { useAccountBalance } from 'ui/hooks';
@@ -12,7 +10,6 @@ import { useAuth } from 'ui/components';
 // Utils
 import { ustxToStx } from 'utils';
 import { ConnectButton } from 'ui/components/buttons';
-import { LogoIcon } from 'ui/components/icons';
 
 // Components
 // import { MobileAppNavbar } from '@components/navbars';
@@ -20,23 +17,27 @@ import { LogoIcon } from 'ui/components/icons';
 import { Nav } from '../containers';
 
 const Navbar = () => {
-  const router = useRouter();
-  const { dao } = router.query as any;
   const { isSignedIn } = useAuth();
   const { data } = useAccountBalance();
-  const isSelected = (path: string) => router.pathname.split('/')[3] === path;
 
   return (
-    <Flex justify='space-between' flex='1'>
-      <Tabs isFitted variant='nav'>
+    <Flex justify='flex-end'>
+      {/* <Tabs isFitted variant='nav'>
         <TabList>
-          {['Vault', 'Proposals', 'Voting', 'Extensions'].map((item) => (
+          {['Vault', 'Ideas', 'Proposals', 'Extensions'].map((item) => (
             <Link key={item} href={`/d/${dao}/${item?.toLocaleLowerCase()}`}>
               <Tab
                 key={item}
                 fontSize='md'
+                fontWeight={
+                  isSelected(item?.toLocaleLowerCase())
+                    ? 'extrabold'
+                    : 'regular'
+                }
                 color={
-                  isSelected(item.toLowerCase()) ? 'text-default' : 'text-muted'
+                  isSelected(item?.toLocaleLowerCase())
+                    ? 'light.900'
+                    : 'light.500'
                 }
               >
                 {item}
@@ -44,7 +45,7 @@ const Navbar = () => {
             </Link>
           ))}
         </TabList>
-      </Tabs>
+      </Tabs> */}
       <HStack spacing='3'>
         <ButtonGroup spacing='3' alignItems='center'>
           {isSignedIn ? (
@@ -78,25 +79,27 @@ const Navbar = () => {
   );
 };
 
-export const AppNavbar = () => {
-  const router = useRouter();
-  const { dao } = router.query as any;
-
-  return (
-    <Box as='section' height='5vh'>
-      <Nav bg='dark.900'>
-        <HStack justify='space-between' spacing='2'>
-          <Link href={`/d/${dao}`}>
+export const AppNavbar = () => (
+  <Box as='section' height='5vh'>
+    <Nav
+      bg='dark.900'
+      position='fixed'
+      top='0'
+      left='0'
+      zIndex='1'
+      px={{ base: '4', sm: '6' }}
+    >
+      <HStack justify='flex-end' spacing='2'>
+        {/* <Link href={`/d/${dao}`}>
             <LogoIcon
               alt='logo'
               url='https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png'
               cursor='pointer'
               height='35px'
             />
-          </Link>
-          <Navbar />
-        </HStack>
-      </Nav>
-    </Box>
-  );
-};
+          </Link> */}
+        <Navbar />
+      </HStack>
+    </Nav>
+  </Box>
+);

@@ -21,6 +21,18 @@ export interface DeployClubProps extends ButtonProps {
   onDeploy: (data: any) => void;
 }
 
+export interface DeployTeamProps extends ButtonProps {
+  name: string;
+  slug: string;
+  config: {
+    description: string;
+    tokenSymbol: string;
+    nftMembershipPass: string;
+    memberAddresses: string[];
+  };
+  onDeploy: (data: any) => void;
+}
+
 export interface DeployNFTProps extends ButtonProps {
   coreDao: string;
   name: string;
