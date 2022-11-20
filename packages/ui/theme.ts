@@ -1,4 +1,5 @@
 import { extendTheme, theme as base } from '@chakra-ui/react';
+import { StepsStyleConfig as Steps } from 'chakra-ui-steps';
 
 // TODO: define tokens
 const tokens = {
@@ -561,6 +562,10 @@ const components = {
       brand: {
         field: {
           bg: 'dark.900',
+          _placeholder: {
+            color: 'rgba(255, 255, 255, 0.25)',
+            fontWeight: 'light',
+          },
         },
       },
     },
@@ -607,6 +612,7 @@ const components = {
       },
     },
   },
+  Steps,
   Tabs: {
     baseStyle: {
       tab: {

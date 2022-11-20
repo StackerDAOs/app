@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import {
+  Badge,
   Box,
   Button,
   ButtonGroup,
@@ -8,6 +9,7 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Flex,
   Grid,
   GridItem,
   Heading,
@@ -34,76 +36,36 @@ import { RadioButtonGroup, RadioButton } from 'ui/components/forms';
 import { useForm, Controller, useAccount } from 'ui/components';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container, SectionHeader } from 'ui/components/layout';
-import { useSteps } from 'ui/store';
 import { DeployCoreButton } from 'ui/components/buttons';
 import { InfoIcon } from 'ui/components/icons';
 import { shortenAddress, validateStacksAddress } from '@stacks-os/utils';
 import { nameToSlug, nameToSymbol } from 'utils';
 import { includes, size } from 'lodash';
 import { LaunchLayout } from '../components/layout';
-import { useMultiStepForm } from 'ui/hooks';
-import { CreateClub, CreateMembershipPass } from '@components/onboarding';
+import { useSteps } from 'ui/store';
+import {
+  CreateClub,
+  CreateFundraising,
+  CreateGovernanceToken,
+  CreateMembershipPass,
+  CreateSubmission,
+  CreateVault,
+  CreateVoting,
+} from '@components/onboarding';
 import { Step } from 'ui/components/feedback';
 import { Wrapper } from '@components/containers';
+import { useGlobalState } from 'store';
 
-type OnboardFormData = {
-  name: string;
-  description: string;
-  member: string;
-  members: string[];
-  durationInDays: number;
-  minimumDeposit: number;
-};
-
-const INITIAL_FORM_DATA: OnboardFormData = {
-  name: '',
-  description: '',
-  member: '',
-  members: [],
-  durationInDays: 1,
-  minimumDeposit: 0,
-};
-
-export default function Create() {
+export default function Test() {
   const { stxAddress } = useAccount();
   const router = useRouter();
-  const [club, setClub] = React.useState<OnboardFormData>(INITIAL_FORM_DATA);
-  const {
-    steps,
-    step,
-    isFirstStep,
-    back,
-    next,
-    canGoToNextStep,
-    isLastStep,
-    isActiveStep,
-    currentStepIndex,
-  } = useMultiStepForm([
-    <CreateClub />,
-    <CreateMembershipPass />,
-    <Button variant='primary'>Third step</Button>,
-  ]);
+  const numberOfSteps = 3;
+  const { currentStep, setStep } = useSteps();
+  console.log({ currentStep });
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    next();
+    // goToNextStep();
   };
-  // const {
-  //   register,
-  //   control,
-  //   handleSubmit,
-  //   setValue,
-  //   getValues,
-  //   formState: { errors },
-  // } = useForm({
-  //   defaultValues: {
-  //     name: '',
-  //     description: '',
-  //     member: '',
-  //     members: [],
-  //     durationInDays: '1',
-  //     minimumDeposit: '0',
-  //   },
-  // });
 
   // const addMember = () => {
   //   if (includes(club.members, getValues('member'))) {
@@ -590,53 +552,34 @@ export default function Create() {
   //   return Step1 as JSX.Element;
   // };
 
+  const CurrentStep = ({ stepIndex }: { stepIndex: number }) => {
+    switch (stepIndex) {
+      case 0:
+        return <CreateClub />;
+      case 1:
+        return <CreateMembershipPass />;
+      case 2:
+        return <CreateGovernanceToken />;
+      case 3:
+        return <CreateVault />;
+      case 4:
+        return <CreateFundraising />;
+      case 5:
+        return <CreateSubmission />;
+      case 6:
+        return <CreateVoting />;
+      default:
+        return <CreateClub />;
+    }
+  };
+
   return (
-    <motion.div
-      key={currentStepIndex}
-      variants={FADE_IN_VARIANTS}
-      initial={FADE_IN_VARIANTS.hidden}
-      animate={FADE_IN_VARIANTS.enter}
-      exit={FADE_IN_VARIANTS.exit}
-      transition={{ duration: 0.8, type: 'linear' }}
-    >
-      <Box h={{ base: '720px' }}>
-        <Stack display='flex' justify='center' h='100vh'>
-          <Wrapper>
-            <Stack spacing='6'>
-              <HStack spacing='3' width='40'>
-                {[...Array(steps.length)].map((_, id) => (
-                  <Step
-                    key={id}
-                    cursor='pointer'
-                    isActive={currentStepIndex === id}
-                  />
-                ))}
-              </HStack>
-              <form onSubmit={onSubmit}>{step}</form>
-              <Stack spacing='2' align='center'>
-                <ButtonGroup justifyContent='space-between'>
-                  {!isFirstStep && (
-                    <Button onClick={back} variant='link'>
-                      Back
-                    </Button>
-                  )}
-                  {isLastStep ? (
-                    <Button onClick={() => {}} variant='link' type='submit'>
-                      Finish
-                    </Button>
-                  ) : (
-                    <Button onClick={next} variant='link'>
-                      Next
-                    </Button>
-                  )}
-                </ButtonGroup>
-              </Stack>
-            </Stack>
-          </Wrapper>
-        </Stack>
-      </Box>
-    </motion.div>
+    <Box h='100vh'>
+      <form onSubmit={onSubmit}>
+        <CurrentStep stepIndex={currentStep} />
+      </form>
+    </Box>
   );
 }
 
-Create.getLayout = (page: any) => <LaunchLayout>{page}</LaunchLayout>;
+Test.getLayout = (page: any) => <LaunchLayout>{page}</LaunchLayout>;

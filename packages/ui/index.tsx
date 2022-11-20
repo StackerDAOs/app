@@ -14,6 +14,8 @@ export {
   Box,
   Button,
   ButtonGroup,
+  Checkbox,
+  CheckboxGroup,
   Circle,
   CircularProgress,
   CircularProgressLabel,

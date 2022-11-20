@@ -1,28 +1,19 @@
-import { Box, BoxProps, Stack, Text } from '@chakra-ui/react';
+import { Box, BoxProps } from '@chakra-ui/react';
 
-interface StepProps extends BoxProps {
-  title?: string;
-  description?: string;
-  isCompleted: boolean;
+interface Props extends BoxProps {
   isActive: boolean;
 }
 
-export const Step = (props: StepProps) => {
-  const { title, description, isActive, isCompleted, ...boxProps } = props;
+export const Step = (props: Props) => {
+  const { isActive, ...boxProps } = props;
   return (
     <Box
       flex='1'
-      borderTopWidth={{ base: '0', md: '5px' }}
-      borderLeftWidth={{ base: '5px', md: '0' }}
-      borderColor={isActive || isCompleted ? '#624AF2' : 'transparent'}
+      h='2'
+      bg={isActive ? 'primary.900' : 'dark.500'}
+      borderRadius='base'
+      transition='background 0.2s'
       {...boxProps}
-    >
-      <Stack spacing='0.5'>
-        <Text color='emphasized' fontWeight='medium'>
-          {title}
-        </Text>
-        <Text color='muted'>{description}</Text>
-      </Stack>
-    </Box>
+    />
   );
 };

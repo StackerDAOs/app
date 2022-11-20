@@ -20,8 +20,9 @@ import { Clipboard } from '../feedback';
 const hasExtension = (extensions: any, extensionToFind: string) =>
   findExtension(extensions, extensionToFind);
 
-export const SetupHeader = () => {
+export const SetupHeader = ({ isCentered }: { isCentered?: boolean }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  console.log('centered', isCentered);
 
   return (
     <Wrapper>
@@ -36,7 +37,7 @@ export const SetupHeader = () => {
           pt='12'
           display={isMobile ? 'block' : 'flex'}
           direction={{ base: 'column', md: 'row' }}
-          justify='space-between'
+          justify={isCentered ? 'center' : 'space-between'}
           align='flex-start'
         >
           <Stack justify='space-between' spacing='6'>

@@ -265,7 +265,7 @@ export const Sidebar = () => {
       <Flex
         as='section'
         minH='100vh'
-        bg='dark.900'
+        bg='dark.800'
         position='sticky'
         top='0'
         zIndex='2'
@@ -326,7 +326,7 @@ export const Sidebar = () => {
       <Flex
         as='section'
         minH='100vh'
-        bg='dark.900'
+        bg='dark.800'
         position='sticky'
         top='0'
         zIndex='2'
@@ -380,14 +380,14 @@ export const Sidebar = () => {
       <Flex
         as='section'
         minH='100vh'
-        bg='dark.900'
+        bg='dark.800'
         position='sticky'
         top='0'
         zIndex='2'
         borderRightWidth='1px'
         borderRightColor='dark.500'
       >
-        <Flex flex='1' overflowY='auto' w='250px' py={{ base: '6', sm: '8' }}>
+        <Flex flex='1' overflowY='auto' w='250px' py={{ base: '3', sm: '4' }}>
           <Stack justify='space-between' spacing='1' w='100%'>
             <Stack spacing={{ base: '3', sm: '3' }} shouldWrapChildren>
               <UserProfile club={dao?.data?.name} />

@@ -5,7 +5,7 @@ import { Navbar, Sidebar } from '@components/navigation';
 import { useDAO } from 'ui/hooks';
 import { useAuth } from 'ui/components';
 
-export const AppLayout = ({ header, children }: any) => {
+export const AppLayout = ({ header, centered, children }: any) => {
   const dao = useDAO();
   const { isSignedIn } = useAuth();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
@@ -21,8 +21,6 @@ export const AppLayout = ({ header, children }: any) => {
       height='100vh'
       bg='dark.900'
       overflowY='auto'
-      backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #121416)'
-      opacity='1'
     >
       {isDesktop ? <Sidebar /> : <Navbar />}
 

@@ -7,9 +7,19 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  Box,
   Button,
+  Container,
   Circle,
+  Divider,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
+  Flex,
   Icon,
+  Input,
+  InputGroup,
   Heading,
   HStack,
   Grid,
@@ -18,6 +28,8 @@ import {
   Stack,
   Spinner,
   Text,
+  Textarea,
+  useBreakpointValue,
 } from 'ui';
 import { map, size } from 'lodash';
 import { useAccount } from 'ui/components';
@@ -26,24 +38,13 @@ import { Wrapper } from '@components/containers';
 import { AppLayout } from '@components/layout';
 import { SetupHeader } from '@components/navigation';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import {
-  governanceToken,
-  investmentClub,
-  nftMembership,
-  vault,
-  votingExtension as votingTemplate,
-  submissionExtension as submissionTemplate,
-  bootstrapProposal,
-} from 'utils/contracts';
-import {
-  InitializeClubButton,
-  DeployBootstrapButton,
-  StacksDeploy,
-} from 'ui/components/buttons';
+import { StacksDeploy } from 'ui/components/buttons';
 import { useDAO, useTransaction, useContract } from 'ui/hooks';
 import { useCreateExtension } from 'api/clubs/mutations/extensions';
 import { useUpdateBootstrap } from 'api/clubs/mutations';
 import { CLUB_EXTENSION_TYPES } from 'api/constants';
+import { Step } from 'ui/components/feedback';
+import { useStep } from 'ui/hooks';
 import {
   getPercentage,
   findExtension,
@@ -55,18 +56,23 @@ import { InfoIcon, LightningBolt } from 'ui/components/icons';
 import { CustomAccordianItem } from '@components/disclosure';
 
 const EXTENSION_SIZE = 6;
+const numberOfSteps = 3;
 
 export default function Start() {
   const contract = useContract(
     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.stackerdao-club-submission',
     'submission',
   );
-  console.log({ contract });
+  const [currentStep, { setStep }] = useStep({
+    maxStep: numberOfSteps,
+    initialStep: 0,
+  });
   const router = useRouter();
   const dao = useDAO();
   const { stxAddress } = useAccount();
   const createExtension = useCreateExtension();
   const updateBootstrap = useUpdateBootstrap();
+
   const contractExtensionDetails = {
     clubPass: {
       name: 'NFT Membership',
@@ -168,7 +174,7 @@ export default function Start() {
     ) {
       return (
         <>
-          <GridItem colSpan={{ base: 2, md: 4 }}>
+          {/* <GridItem colSpan={{ base: 2, md: 4 }}>
             <Stack spacing='1'>
               <HStack align='flex-start' spacing='4'>
                 <Circle bg='dark.500' size='10'>
@@ -193,14 +199,14 @@ export default function Start() {
             >
               Go to dashboard
             </Button>
-          </GridItem>
+          </GridItem> */}
         </>
       );
     }
     if (bootstrapStatus === 'success' && activationStatus === 'pending') {
       return (
         <>
-          <GridItem colSpan={{ base: 2, md: 4 }}>
+          {/* <GridItem colSpan={{ base: 2, md: 4 }}>
             <Stack spacing='1'>
               <HStack align='flex-start' spacing='4'>
                 <Circle bg='dark.500' size='10'>
@@ -232,14 +238,14 @@ export default function Start() {
             <Button variant='primary' isFullWidth>
               <Spinner />
             </Button>
-          </GridItem>
+          </GridItem> */}
         </>
       );
     }
     if (bootstrapStatus === 'pending') {
       return (
         <>
-          <GridItem colSpan={{ base: 2, md: 4 }}>
+          {/* <GridItem colSpan={{ base: 2, md: 4 }}>
             <Stack spacing='1'>
               <HStack align='flex-start' spacing='4'>
                 <Circle bg='dark.500' size='10'>
@@ -266,12 +272,12 @@ export default function Start() {
                 </Stack>
               </HStack>
             </Stack>
-          </GridItem>
-          <GridItem colSpan={{ base: 2, md: 1 }}>
+          </GridItem> */}
+          {/* <GridItem colSpan={{ base: 2, md: 1 }}>
             <Button variant='primary' isFullWidth>
               <Spinner />
             </Button>
-          </GridItem>
+          </GridItem> */}
         </>
       );
     }
@@ -279,7 +285,7 @@ export default function Start() {
     if (bootstrapStatus === 'success') {
       return (
         <>
-          <GridItem colSpan={{ base: 2, md: 4 }}>
+          {/* <GridItem colSpan={{ base: 2, md: 4 }}>
             <Stack spacing='1'>
               <HStack align='flex-start' spacing='4'>
                 <Circle bg='dark.500' size='10'>
@@ -297,8 +303,8 @@ export default function Start() {
                 </Stack>
               </HStack>
             </Stack>
-          </GridItem>
-          <GridItem colSpan={{ base: 2, md: 1 }}>
+          </GridItem> */}
+          {/* <GridItem colSpan={{ base: 2, md: 1 }}>
             <InitializeClubButton
               variant='primary'
               isFullWidth
@@ -307,13 +313,13 @@ export default function Start() {
               bootstrapPrincipal={dao?.data?.bootstrap_address}
               onSubmit={() => console.log('init!')}
             />
-          </GridItem>
+          </GridItem> */}
         </>
       );
     }
     return (
       <>
-        <GridItem colSpan={{ base: 2, md: 4 }}>
+        {/* <GridItem colSpan={{ base: 2, md: 4 }}>
           <Stack spacing='1'>
             <HStack align='flex-start' spacing='4'>
               <Circle bg='dark.500' size='10'>
@@ -331,8 +337,8 @@ export default function Start() {
               </Stack>
             </HStack>
           </Stack>
-        </GridItem>
-        <GridItem colSpan={{ base: 2, md: 1 }}>
+        </GridItem> */}
+        {/* <GridItem colSpan={{ base: 2, md: 1 }}>
           <StacksDeploy
             variant='primary'
             buttonName='Deploy Setup'
@@ -362,7 +368,7 @@ export default function Start() {
             }}
             isDisabled={!hasExtension('Submission')}
           />
-        </GridItem>
+        </GridItem> */}
       </>
     );
   };
@@ -428,7 +434,260 @@ export default function Start() {
       transition={{ duration: 0.25, type: 'linear' }}
     >
       <Wrapper>
-        <Stack spacing='8' pb='16'>
+        <motion.div
+          variants={FADE_IN_VARIANTS}
+          initial={FADE_IN_VARIANTS.hidden}
+          animate={FADE_IN_VARIANTS.enter}
+          exit={FADE_IN_VARIANTS.exit}
+          transition={{ duration: 0.75, type: 'linear' }}
+        >
+          <Stack spacing='10'>
+            <Box pt='8'>
+              <Stack spacing={{ base: '8', md: '10' }} align='center'>
+                <Stack spacing={{ base: '4', md: '6' }} textAlign='center'>
+                  <Stack spacing='4'>
+                    <Text
+                      fontWeight='semibold'
+                      color='gray'
+                      fontSize={{ base: 'sm', md: 'md' }}
+                    >
+                      Getting Started
+                    </Text>
+                    <Heading size='2xl' fontWeight='black'>
+                      Launchpad
+                    </Heading>
+                  </Stack>
+                  <Text
+                    fontSize={{ base: 'lg', md: 'xl' }}
+                    maxW='2xl'
+                    color='light.500'
+                  >
+                    You need to deploy a total{' '}
+                    <Text as='span' color='primary.900' fontWeight='semibold'>
+                      6 extensions
+                    </Text>{' '}
+                    to complete your Club setup. Once complete, you can start
+                    raising funds!
+                  </Text>
+                </Stack>
+              </Stack>
+            </Box>
+            <Stack spacing='6'>
+              <HStack spacing='3' width='40'>
+                {[...Array(numberOfSteps)].map((_, id) => (
+                  <Step
+                    key={id}
+                    cursor='pointer'
+                    onClick={() => setStep(id)}
+                    isActive={currentStep === id}
+                  />
+                ))}
+              </HStack>
+              <Grid
+                templateColumns='repeat(5, 1fr)'
+                gap={{ base: '8', md: '10' }}
+                alignItems='flex-start'
+              >
+                <GridItem colSpan={2}>
+                  <Stack
+                    direction={{ base: 'column', lg: 'row' }}
+                    spacing={{ base: '5', lg: '8' }}
+                    justify='space-between'
+                  >
+                    <Box>
+                      <Stack
+                        spacing={{ base: '8', md: '10' }}
+                        align='flex-start'
+                      >
+                        <Stack spacing={{ base: '2', md: '4' }}>
+                          <Stack spacing='4'>
+                            <Text
+                              fontWeight='semibold'
+                              color='gray'
+                              fontSize={{ base: 'sm', md: 'md' }}
+                            >
+                              Governance
+                            </Text>
+                            <Heading size='lg' fontWeight='black'>
+                              Club Membership Pass
+                            </Heading>
+                          </Stack>
+                          <Stack spacing='8'>
+                            <Stack py={{ base: '3', md: '3' }} spacing='2'>
+                              <Stack
+                                p='1'
+                                align='center'
+                                direction='row'
+                                justify='space-between'
+                                borderTopWidth='1px'
+                                borderColor='dark.500'
+                              >
+                                <Text
+                                  fontSize='lg'
+                                  fontWeight='light'
+                                  color='gray'
+                                >
+                                  Club name
+                                </Text>
+                                <Text
+                                  fontSize='lg'
+                                  fontWeight='light'
+                                  color='gray'
+                                >
+                                  {dao?.data?.name}
+                                </Text>
+                              </Stack>
+                              <Stack
+                                p='1'
+                                align='center'
+                                direction='row'
+                                justify='space-between'
+                                borderTopWidth='1px'
+                                borderColor='dark.500'
+                              >
+                                <Text
+                                  fontSize='lg'
+                                  fontWeight='light'
+                                  color='gray'
+                                >
+                                  Total Members
+                                </Text>
+                                <Text
+                                  fontSize='lg'
+                                  fontWeight='light'
+                                  color='gray'
+                                >
+                                  {size(dao?.data?.members) || 0}
+                                </Text>
+                              </Stack>
+                              <Stack
+                                p='1'
+                                align='center'
+                                direction='row'
+                                justify='space-between'
+                                borderTopWidth='1px'
+                                borderColor='dark.500'
+                              >
+                                <Text
+                                  fontSize='lg'
+                                  fontWeight='light'
+                                  color='gray'
+                                >
+                                  Open to deposits for
+                                </Text>
+                                <Text
+                                  fontSize='lg'
+                                  fontWeight='light'
+                                  color='gray'
+                                >
+                                  ~ {dao?.data?.config?.durationInDays} days
+                                </Text>
+                              </Stack>
+                              <Stack
+                                p='1'
+                                align='center'
+                                direction='row'
+                                justify='space-between'
+                                borderTopWidth='1px'
+                                borderColor='dark.500'
+                              >
+                                <Text
+                                  fontSize='lg'
+                                  fontWeight='light'
+                                  color='gray'
+                                >
+                                  Minimum deposit
+                                </Text>
+                                <Text
+                                  fontSize='lg'
+                                  fontWeight='light'
+                                  color='gray'
+                                >
+                                  {dao?.data?.config?.minimumDeposit} STX
+                                </Text>
+                              </Stack>
+                            </Stack>
+                            <Button size='lg' variant='primary' type='submit'>
+                              Deploy
+                            </Button>
+                          </Stack>
+                        </Stack>
+                      </Stack>
+                    </Box>
+                  </Stack>
+                </GridItem>
+                <GridItem colSpan={3}>
+                  <Stack
+                    direction={{ base: 'column', lg: 'row' }}
+                    spacing={{ base: '5', lg: '8' }}
+                    justify='space-between'
+                  >
+                    <Box
+                      as='form'
+                      bg='dark.800'
+                      boxShadow='dark.800'
+                      borderRadius='lg'
+                      borderColor='dark.500'
+                      borderWidth='1px'
+                      maxW={{ lg: '3xl' }}
+                    >
+                      <Stack
+                        spacing='5'
+                        px={{ base: '4', md: '6' }}
+                        py={{ base: '5', md: '6' }}
+                      >
+                        <Stack
+                          spacing='6'
+                          direction={{ base: 'column', md: 'row' }}
+                        >
+                          <FormControl id='firstName'>
+                            <FormLabel>First Name</FormLabel>
+                            <Input defaultValue='Christoph' />
+                          </FormControl>
+                          <FormControl id='lastName'>
+                            <FormLabel>Last Name</FormLabel>
+                            <Input defaultValue='Winston' />
+                          </FormControl>
+                        </Stack>
+                        <FormControl id='street'>
+                          <FormLabel>Street</FormLabel>
+                          <Input defaultValue='Am Kreuzberg 3' />
+                        </FormControl>
+                        <Stack
+                          spacing='6'
+                          direction={{ base: 'column', md: 'row' }}
+                        >
+                          <FormControl id='city'>
+                            <FormLabel>City</FormLabel>
+                            <Input defaultValue='Berlin' />
+                          </FormControl>
+                          <FormControl id='state'>
+                            <FormLabel>State / Province</FormLabel>
+                            <Input />
+                          </FormControl>
+                          <FormControl id='zip'>
+                            <FormLabel>ZIP/ Postal Code</FormLabel>
+                            <Input defaultValue='10961' />
+                          </FormControl>
+                        </Stack>
+                      </Stack>
+                      <Flex
+                        direction='row-reverse'
+                        py='4'
+                        px={{ base: '4', md: '6' }}
+                      >
+                        <Button type='submit' isDisabled variant='default'>
+                          Update
+                        </Button>
+                      </Flex>
+                    </Box>
+                  </Stack>
+                </GridItem>
+              </Grid>
+            </Stack>
+          </Stack>
+        </motion.div>
+        <Stack spacing='8'>
           <motion.div
             variants={FADE_IN_VARIANTS}
             initial={FADE_IN_VARIANTS.hidden}
@@ -436,29 +695,7 @@ export default function Start() {
             exit={FADE_IN_VARIANTS.exit}
             transition={{ duration: 0.25, type: 'linear' }}
           >
-            <Stack spacing='3'>
-              {isReady ? (
-                renderStatusCard
-              ) : (
-                <Alert
-                  bg='dark.700'
-                  status='warning'
-                  borderRadius='lg'
-                  variant='left-accent'
-                >
-                  <Stack>
-                    <HStack spacing='2'>
-                      <AlertIcon m='0' />
-                      <AlertTitle>Required Extensions</AlertTitle>
-                    </HStack>
-                    <AlertDescription>
-                      You will deploy 6 contracts before you can go live with
-                      your Club. You must deploy the following contracts in the
-                      order below to complete the setup.
-                    </AlertDescription>
-                  </Stack>
-                </Alert>
-              )}
+            {/* <Stack spacing='3'>
               <Stack spacing='0'>
                 <Stack py={{ base: '6', md: '6' }} spacing='2'>
                   <Stack spacing='3'>
@@ -939,7 +1176,7 @@ export default function Start() {
                   </Stack>
                 </Stack>
               </Stack>
-            </Stack>
+            </Stack> */}
           </motion.div>
         </Stack>
       </Wrapper>
@@ -947,6 +1184,4 @@ export default function Start() {
   );
 }
 
-Start.getLayout = (page: any) => (
-  <AppLayout header={<SetupHeader />}>{page}</AppLayout>
-);
+Start.getLayout = (page: any) => <AppLayout>{page}</AppLayout>;

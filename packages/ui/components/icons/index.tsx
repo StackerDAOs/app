@@ -9,6 +9,7 @@ export * from './ChevronUp';
 export * from './CopyClipboard';
 export * from './DashboardOutline';
 export * from './ExtensionOutline';
+export * from './ExternalLinkIcon';
 export * from './GearIcon';
 export * from './HelpIcon';
 export * from './HomeOutline';
