@@ -17,6 +17,7 @@ import {
   Heading,
   HStack,
   Input,
+  Select,
   SimpleGrid,
   Stack,
   Spinner,
@@ -26,6 +27,7 @@ import {
   Text,
 } from 'ui';
 import { Step } from 'ui/components/feedback';
+import { RadioButtonGroup, RadioButton } from 'ui/components/forms';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { shortenAddress } from '@stacks-os/utils';
 import { defaultTo, isEmpty, isString } from 'lodash';
@@ -42,21 +44,54 @@ const NameForm = () => {
   const name = useGlobalState((state) => state.club.name);
   const updateName = useGlobalState((state) => state.updateName);
   return (
-    <FormControl id='name'>
-      <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
-        Club Name
-      </FormLabel>
-      <Input
-        placeholder='Stacks Investment Club'
-        autoComplete='off'
-        size='lg'
-        value={name}
-        onChange={(e) => updateName(e.target.value)}
-      />
-      <FormHelperText fontWeight='light' color='gray'>
-        Easily identifyable name for your team.
-      </FormHelperText>
-    </FormControl>
+    <Grid templateColumns='repeat(5, 1fr)' gap='8'>
+      <GridItem colSpan={4}>
+        <FormControl>
+          <FormLabel htmlFor='minimumDeposit' fontWeight='light' color='gray'>
+            Minimum deposit
+          </FormLabel>
+          <Select
+            defaultValue='0'
+            value=''
+            size='lg'
+            color='white'
+            bg='dark.700'
+            borderColor='rgba(240, 246, 252, 0.1)'
+            onChange={() => {}}
+          >
+            <option value='0'>0 STX</option>
+            <option value='100'>100 STX</option>
+            <option value='500'>500 STX</option>
+            <option value='1000'>1,000 STX</option>
+            <option value='10000'>10,000 STX</option>
+          </Select>
+          <FormHelperText fontWeight='light' color='gray'>
+            Lowest acceptable deposit.
+          </FormHelperText>
+        </FormControl>
+      </GridItem>
+      <GridItem>
+        <FormControl>
+          <FormLabel htmlFor='durationInDays' fontWeight='light' color='gray'>
+            Fundraising duration
+          </FormLabel>
+          <RadioButtonGroup
+            defaultValue='1'
+            size='lg'
+            onChange={() => {}}
+            value=''
+          >
+            <RadioButton value='1'>1 day</RadioButton>
+            <RadioButton value='7'>1 week</RadioButton>
+            <RadioButton value='14'>2 weeks</RadioButton>
+            <RadioButton value='30'>1 month</RadioButton>
+          </RadioButtonGroup>
+          <FormHelperText fontWeight='light' color='gray'>
+            Once the club is deployed, this duration cannot be changed.
+          </FormHelperText>
+        </FormControl>
+      </GridItem>
+    </Grid>
   );
 };
 
@@ -116,7 +151,20 @@ const ShowForm = (state: ShowFormProps) => {
         align='center'
         justify='center'
       >
-        <Box as='form' bg='dark.900' w='100%'>
+        <Box
+          as='form'
+          bg='dark.900'
+          w='100%'
+          overflowY='scroll'
+          overflowX='hidden'
+          scrollBehavior='smooth'
+          h='75vh'
+          css={{
+            '&::-webkit-scrollbar': {
+              width: '0',
+            },
+          }}
+        >
           <motion.div
             key={state?.isAvailable?.toString()}
             variants={FADE_IN_VARIANTS}
@@ -133,7 +181,11 @@ const ShowForm = (state: ShowFormProps) => {
               <Stack spacing='6' direction='column'>
                 <Box>
                   <Text fontSize='lg' fontWeight='medium'>
-                    General Information
+                    Fundraising Details
+                  </Text>
+                  <Text color='light.500' fontSize='sm' maxW='md'>
+                    Your club will be able to open additional funding rounds
+                    later.
                   </Text>
                 </Box>
                 <NameForm />
@@ -266,7 +318,7 @@ export const CreateFundraising = (props: any) => {
             borderColor='dark.500'
             borderRadius='xl'
             h='full'
-            backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
+            backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #121416)'
             opacity='1'
           >
             <Stack spacing={{ base: '8', md: '12' }} justify='space-between'>

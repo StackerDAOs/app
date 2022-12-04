@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Button,
   Divider,
+  Flex,
   Grid,
   GridItem,
   Heading,
@@ -14,7 +15,7 @@ import {
 import Avatar from 'boring-avatars';
 import { useIdeas } from 'ui/hooks';
 import { SectionHeader } from 'ui/components/layout';
-import { AppLayout } from '@components/layout';
+import { DashboardLayout } from '@components/layout';
 import { ProposalHeader } from '@components/navigation';
 import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
@@ -134,182 +135,192 @@ export default function Ideas() {
       transition={{ duration: 0.25, type: 'linear' }}
     >
       <Wrapper>
-        <Stack spacing='1'>
-          <SectionHeader
-            justify={{ base: 'flex-start', md: 'space-between' }}
-            align={{ base: 'flex-start', md: 'space-between' }}
-            color='light.900'
-          >
-            <Stack spacing='3'>
-              <Text fontSize='md' fontWeight='light' color='text-muted'>
-                Discover Ideas
-              </Text>
-              <Heading mt='0 !important' size='lg' fontWeight='medium'>
-                Ideas
-              </Heading>
-            </Stack>
-            <Stack align='center' direction='row' spacing='3'>
-              <RadioGroup onChange={setFilter} value={filter}>
-                <Stack direction='row'>
-                  {map(['recent', 'most popular'], (tab: string) => (
-                    <Radio size='md' value={tab} _focus={{ outline: 'none' }}>
-                      {capitalize(tab)}
-                    </Radio>
-                  ))}
-                </Stack>
-              </RadioGroup>
-            </Stack>
-          </SectionHeader>
-          <Stack spacing='8' pb='16' mt='6'>
-            <motion.div
-              variants={FADE_IN_VARIANTS}
-              initial={FADE_IN_VARIANTS.hidden}
-              animate={FADE_IN_VARIANTS.enter}
-              exit={FADE_IN_VARIANTS.exit}
-              transition={{ duration: 0.25, type: 'linear' }}
+        <Stack spacing='6' py='8'>
+          <Flex justify='space-between' align='center'>
+            <Heading size='md' fontWeight='black' letterSpacing='tight'>
+              Ideas
+            </Heading>
+            <Button variant='default' size='sm'>
+              Create idea
+            </Button>
+          </Flex>
+          <Stack spacing='1'>
+            <SectionHeader
+              justify={{ base: 'flex-start', md: 'space-between' }}
+              align={{ base: 'flex-start', md: 'space-between' }}
+              color='light.900'
             >
-              <Grid
-                templateColumns='repeat(5, 1fr)'
-                gap='5'
-                py={{ base: '6', md: '6' }}
-              >
-                <GridItem colSpan={5}>
-                  <Stack spacing='6'>
-                    {map(ideas?.data, (submission) => (
-                      <motion.div
-                        variants={FADE_IN_VARIANTS}
-                        initial={FADE_IN_VARIANTS.hidden}
-                        animate={FADE_IN_VARIANTS.enter}
-                        exit={FADE_IN_VARIANTS.exit}
-                        transition={{ duration: 0.25, type: 'linear' }}
-                      >
-                        <Card
-                          h='fit-content'
-                          bg='dark.900'
-                          p={{ base: '3', md: '3' }}
-                          cursor='pointer'
-                        >
-                          <Stack>
-                            <Stack px={{ base: '3', md: '3' }}>
-                              <HStack
-                                justify='flex-start'
-                                align='flex-start'
-                                spacing='8'
-                                py='3'
-                              >
-                                <Stack
-                                  spacing='1'
-                                  align='center'
-                                  minW='35px'
-                                  zIndex='2'
-                                >
-                                  <ArrowUp
-                                    fontSize='xl'
-                                    color={
-                                      submission.votes[0] &&
-                                      submission.votes[0].direction === 1
-                                        ? 'primary.900'
-                                        : 'gray'
-                                    }
-                                    onClick={
-                                      size(submission.votes) !== 0
-                                        ? () => handleUpvote(submission.id)
-                                        : () => alert('You already voted')
-                                    }
-                                  />
-                                  <Text
-                                    maxW='xl'
-                                    mx='auto'
-                                    color={
-                                      submission.votes[0]
-                                        ? 'primary.900'
-                                        : 'light.900'
-                                    }
-                                    fontSize='xl'
-                                    fontWeight='medium'
-                                  >
-                                    {submission.votes.length || '0'}
-                                  </Text>
-                                  <ArrowDown
-                                    fontSize='xl'
-                                    color={
-                                      submission.votes[0] &&
-                                      submission.votes[0].direction === 2
-                                        ? 'primary.900'
-                                        : 'gray'
-                                    }
-                                    onClick={
-                                      size(submission.votes) === 0
-                                        ? () => handleDownvote(submission.id)
-                                        : () => alert('You already voted')
-                                    }
-                                  />
-                                </Stack>
-                                <Stack spacing='1' align='flex-start'>
-                                  <Text
-                                    maxW='xl'
-                                    color='light.900'
-                                    fontSize='xl'
-                                    fontWeight='medium'
-                                  >
-                                    {submission.title}
-                                  </Text>
-                                  <Text
-                                    color='light.900'
-                                    fontSize='lg'
-                                    fontWeight='light'
-                                  >
-                                    {submission.description}
-                                  </Text>
-                                </Stack>
-                              </HStack>
-                            </Stack>
-                            <Divider borderColor='dark.500' />
-                            <HStack
-                              justify='space-between'
-                              py='0'
-                              px={{ base: '3', md: '3' }}
-                            >
-                              <HStack spacing='3'>
-                                <Avatar
-                                  size={20}
-                                  name={stxAddress}
-                                  variant='beam'
-                                  colors={[
-                                    '#50DDC3',
-                                    '#624AF2',
-                                    '#EB00FF',
-                                    '#7301FA',
-                                    '#25C2A0',
-                                  ]}
-                                />
-                                <Text
-                                  color='light.500'
-                                  fontSize='sm'
-                                  fontWeight='regular'
-                                >
-                                  Submitted by{' '}
-                                  <Text
-                                    as='span'
-                                    color='light.500'
-                                    fontWeight='semibold'
-                                  >
-                                    {truncateAddress(submission.submitted_by)}
-                                  </Text>
-                                </Text>
-                              </HStack>
-                              <Button variant='dark' size='sm'>
-                                Read more
-                              </Button>
-                            </HStack>
-                          </Stack>
-                        </Card>
-                      </motion.div>
+              <Stack spacing='3'>
+                <Text fontSize='md' fontWeight='light' color='text-muted'>
+                  Discover Ideas
+                </Text>
+                <Heading mt='0 !important' size='lg' fontWeight='medium'>
+                  Ideas
+                </Heading>
+              </Stack>
+              <Stack align='center' direction='row' spacing='3'>
+                <RadioGroup onChange={setFilter} value={filter}>
+                  <Stack direction='row'>
+                    {map(['recent', 'most popular'], (tab: string) => (
+                      <Radio size='md' value={tab} _focus={{ outline: 'none' }}>
+                        {capitalize(tab)}
+                      </Radio>
                     ))}
                   </Stack>
-                </GridItem>
-              </Grid>
-            </motion.div>
+                </RadioGroup>
+              </Stack>
+            </SectionHeader>
+            <Stack spacing='8' pb='16' mt='6'>
+              <motion.div
+                variants={FADE_IN_VARIANTS}
+                initial={FADE_IN_VARIANTS.hidden}
+                animate={FADE_IN_VARIANTS.enter}
+                exit={FADE_IN_VARIANTS.exit}
+                transition={{ duration: 0.25, type: 'linear' }}
+              >
+                <Grid
+                  templateColumns='repeat(5, 1fr)'
+                  gap='5'
+                  py={{ base: '6', md: '6' }}
+                >
+                  <GridItem colSpan={5}>
+                    <Stack spacing='6'>
+                      {map(ideas?.data, (submission) => (
+                        <motion.div
+                          variants={FADE_IN_VARIANTS}
+                          initial={FADE_IN_VARIANTS.hidden}
+                          animate={FADE_IN_VARIANTS.enter}
+                          exit={FADE_IN_VARIANTS.exit}
+                          transition={{ duration: 0.25, type: 'linear' }}
+                        >
+                          <Card
+                            h='fit-content'
+                            bg='dark.900'
+                            p={{ base: '3', md: '3' }}
+                            cursor='pointer'
+                          >
+                            <Stack>
+                              <Stack px={{ base: '3', md: '3' }}>
+                                <HStack
+                                  justify='flex-start'
+                                  align='flex-start'
+                                  spacing='8'
+                                  py='3'
+                                >
+                                  <Stack
+                                    spacing='1'
+                                    align='center'
+                                    minW='35px'
+                                    zIndex='2'
+                                  >
+                                    <ArrowUp
+                                      fontSize='xl'
+                                      color={
+                                        submission.votes[0] &&
+                                        submission.votes[0].direction === 1
+                                          ? 'primary.900'
+                                          : 'gray'
+                                      }
+                                      onClick={
+                                        size(submission.votes) !== 0
+                                          ? () => handleUpvote(submission.id)
+                                          : () => alert('You already voted')
+                                      }
+                                    />
+                                    <Text
+                                      maxW='xl'
+                                      mx='auto'
+                                      color={
+                                        submission.votes[0]
+                                          ? 'primary.900'
+                                          : 'light.900'
+                                      }
+                                      fontSize='xl'
+                                      fontWeight='medium'
+                                    >
+                                      {submission.votes.length || '0'}
+                                    </Text>
+                                    <ArrowDown
+                                      fontSize='xl'
+                                      color={
+                                        submission.votes[0] &&
+                                        submission.votes[0].direction === 2
+                                          ? 'primary.900'
+                                          : 'gray'
+                                      }
+                                      onClick={
+                                        size(submission.votes) === 0
+                                          ? () => handleDownvote(submission.id)
+                                          : () => alert('You already voted')
+                                      }
+                                    />
+                                  </Stack>
+                                  <Stack spacing='1' align='flex-start'>
+                                    <Text
+                                      maxW='xl'
+                                      color='light.900'
+                                      fontSize='xl'
+                                      fontWeight='medium'
+                                    >
+                                      {submission.title}
+                                    </Text>
+                                    <Text
+                                      color='light.900'
+                                      fontSize='lg'
+                                      fontWeight='light'
+                                    >
+                                      {submission.description}
+                                    </Text>
+                                  </Stack>
+                                </HStack>
+                              </Stack>
+                              <Divider borderColor='dark.500' />
+                              <HStack
+                                justify='space-between'
+                                py='0'
+                                px={{ base: '3', md: '3' }}
+                              >
+                                <HStack spacing='3'>
+                                  <Avatar
+                                    size={20}
+                                    name={stxAddress}
+                                    variant='beam'
+                                    colors={[
+                                      '#50DDC3',
+                                      '#624AF2',
+                                      '#EB00FF',
+                                      '#7301FA',
+                                      '#25C2A0',
+                                    ]}
+                                  />
+                                  <Text
+                                    color='light.500'
+                                    fontSize='sm'
+                                    fontWeight='regular'
+                                  >
+                                    Submitted by{' '}
+                                    <Text
+                                      as='span'
+                                      color='light.500'
+                                      fontWeight='semibold'
+                                    >
+                                      {truncateAddress(submission.submitted_by)}
+                                    </Text>
+                                  </Text>
+                                </HStack>
+                                <Button variant='dark' size='sm'>
+                                  Read more
+                                </Button>
+                              </HStack>
+                            </Stack>
+                          </Card>
+                        </motion.div>
+                      ))}
+                    </Stack>
+                  </GridItem>
+                </Grid>
+              </motion.div>
+            </Stack>
           </Stack>
         </Stack>
       </Wrapper>
@@ -317,6 +328,4 @@ export default function Ideas() {
   );
 }
 
-Ideas.getLayout = (page: any) => (
-  <AppLayout header={<ProposalHeader />}>{page}</AppLayout>
-);
+Ideas.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;

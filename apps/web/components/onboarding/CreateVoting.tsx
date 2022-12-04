@@ -116,7 +116,20 @@ const ShowForm = (state: ShowFormProps) => {
         align='center'
         justify='center'
       >
-        <Box as='form' bg='dark.900' w='100%'>
+        <Box
+          as='form'
+          bg='dark.900'
+          w='100%'
+          overflowY='scroll'
+          overflowX='hidden'
+          scrollBehavior='smooth'
+          h='75vh'
+          css={{
+            '&::-webkit-scrollbar': {
+              width: '0',
+            },
+          }}
+        >
           <motion.div
             key={state?.isAvailable?.toString()}
             variants={FADE_IN_VARIANTS}
@@ -266,7 +279,7 @@ export const CreateVoting = (props: any) => {
             borderColor='dark.500'
             borderRadius='xl'
             h='full'
-            backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
+            backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #121416)'
             opacity='1'
           >
             <Stack spacing={{ base: '8', md: '12' }} justify='space-between'>

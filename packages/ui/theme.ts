@@ -327,7 +327,9 @@ const styles = {
   global: {
     body: {
       background: 'dark.900',
-      color: 'text-default',
+      color: 'light.900',
+      overscrollBehavior: 'none',
+      scrollBehavior: 'smooth',
     },
   },
 };
@@ -581,18 +583,18 @@ const components = {
         borderColor: 'dark.500',
         _checked: {
           boxShadow: 'none',
-          bg: 'primary.900',
+          bg: 'dark.500',
           borderColor: 'primary.900',
           color: 'dark.500',
           _hover: {
             boxShadow: 'none',
-            bg: 'primary.900',
+            bg: 'dark.500',
             borderColor: 'primary.900',
             color: 'dark.500',
           },
           _focus: {
             boxShadow: 'none',
-            bg: 'primary.900',
+            bg: 'dark.500',
             borderColor: 'primary.900',
             color: 'dark.500',
           },
@@ -605,14 +607,49 @@ const components = {
         },
         _hover: {
           boxShadow: 'none',
-          bg: 'dark.500',
+          bg: 'dark.900',
           borderColor: 'primary.900',
           color: 'dark.500',
+        },
+        _disabled: {
+          boxShadow: 'none',
+          bg: 'dark.800',
+          borderColor: 'dark.500',
+          color: 'dark.500',
+          _hover: {
+            boxShadow: 'none',
+            bg: 'dark.800',
+            borderColor: 'dark.500',
+            color: 'dark.500',
+          },
         },
       },
     },
   },
   Steps,
+  Table: {
+    variants: {
+      simple: {
+        th: {
+          p: 5,
+          border: 'none',
+          color: 'light.500',
+          textTransform: 'none',
+          fontWeight: 'regular',
+          letterSpacing: 'tight',
+          fontSize: 'sm',
+        },
+        td: {
+          p: 6,
+          border: 'none',
+          color: 'light.900',
+          textTransform: 'none',
+          fontWeight: 'light',
+          fontSize: 'sm',
+        },
+      },
+    },
+  },
   Tabs: {
     baseStyle: {
       tab: {

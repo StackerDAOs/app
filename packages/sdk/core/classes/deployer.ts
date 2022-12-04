@@ -178,6 +178,7 @@ export class Deployer {
    *  vaultAddress: "club-vault",
    *  fundraisingDurationInBlocks: 144,
    *  minimumDepositAmount: 1000000,
+   * fundraiseGoal: 1500
    * });
    * ```
    *
@@ -190,6 +191,7 @@ export class Deployer {
    *  vaultAddress: string;
    *  fundraisingDurationInBlocks: number;
    *  minimumDepositAmount?: number;
+   * fundraiseGoal?: number;
    *  onFinish?: (payload: FinishedTxData) => void;
    *  onCancel?: (error?: string) => void;
    * }
@@ -207,6 +209,7 @@ export class Deployer {
       vaultAddress,
       fundraisingDurationInBlocks,
       minimumDepositAmount,
+      fundraiseGoal,
     } = params;
     const codeBody = clubExtension(
       membershipPassAddress,
@@ -214,6 +217,7 @@ export class Deployer {
       vaultAddress,
       fundraisingDurationInBlocks,
       minimumDepositAmount,
+      fundraiseGoal,
       this.coreAddress,
     );
     return this.openContractCallDeploy({

@@ -3,14 +3,14 @@ import { Icon } from '@chakra-ui/react';
 export const PlusIcon = (props: any) => (
   <Icon
     xmlns='http://www.w3.org/2000/svg'
-    viewBow='0 0 20 20'
+    viewBox='0 0 24 24'
     fill='currentColor'
     {...props}
   >
     <path
-      strokeLinecap='round'
-      strokeLinejoin='round'
-      d='M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z'
+      fill-rule='evenodd'
+      d='M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z'
+      clip-rule='evenodd'
     />
   </Icon>
 );

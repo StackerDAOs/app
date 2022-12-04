@@ -389,6 +389,7 @@ export const clubExtension = (
   vaultContract: string,
   startWindow: number,
   minimumDepositAmount: number = 0,
+  fundraiseGoal: number = 0,
   coreDao: string,
 ) => `
 (impl-trait '${traitPrincipal}.extension-trait.extension-trait)
@@ -397,17 +398,18 @@ export const clubExtension = (
 (define-constant ERR_DEPOSIT_WINDOW_ALREADY_OPEN (err u2301))
 (define-constant ERR_DEPOSIT_WINDOW_CLOSED (err u2302))
 (define-constant ERR_MINIMUM_DEPOSIT_NOT_REACHED (err u2303))
-(define-constant ERR_REACHED_MAX_RAISE_AMOUNT (err u2304))
-(define-constant ERR_CLAIM_WINDOW_NOT_OPEN (err u2305))
-(define-constant ERR_UNKNOWN_PARAMETER (err u2306))
+(define-constant ERR_CLAIM_WINDOW_NOT_OPEN (err u2304))
+(define-constant ERR_UNKNOWN_PARAMETER (err u2305))
+(define-constant ERR_NOT_ENOUGH_FUNDS (err u2306))
 
 (define-data-var roundId uint u0)
 
 (define-map Parameters (string-ascii 34) uint)
-(define-map DepositRounds uint { cap: uint, closesAt: uint, raised: uint })
+(define-map DepositRounds uint {goal: uint, closesAt: uint, raised: uint})
 
 (map-set Parameters "startWindow" u${startWindow})
 (map-set Parameters "minimumDepositAmount" u${minimumDepositAmount})
+(map-set Parameters "fundraiseGoal" u${fundraiseGoal})
 
 (define-public (is-dao-or-extension)
   (ok (asserts! (or (is-eq tx-sender '${coreDao}) (contract-call? '${coreDao} is-extension contract-caller)) ERR_UNAUTHORIZED))
@@ -429,7 +431,7 @@ export const clubExtension = (
         (nextRoundId (+ (var-get roundId) u1))
       )
       (var-set roundId nextRoundId)
-      (ok (map-insert DepositRounds nextRoundId { cap: (* (pow u10 u6) u10000), closesAt: (+ block-height (try! (get-parameter "startWindow"))), raised: u0 }))
+      (ok (map-insert DepositRounds nextRoundId {goal: (* (pow u10 u6) (try! (get-parameter "fundraiseGoal"))), closesAt: (+ block-height (try! (get-parameter "startWindow"))), raised: u0}))
     )
   )
 )
@@ -438,7 +440,6 @@ export const clubExtension = (
   (begin
     (asserts! (is-eq tx-sender (unwrap! (contract-call? '${nftMembershipContract} get-owner membershipTokenId) (err u1))) ERR_UNAUTHORIZED)
     (asserts! (is-eq true (is-raising)) ERR_DEPOSIT_WINDOW_CLOSED)
-    (asserts! (<= (+ amount (unwrap-panic (get-raised (var-get roundId)))) (unwrap-panic (get-cap (var-get roundId)))) ERR_REACHED_MAX_RAISE_AMOUNT)
     (asserts! (>= amount (try! (get-parameter "minimumDepositAmount"))) ERR_MINIMUM_DEPOSIT_NOT_REACHED)
     (map-set DepositRounds (var-get roundId)
       (merge (unwrap-panic (get-round (var-get roundId))) { raised: (+ amount (unwrap-panic (get-raised (var-get roundId)))) })
@@ -518,8 +519,8 @@ export const clubExtension = (
   (map-get? DepositRounds id)
 )
 
-(define-read-only (get-cap (id uint))
-  (get cap (get-round id))
+(define-read-only (get-goal (id uint))
+  (get goal (get-round id))
 )
 
 (define-read-only (get-closes-at (id uint))

@@ -30,6 +30,7 @@ export interface ClubParams extends ContractCallParams {
   vaultAddress: string;
   fundraisingDurationInBlocks: number;
   minimumDepositAmount?: number;
+  fundraiseGoal?: number;
 }
 
 export interface SubmissionParams extends ContractCallParams {

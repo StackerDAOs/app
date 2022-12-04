@@ -17,11 +17,11 @@ import {
   Stack,
   Text,
 } from 'ui';
-import type { ButtonProps } from '@chakra-ui/react';
+import type { TextProps, ButtonProps } from '@chakra-ui/react';
 import { useAccount, useAuth } from 'ui/components';
 import { ConnectButton } from 'ui/components/buttons';
 import { useAccountBalance, useDAO, useClubs, useSubmissions } from 'ui/hooks';
-import { ToggleUpDown } from 'ui/components/icons';
+import { ChevronDown, LogoIcon, ToggleUpDown } from 'ui/components/icons';
 import Avatar from 'boring-avatars';
 import { getPercentage, nameToAbbreviation, ustxToStx } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
@@ -46,35 +46,44 @@ export const UserProfile = (props: UserProfileProps) => {
   return (
     <Popover trigger='click' placement='bottom-start'>
       <PopoverTrigger>
-        <HStack
+        <Stack
           spacing='3'
           cursor='pointer'
           borderRadius='lg'
-          p='3'
+          py='4'
+          px='6'
           justify='center'
         >
           <Avatar
-            size={35}
-            name={stxAddress}
-            variant='marble'
+            size={30}
+            name={club}
+            variant='sunset'
             colors={['#624AF2', '#7301fa', '#eb00ff', '#50DDC3']}
           />
-          <Box>
-            <Text color='light.900' fontSize='sm' fontWeight='semibold'>
-              {club}
-            </Text>
-            <Text fontWeight='regular' fontSize='sm' color='light.500'>
+
+          <Stack spacing='0'>
+            <Text fontWeight='light' fontSize='xs' color='gray'>
               {truncateAddress(stxAddress)}
             </Text>
-          </Box>
-          <Icon as={ToggleUpDown} color='light.500' fontSize='2xl' />
-        </HStack>
+            <HStack justify='space-between'>
+              <Text
+                color='light.900'
+                fontSize='lg'
+                fontWeight='medium'
+                letterSpacing='wide'
+              >
+                {club}
+              </Text>
+              <Icon as={ChevronDown} color='gray' />
+            </HStack>
+          </Stack>
+        </Stack>
       </PopoverTrigger>
       <PopoverContent
         borderColor='dark.500'
         borderWidth='1px'
-        bg='dark.900'
-        maxWidth='78.5%'
+        bg='dark.800'
+        maxWidth='85%'
         _focus={{ outline: 'none' }}
       >
         <PopoverHeader bg='dark.500' borderColor='dark.500'>
@@ -99,7 +108,7 @@ export const UserProfile = (props: UserProfileProps) => {
             align='flex-start'
             spacing='3'
             p='3'
-            _hover={{ cursor: 'pointer', bg: 'dark.700' }}
+            _hover={{ cursor: 'pointer', bg: 'dark.800' }}
           >
             <Button
               variant='link'
@@ -114,7 +123,7 @@ export const UserProfile = (props: UserProfileProps) => {
         </Stack>
         <PopoverFooter
           borderColor='dark.500'
-          _hover={{ cursor: 'pointer', bg: 'dark.700' }}
+          _hover={{ cursor: 'pointer', bg: 'dark.800' }}
         >
           <ConnectButton
             variant='link'
@@ -129,6 +138,18 @@ export const UserProfile = (props: UserProfileProps) => {
   );
 };
 
+const NavHeading = (props: TextProps) => (
+  <Text
+    as='h4'
+    fontSize='xs'
+    fontWeight='semibold'
+    px='4'
+    lineHeight='1.25'
+    color='gray'
+    {...props}
+  />
+);
+
 interface NavButtonProps extends ButtonProps {
   label: string;
   isSelected: boolean;
@@ -136,43 +157,42 @@ interface NavButtonProps extends ButtonProps {
 
 export const NavButton = (props: NavButtonProps) => {
   const { label, isSelected, ...buttonProps } = props;
-  const selectedStyles = {
-    color: 'light.900',
-    fontWeight: 'semibold',
-  };
+
   return (
     <Button
+      px='6'
       variant='ghost'
       justifyContent='start'
       borderTopLeftRadius='sm'
       borderBottomLeftRadius='sm'
       borderTopRightRadius='none'
       borderBottomRightRadius='none'
-      bg={isSelected ? 'dark.700' : 'transparent'}
-      _hover={{ bg: 'dark.700', color: 'transparent' }}
-      _selected={selectedStyles}
+      fontWeight='light'
+      bg={isSelected ? 'dark.800' : 'transparent'}
+      _hover={{ bg: 'dark.800', color: 'light.900' }}
+      _selected={{
+        fontWeight: 'regular',
+      }}
       _active={{
         color: 'light.900',
-        bg: 'dark.700',
+        bg: 'dark.800',
         borderColor: 'transparent',
       }}
       _focus={{
         color: 'light.900',
-        bg: 'dark.700',
-        boxShadow: 'inset 4px 0px 0px #624AF2',
+        bg: 'dark.800',
+        boxShadow: 'inset -4px 0px 0px #624AF2',
       }}
-      boxShadow={isSelected ? 'inset 4px 0px 0px #624AF2' : 'none'}
+      boxShadow={isSelected ? 'inset -4px 0px 0px #624AF2' : 'none'}
       {...buttonProps}
     >
-      <HStack spacing='3'>
-        {isSelected ? (
-          <Text {...selectedStyles}>{label}</Text>
-        ) : (
-          <Text color='light.500' fontWeight='medium'>
-            {label}
-          </Text>
-        )}
-      </HStack>
+      {isSelected ? (
+        <Text fontWeight='medium'>{label}</Text>
+      ) : (
+        <Text color='light.500' fontWeight='regular'>
+          {label}
+        </Text>
+      )}
     </Button>
   );
 };
@@ -188,243 +208,66 @@ export const Sidebar = () => {
   const submissions = useSubmissions();
   const hasPendingSubmissions = size(submissions?.data) > 0;
 
-  const InboxContainer = (
-    <Stack px={{ base: '4', sm: '4' }} hidden={isActive}>
-      <Box
-        bg='dark.700'
-        px='4'
-        py='5'
-        borderRadius='lg'
-        borderWidth='1px'
-        borderColor='dark.500'
-        maxW='225px'
-      >
-        <Stack spacing='4'>
-          <Stack spacing='1'>
-            <Text fontSize='sm' fontWeight='semibold'>
-              You still have a few steps left
-            </Text>
-            <Text fontSize='sm' color='gray'>
-              Finish deploying your Club contracts to get started.
-            </Text>
-          </Stack>
-
-          <Progress
-            colorScheme='primary'
-            borderRadius='lg'
-            size='md'
-            value={getPercentage(EXTENSION_SIZE, size(dao?.data?.extensions))}
-            bg='dark.500'
-          />
-          <HStack spacing='3'>
-            <Link href={`/${slug}/start`}>
-              <Button variant='primary' size='sm' isFullWidth>
-                Finish setup
-              </Button>
-            </Link>
-          </HStack>
-        </Stack>
-      </Box>
-    </Stack>
-  );
-
-  const DeploymentContainer = (
-    <Stack px={{ base: '4', sm: '4' }} hidden={!hasPendingSubmissions}>
-      <Box
-        bg='dark.700'
-        px='4'
-        py='5'
-        borderRadius='lg'
-        borderWidth='1px'
-        borderColor='dark.500'
-        maxW='300px'
-      >
-        <Stack spacing='4'>
-          <Stack spacing='1'>
-            <Text fontSize='sm' fontWeight='semibold'>
-              You have proposals ready for submission!
-            </Text>
-            <Text fontSize='sm' color='gray'>
-              When you&apos;re ready, submit your proposal to the Club.
-            </Text>
-          </Stack>
-          <HStack spacing='3'>
-            <Button variant='primary' size='sm' isFullWidth>
-              Submit proposals
-            </Button>
-          </HStack>
-        </Stack>
-      </Box>
-    </Stack>
-  );
-
   if (isLoading) return null;
 
-  if (!dao?.data || !isSignedIn) {
-    return (
-      <Flex
-        as='section'
-        minH='100vh'
-        bg='dark.800'
-        position='sticky'
-        top='0'
-        zIndex='2'
-        borderRightWidth='1px'
-        borderRightColor='dark.500'
-      >
-        <Flex
-          flex='1'
-          overflowY='auto'
-          boxShadow='sm-dark'
-          maxW={{ base: 'full', sm: 'xs' }}
-          minW='100px'
-          justify='center'
-          py={{ base: '6', sm: '8' }}
-          px={{ base: '4', sm: '6' }}
-        >
-          <Stack justify='space-between' spacing='1'>
-            <Stack spacing={{ base: '5', sm: '6' }} shouldWrapChildren>
-              {map(clubs, (data, index) => (
-                <Circle
-                  key={index}
-                  bg='primary-accent.900'
-                  borderColor='dark.500'
-                  opacity='0.9'
-                  borderWidth='1px'
-                  size='12'
-                  cursor='pointer'
-                  onClick={() => router.push(`/${data.club?.slug}`)}
-                  _hover={{ opacity: 1 }}
-                >
-                  <Text fontSize='md' fontWeight='medium'>
-                    {nameToAbbreviation(data.club?.slug)}
-                  </Text>
-                </Circle>
-              ))}
-              <Circle
-                hidden={!isSignedIn}
-                bg='light.500'
-                borderColor='dark.500'
-                borderWidth='1px'
-                size='12'
-                cursor='pointer'
-                _hover={{ bg: 'light.900' }}
-              >
-                <Text color='dark.700' fontSize='xl' fontWeight='medium'>
-                  +
-                </Text>
-              </Circle>
-            </Stack>
-          </Stack>
-        </Flex>
-      </Flex>
-    );
-  }
-
   return (
-    <>
-      <Flex
-        as='section'
-        minH='100vh'
-        bg='dark.800'
-        position='sticky'
-        top='0'
-        zIndex='2'
-        borderRightWidth='1px'
-        borderRightColor='dark.500'
-      >
-        <Flex
-          flex='1'
-          overflowY='auto'
-          boxShadow='sm-dark'
-          maxW={{ base: 'full', sm: 'xs' }}
-          py={{ base: '6', sm: '8' }}
-          px={{ base: '4', sm: '6' }}
-        >
-          <Stack justify='space-between' spacing='1'>
-            <Stack spacing={{ base: '5', sm: '6' }} shouldWrapChildren>
-              {map(clubs, (data, index) => (
-                <Circle
-                  key={index}
-                  bg='primary-accent.900'
-                  borderColor='dark.500'
-                  opacity='0.9'
-                  borderWidth='1px'
-                  size='12'
-                  cursor='pointer'
-                  onClick={() => router.push(`/${data.club?.slug}`)}
-                  _hover={{ opacity: 1 }}
-                >
-                  <Text fontSize='md' fontWeight='medium'>
-                    {nameToAbbreviation(data.club?.slug)}
-                  </Text>
-                </Circle>
-              ))}
-              <Circle
-                bg='light.500'
-                borderColor='dark.500'
-                opacity='0.9'
-                borderWidth='1px'
-                size='12'
-                cursor='pointer'
-                _hover={{ opacity: 1 }}
-              >
-                <Text color='dark.700' fontSize='xl' fontWeight='medium'>
-                  +
-                </Text>
-              </Circle>
-            </Stack>
-          </Stack>
-        </Flex>
-      </Flex>
-      <Flex
-        as='section'
-        minH='100vh'
-        bg='dark.800'
-        position='sticky'
-        top='0'
-        zIndex='2'
-        borderRightWidth='1px'
-        borderRightColor='dark.500'
-      >
-        <Flex flex='1' overflowY='auto' w='250px' py={{ base: '3', sm: '4' }}>
-          <Stack justify='space-between' spacing='1' w='100%'>
-            <Stack spacing={{ base: '3', sm: '3' }} shouldWrapChildren>
-              <UserProfile club={dao?.data?.name} />
-              <Divider borderColor='dark.500' />
-              <Stack spacing='1'>
-                <Link href={`/${slug}`}>
+    <Flex
+      as='section'
+      minH='100vh'
+      bg='dark.900'
+      position='sticky'
+      top='0'
+      zIndex='2'
+      borderRightWidth='1px'
+      borderRightColor='dark.500'
+    >
+      <Flex flex='1' overflowY='auto'>
+        <Stack justify='space-between' spacing='1' w='100%'>
+          <Stack>
+            <UserProfile club={dao?.data?.name} />
+            <Divider borderColor='dark.500' />
+            <Stack spacing='2' py='3'>
+              <Link href={`/${slug}`}>
+                <NavButton
+                  label='Dashboard'
+                  isSelected={router.pathname.split('/')[2] === undefined}
+                />
+              </Link>
+              {[
+                { label: 'Vault', route: '/vault' },
+                { label: 'Ideas', route: '/ideas' },
+                {
+                  label: 'Proposals',
+                  route: '/proposals',
+                },
+                {
+                  label: 'Extensions',
+                  route: '/extensions',
+                },
+              ].map(({ label, route }) => (
+                <Link key={label} href={`/${slug}${route}`}>
                   <NavButton
-                    label='Dashboard'
-                    isSelected={router.pathname.split('/')[2] === undefined}
+                    label={label}
+                    isSelected={isSelected(label?.toLocaleLowerCase())}
                   />
                 </Link>
-                {[
-                  { label: 'Vault', route: '/vault' },
-                  { label: 'Ideas', route: '/ideas' },
-                  {
-                    label: 'Proposals',
-                    route: '/proposals',
-                  },
-                  {
-                    label: 'Extensions',
-                    route: '/extensions',
-                  },
-                ].map(({ label, route }) => (
-                  <Link key={label} href={`/${slug}${route}`}>
-                    <NavButton
-                      label={label}
-                      isSelected={isSelected(label?.toLocaleLowerCase())}
-                    />
-                  </Link>
-                ))}
+              ))}
+            </Stack>
+            <Stack spacing={{ base: '5', sm: '6' }}>
+              <Stack spacing='3'>
+                <NavHeading>Configuration</NavHeading>
+                <Stack spacing='1'>
+                  <NavButton label='Help' isSelected={isSelected('Help')} />
+                  <NavButton
+                    label='Settings'
+                    isSelected={isSelected('Settings')}
+                  />
+                </Stack>
               </Stack>
             </Stack>
-            {InboxContainer}
-            {DeploymentContainer}
           </Stack>
-        </Flex>
+        </Stack>
       </Flex>
-    </>
+    </Flex>
   );
 };

@@ -3,9 +3,10 @@ import { useQuery } from 'react-query';
 import { getDAO } from 'api/clubs';
 import { useRouter } from 'next/router';
 
-export function useDAO() {
+export function useDAO(daoName?: string | undefined) {
   const router = useRouter();
-  const { dao } = router.query as any;
+  const slug = router.query as any;
+  const dao = slug?.dao ? slug.dao : daoName;
 
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
     ['dao', dao],

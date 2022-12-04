@@ -12,6 +12,10 @@ export {
   AvatarGroup,
   Badge,
   Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
   Button,
   ButtonGroup,
   Checkbox,
@@ -107,6 +111,7 @@ export {
   useBreakpointValue,
   useClipboard,
   useDisclosure,
+  toast,
   useToast,
   useMenuButton,
 } from '@chakra-ui/react';

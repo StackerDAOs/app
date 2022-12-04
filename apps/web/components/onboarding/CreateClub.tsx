@@ -1,7 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
-import create from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { coreDAO } from 'utils/contracts';
+import { getTransaction } from 'api/clubs';
+import { nameToSlug } from 'utils';
+import { CLUB_TYPES } from 'api/constants';
 import {
   Badge,
   Box,
@@ -16,7 +18,9 @@ import {
   GridItem,
   Heading,
   HStack,
+  Icon,
   Input,
+  Progress,
   SimpleGrid,
   Stack,
   Spinner,
@@ -28,14 +32,13 @@ import {
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { shortenAddress } from '@stacks-os/utils';
 import { defaultTo, isEmpty, isString } from 'lodash';
-import { useMultiStepForm } from 'ui/hooks';
+import { StacksDeploy } from 'ui/components/buttons';
 import { useSteps } from 'ui/store';
+import { Step } from 'ui/components/feedback';
 import { useGlobalState } from 'store';
-
-type ShowFormProps = {
-  isAvailable: boolean;
-  isTransactionPending: boolean;
-};
+import { useDAO, useTransaction } from 'ui/hooks';
+import { ChevronRight, ArrowRight } from 'ui/components/icons';
+import { useCreateClub } from 'api/clubs/mutations';
 
 const NameForm = () => {
   const name = useGlobalState((state) => state.club.name);
@@ -43,7 +46,7 @@ const NameForm = () => {
   return (
     <FormControl id='name'>
       <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
-        Club Name
+        Name
       </FormLabel>
       <Input
         placeholder='Stacks Investment Club'
@@ -59,213 +62,109 @@ const NameForm = () => {
   );
 };
 
-const AddMemberForm = () => {
-  const members = useGlobalState((state) => state.club.members);
-  const addMember = useGlobalState((state) => state.addMember);
-  const removeMember = useGlobalState((state) => state.removeMember);
-  return (
-    <FormControl id='member'>
-      <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
-        Member Address
-      </FormLabel>
-      <Stack spacing='3'>
-        <Input
-          placeholder='SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE'
-          autoComplete='off'
-          size='lg'
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              console.log('value', e.currentTarget.value);
-              addMember(e.currentTarget.value);
-              e.currentTarget.value = '';
-            }
-          }}
-        />
-        <HStack spacing={4}>
-          <SimpleGrid columns={4} spacing={4}>
-            {members.map((member: string) => (
-              <Tag
-                key={member}
-                size='lg'
-                borderRadius='full'
-                variant='dark'
-                onClick={() => removeMember(member)}
-              >
-                <TagLabel>{member && shortenAddress(member)}</TagLabel>
-                <TagCloseButton />
-              </Tag>
-            ))}
-          </SimpleGrid>
-        </HStack>
-      </Stack>
-    </FormControl>
-  );
-};
-
-const ShowForm = (state: ShowFormProps) => {
-  const { currentStep, setStep } = useSteps();
-  if (state.isAvailable) {
-    return (
-      <Stack
-        as={Flex}
-        direction='row'
-        pr={{ base: '8', md: '12' }}
-        h='full'
-        align='center'
-        justify='center'
-      >
-        <Box as='form' bg='dark.900' w='100%'>
-          <motion.div
-            key={state?.isAvailable?.toString()}
-            variants={FADE_IN_VARIANTS}
-            initial={FADE_IN_VARIANTS.hidden}
-            animate={FADE_IN_VARIANTS.enter}
-            exit={FADE_IN_VARIANTS.exit}
-            transition={{ duration: 0.8, type: 'linear' }}
-          >
-            <Stack
-              spacing='12'
-              px={{ base: '4', md: '6' }}
-              py={{ base: '5', md: '6' }}
-            >
-              <Stack spacing='6' direction='column'>
-                <Box>
-                  <Text fontSize='lg' fontWeight='medium'>
-                    General Information
-                  </Text>
-                </Box>
-                <NameForm />
-              </Stack>
-              <Stack spacing='6' direction='column'>
-                <Box>
-                  <Text fontSize='lg' fontWeight='medium'>
-                    Club Members
-                  </Text>
-                  <Text color='light.500' fontSize='sm' maxW='lg'>
-                    Members will be minted a Club Pass and be able to deposit
-                    funds into the Club once live. At least 2 members are
-                    required.
-                  </Text>
-                </Box>
-                <AddMemberForm />
-              </Stack>
-            </Stack>
-          </motion.div>
-        </Box>
-      </Stack>
-    );
-  }
-
-  if (state.isTransactionPending) {
-    return (
-      <Stack as={Flex} h='100vh' align='center' justify='center'>
-        <motion.div
-          key={state?.isAvailable?.toString()}
-          variants={FADE_IN_VARIANTS}
-          initial={FADE_IN_VARIANTS.hidden}
-          animate={FADE_IN_VARIANTS.enter}
-          exit={FADE_IN_VARIANTS.exit}
-          transition={{ duration: 0.8, type: 'linear' }}
-        >
-          <Stack spacing={{ base: '8', md: '10' }} align='center'>
-            <Stack spacing='3' align='center'>
-              <Heading size='2xl' fontWeight='thin'>
-                Create Club
-              </Heading>
-              <Text
-                fontSize={{ base: 'lg', md: 'xl' }}
-                fontWeight='light'
-                color='gray'
-                maxW='xl'
-                textAlign='center'
-              >
-                Your Club name will be used to generate a unique URL for your
-                members to join and manage funds.
-              </Text>
-            </Stack>
-            <Button variant='link' size='lg' colorScheme='dark'>
-              View transaction in explorer
-            </Button>
-            <Button
-              size='lg'
-              variant='default'
-              onClick={() => setStep(currentStep + 1)}
-            >
-              Next
-            </Button>
-          </Stack>
-        </motion.div>
-      </Stack>
-    );
-  }
-
-  return (
-    <Stack as={Flex} h='100vh' align='center' justify='center'>
-      <motion.div
-        key={state?.isAvailable?.toString()}
-        variants={FADE_IN_VARIANTS}
-        initial={FADE_IN_VARIANTS.hidden}
-        animate={FADE_IN_VARIANTS.enter}
-        exit={FADE_IN_VARIANTS.exit}
-        transition={{ duration: 0.8, type: 'linear' }}
-      >
-        <Stack spacing={{ base: '8', md: '10' }} align='center'>
-          <Stack spacing='3' align='center'>
-            <Heading size='2xl' fontWeight='thin'>
-              You&apos;re ready!
-            </Heading>
-            <Text
-              fontSize={{ base: 'lg', md: 'xl' }}
-              fontWeight='light'
-              color='gray'
-              maxW='xl'
-              textAlign='center'
-            >
-              Your Club name will be used to generate a unique URL for your
-              members to join and manage funds.
-            </Text>
-          </Stack>
-          <Link href='/daos'>
-            <Button variant='link' size='lg' colorScheme='dark'>
-              Start configuring your Club
-            </Button>
-          </Link>
-          <Button
-            size='lg'
-            variant='default'
-            onClick={() => setStep(currentStep + 1)}
-          >
-            Next
-          </Button>
-        </Stack>
-      </motion.div>
-    </Stack>
-  );
-};
+// const AddMemberForm = () => {
+//   const members = useGlobalState((state) => state.club.members);
+//   const addMember = useGlobalState((state) => state.addMember);
+//   const removeMember = useGlobalState((state) => state.removeMember);
+//   return (
+//     <FormControl id='member'>
+//       <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
+//         STX Address
+//       </FormLabel>
+//       <Stack spacing='3'>
+//         <Input
+//           placeholder='SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE'
+//           autoComplete='off'
+//           size='lg'
+//           onKeyDown={(e) => {
+//             if (e.key === 'Enter') {
+//               e.preventDefault();
+//               console.log('value', e.currentTarget.value);
+//               addMember(e.currentTarget.value);
+//               e.currentTarget.value = '';
+//             }
+//           }}
+//         />
+//         <FormHelperText fontWeight='light' color='gray'>
+//           Members will be minted a Club Pass and be able to deposit funds into
+//           the Club once live. At least 2 members are required.
+//         </FormHelperText>
+//         <HStack spacing={4}>
+//           <SimpleGrid columns={4} spacing={4}>
+//             {members.map((member: string, index: number) => (
+//               <Tag key={index} size='lg' borderRadius='full' variant='dark'>
+//                 <TagLabel>{member && shortenAddress(member)}</TagLabel>
+//                 <TagCloseButton onClick={() => removeMember(member)} />
+//               </Tag>
+//             ))}
+//           </SimpleGrid>
+//         </HStack>
+//       </Stack>
+//     </FormControl>
+//   );
+// };
 
 export const CreateClub = (props: any) => {
   const data = useGlobalState((state) => state.club);
-  const [isAvailable, setIsAvailable] = React.useState(true);
+  const dao = useDAO(data?.name);
+  const [transactionId, setTransactionId] = React.useState(dao?.data?.tx_id);
   const [isChecked, setIsChecked] = React.useState(false);
-  const canDeploy = isChecked && data.name && data.members.length > 1;
-  const isTransactionPending = false;
-  const alreadyDeployed = false;
+  const canDeploy =
+    isChecked && data.name && data.members.length > 1 && !transactionId;
+  const { currentStep, setStep } = useSteps();
+  const transaction = useTransaction(transactionId);
+  const isReady =
+    transaction?.data?.tx_status === 'pending' ||
+    transaction?.data?.tx_status === 'success';
+  const createClub = useCreateClub();
+  const onSuccess = async (transactionId: string, action: any) => {
+    const transaction = await getTransaction(transactionId);
+    const name = data?.name;
+    const slug = nameToSlug(name);
+    const type_id = CLUB_TYPES.INVESTMENT_CLUB;
+    const txId = transactionId;
+    const userAddress = transaction?.sender_address;
+    const contractAddress = transaction?.smart_contract?.contract_id;
+    const config = {
+      memberAddresses: data?.members,
+    };
+
+    action.mutate(
+      {
+        club: {
+          name,
+          slug,
+          type_id,
+          tx_id: txId,
+          contract_address: contractAddress,
+          creator_address: userAddress,
+          config,
+        },
+        userAddress,
+      },
+      {
+        onSuccess: () => {
+          setTransactionId(transactionId);
+        },
+      },
+    );
+  };
+
   return (
     <Box h='100vh'>
       <Grid templateColumns='repeat(5, 1fr)'>
-        <GridItem colSpan={{ base: 5, md: 3, lg: 2 }} p='8' h='100vh'>
+        <GridItem colSpan={{ base: 5, md: 3, lg: 2 }} p='16' h='100vh'>
           <Stack
             as={Flex}
             direction='row'
-            py={{ base: '16', md: '24' }}
+            py={{ base: '16', md: '12' }}
             px={{ base: '8', md: '12' }}
             bg='dark.800'
             borderWidth='1px'
             borderColor='dark.500'
             borderRadius='xl'
             h='full'
-            backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
+            backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #121416)'
             opacity='1'
           >
             <Stack spacing={{ base: '8', md: '12' }} justify='space-between'>
@@ -370,15 +269,15 @@ export const CreateClub = (props: any) => {
                 </Stack>
               </motion.div>
               <Stack spacing='6'>
-                <Button
-                  size='lg'
+                <StacksDeploy
                   variant='primary'
-                  isDisabled={!canDeploy || alreadyDeployed}
-                  isLoading={isTransactionPending}
-                  onClick={() => setIsAvailable(!isAvailable)}
-                >
-                  Deploy
-                </Button>
+                  buttonName='Deploy'
+                  template={coreDAO()}
+                  onSuccess={(transaction) =>
+                    onSuccess(transaction?.txId, createClub)
+                  }
+                  isDisabled={!canDeploy}
+                />
                 <Stack direction='row' justify='center'>
                   <Checkbox
                     size='sm'
@@ -395,10 +294,99 @@ export const CreateClub = (props: any) => {
           </Stack>
         </GridItem>
         <GridItem colSpan={3}>
-          <ShowForm
-            isAvailable={isAvailable}
-            isTransactionPending={isTransactionPending}
-          />
+          <Stack
+            as={Flex}
+            direction='row'
+            pr={{ base: '8', md: '12' }}
+            h='full'
+            align='center'
+            justify='center'
+          >
+            <Box
+              as='form'
+              bg='dark.900'
+              w='100%'
+              overflowY='scroll'
+              overflowX='hidden'
+              scrollBehavior='smooth'
+              h='75vh'
+              css={{
+                '&::-webkit-scrollbar': {
+                  width: '0',
+                },
+              }}
+            >
+              <motion.div
+                key={transactionId?.toString()}
+                variants={FADE_IN_VARIANTS}
+                initial={FADE_IN_VARIANTS.hidden}
+                animate={FADE_IN_VARIANTS.enter}
+                exit={FADE_IN_VARIANTS.exit}
+                transition={{ duration: 0.8, type: 'linear' }}
+              >
+                <Stack spacing='12'>
+                  <HStack spacing='0'>
+                    {[1, 2, 3, 4, 5, 6].map((id) => (
+                      <Step
+                        key={id}
+                        cursor='pointer'
+                        isActive={1 === id}
+                        isCompleted={currentStep > id}
+                        isLastStep={6 === id}
+                      />
+                    ))}
+                  </HStack>
+                  {isReady ? (
+                    <Stack spacing='6'>
+                      <Stack spacing='1' direction='column'>
+                        <Heading size='md' fontWeight='medium'>
+                          Your Club contract is pending
+                        </Heading>
+                        <Text
+                          fontSize={{ base: 'sm', md: 'md' }}
+                          fontWeight='light'
+                          color='gray'
+                          maxW='xl'
+                        >
+                          You're on your way to creating your own investment
+                          club. The next few steps will walk you through
+                          deploying your Club's extensions.
+                        </Text>
+                      </Stack>
+                      <HStack justify='flex-start'>
+                        <Button
+                          variant='default'
+                          rightIcon={<ArrowRight />}
+                          onClick={() => setStep(currentStep + 1)}
+                        >
+                          Deploy Club Membership Pass
+                        </Button>
+                      </HStack>
+                    </Stack>
+                  ) : (
+                    <Stack spacing='12'>
+                      <Stack spacing='3' direction='column'>
+                        <Box>
+                          <Text fontSize='lg' fontWeight='medium'>
+                            Club Details
+                          </Text>
+                        </Box>
+                        <NameForm />
+                      </Stack>
+                      <Stack spacing='3' direction='column'>
+                        <Box>
+                          <Text fontSize='lg' fontWeight='medium'>
+                            Club Members
+                          </Text>
+                        </Box>
+                        <AddMemberForm />
+                      </Stack>
+                    </Stack>
+                  )}
+                </Stack>
+              </motion.div>
+            </Box>
+          </Stack>
         </GridItem>
       </Grid>
     </Box>

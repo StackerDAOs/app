@@ -13,7 +13,7 @@ import {
 } from 'ui';
 import { useProposals } from 'ui/hooks';
 import { SectionHeader } from 'ui/components/layout';
-import { AppLayout } from '@components/layout';
+import { DashboardLayout } from '@components/layout';
 import { VotingHeader } from '@components/navigation';
 import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
@@ -219,6 +219,4 @@ export default function Proposals() {
   );
 }
 
-Proposals.getLayout = (page: any) => (
-  <AppLayout header={<VotingHeader />}>{page}</AppLayout>
-);
+Proposals.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;

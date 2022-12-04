@@ -40,6 +40,7 @@ export const StacksDeploy = (props: StacksDeployProps) => {
           setTransactionId(data.txId);
           onSuccess?.(data);
         } catch (e: any) {
+          onError?.(data);
           console.error({ e });
         }
       };
@@ -48,14 +49,29 @@ export const StacksDeploy = (props: StacksDeployProps) => {
         contractName: contractName || randomName,
         codeBody: template,
         onFinish: callback,
+        onCancel: callback,
       });
     }
-  }, [template]);
+  }, [isSignedIn, template]);
 
   if (transaction.data?.tx_status === 'pending') {
     return (
       <Button {...rest} _hover={{ opacity: 0.9 }} _active={{ opacity: 1 }}>
         <Spinner />
+      </Button>
+    );
+  }
+
+  if (transaction.data?.tx_status === 'success') {
+    return (
+      <Button
+        {...rest}
+        _hover={{ opacity: 0.9 }}
+        _active={{ opacity: 1 }}
+        variant='default'
+        isDisabled
+      >
+        Complete
       </Button>
     );
   }

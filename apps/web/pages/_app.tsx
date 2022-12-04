@@ -13,7 +13,7 @@ import { AnimatePresence } from 'ui/animation';
 import { SessionProvider } from 'next-auth/react';
 import { isMainnet, isTestnet } from 'api/constants';
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: { refetchOnWindowFocus: false, staleTime: 3000 },
   },

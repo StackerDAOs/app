@@ -54,6 +54,7 @@ import {
 } from '@components/onboarding';
 import { Step } from 'ui/components/feedback';
 import { Wrapper } from '@components/containers';
+import { Notification } from '@components/feedback';
 import { useGlobalState } from 'store';
 
 export default function Test() {

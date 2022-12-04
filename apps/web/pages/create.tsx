@@ -1,18 +1,30 @@
 import React from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  Badge,
   Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
   Button,
   ButtonGroup,
   Circle,
+  Checkbox,
   FormControl,
   FormHelperText,
   FormLabel,
+  Flex,
   Grid,
   GridItem,
   Heading,
   HStack,
   Icon,
+  Image,
   Input,
   InputGroup,
   InputRightElement,
@@ -20,9 +32,12 @@ import {
   ModalBody,
   ModalContent,
   ModalOverlay,
+  Radio,
+  RadioGroup,
   Select,
   Stack,
   SimpleGrid,
+  Spinner,
   Tag,
   TagLabel,
   TagCloseButton,
@@ -30,612 +45,377 @@ import {
   Textarea,
   useDisclosure,
 } from 'ui';
+import { CLUB_TYPES } from 'api/constants';
+import { coreDAO } from 'utils/contracts';
 import { RadioButtonGroup, RadioButton } from 'ui/components/forms';
 import { useForm, Controller, useAccount } from 'ui/components';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Container, SectionHeader } from 'ui/components/layout';
-import { useSteps } from 'ui/store';
-import { DeployCoreButton } from 'ui/components/buttons';
-import { InfoIcon } from 'ui/components/icons';
+import { StacksDeploy, ConnectButton } from 'ui/components/buttons';
+import {
+  ArrowRight,
+  CheckIcon,
+  ExtensionOutline,
+  InfoIcon,
+  LightningBolt,
+  PlusIcon,
+  VaultOutline,
+  WalletIcon,
+  XIcon,
+} from 'ui/components/icons';
 import { shortenAddress, validateStacksAddress } from '@stacks-os/utils';
 import { nameToSlug, nameToSymbol } from 'utils';
-import { includes, size } from 'lodash';
+import { getTransaction } from 'api/clubs';
+import { debounce, defaultTo, includes, size } from 'lodash';
 import { LaunchLayout } from '../components/layout';
-import { useMultiStepForm } from 'ui/hooks';
-import { CreateClub, CreateMembershipPass } from '@components/onboarding';
-import { Step } from 'ui/components/feedback';
-import { Wrapper } from '@components/containers';
-
-type OnboardFormData = {
-  name: string;
-  description: string;
-  member: string;
-  members: string[];
-  durationInDays: number;
-  minimumDeposit: number;
-};
-
-const INITIAL_FORM_DATA: OnboardFormData = {
-  name: '',
-  description: '',
-  member: '',
-  members: [],
-  durationInDays: 1,
-  minimumDeposit: 0,
-};
+import { useSteps } from 'ui/store';
+import { useGlobalState } from 'store';
+import { useDAO, useTransaction } from 'ui/hooks';
+import { CheckCircle, LogoIcon } from 'ui/components/icons';
+import { useCreateClub } from 'api/clubs/mutations';
+import { Notification } from '@components/feedback';
 
 export default function Create() {
-  const { stxAddress } = useAccount();
-  const router = useRouter();
-  const [club, setClub] = React.useState<OnboardFormData>(INITIAL_FORM_DATA);
-  const {
-    steps,
-    step,
-    isFirstStep,
-    back,
-    next,
-    canGoToNextStep,
-    isLastStep,
-    isActiveStep,
-    currentStepIndex,
-  } = useMultiStepForm([
-    <CreateClub />,
-    <CreateMembershipPass />,
-    <Button variant='primary'>Third step</Button>,
-  ]);
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    next();
+  const data = useGlobalState((state) => state.club);
+  const dao = useDAO(nameToSlug(data?.name));
+
+  const [transactionId, setTransactionId] = React.useState(dao?.data?.tx_id);
+  const [isChecked, setIsChecked] = React.useState(false);
+  const [validationResult, setValidationResult] = React.useState<
+    null | boolean
+  >(null);
+  const [isDoneTyping, setIsDoneTyping] = React.useState(false);
+  const canDeploy = isChecked && data.name && !transactionId;
+  const { currentStep, setStep } = useSteps();
+  const transaction = useTransaction(transactionId);
+  const isReady =
+    transaction?.data?.tx_status === 'pending' ||
+    transaction?.data?.tx_status === 'success';
+  const createClub = useCreateClub();
+  const onSuccess = async (transactionId: string, action: any) => {
+    const transaction = await getTransaction(transactionId);
+    const name = data?.name;
+    const slug = nameToSlug(name);
+    const type_id = CLUB_TYPES.INVESTMENT_CLUB;
+    const txId = transactionId;
+    const userAddress = transaction?.sender_address;
+    const contractAddress = transaction?.smart_contract?.contract_id;
+    const config = {
+      memberAddresses: data?.members,
+    };
+
+    action.mutate(
+      {
+        club: {
+          name,
+          slug,
+          type_id,
+          tx_id: txId,
+          contract_address: contractAddress,
+          creator_address: userAddress,
+          config,
+        },
+        userAddress,
+      },
+      {
+        onSuccess: () => {
+          setTransactionId(transactionId);
+        },
+      },
+    );
   };
-  // const {
-  //   register,
-  //   control,
-  //   handleSubmit,
-  //   setValue,
-  //   getValues,
-  //   formState: { errors },
-  // } = useForm({
-  //   defaultValues: {
-  //     name: '',
-  //     description: '',
-  //     member: '',
-  //     members: [],
-  //     durationInDays: '1',
-  //     minimumDeposit: '0',
-  //   },
-  // });
+  // TODO: `hasIncompleteClubmake` query to clubs table to check for existing Clubs created by current STX address
+  const hasIncompleteClub = !!dao?.data && !dao?.data?.active;
+  const name = useGlobalState((state) => state.club.name);
+  const updateName = useGlobalState((state) => state.updateName);
+  const validateInput = (input: string) => {
+    const isAvailable = input !== 'StackerDAO';
+    setValidationResult(isAvailable);
+    setTimeout(() => {
+      setIsDoneTyping(true);
+    }, 2500);
+  };
 
-  // const addMember = () => {
-  //   if (includes(club.members, getValues('member'))) {
-  //     return;
-  //   }
-  //   setClub({ ...club, members: club?.members?.concat(getValues('member')) });
-  //   setValue('member', '');
-  // };
+  const debouncedValidateInput = debounce(validateInput, 1500);
 
-  // const removeMember = (address: string) => {
-  //   setClub({
-  //     ...club,
-  //     members: club?.members?.filter((member) => member !== address),
-  //   });
-  //   setValue('member', '');
-  // };
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDoneTyping(false);
+    const name = e.target.value;
+    updateName(name);
+    debouncedValidateInput(name);
+  };
 
-  // const handleOnFinish = () => {
-  //   router.push(`/${nameToSlug(club?.name)}/start`);
-  // };
-
-  // const config = {
-  //   description: club?.description,
-  //   tokenSymbol: nameToSymbol(club?.name),
-  //   nftMembershipPass: `${nameToSymbol(club?.name)} Membership Pass`,
-  //   memberAddresses: club?.members,
-  //   durationInDays: club?.durationInDays,
-  //   minimumDeposit: club?.minimumDeposit,
-  // };
-
-  // const Step2 = (
-  //   <form
-  //     onSubmit={handleSubmit((data: any) => {
-  //       setStep(currentStep + 1);
-  //       setClub({
-  //         ...club,
-  //         minimumDeposit: data.minimumDeposit,
-  //         durationInDays: data.durationInDays,
-  //       });
-  //     })}
-  //   >
-  //     <Container maxW='3xl'>
-  //       <SectionHeader justify='flex-start' align='center' color='white'>
-  //         <Stack spacing='2'>
-  //           <HStack spacing='3'>
-  //             <Stack
-  //               width='40px'
-  //               height='40px'
-  //               borderRadius='lg'
-  //               borderColor='dark.500'
-  //               borderWidth='1px'
-  //               fontWeight='black'
-  //               justify='center'
-  //               align='center'
-  //               bg='light.900'
-  //             >
-  //               <Text color='dark.500' fontWeight='bold' fontSize='xl'>
-  //                 2
-  //               </Text>
-  //             </Stack>
-  //             <Heading
-  //               size='2xl'
-  //               fontWeight='black'
-  //               lineHeight='1.5'
-  //               letterSpacing='tight'
-  //               color='white'
-  //             >
-  //               Club{' '}
-  //               <Text
-  //                 as='span'
-  //                 maxW='2xl'
-  //                 mx='auto'
-  //                 color='light.500'
-  //                 fontWeight='thin'
-  //               >
-  //                 Details
-  //               </Text>
-  //             </Heading>
-  //           </HStack>
-  //           <Text fontSize='lg' maxW='xl' mx='auto' color='white'>
-  //             Your club will be able to open additional funding rounds later.
-  //           </Text>
-  //         </Stack>
-  //       </SectionHeader>
-  //       <Stack spacing='8'>
-  //         <Grid templateColumns='repeat(5, 1fr)' gap='8'>
-  //           <GridItem colSpan={4}>
-  //             <FormControl>
-  //               <FormLabel
-  //                 htmlFor='minimumDeposit'
-  //                 fontWeight='light'
-  //                 color='gray'
-  //               >
-  //                 Minimum deposit
-  //               </FormLabel>
-  //               <Controller
-  //                 control={control}
-  //                 name='minimumDeposit'
-  //                 render={({ field: { onChange, value } }) => (
-  //                   <Select
-  //                     defaultValue={value}
-  //                     value={value}
-  //                     size='lg'
-  //                     color='white'
-  //                     bg='dark.700'
-  //                     borderColor='rgba(240, 246, 252, 0.1)'
-  //                     onChange={onChange}
-  //                   >
-  //                     <option value='0'>0 STX</option>
-  //                     <option value='100'>100 STX</option>
-  //                     <option value='500'>500 STX</option>
-  //                     <option value='1000'>1,000 STX</option>
-  //                     <option value='10000'>10,000 STX</option>
-  //                   </Select>
-  //                 )}
-  //               />
-  //               <FormHelperText fontWeight='light' color='gray'>
-  //                 Lowest acceptable deposit.
-  //               </FormHelperText>
-  //             </FormControl>
-  //           </GridItem>
-  //           <GridItem>
-  //             <FormControl>
-  //               <FormLabel
-  //                 htmlFor='durationInDays'
-  //                 fontWeight='light'
-  //                 color='gray'
-  //               >
-  //                 Fundraising duration
-  //               </FormLabel>
-  //               <Controller
-  //                 control={control}
-  //                 name='durationInDays'
-  //                 render={({ field: { onChange, value } }) => (
-  //                   <RadioButtonGroup
-  //                     defaultValue='1'
-  //                     size='lg'
-  //                     onChange={onChange}
-  //                     value={value}
-  //                   >
-  //                     <RadioButton value='1'>1 day</RadioButton>
-  //                     <RadioButton value='7'>1 week</RadioButton>
-  //                     <RadioButton value='14'>2 weeks</RadioButton>
-  //                     <RadioButton value='30'>1 month</RadioButton>
-  //                   </RadioButtonGroup>
-  //                 )}
-  //               />
-  //               <FormHelperText fontWeight='light' color='gray'>
-  //                 Once the club is deployed, this duration cannot be changed.
-  //               </FormHelperText>
-  //             </FormControl>
-  //           </GridItem>
-  //         </Grid>
-  //         <Stack justify='space-between' direction='row'>
-  //           <Button size='lg' variant='link' onClick={handleGoBack}>
-  //             Back
-  //           </Button>
-  //           <Button size='lg' variant='default' isLoading={false} type='submit'>
-  //             Continue
-  //           </Button>
-  //         </Stack>
-  //       </Stack>
-  //     </Container>
-  //   </form>
-  // );
-
-  // const Step3 = (
-  //   <form
-  //     onSubmit={handleSubmit((data: any) => {
-  //       setStep(currentStep + 1);
-  //       console.log({ data });
-  //     })}
-  //   >
-  //     <Container maxW='3xl'>
-  //       <SectionHeader justify='flex-start' align='center' color='white'>
-  //         <Stack spacing='2'>
-  //           <HStack spacing='3'>
-  //             <Stack
-  //               width='40px'
-  //               height='40px'
-  //               borderRadius='lg'
-  //               borderColor='dark.500'
-  //               borderWidth='1px'
-  //               fontWeight='black'
-  //               justify='center'
-  //               align='center'
-  //               bg='light.900'
-  //             >
-  //               <Text color='dark.500' fontWeight='bold' fontSize='xl'>
-  //                 3
-  //               </Text>
-  //             </Stack>
-  //             <Heading
-  //               size='2xl'
-  //               fontWeight='black'
-  //               lineHeight='1.5'
-  //               letterSpacing='tight'
-  //               color='white'
-  //             >
-  //               Add{' '}
-  //               <Text
-  //                 as='span'
-  //                 maxW='2xl'
-  //                 mx='auto'
-  //                 color='light.500'
-  //                 fontWeight='thin'
-  //               >
-  //                 Members
-  //               </Text>
-  //             </Heading>
-  //           </HStack>
-  //           <Text fontSize='lg' maxW='xl' mx='auto' color='white'>
-  //             Add members who will receive a Club Membership NFT and access to
-  //             participate in {club?.name}.
-  //           </Text>
-  //         </Stack>
-  //       </SectionHeader>
-  //       <HStack spacing={4}>
-  //         <SimpleGrid columns={4} spacing={4} mb='2'>
-  //           {club?.members?.map((member) => (
-  //             <Tag
-  //               key={member}
-  //               size='lg'
-  //               borderRadius='full'
-  //               variant='dark'
-  //               onClick={() => removeMember(member)}
-  //             >
-  //               <TagLabel>{member && shortenAddress(member)}</TagLabel>
-  //               <TagCloseButton />
-  //             </Tag>
-  //           ))}
-  //         </SimpleGrid>
-  //       </HStack>
-  //       <Stack spacing='8'>
-  //         <Grid templateColumns='repeat(5, 1fr)' gap='8'>
-  //           <GridItem colSpan={5}>
-  //             <FormControl>
-  //               <FormLabel htmlFor='address' fontWeight='light' color='gray'>
-  //                 Member address
-  //               </FormLabel>
-  //               <Controller
-  //                 control={control}
-  //                 name='member'
-  //                 render={({ field: { value }, fieldState }) => (
-  //                   <InputGroup>
-  //                     <Input
-  //                       id='address'
-  //                       autoComplete='off'
-  //                       placeholder='SP14...E4BF'
-  //                       size='lg'
-  //                       value={value}
-  //                       {...register('member', {
-  //                         required: false,
-  //                         validate: {
-  //                           validateStacksAddress: () => {
-  //                             if (!value) {
-  //                               return true;
-  //                             }
-  //                             const isValid = validateStacksAddress(value);
-  //                             if (isValid) {
-  //                               return true;
-  //                             }
-  //                             return false;
-  //                           },
-  //                         },
-  //                       })}
-  //                     />
-  //                     <InputRightElement width='4.5rem'>
-  //                       <Button
-  //                         size='md'
-  //                         variant='default'
-  //                         position='relative'
-  //                         top='1'
-  //                         onClick={
-  //                           !fieldState.error
-  //                             ? addMember
-  //                             : () => console.log('invalid')
-  //                         }
-  //                         isDisabled={value === '' || !!fieldState.error}
-  //                       >
-  //                         Add
-  //                       </Button>
-  //                     </InputRightElement>
-  //                   </InputGroup>
-  //                 )}
-  //               />
-
-  //               {errors?.member?.message ? (
-  //                 <FormHelperText color='red' fontWeight='light'>
-  //                   {errors.member.message}
-  //                 </FormHelperText>
-  //               ) : (
-  //                 <FormHelperText fontWeight='light' color='gray'>
-  //                   Add additional STX addresses to your Club.
-  //                 </FormHelperText>
-  //               )}
-  //             </FormControl>
-  //           </GridItem>
-  //         </Grid>
-
-  //         <Stack justify='space-between' direction='row'>
-  //           <Button size='lg' variant='link' onClick={handleGoBack}>
-  //             Back
-  //           </Button>
-  //           <Button
-  //             size='lg'
-  //             variant='default'
-  //             isLoading={false}
-  //             type='submit'
-  //             isDisabled={club?.members?.length === 1}
-  //           >
-  //             Continue
-  //           </Button>
-  //         </Stack>
-  //       </Stack>
-  //     </Container>
-  //   </form>
-  // );
-
-  // const Step4 = (
-  // <form
-  //   onSubmit={handleSubmit(() => {
-  //     setStep(currentStep + 1);
-  //   })}
-  // >
-  //     <Container maxW='3xl'>
-  //       <SectionHeader justify='flex-start' align='center' color='white'>
-  //         <Stack spacing='2'>
-  //           <HStack spacing='3'>
-  //             <Stack
-  //               width='40px'
-  //               height='40px'
-  //               borderRadius='lg'
-  //               borderColor='dark.500'
-  //               borderWidth='1px'
-  //               fontWeight='black'
-  //               justify='center'
-  //               align='center'
-  //               bg='light.900'
-  //             >
-  //               <Text color='dark.500' fontWeight='bold' fontSize='xl'>
-  //                 4
-  //               </Text>
-  //             </Stack>
-  //             <Heading
-  //               size='2xl'
-  //               fontWeight='black'
-  //               lineHeight='1.5'
-  //               letterSpacing='tight'
-  //               color='white'
-  //             >
-  //               Review &amp;{' '}
-  //               <Text
-  //                 as='span'
-  //                 maxW='2xl'
-  //                 mx='auto'
-  //                 color='light.500'
-  //                 fontWeight='thin'
-  //               >
-  //                 Deploy
-  //               </Text>
-  //             </Heading>
-  //           </HStack>
-  //           <Text fontSize='lg' maxW='xl' mx='auto' color='white'>
-  //             A core contract is required to manage your extensions. You can
-  //             edit the configuration below in the next steps.
-  //           </Text>
-  //         </Stack>
-  //       </SectionHeader>
-  //       <Stack spacing='8'>
-  //         <Stack py={{ base: '3', md: '3' }} spacing='2'>
-  //           <SimpleGrid columns={2} spacing='4'>
-  //             <Stack align='flex-start' spacing='0'>
-  //               <Text fontSize='lg' fontWeight='light' color='gray'>
-  //                 Club name
-  //               </Text>
-  //               <Text fontSize='2xl' fontWeight='black' color='white'>
-  //                 {club?.name}
-  //               </Text>
-  //             </Stack>
-  //             <Stack align='flex-start' spacing='0'>
-  //               <HStack>
-  //                 <Text fontSize='lg' fontWeight='light' color='gray'>
-  //                   Total members
-  //                 </Text>
-  //                 <Icon as={InfoIcon} color='gray' onClick={onInfoOpen} />
-  //               </HStack>
-  //               <Text fontSize='2xl' fontWeight='black' color='white'>
-  //                 {size(club?.members) || 3}
-  //               </Text>
-  //             </Stack>
-  //             <Stack align='flex-start' spacing='0'>
-  //               <Text fontSize='lg' fontWeight='light' color='gray'>
-  //                 Open to deposits for
-  //               </Text>
-  //               <Text fontSize='2xl' fontWeight='black' color='white'>
-  //                 ~ {club?.durationInDays} days
-  //               </Text>
-  //             </Stack>
-
-  //             <Stack align='flex-start' spacing='0'>
-  //               <Text fontSize='lg' fontWeight='light' color='gray'>
-  //                 Minimum deposit
-  //               </Text>
-  //               <Text fontSize='2xl' fontWeight='black' color='white'>
-  //                 {club?.minimumDeposit} STX
-  //               </Text>
-  //             </Stack>
-  //           </SimpleGrid>
-  //         </Stack>
-  //         <Stack justify='space-between' direction='row'>
-  //           <Button
-  //             size='lg'
-  //             variant='link'
-  //             onClick={handleGoBack}
-  //             isLoading={false}
-  //             type='submit'
-  //           >
-  //             Back
-  //           </Button>
-  //           <DeployCoreButton
-  //             title='Create Club'
-  //             name={club?.name}
-  //             slug={nameToSlug(club?.name)}
-  //             config={config}
-  //             size='lg'
-  //             variant='primary'
-  //             isLoading={false}
-  //             onDeploy={handleOnFinish}
-  //           />
-  //         </Stack>
-  //       </Stack>
-  //       <Modal isOpen={isInfoOpen} onClose={onInfoClose} isCentered>
-  //         <ModalOverlay />
-  //         <ModalContent bg='dark.900' borderColor='dark.500' borderWidth='1px'>
-  //           <ModalBody>
-  //             <Stack
-  //               px={{ base: '6', md: '6' }}
-  //               py={{ base: '6', md: '6' }}
-  //               spacing='2'
-  //               align='center'
-  //             >
-  //               <Circle bg='dark.500' size='14' mb='3'>
-  //                 <Icon as={InfoIcon} boxSize='8' color='primary.900' />
-  //               </Circle>
-  //               <Stack spacing='3'>
-  //                 <Heading mt='0 !important' size='md' fontWeight='medium'>
-  //                   Members
-  //                 </Heading>
-  //               </Stack>
-  //               <Stack spacing='2'>
-  //                 {club?.members?.map((address) => (
-  //                   <Text
-  //                     fontSize='md'
-  //                     fontWeight='regular'
-  //                     color='text-muted'
-  //                     textAlign='center'
-  //                   >
-  //                     {address}
-  //                   </Text>
-  //                 ))}
-  //               </Stack>
-  //             </Stack>
-  //           </ModalBody>
-  //         </ModalContent>
-  //       </Modal>
-  //     </Container>
-  //   </form>
-  // );
-
-  // const renderStep = (step: number) => {
-  //   if (step === 0) {
-  //     return Step1 as JSX.Element;
-  //   }
-  //   if (step === 1) {
-  //     return Step2 as JSX.Element;
-  //   }
-  //   if (step === 2) {
-  //     return Step3 as JSX.Element;
-  //   }
-  //   if (step === 3) {
-  //     return Step4 as JSX.Element;
-  //   }
-  //   return Step1 as JSX.Element;
-  // };
+  const FinishedState = () => {
+    return (
+      <Stack spacing='3' align='center' justify='center' h='75vh'>
+        <Icon as={CheckCircle} color='primary.900' boxSize='12' />
+        <Text
+          fontSize='md'
+          fontWeight='light'
+          color='light.500'
+          textAlign='center'
+          mt='4'
+          maxW='md'
+        >
+          Complete your Club setup by adding members, configuring your
+          governance rules, and more.
+        </Text>
+        <ButtonGroup as={Flex} spacing='6'>
+          <Link href={`/create/${nameToSlug(data?.name)}`}>
+            <Button variant='dark' isFullWidth rightIcon={<ArrowRight />}>
+              Continue
+            </Button>
+          </Link>
+        </ButtonGroup>
+      </Stack>
+    );
+  };
 
   return (
-    <motion.div
-      key={currentStepIndex}
-      variants={FADE_IN_VARIANTS}
-      initial={FADE_IN_VARIANTS.hidden}
-      animate={FADE_IN_VARIANTS.enter}
-      exit={FADE_IN_VARIANTS.exit}
-      transition={{ duration: 0.8, type: 'linear' }}
+    <Stack
+      h='100vh'
+      backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #121416)'
+      opacity='1'
     >
-      <Box h={{ base: '720px' }}>
-        <Stack display='flex' justify='center' h='100vh'>
-          <Wrapper>
-            <Stack spacing='6'>
-              <HStack spacing='3' width='40'>
-                {[...Array(steps.length)].map((_, id) => (
-                  <Step
-                    key={id}
-                    cursor='pointer'
-                    isActive={currentStepIndex === id}
-                  />
-                ))}
-              </HStack>
-              <form onSubmit={onSubmit}>{step}</form>
-              <Stack spacing='2' align='center'>
-                <ButtonGroup justifyContent='space-between'>
-                  {!isFirstStep && (
-                    <Button onClick={back} variant='link'>
-                      Back
-                    </Button>
-                  )}
-                  {isLastStep ? (
-                    <Button onClick={() => {}} variant='link' type='submit'>
-                      Finish
-                    </Button>
-                  ) : (
-                    <Button onClick={next} variant='link'>
-                      Next
-                    </Button>
-                  )}
-                </ButtonGroup>
+      <Stack position='fixed' bottom='0' right='0' left='0'>
+        <Alert
+          bg='primary-accent.900'
+          borderColor='dark.500'
+          borderWidth='1px'
+          color='light.900'
+          variant='subtle'
+          justifyContent='center'
+        >
+          <AlertIcon color='light.900' />
+          <AlertDescription>
+            As a first step, you will deploy a core contract that is used to
+            manage your Club's treasury, voting, and other governance functions.
+          </AlertDescription>
+        </Alert>
+      </Stack>
+      <Flex
+        justify='space-between'
+        align='center'
+        bg='dark.800'
+        borderBottomWidth='1px'
+        borderBottomColor='dark.500'
+        py='1'
+        px='16'
+        mt='0 !important'
+      >
+        <Breadcrumb>
+          <BreadcrumbItem
+            _hover={{
+              color: 'light.900',
+            }}
+          >
+            <BreadcrumbLink as={Link} href='/create'>
+              <LogoIcon
+                my='2'
+                alt='logo'
+                url='https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/logo-with-name.png'
+                cursor='pointer'
+                width='150px'
+              />
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
+        <ConnectButton
+          variant='inverted'
+          size='sm'
+          _hover={{ opacity: 0.9 }}
+          _active={{ opacity: 1 }}
+        />
+      </Flex>
+      <Stack h='80vh' align='center' justify='center' spacing='8'>
+        <Grid templateColumns='repeat(7, 1fr)' gap={24} alignItems='center'>
+          <GridItem colSpan={3}>
+            <motion.div
+              variants={FADE_IN_VARIANTS}
+              initial={FADE_IN_VARIANTS.hidden}
+              animate={FADE_IN_VARIANTS.enter}
+              exit={FADE_IN_VARIANTS.exit}
+              transition={{ duration: 0.8, type: 'linear' }}
+            >
+              <Stack spacing={{ base: '6', md: '6' }}>
+                <Stack spacing='2'>
+                  <Heading size='3xl' fontWeight='black'>
+                    Create Club
+                  </Heading>
+                  <Text
+                    fontSize={{ base: 'md', md: 'lg' }}
+                    fontWeight='light'
+                    color='gray'
+                    maxW='sm'
+                  >
+                    Permissionless DAOs to govern open communities and networks.
+                    Perfect for protocol DAOs, NFT communities, ecosystem DAOs,
+                    and more.
+                  </Text>
+                </Stack>
+                <Stack spacing='6'>
+                  <Stack spacing='1'>
+                    <HStack spacing='2' align='center'>
+                      <Icon as={WalletIcon} color='primary.900' />
+                      <Heading size='sm' fontWeight='medium'>
+                        Treasury Management
+                      </Heading>
+                    </HStack>
+                  </Stack>
+                  <Stack spacing='1'>
+                    <HStack spacing='2' align='center'>
+                      <Icon as={LightningBolt} color='primary.900' />
+                      <Heading size='sm' fontWeight='medium'>
+                        Proposals & Automatic Execution
+                      </Heading>
+                    </HStack>
+                  </Stack>
+                  <Stack spacing='1'>
+                    <HStack spacing='2' align='center'>
+                      <Icon as={ExtensionOutline} color='primary.900' />
+                      <Heading size='sm' fontWeight='medium'>
+                        Composable Extensions
+                      </Heading>
+                    </HStack>
+                  </Stack>
+                  <Stack spacing='1'>
+                    <HStack spacing='2' align='center'>
+                      <Icon as={VaultOutline} color='primary.900' />
+                      <Heading size='sm' fontWeight='medium'>
+                        On-chain Voting
+                      </Heading>
+                    </HStack>
+                  </Stack>
+                  <Stack spacing='1'>
+                    <HStack spacing='2' align='center'>
+                      <Icon as={PlusIcon} color='primary.900' />
+                      <Heading size='sm' fontWeight='medium'>
+                        ...and more!
+                      </Heading>
+                    </HStack>
+                  </Stack>
+                </Stack>
               </Stack>
-            </Stack>
-          </Wrapper>
-        </Stack>
-      </Box>
-    </motion.div>
+            </motion.div>
+          </GridItem>
+          <GridItem colSpan={4}>
+            <motion.div
+              variants={FADE_IN_VARIANTS}
+              initial={FADE_IN_VARIANTS.hidden}
+              animate={FADE_IN_VARIANTS.enter}
+              exit={FADE_IN_VARIANTS.exit}
+              transition={{ duration: 0.8, type: 'linear' }}
+            >
+              {isReady ? (
+                <FinishedState />
+              ) : (
+                <Stack spacing='8'>
+                  <Stack spacing='3' direction='column'>
+                    <Grid templateColumns='repeat(6, 1fr)' gap={8}>
+                      <GridItem colSpan={6}>
+                        <FormControl id='name'>
+                          <FormLabel
+                            htmlFor='name'
+                            fontWeight='light'
+                            color='light.500'
+                          >
+                            Club Name
+                          </FormLabel>
+                          <InputGroup>
+                            <Input
+                              placeholder='Stacks Club'
+                              autoComplete='off'
+                              size='lg'
+                              value={name}
+                              onChange={handleNameChange}
+                            />
+                            <InputRightElement
+                              top='1'
+                              children={
+                                !isDoneTyping ? (
+                                  <Spinner color='dark.500' size='xs' />
+                                ) : validationResult && name ? (
+                                  <CheckIcon color='green.500' />
+                                ) : !validationResult && name ? (
+                                  <XIcon color='red.500' />
+                                ) : null
+                              }
+                            />
+                          </InputGroup>
+                          <FormHelperText fontWeight='light' color='gray'>
+                            Easily identifyable name for your team.
+                          </FormHelperText>
+                        </FormControl>
+                      </GridItem>
+                      <GridItem colSpan={6}>
+                        <FormControl id='transferrable'>
+                          <FormLabel
+                            htmlFor='transferrable'
+                            fontWeight='light'
+                            color='light.500'
+                            maxW='md'
+                          >
+                            Is this an Investment Club?
+                          </FormLabel>
+                          <ButtonGroup
+                            bg='base.900'
+                            borderRadius='lg'
+                            p='1'
+                            spacing='2'
+                          >
+                            <Stack align='center' direction='row' spacing='3'>
+                              <RadioGroup
+                                defaultValue='yes'
+                                onChange={() => {}}
+                                value='yes'
+                              >
+                                <Stack direction='row'>
+                                  <Radio size='md' value='yes'>
+                                    Yes
+                                  </Radio>
+                                  <Radio size='md' value='no'>
+                                    No
+                                  </Radio>
+                                </Stack>
+                              </RadioGroup>
+                            </Stack>
+                          </ButtonGroup>
+                        </FormControl>
+                      </GridItem>
+                    </Grid>
+                  </Stack>
+                  <Stack spacing='6'>
+                    <StacksDeploy
+                      variant='default'
+                      buttonName='Continue'
+                      template={coreDAO()}
+                      onSuccess={(transaction) =>
+                        onSuccess(transaction?.txId, createClub)
+                      }
+                      isDisabled={!canDeploy}
+                    />
+                    <Stack direction='row' justify='center'>
+                      <Checkbox
+                        size='sm'
+                        colorScheme='primary'
+                        onChange={(e) => setIsChecked(e.currentTarget.checked)}
+                      >
+                        <Text as='span' textAlign='center'>
+                          I agree to the terms and conditions
+                        </Text>
+                      </Checkbox>
+                    </Stack>
+                  </Stack>
+                </Stack>
+              )}
+            </motion.div>
+          </GridItem>
+        </Grid>
+      </Stack>
+      {hasIncompleteClub && (
+        <Notification path={`/create/${nameToSlug(data?.name)}`} />
+      )}
+    </Stack>
   );
 }
 

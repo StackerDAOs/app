@@ -10,6 +10,7 @@ import { useAuth } from 'ui/components';
 // Utils
 import { ustxToStx } from 'utils';
 import { ConnectButton } from 'ui/components/buttons';
+import { LogoIcon } from 'ui/components/icons';
 
 // Components
 // import { MobileAppNavbar } from '@components/navbars';
@@ -87,17 +88,15 @@ export const AppNavbar = () => (
       top='0'
       left='0'
       zIndex='1'
-      px={{ base: '4', sm: '6' }}
+      // px={{ base: '4', sm: '6' }}
     >
       <HStack justify='flex-end' spacing='2'>
-        {/* <Link href={`/d/${dao}`}>
-            <LogoIcon
-              alt='logo'
-              url='https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png'
-              cursor='pointer'
-              height='35px'
-            />
-          </Link> */}
+        <LogoIcon
+          alt='logo'
+          url='https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png'
+          cursor='pointer'
+          height='35px'
+        />
         <Navbar />
       </HStack>
     </Nav>

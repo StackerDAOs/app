@@ -40,25 +40,6 @@ export default function Web() {
               <Link href='/create'>
                 <Button variant='default'>Create a Club</Button>
               </Link>
-              <Button
-                variant='secondary'
-                onClick={() =>
-                  sdk.deployer.deployAllowListUpgrade({
-                    contractName: 'upgrade allowlist',
-                    vaultAddress:
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.vault',
-                    allowed: [
-                      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.miamicoin',
-                    ],
-                    onFinish: (data: any) => {
-                      console.log('create a new record in the api');
-                      console.log(data);
-                    },
-                  })
-                }
-              >
-                Upgrade allowlist
-              </Button>
             </Stack>
           ) : (
             <Stack align='center' textAlign='center' spacing='3'>

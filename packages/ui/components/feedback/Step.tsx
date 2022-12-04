@@ -1,19 +1,25 @@
-import { Box, BoxProps } from '@chakra-ui/react';
+import { Divider, HStack, StackProps } from '@chakra-ui/react';
+import { StepCircle } from './StepCircle';
 
-interface Props extends BoxProps {
+interface StepProps extends StackProps {
+  isCompleted: boolean;
   isActive: boolean;
+  isLastStep: boolean;
 }
 
-export const Step = (props: Props) => {
-  const { isActive, ...boxProps } = props;
+export const Step = (props: StepProps) => {
+  const { isActive, isCompleted, isLastStep, ...stackProps } = props;
+
   return (
-    <Box
-      flex='1'
-      h='2'
-      bg={isActive ? 'primary.900' : 'dark.500'}
-      borderRadius='base'
-      transition='background 0.2s'
-      {...boxProps}
-    />
+    <HStack flex={isLastStep ? '0' : '1'} spacing='3' {...stackProps}>
+      <StepCircle isActive={isActive} isCompleted={isCompleted} />
+      {!isLastStep && (
+        <Divider
+          orientation='horizontal'
+          borderWidth='1px'
+          borderColor={isCompleted ? 'primary.900' : 'dark.500'}
+        />
+      )}
+    </HStack>
   );
 };

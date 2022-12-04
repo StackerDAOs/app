@@ -6,6 +6,9 @@ type Extension = {
   contract_address: string;
   extension_type_id: number;
   tx_id: string;
+  config?: {
+    allowed_tokens: string[];
+  };
 };
 
 export async function createExtension(extension: Extension) {

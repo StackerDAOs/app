@@ -10,7 +10,7 @@ import {
   Text,
 } from 'ui';
 import { SectionHeader } from 'ui/components/layout';
-import { AppLayout } from '@components/layout';
+import { DashboardLayout } from '@components/layout';
 import { ExtensionsHeader } from '@components/navigation';
 import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
@@ -178,6 +178,4 @@ export default function Extensions() {
   );
 }
 
-Extensions.getLayout = (page: any) => (
-  <AppLayout header={<ExtensionsHeader />}>{page}</AppLayout>
-);
+Extensions.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;

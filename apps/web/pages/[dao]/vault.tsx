@@ -1,6 +1,8 @@
 import React from 'react';
 import {
   ButtonGroup,
+  Button,
+  Flex,
   Heading,
   Stack,
   Text,
@@ -11,7 +13,7 @@ import {
   TabPanels,
 } from 'ui';
 import { SectionHeader } from 'ui/components/layout';
-import { AppLayout } from '@components/layout';
+import { DashboardLayout } from '@components/layout';
 import { VaultHeader } from '@components/navigation';
 import { Wrapper } from '@components/containers';
 import { AssetTable } from '@components/tables';
@@ -28,7 +30,7 @@ export default function Vault() {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.25, type: 'linear' }}
     >
-      <Wrapper>
+      <Stack spacing='8'>
         <Stack spacing='1'>
           <SectionHeader
             justify={{ base: 'flex-start', md: 'space-between' }}
@@ -98,11 +100,31 @@ export default function Vault() {
             </TabPanels>
           </Tabs>
         </Stack>
-      </Wrapper>
+      </Stack>
     </motion.div>
   );
 }
 
 Vault.getLayout = (page: any) => (
-  <AppLayout header={<VaultHeader />}>{page}</AppLayout>
+  <DashboardLayout
+    header={
+      <Flex
+        justify='space-between'
+        align='center'
+        borderBottomWidth='1px'
+        borderBottomColor='dark.500'
+        py='5'
+        px='4'
+      >
+        <Heading size='md' fontWeight='black' letterSpacing='tight'>
+          Vault
+        </Heading>
+        <Button variant='default' size='sm'>
+          Deposit
+        </Button>
+      </Flex>
+    }
+  >
+    {page}
+  </DashboardLayout>
 );

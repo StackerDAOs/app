@@ -26,8 +26,8 @@ export const AppLayout = ({ header, centered, children }: any) => {
 
       <Stack
         spacing={{ base: '8', lg: '6' }}
-        {...conditionalStyling}
         maxW='6xl'
+        {...conditionalStyling}
       >
         <Wrapper flex='1'>
           {header}

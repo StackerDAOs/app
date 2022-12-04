@@ -6,6 +6,7 @@ import {
   Badge,
   Box,
   Button,
+  ButtonGroup,
   Checkbox,
   CheckboxGroup,
   FormControl,
@@ -17,95 +18,112 @@ import {
   Heading,
   HStack,
   Input,
+  List,
+  ListItem,
+  Radio,
+  RadioGroup,
   SimpleGrid,
   Stack,
   Spinner,
+  Text,
   Tag,
   TagLabel,
   TagCloseButton,
-  Text,
 } from 'ui';
 import { Step } from 'ui/components/feedback';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { shortenAddress } from '@stacks-os/utils';
 import { defaultTo, isEmpty, isString } from 'lodash';
 import { useMultiStepForm } from 'ui/hooks';
-import { useSteps } from 'ui/store';
-import { useGlobalState } from 'store';
+import { useSteps, useVaultStore } from 'store';
 
 type ShowFormProps = {
   isAvailable: boolean;
   isTransactionPending: boolean;
 };
 
-const NameForm = () => {
-  const name = useGlobalState((state) => state.club.name);
-  const updateName = useGlobalState((state) => state.updateName);
+const AllowlistSelectForm = () => {
+  const vault = useVaultStore((state) => state.vault);
+  const handleSelect = useVaultStore((state) => state.handleSelectAllowList);
   return (
-    <FormControl id='name'>
-      <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
-        Club Name
+    <FormControl id='transferrable'>
+      <FormLabel
+        htmlFor='transferrable'
+        fontWeight='light'
+        color='light.500'
+        maxW='md'
+      >
+        Do you want to require all assets stored in the vault to be whitelisted?
       </FormLabel>
-      <Input
-        placeholder='Stacks Investment Club'
-        autoComplete='off'
-        size='lg'
-        value={name}
-        onChange={(e) => updateName(e.target.value)}
-      />
-      <FormHelperText fontWeight='light' color='gray'>
-        Easily identifyable name for your team.
-      </FormHelperText>
+      <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
+        <Stack align='center' direction='row' spacing='3'>
+          <RadioGroup
+            defaultValue='yes'
+            onChange={handleSelect}
+            value={vault.hasAllowList}
+          >
+            <Stack direction='row'>
+              <Radio size='md' value='yes'>
+                Yes
+              </Radio>
+              <Radio size='md' value='no' isDisabled>
+                No
+              </Radio>
+            </Stack>
+          </RadioGroup>
+        </Stack>
+      </ButtonGroup>
     </FormControl>
   );
 };
 
-const AddMemberForm = () => {
-  const members = useGlobalState((state) => state.club.members);
-  const addMember = useGlobalState((state) => state.addMember);
-  const removeMember = useGlobalState((state) => state.removeMember);
+const AddTokenForm = () => {
+  const vault = useVaultStore((state) => state.vault);
+  const addAllowedToken = useVaultStore((state) => state.addAllowedToken);
+  const removeAllowedToken = useVaultStore((state) => state.removeAllowedToken);
   return (
-    <FormControl id='member'>
-      <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
-        Member Address
-      </FormLabel>
-      <Stack spacing='3'>
-        <Input
-          placeholder='SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE'
-          autoComplete='off'
-          size='lg'
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              console.log('value', e.currentTarget.value);
-              addMember(e.currentTarget.value);
-              e.currentTarget.value = '';
-            }
-          }}
-        />
-        <HStack spacing={4}>
-          <SimpleGrid columns={4} spacing={4}>
-            {members.map((member: string) => (
-              <Tag
-                key={member}
-                size='lg'
-                borderRadius='full'
-                variant='dark'
-                onClick={() => removeMember(member)}
-              >
-                <TagLabel>{member && shortenAddress(member)}</TagLabel>
-                <TagCloseButton />
-              </Tag>
-            ))}
-          </SimpleGrid>
-        </HStack>
-      </Stack>
-    </FormControl>
+    <Grid templateColumns='repeat(2, 1fr)' gap={6}>
+      <GridItem colSpan={2}>
+        <FormControl id='asset'>
+          <FormLabel htmlFor='asset' fontWeight='light' color='light.500'>
+            Asset Contract Addresses
+          </FormLabel>
+          <Stack spacing='3'>
+            <Input
+              placeholder='SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE'
+              autoComplete='off'
+              size='lg'
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  console.log('value', e.currentTarget.value);
+                  addAllowedToken(e.currentTarget.value);
+                  e.currentTarget.value;
+                  e.currentTarget.value = '';
+                }
+              }}
+            />
+            <HStack spacing={4}>
+              <SimpleGrid columns={4} spacing={4}>
+                {vault.listOfAllowedTokens.map((asset: string) => (
+                  <Tag key={asset} size='lg' borderRadius='full' variant='dark'>
+                    <TagLabel>{asset && shortenAddress(asset)}</TagLabel>
+                    <TagCloseButton onClick={() => removeAllowedToken(asset)} />
+                  </Tag>
+                ))}
+              </SimpleGrid>
+            </HStack>
+          </Stack>
+        </FormControl>
+      </GridItem>
+    </Grid>
   );
 };
 
 const ShowForm = (state: ShowFormProps) => {
   const { currentStep, setStep } = useSteps();
+  const vault = useVaultStore((state) => state.vault);
+  const hasAllowList = useVaultStore((state) => state.vault.hasAllowList);
   if (state.isAvailable) {
     return (
       <Stack
@@ -116,7 +134,20 @@ const ShowForm = (state: ShowFormProps) => {
         align='center'
         justify='center'
       >
-        <Box as='form' bg='dark.900' w='100%'>
+        <Box
+          as='form'
+          bg='dark.900'
+          w='100%'
+          overflowY='scroll'
+          overflowX='hidden'
+          scrollBehavior='smooth'
+          h='75vh'
+          css={{
+            '&::-webkit-scrollbar': {
+              width: '0',
+            },
+          }}
+        >
           <motion.div
             key={state?.isAvailable?.toString()}
             variants={FADE_IN_VARIANTS}
@@ -130,27 +161,47 @@ const ShowForm = (state: ShowFormProps) => {
               px={{ base: '4', md: '6' }}
               py={{ base: '5', md: '6' }}
             >
+              <HStack spacing='0'>
+                {[1, 2, 3, 4, 5, 6].map((id) => (
+                  <Step
+                    key={id}
+                    cursor='pointer'
+                    isActive={3 === id}
+                    isCompleted={currentStep > id}
+                    isLastStep={6 === id}
+                  />
+                ))}
+              </HStack>
               <Stack spacing='6' direction='column'>
                 <Box>
                   <Text fontSize='lg' fontWeight='medium'>
-                    General Information
+                    Vault Configuration
                   </Text>
                 </Box>
-                <NameForm />
+                <AllowlistSelectForm />
               </Stack>
-              <Stack spacing='6' direction='column'>
-                <Box>
-                  <Text fontSize='lg' fontWeight='medium'>
-                    Club Members
-                  </Text>
-                  <Text color='light.500' fontSize='sm' maxW='md'>
-                    Members will be minted a Club Pass and be able to deposit
-                    funds into the Club once live. At least 2 members are
-                    required.
-                  </Text>
-                </Box>
-                <AddMemberForm />
-              </Stack>
+              {hasAllowList === 'yes' ? (
+                <motion.div
+                  key={1}
+                  variants={FADE_IN_VARIANTS}
+                  initial={FADE_IN_VARIANTS.hidden}
+                  animate={FADE_IN_VARIANTS.enter}
+                  exit={FADE_IN_VARIANTS.exit}
+                  transition={{ duration: 0.8, type: 'linear' }}
+                >
+                  <Stack spacing='6' direction='column'>
+                    <Box>
+                      <Text fontSize='lg' fontWeight='medium'>
+                        Assets
+                      </Text>
+                      <Text color='light.500' fontSize='sm' maxW='md'>
+                        Add NFT and Token contract addresses to the allowlist.
+                      </Text>
+                    </Box>
+                    <AddTokenForm />
+                  </Stack>
+                </motion.div>
+              ) : null}
             </Stack>
           </motion.div>
         </Box>
@@ -246,9 +297,9 @@ const ShowForm = (state: ShowFormProps) => {
 };
 
 export const CreateVault = (props: any) => {
-  const data = useGlobalState((state) => state.club);
+  const data = useVaultStore((state) => state.vault);
   const [isAvailable, setIsAvailable] = React.useState(true);
-  const canDeploy = data.name && data.members.length > 1;
+  const canDeploy = data;
   const isTransactionPending = false;
   const alreadyDeployed = false;
   return (
@@ -265,7 +316,7 @@ export const CreateVault = (props: any) => {
             borderColor='dark.500'
             borderRadius='xl'
             h='full'
-            backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #171717)'
+            backgroundImage='repeating-radial-gradient(circle at 0 0, transparent 0, #111111 11px), repeating-linear-gradient(#111111, #121416)'
             opacity='1'
           >
             <Stack spacing={{ base: '8', md: '12' }} justify='space-between'>
@@ -331,17 +382,14 @@ export const CreateVault = (props: any) => {
                                   fontWeight='thin'
                                   color='gray'
                                 >
-                                  Club Name
+                                  Allowlist Assets
                                 </Text>
                                 <Text
                                   fontSize='lg'
                                   fontWeight='thin'
                                   color='light.500'
                                 >
-                                  {defaultTo(
-                                    data.name === '' ? undefined : data.name,
-                                    '---',
-                                  )}
+                                  {true ? 'Yes' : 'No'}
                                 </Text>
                               </Stack>
                               <Stack
@@ -358,14 +406,17 @@ export const CreateVault = (props: any) => {
                                   fontWeight='thin'
                                   color='gray'
                                 >
-                                  Total Members
+                                  Asset Count
                                 </Text>
                                 <Text
                                   fontSize='lg'
                                   fontWeight='thin'
                                   color='light.500'
                                 >
-                                  {defaultTo(data?.members.length, 1)}
+                                  {defaultTo(
+                                    data?.listOfAllowedTokens.length,
+                                    0,
+                                  )}
                                 </Text>
                               </Stack>
                             </Stack>

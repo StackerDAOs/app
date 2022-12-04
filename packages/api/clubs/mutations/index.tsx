@@ -7,7 +7,7 @@ type Club = {
   creator_address: string | undefined;
   slug: string;
   type_id: number;
-  config: {
+  config?: {
     description: string;
     tokenSymbol: string;
     nftMembershipPass: string;
@@ -74,6 +74,7 @@ export const useCreateClub = () => {
   const queryClient = useQueryClient();
   return useMutation(createClub, {
     onSuccess: () => {
+      queryClient.invalidateQueries('dao');
       queryClient.invalidateQueries('clubs');
     },
   });
