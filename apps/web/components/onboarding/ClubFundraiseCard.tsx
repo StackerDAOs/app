@@ -1,16 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  Stack,
-  Text,
-} from 'ui';
+import { Badge, Button, Flex, GridItem, Heading, Stack, Text } from 'ui';
 import { StacksSDK } from 'sdk';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { defaultTo } from 'lodash';
@@ -34,12 +24,9 @@ export const ClubFundraiseCard = (props: any) => {
   );
   const createExtension = useCreateExtension();
   const onSuccess = async (payload: any) => {
-    const txId = payload.txId;
-    console.log('txId', txId);
-    const transaction = await getTransaction(txId);
-    console.log('transaction', transaction);
-    const userAddress = transaction?.sender_address;
-    const contractAddress = transaction?.smart_contract?.contract_id;
+    const { txId } = payload;
+    const tx = await getTransaction(txId);
+    const contractAddress = tx?.smart_contract?.contract_id;
     createExtension.mutate({
       club_id: dao?.id,
       contract_address: contractAddress,
@@ -193,7 +180,7 @@ export const ClubFundraiseCard = (props: any) => {
                               color='light.500'
                             >
                               {defaultTo(
-                                fundraiseGoalAmount == ''
+                                fundraiseGoalAmount === ''
                                   ? null
                                   : Number(fundraiseGoalAmount).toLocaleString(
                                       'en-US',

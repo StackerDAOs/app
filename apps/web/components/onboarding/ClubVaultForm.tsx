@@ -140,10 +140,7 @@ const AddTokenForm = () => {
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
-                  console.log('value', e.currentTarget.value);
                   addAllowedToken(e.currentTarget.value);
-                  e.currentTarget.value;
-                  e.currentTarget.value = '';
                 }
               }}
             />
@@ -168,56 +165,48 @@ const AddTokenForm = () => {
   );
 };
 
+const FinishedState = ({ next, extension }: any) => (
+  <Stack spacing='3' align='center' justify='center' h='75vh'>
+    <Icon as={CheckCircle} color='primary.900' boxSize='12' />
+    <Text fontSize='xl' fontWeight='bold' color='light.500' textAlign='center'>
+      You&apos;re all set!
+    </Text>
+    <Text
+      fontSize='md'
+      fontWeight='light'
+      color='light.500'
+      textAlign='center'
+      mt='4'
+      maxW='md'
+    >
+      You can now mint your Membership Pass NFTs and distribute them to your
+      members.
+    </Text>
+    <ButtonGroup as={Flex} spacing='6'>
+      <Button
+        variant='default'
+        isFullWidth
+        isDisabled={!extension}
+        onClick={next}
+      >
+        Continue
+      </Button>
+    </ButtonGroup>
+  </Stack>
+);
+
 export const ClubVaultForm = (props: any) => {
-  const { dao, back, next } = props;
+  const { dao, next } = props;
   const extension = findExtension(dao?.extensions, 'Vault');
   const transaction = useTransaction(extension?.tx_id);
-  const vault = useVaultStore((state) => state.vault);
   const hasAllowList = useVaultStore((state) => state.vault.hasAllowList);
-
-  const FinishedState = () => {
-    return (
-      <Stack spacing='3' align='center' justify='center' h='75vh'>
-        <Icon as={CheckCircle} color='primary.900' boxSize='12' />
-        <Text
-          fontSize='xl'
-          fontWeight='bold'
-          color='light.500'
-          textAlign='center'
-        >
-          You're all set!
-        </Text>
-        <Text
-          fontSize='md'
-          fontWeight='light'
-          color='light.500'
-          textAlign='center'
-          mt='4'
-          maxW='md'
-        >
-          You can now mint your Membership Pass NFTs and distribute them to your
-          members.
-        </Text>
-        <ButtonGroup as={Flex} spacing='6'>
-          <Button
-            variant='default'
-            isFullWidth
-            isDisabled={!extension}
-            onClick={next}
-          >
-            Continue
-          </Button>
-        </ButtonGroup>
-      </Stack>
-    );
-  };
 
   return (
     <Stack spacing='2'>
       <GridItem colSpan={3}>
         {transaction?.data?.tx_status === 'pending' ||
         transaction?.data?.tx_status === 'success' ? (
-          <FinishedState />
+          <FinishedState next={next} extension={extension} />
         ) : (
           <Stack
             as={Flex}

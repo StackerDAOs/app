@@ -1,9 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
-  Box,
   Button,
-  Circle,
   Divider,
   Flex,
   HStack,
@@ -13,25 +11,21 @@ import {
   PopoverFooter,
   PopoverHeader,
   PopoverTrigger,
-  Progress,
   Stack,
   Text,
 } from 'ui';
 import type { TextProps, ButtonProps } from '@chakra-ui/react';
 import { useAccount, useAuth } from 'ui/components';
 import { ConnectButton } from 'ui/components/buttons';
-import { useAccountBalance, useDAO, useClubs, useSubmissions } from 'ui/hooks';
-import { ChevronDown, LogoIcon, ToggleUpDown } from 'ui/components/icons';
+import { useAccountBalance, useDAO } from 'ui/hooks';
+import { ChevronDown } from 'ui/components/icons';
 import Avatar from 'boring-avatars';
-import { getPercentage, nameToAbbreviation, ustxToStx } from 'utils';
+import { ustxToStx } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
-import { map, size } from 'lodash';
 
 interface UserProfileProps {
   club: string;
 }
-
-const EXTENSION_SIZE = 6;
 
 export const UserProfile = (props: UserProfileProps) => {
   const account = useAccount();
@@ -200,15 +194,8 @@ export const NavButton = (props: NavButtonProps) => {
 export const Sidebar = () => {
   const router = useRouter();
   const dao = useDAO();
-  const { isSignedIn } = useAuth();
   const { dao: slug } = router.query as any;
   const isSelected = (path: string) => router.pathname.split('/')[2] === path;
-  const { isLoading, data: clubs } = useClubs();
-  const isActive = dao.data?.active;
-  const submissions = useSubmissions();
-  const hasPendingSubmissions = size(submissions?.data) > 0;
-
-  if (isLoading) return null;
 
   return (
     <Flex

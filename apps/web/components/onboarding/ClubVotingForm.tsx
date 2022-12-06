@@ -14,37 +14,16 @@ import {
   Input,
   Radio,
   RadioGroup,
-  Select,
-  SimpleGrid,
   Stack,
-  Square,
   Tag,
-  TagLabel,
-  TagCloseButton,
   Text,
 } from 'ui';
-import {
-  RadioButton,
-  RadioButtonGroup,
-  RadioCardGroup,
-  RadioCard,
-} from 'ui/components/forms';
+import { RadioCardGroup, RadioCard } from 'ui/components/forms';
 import { useTransaction } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { shortenAddress } from '@stacks-os/utils';
-import {
-  useClubMembershipPass,
-  useClubTokenStore,
-  useVotingStore,
-} from 'store';
+import { useClubTokenStore, useVotingStore } from 'store';
 import { findExtension } from 'utils';
-import {
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle,
-  LightningBolt,
-  WalletIcon,
-} from 'ui/components/icons';
+import { CheckCircle } from 'ui/components/icons';
 
 const SelectVotingPowerForm = () => {
   const clubToken = useClubTokenStore((state) => state.token);
@@ -190,54 +169,47 @@ const NameForm = () => {
   );
 };
 
+const FinishedState = ({ next, extension }: any) => (
+  <Stack spacing='3' align='center' justify='center' h='75vh'>
+    <Icon as={CheckCircle} color='primary.900' boxSize='12' />
+    <Text fontSize='xl' fontWeight='bold' color='light.500' textAlign='center'>
+      You&apos;re all set!
+    </Text>
+    <Text
+      fontSize='md'
+      fontWeight='light'
+      color='light.500'
+      textAlign='center'
+      mt='4'
+      maxW='md'
+    >
+      You can now mint your Membership Pass NFTs and distribute them to your
+      members.
+    </Text>
+    <ButtonGroup as={Flex} spacing='6'>
+      <Button
+        variant='default'
+        isFullWidth
+        isDisabled={!extension}
+        onClick={next}
+      >
+        Continue
+      </Button>
+    </ButtonGroup>
+  </Stack>
+);
+
 export const ClubVotingForm = (props: any) => {
-  const { dao, back, next } = props;
+  const { dao, next } = props;
   const extension = findExtension(dao?.extensions, 'Voting');
   const transaction = useTransaction(extension?.tx_id);
-
-  const FinishedState = () => {
-    return (
-      <Stack spacing='3' align='center' justify='center' h='75vh'>
-        <Icon as={CheckCircle} color='primary.900' boxSize='12' />
-        <Text
-          fontSize='xl'
-          fontWeight='bold'
-          color='light.500'
-          textAlign='center'
-        >
-          You're all set!
-        </Text>
-        <Text
-          fontSize='md'
-          fontWeight='light'
-          color='light.500'
-          textAlign='center'
-          mt='4'
-          maxW='md'
-        >
-          You can now mint your Membership Pass NFTs and distribute them to your
-          members.
-        </Text>
-        <ButtonGroup as={Flex} spacing='6'>
-          <Button
-            variant='default'
-            isFullWidth
-            isDisabled={!extension}
-            onClick={next}
-          >
-            Continue
-          </Button>
-        </ButtonGroup>
-      </Stack>
-    );
-  };
 
   return (
     <Stack spacing='2'>
       <GridItem colSpan={3}>
         {transaction?.data?.tx_status === 'pending' ||
         transaction?.data?.tx_status === 'success' ? (
-          <FinishedState />
+          <FinishedState next={next} extension={extension} />
         ) : (
           <Stack
             as={Flex}

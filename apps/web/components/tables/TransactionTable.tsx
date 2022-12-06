@@ -1,10 +1,7 @@
 import {
   Badge,
-  Box,
-  Checkbox,
   HStack,
   Icon,
-  IconButton,
   Table,
   TableProps,
   Tbody,
@@ -17,6 +14,7 @@ import {
 import Avatar from 'boring-avatars';
 import { truncateAddress } from '@stacks-os/utils';
 import { ExternalLinkIcon } from 'ui/components/icons';
+
 const transactions = [
   {
     id: '1',
@@ -63,7 +61,7 @@ export const TransactionTable = (props: TableProps) => (
         <Th>Transaction ID</Th>
         <Th>Status</Th>
         <Th>Timestamp</Th>
-        <Th></Th>
+        <Th />
       </Tr>
     </Thead>
     <Tbody>

@@ -14,7 +14,6 @@ import {
 import { useProposals } from 'ui/hooks';
 import { SectionHeader } from 'ui/components/layout';
 import { DashboardLayout } from '@components/layout';
-import { VotingHeader } from '@components/navigation';
 import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { EmptyState } from '@components/misc';

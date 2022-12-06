@@ -11,7 +11,6 @@ import {
 } from 'ui';
 import { SectionHeader } from 'ui/components/layout';
 import { DashboardLayout } from '@components/layout';
-import { ExtensionsHeader } from '@components/navigation';
 import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { Card } from 'ui/components/cards';

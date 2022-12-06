@@ -1,19 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import {
   Alert,
   AlertIcon,
-  AlertTitle,
   AlertDescription,
-  Badge,
-  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
   ButtonGroup,
-  Circle,
   Checkbox,
   FormControl,
   FormHelperText,
@@ -24,55 +19,63 @@ import {
   Heading,
   HStack,
   Icon,
-  Image,
   Input,
   InputGroup,
   InputRightElement,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalOverlay,
   Radio,
   RadioGroup,
-  Select,
   Stack,
-  SimpleGrid,
   Spinner,
-  Tag,
-  TagLabel,
-  TagCloseButton,
   Text,
-  Textarea,
-  useDisclosure,
 } from 'ui';
 import { CLUB_TYPES } from 'api/constants';
 import { coreDAO } from 'utils/contracts';
-import { RadioButtonGroup, RadioButton } from 'ui/components/forms';
-import { useForm, Controller, useAccount } from 'ui/components';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { Container, SectionHeader } from 'ui/components/layout';
 import { StacksDeploy, ConnectButton } from 'ui/components/buttons';
 import {
   ArrowRight,
   CheckIcon,
+  CheckCircle,
+  LogoIcon,
   ExtensionOutline,
-  InfoIcon,
   LightningBolt,
   PlusIcon,
   VaultOutline,
   WalletIcon,
   XIcon,
 } from 'ui/components/icons';
-import { nameToSlug, nameToSymbol } from 'utils';
+import { nameToSlug } from 'utils';
 import { getTransaction } from 'api/clubs';
-import { debounce, defaultTo, includes, size } from 'lodash';
-import { LaunchLayout } from '../components/layout';
-import { useSteps } from 'ui/store';
+import { debounce } from 'lodash';
 import { useGlobalState } from 'store';
 import { useDAO, useTransaction } from 'ui/hooks';
-import { CheckCircle, LogoIcon } from 'ui/components/icons';
 import { useCreateClub } from 'api/clubs/mutations';
 import { Notification } from '@components/feedback';
+import { LaunchLayout } from '../components/layout';
+
+const FinishedState = ({ name }: any) => (
+  <Stack spacing='3' align='center' justify='center' h='75vh'>
+    <Icon as={CheckCircle} color='primary.900' boxSize='12' />
+    <Text
+      fontSize='md'
+      fontWeight='light'
+      color='light.500'
+      textAlign='center'
+      mt='4'
+      maxW='md'
+    >
+      Complete your Club setup by adding members, configuring your governance
+      rules, and more.
+    </Text>
+    <ButtonGroup as={Flex} spacing='6'>
+      <Link href={`/create/${nameToSlug(name)}/extensions`}>
+        <Button variant='dark' isFullWidth rightIcon={<ArrowRight />}>
+          Continue
+        </Button>
+      </Link>
+    </ButtonGroup>
+  </Stack>
+);
 
 export default function Create() {
   const data = useGlobalState((state) => state.club);
@@ -90,21 +93,20 @@ export default function Create() {
     transaction?.data?.tx_status === 'pending' ||
     transaction?.data?.tx_status === 'success';
   const createClub = useCreateClub();
-  const onSuccess = async (transactionId: string, action: any) => {
-    const transaction = await getTransaction(transactionId);
+  const onSuccess = async (txId: string, action: any) => {
+    const tx = await getTransaction(txId);
     const name = data?.name;
     const slug = nameToSlug(name);
-    const type_id = CLUB_TYPES.INVESTMENT_CLUB;
-    const txId = transactionId;
-    const userAddress = transaction?.sender_address;
-    const contractAddress = transaction?.smart_contract?.contract_id;
+    const typeId = CLUB_TYPES.INVESTMENT_CLUB;
+    const userAddress = tx?.sender_address;
+    const contractAddress = tx?.smart_contract?.contract_id;
 
     action.mutate(
       {
         club: {
           name,
           slug,
-          type_id,
+          type_id: typeId,
           tx_id: txId,
           contract_address: contractAddress,
           creator_address: userAddress,
@@ -133,36 +135,10 @@ export default function Create() {
   const debouncedValidateInput = debounce(validateInput, 1500);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
     setIsDoneTyping(false);
-    const name = e.target.value;
-    updateName(name);
-    debouncedValidateInput(name);
-  };
-
-  const FinishedState = () => {
-    return (
-      <Stack spacing='3' align='center' justify='center' h='75vh'>
-        <Icon as={CheckCircle} color='primary.900' boxSize='12' />
-        <Text
-          fontSize='md'
-          fontWeight='light'
-          color='light.500'
-          textAlign='center'
-          mt='4'
-          maxW='md'
-        >
-          Complete your Club setup by adding members, configuring your
-          governance rules, and more.
-        </Text>
-        <ButtonGroup as={Flex} spacing='6'>
-          <Link href={`/create/${nameToSlug(data?.name)}/extensions`}>
-            <Button variant='dark' isFullWidth rightIcon={<ArrowRight />}>
-              Continue
-            </Button>
-          </Link>
-        </ButtonGroup>
-      </Stack>
-    );
+    updateName(value);
+    debouncedValidateInput(value);
   };
 
   return (
@@ -183,7 +159,8 @@ export default function Create() {
           <AlertIcon color='light.900' />
           <AlertDescription>
             As a first step, you will deploy a core contract that is used to
-            manage your Club's treasury, voting, and other governance functions.
+            manage your Club&apos;s treasury, voting, and other governance
+            functions.
           </AlertDescription>
         </Alert>
       </Stack>
@@ -301,7 +278,7 @@ export default function Create() {
               transition={{ duration: 0.8, type: 'linear' }}
             >
               {isReady ? (
-                <FinishedState />
+                <FinishedState name={data?.name} />
               ) : (
                 <Stack spacing='8'>
                   <Stack spacing='3' direction='column'>
@@ -323,18 +300,17 @@ export default function Create() {
                               value={name}
                               onChange={handleNameChange}
                             />
-                            <InputRightElement
-                              top='1'
-                              children={
-                                !isDoneTyping ? (
-                                  <Spinner color='dark.500' size='xs' />
-                                ) : validationResult && name ? (
-                                  <CheckIcon color='green.500' />
-                                ) : !validationResult && name ? (
-                                  <XIcon color='red.500' />
-                                ) : null
-                              }
-                            />
+                            <InputRightElement top='1'>
+                              {!isDoneTyping && (
+                                <Spinner color='dark.500' size='xs' />
+                              )}
+                              {validationResult && name && (
+                                <CheckIcon color='green.500' />
+                              )}
+                              {!validationResult && name && (
+                                <XIcon color='red.500' />
+                              )}
+                            </InputRightElement>
                           </InputGroup>
                           <FormHelperText fontWeight='light' color='gray'>
                             An easily identifyable name for your team.
@@ -383,8 +359,8 @@ export default function Create() {
                       variant='default'
                       buttonName='Continue'
                       template={coreDAO()}
-                      onSuccess={(transaction) =>
-                        onSuccess(transaction?.txId, createClub)
+                      onSuccess={(coreTx) =>
+                        onSuccess(coreTx?.txId, createClub)
                       }
                       isDisabled={!canDeploy}
                     />

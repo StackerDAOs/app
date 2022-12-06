@@ -24,7 +24,7 @@ import { useUpdateBootstrap, useUpdateInitTxId } from 'api/clubs/mutations';
 import { Card } from 'ui/components/cards';
 import { ConnectButton } from 'ui/components/buttons';
 import { useDAO, useExtension, useTransaction } from 'ui/hooks';
-import { ArrowRight, ChevronRight, InfoIcon } from 'ui/components/icons';
+import { ChevronRight, InfoIcon } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { findExtension, getPercentage } from 'utils';
 import { filter, size } from 'lodash';
@@ -39,9 +39,9 @@ export default function Create() {
   const vaultExtension = useExtension('Vault');
   const sdk = new StacksSDK(dao?.data?.contract_address);
   const onSuccess = async (payload: any) => {
-    const txId = payload.txId;
-    const transaction = await getTransaction(txId);
-    const contractAddress = transaction?.smart_contract?.contract_id;
+    const { txId } = payload;
+    const tx = await getTransaction(txId);
+    const contractAddress = tx?.smart_contract?.contract_id;
     try {
       updateBootstrap.mutate({
         contract_address: dao?.data?.contract_address,
@@ -53,7 +53,7 @@ export default function Create() {
     }
   };
   const onActivationSuccess = async (payload: any) => {
-    const txId = payload.txId;
+    const { txId } = payload;
     try {
       updateInitTxId.mutate({
         contract_address: dao?.data?.contract_address,
@@ -191,11 +191,7 @@ export default function Create() {
                           </Stack>
                         </GridItem>
                         <GridItem colSpan={{ base: 1, md: 1 }}>
-                          {transaction?.data?.tx_status === 'pending' ? (
-                            <Button variant='dark' isLoading />
-                          ) : transaction?.data?.tx_status === 'success' ? (
-                            <Button variant='dark'>Complete</Button>
-                          ) : (
+                          {!transaction?.data && (
                             <Button
                               variant='primary'
                               onClick={() =>
@@ -240,6 +236,12 @@ export default function Create() {
                             >
                               Deploy
                             </Button>
+                          )}
+                          {transaction?.data?.tx_status === 'pending' && (
+                            <Button variant='dark' isLoading />
+                          )}
+                          {transaction?.data?.tx_status === 'success' && (
+                            <Button variant='dark'>Complete</Button>
                           )}
                         </GridItem>
                       </Grid>
@@ -298,13 +300,7 @@ export default function Create() {
                           </Stack>
                         </GridItem>
                         <GridItem colSpan={{ base: 1, md: 1 }}>
-                          {activationTransaction?.data?.tx_status ===
-                          'pending' ? (
-                            <Button variant='dark' isLoading />
-                          ) : activationTransaction?.data?.tx_status ===
-                            'success' ? (
-                            <Button variant='dark'>Complete</Button>
-                          ) : (
+                          {!activationTransaction?.data && (
                             <Button
                               variant='primary'
                               onClick={() =>
@@ -319,6 +315,12 @@ export default function Create() {
                             >
                               Activate
                             </Button>
+                          )}
+                          {activationTransaction?.data?.tx_status ===
+                            'pending' && <Button variant='dark' isLoading />}
+                          {activationTransaction?.data?.tx_status ===
+                            'success' && (
+                            <Button variant='dark'>Complete</Button>
                           )}
                         </GridItem>
                       </Grid>

@@ -47,7 +47,7 @@ import {
   DeployProposalButton,
   SubmitProposalButton,
 } from 'ui/components/buttons';
-import { sendFunds } from 'utils/contracts';
+import { transferStxProposal } from 'utils/contracts';
 
 interface ProposalDrawerProps extends ButtonProps {
   title: string;
@@ -78,24 +78,10 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
   let codeBody: string = '';
   switch (selectedVaultType) {
     case '1':
-      codeBody = sendFunds(
-        [
-          'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-          'ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50',
-        ],
+      codeBody = transferStxProposal(
+        'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
         vault?.contract_address,
-        '10000000',
-      );
-      break;
-    case '2':
-      codeBody = sendFunds(
-        [
-          'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-          'ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50',
-          'ST2Y2SFNVZBT8SSZ00XXKH930MCN0RFREB2GQG7CJ',
-        ],
-        vault?.contract_address,
-        '10000000',
+        10000000,
       );
       break;
     default:

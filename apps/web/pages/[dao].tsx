@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import {
   Box,
   Button,
-  ButtonGroup,
   Flex,
   FormControl,
   Grid,
@@ -13,29 +12,23 @@ import {
   Image,
   Input,
   InputGroup,
-  InputLeftElement,
   Heading,
   HStack,
   Progress,
-  SimpleGrid,
   Stack,
   Text,
   VStack,
   useBreakpointValue,
 } from 'ui';
 import { useAuth } from 'ui/components';
-import { defaultTo, round } from 'lodash';
 import { Card } from 'ui/components/cards';
-// import { SectionHeader } from 'ui/components/layout';
-import { Wrapper } from '@components/containers';
-import { AppLayout, DashboardLayout } from '@components/layout';
-import { DashboardHeader } from '@components/navigation';
+import { DashboardLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 import { ConnectButton, DepositButton } from 'ui/components/buttons';
-import { useInvestmentClub, useGovernanceToken, useDAO } from 'ui/hooks';
-import { ustxToStx, getPercentage, findExtension, convertToken } from 'utils';
-import { ArrowRight, InfoIcon } from 'ui/components/icons';
+import { useDAO } from 'ui/hooks';
+import { getPercentage, findExtension } from 'utils';
+import { ArrowRight } from 'ui/components/icons';
 import { TransactionTable } from '@components/tables';
 
 export default function Dashboard() {
@@ -43,8 +36,6 @@ export default function Dashboard() {
   const { isSignedIn } = useAuth();
   const router = useRouter();
   const dao = useDAO();
-  const governanceToken = useGovernanceToken();
-  const investmentClub = useInvestmentClub();
 
   const [depositAmount, setDepositAmount] = React.useState('');
   const handleInputDeposit = (e: any) => {
@@ -269,6 +260,7 @@ export default function Dashboard() {
                               fontWeight='regular'
                               autoComplete='off'
                               placeholder='0.0'
+                              onChange={handleInputDeposit}
                             />
                           </FormControl>
                         </VStack>

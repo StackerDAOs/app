@@ -1,20 +1,15 @@
+import Link from 'next/link';
 import {
-  Avatar,
   Box,
   Button,
-  Center,
   Flex,
   HStack,
-  Icon,
   Progress,
   Stack,
-  StackDivider,
   Text,
 } from '@chakra-ui/react';
-import Link from 'next/link';
-import { InfoIcon } from 'ui/components/icons';
 
-export const Notification = (props: { path: string }) => (
+export const Notification = ({ path }: any) => (
   <Box as='section' position='fixed' bottom='2' right='2'>
     <Flex direction='row-reverse'>
       <Box
@@ -46,7 +41,7 @@ export const Notification = (props: { path: string }) => (
               />
             </Stack>
           </HStack>
-          <Link href={props?.path}>
+          <Link href={path}>
             <Button variant='primary' size='sm'>
               Finish
             </Button>

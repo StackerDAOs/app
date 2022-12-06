@@ -5,13 +5,9 @@ import { AppLayout } from '@components/layout';
 import { Wrapper } from '@components/containers';
 import { ConnectButton } from 'ui/components/buttons';
 import { useAuth } from 'ui/components';
-import { StacksSDK } from 'sdk';
 
 export default function Web() {
   const { isSignedIn } = useAuth();
-  const sdk = new StacksSDK(
-    'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.stackerdao',
-  );
 
   return (
     <Wrapper m='0 auto' align='center'>

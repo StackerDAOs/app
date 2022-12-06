@@ -1,18 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  ButtonGroup,
-  Button,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Circle,
   Flex,
   Grid,
   GridItem,
-  Heading,
   HStack,
-  Icon,
   Stack,
 } from 'ui';
 import { ConnectButton } from 'ui/components/buttons';
@@ -32,13 +27,7 @@ import {
   ClubVotingCard,
   ClubVotingForm,
 } from '@components/onboarding';
-import { Notification } from '@components/feedback';
-import {
-  ArrowRight,
-  ChevronRight,
-  HomeOutline,
-  XIcon,
-} from 'ui/components/icons';
+import { ChevronRight } from 'ui/components/icons';
 
 const components = [
   {
@@ -98,9 +87,7 @@ export default function Extensions() {
   const dao = useDAO();
   const {
     setStep,
-    formValues,
     step,
-    steps,
     isFirstStep,
     canGoToNextStep,
     currentStepIndex,
@@ -164,7 +151,7 @@ export default function Extensions() {
               cursor='pointer'
               isActive={currentStepIndex === id}
               isCompleted={currentStepIndex > id}
-              isLastStep={5 === id}
+              isLastStep={id === 5}
               onClick={() => setStep(id)}
             />
           ))}

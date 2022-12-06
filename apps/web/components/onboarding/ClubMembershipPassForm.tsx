@@ -12,8 +12,6 @@ import {
   HStack,
   Icon,
   Input,
-  Radio,
-  RadioGroup,
   SimpleGrid,
   Stack,
   Square,
@@ -26,16 +24,10 @@ import {
 import { useTransaction } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { shortenAddress, validateStacksAddress } from '@stacks-os/utils';
-import { useSteps, useClubMembershipPass, useGlobalState } from 'store';
+import { useClubMembershipPass, useGlobalState } from 'store';
 import { findExtension } from 'utils';
 import Papa from 'papaparse';
-import {
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle,
-  UploadIcon,
-} from 'ui/components/icons';
-import { FileUpload } from '@components/forms';
+import { CheckCircle, UploadIcon } from 'ui/components/icons';
 
 const NFTMetadataForm = () => {
   const name = useClubMembershipPass((state) => state.membershipPass.name);
@@ -97,12 +89,41 @@ const NFTMetadataForm = () => {
   );
 };
 
+const FinishedState = ({ next, extension }: any) => (
+  <Stack spacing='3' align='center' justify='center' h='75vh'>
+    <Icon as={CheckCircle} color='primary.900' boxSize='12' />
+    <Text fontSize='xl' fontWeight='bold' color='light.500' textAlign='center'>
+      You&apos;re all set!
+    </Text>
+    <Text
+      fontSize='md'
+      fontWeight='light'
+      color='light.500'
+      textAlign='center'
+      mt='4'
+      maxW='md'
+    >
+      You can now mint your Membership Pass NFTs and distribute them to your
+      members.
+    </Text>
+    <ButtonGroup as={Flex} spacing='6'>
+      <Button
+        variant='default'
+        isFullWidth
+        isDisabled={!extension}
+        onClick={next}
+      >
+        Continue
+      </Button>
+    </ButtonGroup>
+  </Stack>
+);
+
 export const ClubMembershipPassForm = (props: any) => {
-  const { dao, back, next } = props;
+  const { dao, next } = props;
   const inputRef = React.useRef<any>(null);
   const extension = findExtension(dao?.extensions, 'NFT Membership');
   const transaction = useTransaction(extension?.tx_id);
-  const data = useClubMembershipPass((state) => state.membershipPass);
   const members = useGlobalState((state) => state.club.members);
   const addMember = useGlobalState((state) => state.addMember);
   const removeMember = useGlobalState((state) => state.removeMember);
@@ -129,50 +150,12 @@ export const ClubMembershipPassForm = (props: any) => {
     });
   };
 
-  const FinishedState = () => {
-    return (
-      <Stack spacing='3' align='center' justify='center' h='75vh'>
-        <Icon as={CheckCircle} color='primary.900' boxSize='12' />
-        <Text
-          fontSize='xl'
-          fontWeight='bold'
-          color='light.500'
-          textAlign='center'
-        >
-          You're all set!
-        </Text>
-        <Text
-          fontSize='md'
-          fontWeight='light'
-          color='light.500'
-          textAlign='center'
-          mt='4'
-          maxW='md'
-        >
-          You can now mint your Membership Pass NFTs and distribute them to your
-          members.
-        </Text>
-
-        <ButtonGroup as={Flex} spacing='6'>
-          <Button
-            variant='default'
-            isFullWidth
-            isDisabled={!extension}
-            onClick={next}
-          >
-            Continue
-          </Button>
-        </ButtonGroup>
-      </Stack>
-    );
-  };
-
   return (
     <Stack spacing='2'>
       <GridItem colSpan={3}>
         {transaction?.data?.tx_status === 'pending' ||
         transaction?.data?.tx_status === 'success' ? (
-          <FinishedState />
+          <FinishedState next={next} extension={extension} />
         ) : (
           <Stack
             as={Flex}
@@ -299,23 +282,21 @@ export const ClubMembershipPassForm = (props: any) => {
                               </FormHelperText>
                               <HStack>
                                 <SimpleGrid columns={3} spacing={4}>
-                                  {members.map(
-                                    (member: string, index: number) => (
-                                      <Tag
-                                        key={index}
-                                        size='sm'
-                                        borderRadius='full'
-                                        variant='dark'
-                                      >
-                                        <TagLabel>
-                                          {member && shortenAddress(member)}
-                                        </TagLabel>
-                                        <TagCloseButton
-                                          onClick={() => removeMember(member)}
-                                        />
-                                      </Tag>
-                                    ),
-                                  )}
+                                  {members.map((member: string) => (
+                                    <Tag
+                                      key={member}
+                                      size='sm'
+                                      borderRadius='full'
+                                      variant='dark'
+                                    >
+                                      <TagLabel>
+                                        {member && shortenAddress(member)}
+                                      </TagLabel>
+                                      <TagCloseButton
+                                        onClick={() => removeMember(member)}
+                                      />
+                                    </Tag>
+                                  ))}
                                 </SimpleGrid>
                               </HStack>
                             </Stack>

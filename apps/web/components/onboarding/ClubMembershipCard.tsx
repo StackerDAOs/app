@@ -1,16 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  Stack,
-  Text,
-} from 'ui';
+import { Badge, Button, Flex, GridItem, Heading, Stack, Text } from 'ui';
 import { StacksSDK } from 'sdk';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { defaultTo } from 'lodash';
@@ -29,14 +19,11 @@ export const ClubMembershipCard = (props: any) => {
   const extension = findExtension(dao?.extensions, 'NFT Membership');
   const transaction = useTransaction(extension?.tx_id);
   const formIsValidated = data.name?.length > 4 && data.symbol?.length >= 3;
-  const alreadyDeployed = dao?.extensions.length > 0;
   const createExtension = useCreateExtension();
   const onSuccess = async (payload: any) => {
-    const txId = payload.txId;
-    const transaction = await getTransaction(txId);
-    const name = data?.name;
-    const userAddress = transaction?.sender_address;
-    const contractAddress = transaction?.smart_contract?.contract_id;
+    const { txId } = payload;
+    const tx = await getTransaction(txId);
+    const contractAddress = tx?.smart_contract?.contract_id;
     createExtension.mutate({
       club_id: dao?.id,
       contract_address: contractAddress,

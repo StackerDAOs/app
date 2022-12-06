@@ -14,8 +14,6 @@ import {
 } from 'ui';
 import { SectionHeader } from 'ui/components/layout';
 import { DashboardLayout } from '@components/layout';
-import { VaultHeader } from '@components/navigation';
-import { Wrapper } from '@components/containers';
 import { AssetTable } from '@components/tables';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { map } from 'lodash';

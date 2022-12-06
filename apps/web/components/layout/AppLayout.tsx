@@ -5,7 +5,7 @@ import { Navbar, Sidebar } from '@components/navigation';
 import { useDAO } from 'ui/hooks';
 import { useAuth } from 'ui/components';
 
-export const AppLayout = ({ header, centered, children }: any) => {
+export const AppLayout = ({ header, children }: any) => {
   const dao = useDAO();
   const { isSignedIn } = useAuth();
   const isDesktop = useBreakpointValue({ base: false, lg: true });

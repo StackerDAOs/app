@@ -4,29 +4,22 @@ import {
   ButtonGroup,
   Button,
   FormControl,
-  FormHelperText,
   FormLabel,
   Flex,
   Grid,
   GridItem,
-  HStack,
   Icon,
   Input,
   Radio,
   RadioGroup,
-  SimpleGrid,
   Stack,
-  Tag,
-  TagLabel,
-  TagCloseButton,
   Text,
 } from 'ui';
 import { useTransaction } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { shortenAddress } from '@stacks-os/utils';
-import { useSteps, useClubTokenStore, useGlobalState } from 'store';
+import { useClubTokenStore } from 'store';
 import { findExtension } from 'utils';
-import { ArrowLeft, ArrowRight, CheckCircle } from 'ui/components/icons';
+import { CheckCircle } from 'ui/components/icons';
 
 const NFTMetadataForm = () => {
   const name = useClubTokenStore((state) => state.token.name);
@@ -120,60 +113,47 @@ const NFTMetadataForm = () => {
   );
 };
 
+const FinishedState = ({ next, extension }: any) => (
+  <Stack spacing='3' align='center' justify='center' h='75vh'>
+    <Icon as={CheckCircle} color='primary.900' boxSize='12' />
+    <Text fontSize='xl' fontWeight='bold' color='light.500' textAlign='center'>
+      You&apos;re all set!
+    </Text>
+    <Text
+      fontSize='md'
+      fontWeight='light'
+      color='light.500'
+      textAlign='center'
+      mt='4'
+      maxW='md'
+    >
+      You can now mint your Membership Pass NFTs and distribute them to your
+      members.
+    </Text>
+    <ButtonGroup as={Flex} spacing='6'>
+      <Button
+        variant='default'
+        isFullWidth
+        isDisabled={!extension}
+        onClick={next}
+      >
+        Continue
+      </Button>
+    </ButtonGroup>
+  </Stack>
+);
+
 export const ClubTokenForm = (props: any) => {
-  const { dao, back, next } = props;
+  const { dao, next } = props;
   const extension = findExtension(dao?.extensions, 'Governance Token');
   const transaction = useTransaction(extension?.tx_id);
-  const data = useClubTokenStore((state) => state.token);
-  const isTransferrable = useClubTokenStore(
-    (state) => state.token.isTransferrable,
-  );
-  const members = useGlobalState((state) => state.club.members);
-  const addMember = useGlobalState((state) => state.addMember);
-  const removeMember = useGlobalState((state) => state.removeMember);
-  const FinishedState = () => {
-    return (
-      <Stack spacing='3' align='center' justify='center' h='75vh'>
-        <Icon as={CheckCircle} color='primary.900' boxSize='12' />
-        <Text
-          fontSize='xl'
-          fontWeight='bold'
-          color='light.500'
-          textAlign='center'
-        >
-          You're all set!
-        </Text>
-        <Text
-          fontSize='md'
-          fontWeight='light'
-          color='light.500'
-          textAlign='center'
-          mt='4'
-          maxW='md'
-        >
-          You can now mint your Membership Pass NFTs and distribute them to your
-          members.
-        </Text>
-        <ButtonGroup as={Flex} spacing='6'>
-          <Button
-            variant='default'
-            isFullWidth
-            isDisabled={!extension}
-            onClick={next}
-          >
-            Continue
-          </Button>
-        </ButtonGroup>
-      </Stack>
-    );
-  };
 
   return (
     <Stack spacing='2'>
       <GridItem colSpan={3}>
         {transaction?.data?.tx_status === 'pending' ||
         transaction?.data?.tx_status === 'success' ? (
-          <FinishedState />
+          <FinishedState next={next} extension={extension} />
         ) : (
           <Stack
             as={Flex}

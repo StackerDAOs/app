@@ -16,7 +16,6 @@ import Avatar from 'boring-avatars';
 import { useIdeas } from 'ui/hooks';
 import { SectionHeader } from 'ui/components/layout';
 import { DashboardLayout } from '@components/layout';
-import { ProposalHeader } from '@components/navigation';
 import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { EmptyState } from '@components/misc';

@@ -1,28 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  Stack,
-  Text,
-} from 'ui';
+import { Badge, Button, Flex, GridItem, Heading, Stack, Text } from 'ui';
 import { StacksSDK } from 'sdk';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { defaultTo } from 'lodash';
 import { useTransaction } from 'ui/hooks';
 import { getTransaction } from 'api/clubs';
-import {
-  useFundraiseStore,
-  useGlobalState,
-  useClubTokenStore,
-  useClubMembershipPass,
-  useVotingStore,
-} from 'store';
+import { useClubTokenStore, useVotingStore } from 'store';
 import { estimateDays, findExtension, getExplorerLink } from 'utils';
 import { CLUB_EXTENSION_TYPES } from 'api/constants';
 import { useCreateExtension } from 'api/clubs/mutations/extensions';
@@ -31,24 +15,14 @@ export const ClubVotingCard = (props: any) => {
   const { isLoading, dao } = props;
   const sdk = new StacksSDK(dao?.contract_address);
   const clubToken = useClubTokenStore((state) => state.token);
-  const membershipPass = useClubMembershipPass((state) => state.membershipPass);
-  const data = useGlobalState((state) => state.club);
   const votingStore = useVotingStore((state) => state.voting);
   const extension = findExtension(dao?.extensions, 'Voting');
   const transaction = useTransaction(extension?.tx_id);
-  const minimumDeposit = useFundraiseStore((state) => state.minimumDeposit);
-  const durationInDays = useFundraiseStore((state) => state.durationInDays);
-  const fundraiseGoalAmount = useFundraiseStore(
-    (state) => state.fundraiseGoalAmount,
-  );
   const createExtension = useCreateExtension();
   const onSuccess = async (payload: any) => {
-    const txId = payload.txId;
-    console.log('txId', txId);
-    const transaction = await getTransaction(txId);
-    console.log('transaction', transaction);
-    const userAddress = transaction?.sender_address;
-    const contractAddress = transaction?.smart_contract?.contract_id;
+    const { txId } = payload;
+    const tx = await getTransaction(txId);
+    const contractAddress = tx?.smart_contract?.contract_id;
     createExtension.mutate({
       club_id: dao?.id,
       contract_address: contractAddress,

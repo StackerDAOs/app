@@ -1,16 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  Stack,
-  Text,
-} from 'ui';
+import { Badge, Button, Flex, GridItem, Heading, Stack, Text } from 'ui';
 import { StacksSDK } from 'sdk';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { defaultTo } from 'lodash';
@@ -27,15 +17,12 @@ export const ClubTokenCard = (props: any) => {
   const data = useClubTokenStore((state) => state.token);
   const extension = findExtension(dao?.extensions, 'Governance Token');
   const transaction = useTransaction(extension?.tx_id);
-  const canDeploy = data.name && data.symbol;
-  const alreadyDeployed = dao?.extensions.length > 0;
+
   const createExtension = useCreateExtension();
   const onSuccess = async (payload: any) => {
-    const txId = payload.txId;
-    const transaction = await getTransaction(txId);
-    const name = data?.name;
-    const userAddress = transaction?.sender_address;
-    const contractAddress = transaction?.smart_contract?.contract_id;
+    const { txId } = payload;
+    const tx = await getTransaction(txId);
+    const contractAddress = tx?.smart_contract?.contract_id;
     createExtension.mutate({
       club_id: dao?.id,
       contract_address: contractAddress,
@@ -43,7 +30,6 @@ export const ClubTokenCard = (props: any) => {
       tx_id: txId,
     });
   };
-  console.log({ dao, transaction, extension });
   return (
     <GridItem colSpan={{ base: 5, md: 3, lg: 2 }}>
       <Stack
@@ -96,8 +82,8 @@ export const ClubTokenCard = (props: any) => {
                       color='gray'
                     >
                       Governance tokens are also non-transferable, represent the
-                      deposit's pro rata share of the Club's treasury, and
-                      define a member's voting power.
+                      deposit&apos;s pro rata share of the Club&apos;s treasury,
+                      and define a member&apos;s voting power.
                     </Text>
                   </Stack>
                   <Stack spacing={{ base: '8', md: '10' }}>
