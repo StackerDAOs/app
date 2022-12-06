@@ -17,18 +17,9 @@ import { LogoIcon, ArrowRight } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 const pathUrl = {
-  clubs:
-    process.env.NODE_ENV === 'production'
-      ? 'https://clubs.stackerdaos.com'
-      : 'http://localhost:3000',
-  teams:
-    process.env.NODE_ENV === 'production'
-      ? 'https://teams.stackerdaos.com'
-      : 'http://localhost:3000',
-  daos:
-    process.env.NODE_ENV === 'production'
-      ? 'https://app.stackerdaos.com'
-      : 'http://localhost:3000',
+  clubs: 'https://clubs.stackerdaos.com',
+  teams: 'https://teams.stackerdaos.com',
+  daos: 'https://app.stackerdaos.com',
 };
 
 export const MainNavbar = (props: any) => {
