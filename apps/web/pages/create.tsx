@@ -86,7 +86,7 @@ export default function Create() {
   const [validationResult, setValidationResult] = React.useState<
     null | boolean
   >(null);
-  const [isDoneTyping, setIsDoneTyping] = React.useState(false);
+  const [isTyping, setIsTyping] = React.useState(false);
   const canDeploy = isChecked && data.name && !transactionId;
   const transaction = useTransaction(transactionId);
   const isReady =
@@ -128,7 +128,7 @@ export default function Create() {
     const isAvailable = input !== 'StackerDAO';
     setValidationResult(isAvailable);
     setTimeout(() => {
-      setIsDoneTyping(true);
+      setIsTyping(false);
     }, 2500);
   };
 
@@ -136,7 +136,7 @@ export default function Create() {
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setIsDoneTyping(false);
+    setIsTyping(true);
     updateName(value);
     debouncedValidateInput(value);
   };
@@ -301,13 +301,13 @@ export default function Create() {
                               onChange={handleNameChange}
                             />
                             <InputRightElement top='1'>
-                              {!isDoneTyping && (
+                              {isTyping && (
                                 <Spinner color='dark.500' size='xs' />
                               )}
-                              {validationResult && name && (
+                              {!isTyping && validationResult && name && (
                                 <CheckIcon color='green.500' />
                               )}
-                              {!validationResult && name && (
+                              {!isTyping && !validationResult && name && (
                                 <XIcon color='red.500' />
                               )}
                             </InputRightElement>
