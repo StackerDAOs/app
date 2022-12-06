@@ -15,7 +15,21 @@ import {
 import { Nav } from '@components/containers';
 import { LogoIcon, ArrowRight } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { appUrl } from 'utils';
+
+const pathUrl = {
+  clubs:
+    process.env.NODE_ENV === 'production'
+      ? 'https://clubs.stackerdaos.com'
+      : 'http://localhost:3000',
+  teams:
+    process.env.NODE_ENV === 'production'
+      ? 'https://teams.stackerdaos.com'
+      : 'http://localhost:3000',
+  daos:
+    process.env.NODE_ENV === 'production'
+      ? 'https://app.stackerdaos.com'
+      : 'http://localhost:3000',
+};
 
 export const MainNavbar = (props: any) => {
   const { shouldSwitchNav } = props;
@@ -26,21 +40,21 @@ export const MainNavbar = (props: any) => {
     switch (path) {
       case '/clubs':
         return {
-          getStarted: appUrl.clubs,
-          create: `${appUrl.clubs}/create`,
+          getStarted: pathUrl.clubs,
+          create: `${pathUrl.clubs}/create`,
           docs: 'https://stackerdaos.gitbook.io/stackerdao-labs-wiki/stackerdao-labs-offerings/products-stackerdao-clubs-teams/clubs',
         };
 
       case '/teams':
         return {
-          getStarted: appUrl.teams,
-          create: `${appUrl.teams}/create`,
+          getStarted: pathUrl.teams,
+          create: `${pathUrl.teams}/create`,
           docs: 'https://stackerdaos.gitbook.io/stackerdao-labs-wiki/stackerdao-labs-offerings/products-stackerdao-clubs-teams/teams',
         };
       case '/daos':
         return {
-          getStarted: appUrl.daos,
-          create: `${appUrl.daos}/create`,
+          getStarted: pathUrl.daos,
+          create: `${pathUrl.daos}/create`,
           docs: 'https://stackerdaos.gitbook.io/stackerdao-labs-wiki/stackerdao-labs-offerings/products-stackerdao-clubs-teams/stackerdao',
         };
       default:
@@ -52,17 +66,17 @@ export const MainNavbar = (props: any) => {
   const products = [
     {
       title: 'Clubs',
-      href: appUrl.clubs,
+      href: pathUrl.clubs,
       icon: ArrowRight,
     },
     {
       title: 'Teams',
-      href: appUrl.teams,
+      href: pathUrl.teams,
       icon: ArrowRight,
     },
     {
       title: 'StackerDAOs',
-      href: appUrl.daos,
+      href: pathUrl.daos,
       icon: ArrowRight,
     },
   ];
