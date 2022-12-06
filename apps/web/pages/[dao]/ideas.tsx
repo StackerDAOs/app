@@ -285,7 +285,7 @@ export default function Ideas() {
                                     name={stxAddress}
                                     variant='beam'
                                     colors={[
-                                      '#50DDC3',
+                                      '#27cb9f',
                                       '#624AF2',
                                       '#EB00FF',
                                       '#7301FA',

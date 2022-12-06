@@ -266,7 +266,7 @@ export default function GetStarted() {
                       <Text
                         as='span'
                         fontWeight='light'
-                        bgGradient='linear(to-br, #624AF2 5%, #50DDC3 100%)'
+                        bgGradient='linear(to-br, #624AF2 5%, #27cb9f 100%)'
                         bgClip='text'
                         letterSpacing='tight'
                         pr='1'

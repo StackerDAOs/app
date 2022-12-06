@@ -30,10 +30,10 @@ export const Notification = ({ path }: any) => (
           <HStack spacing='3'>
             <Stack>
               <Text fontWeight='medium' fontSize='sm'>
-                It looks like you have an unfinished Club!
+                It looks like you have an unfinished Team!
               </Text>
               <Progress
-                colorScheme='primary'
+                colorScheme='secondary'
                 borderRadius='lg'
                 size='sm'
                 value={50}
@@ -42,7 +42,7 @@ export const Notification = ({ path }: any) => (
             </Stack>
           </HStack>
           <Link href={path}>
-            <Button variant='primary' size='sm'>
+            <Button variant='secondary' size='sm'>
               Finish
             </Button>
           </Link>

@@ -85,7 +85,7 @@ export default function Clubs() {
             <Text
               display='inline-block'
               fontWeight='light'
-              bgGradient='linear(to-br, #624AF2 5%, #50DDC3 100%)'
+              bgGradient='linear(to-br, #624AF2 5%, #27cb9f 100%)'
               bgClip='text'
               letterSpacing='tight'
               mr='-5'
@@ -155,7 +155,7 @@ export default function Clubs() {
           <Stack flex='1' maxW={{ lg: 'lg' }} spacing='3'>
             <Heading
               as='h1'
-              bgGradient='linear(to-br, #624AF2 5%, #50DDC3 100%)'
+              bgGradient='linear(to-br, #624AF2 5%, #27cb9f 100%)'
               bgClip='text'
               letterSpacing='tight'
               size='4xl'
@@ -206,7 +206,7 @@ export default function Clubs() {
           <Stack flex='1'>
             <Heading
               as='h1'
-              bgGradient='linear(to-br, #624AF2 5%, #50DDC3 100%)'
+              bgGradient='linear(to-br, #624AF2 5%, #27cb9f 100%)'
               bgClip='text'
               letterSpacing='tight'
               size='4xl'
@@ -247,7 +247,7 @@ export default function Clubs() {
           <Stack flex='1'>
             <Heading
               as='h1'
-              bgGradient='linear(to-br, #624AF2 5%, #50DDC3 100%)'
+              bgGradient='linear(to-br, #624AF2 5%, #27cb9f 100%)'
               bgClip='text'
               letterSpacing='tight'
               size='4xl'

@@ -52,7 +52,7 @@ export const UserProfile = (props: UserProfileProps) => {
             size={30}
             name={club}
             variant='sunset'
-            colors={['#624AF2', '#7301fa', '#eb00ff', '#50DDC3']}
+            colors={['#624AF2', '#7301fa', '#eb00ff', '#27cb9f']}
           />
 
           <Stack spacing='0'>

@@ -22,13 +22,10 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Radio,
-  RadioGroup,
   Stack,
   Spinner,
   Text,
 } from 'ui';
-import { CLUB_TYPES } from 'api/constants';
 import { coreDAO } from 'utils/contracts';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { StacksDeploy, ConnectButton } from 'ui/components/buttons';
@@ -37,7 +34,6 @@ import {
   CheckIcon,
   CheckCircle,
   LogoIcon,
-  ExtensionOutline,
   LightningBolt,
   PlusIcon,
   VaultOutline,
@@ -45,17 +41,17 @@ import {
   XIcon,
 } from 'ui/components/icons';
 import { nameToSlug } from 'utils';
-import { getTransaction } from 'api/clubs';
+import { getTransaction } from 'api/teams';
 import { debounce } from 'lodash';
 import { useGlobalState } from 'store';
-import { useDAO, useTransaction } from 'ui/hooks';
-import { useCreateClub } from 'api/clubs/mutations';
+import { useTeam, useTransaction } from 'ui/hooks';
+import { useCreateTeam } from 'api/teams/mutations';
 import { Notification } from '@components/feedback';
 import { LaunchLayout } from '../components/layout';
 
 const FinishedState = ({ name }: any) => (
   <Stack spacing='3' align='center' justify='center' h='75vh'>
-    <Icon as={CheckCircle} color='primary.900' boxSize='12' />
+    <Icon as={CheckCircle} color='secondary.900' boxSize='12' />
     <Text
       fontSize='md'
       fontWeight='light'
@@ -64,8 +60,7 @@ const FinishedState = ({ name }: any) => (
       mt='4'
       maxW='md'
     >
-      Complete your Club setup by adding members, configuring your governance
-      rules, and more.
+      Complete your Team setup by adding members and adding a treasury.
     </Text>
     <ButtonGroup as={Flex} spacing='6'>
       <Link href={`/create/${nameToSlug(name)}/extensions`}>
@@ -79,8 +74,7 @@ const FinishedState = ({ name }: any) => (
 
 export default function Create() {
   const data = useGlobalState((state) => state.club);
-  const dao = useDAO(nameToSlug(data?.name));
-
+  const dao = useTeam(nameToSlug(data?.name));
   const [transactionId, setTransactionId] = React.useState(dao?.data?.tx_id);
   const [isChecked, setIsChecked] = React.useState(false);
   const [validationResult, setValidationResult] = React.useState<
@@ -92,12 +86,11 @@ export default function Create() {
   const isReady =
     transaction?.data?.tx_status === 'pending' ||
     transaction?.data?.tx_status === 'success';
-  const createClub = useCreateClub();
+  const createTeam = useCreateTeam();
   const onSuccess = async (txId: string, action: any) => {
     const tx = await getTransaction(txId);
     const name = data?.name;
     const slug = nameToSlug(name);
-    const typeId = CLUB_TYPES.INVESTMENT_CLUB;
     const userAddress = tx?.sender_address;
     const contractAddress = tx?.smart_contract?.contract_id;
 
@@ -106,7 +99,6 @@ export default function Create() {
         club: {
           name,
           slug,
-          type_id: typeId,
           tx_id: txId,
           contract_address: contractAddress,
           creator_address: userAddress,
@@ -149,7 +141,7 @@ export default function Create() {
     >
       <Stack position='fixed' bottom='0' right='0' left='0'>
         <Alert
-          bg='primary-accent.900'
+          bg='secondary.900'
           borderColor='dark.500'
           borderWidth='1px'
           color='light.900'
@@ -159,8 +151,7 @@ export default function Create() {
           <AlertIcon color='light.900' />
           <AlertDescription>
             As a first step, you will deploy a core contract that is used to
-            manage your Club&apos;s treasury, voting, and other governance
-            functions.
+            manage your Team&apos;s treasury.
           </AlertDescription>
         </Alert>
       </Stack>
@@ -192,7 +183,7 @@ export default function Create() {
           </BreadcrumbItem>
         </Breadcrumb>
         <ConnectButton
-          variant='inverted'
+          variant='secondary-inverted'
           size='sm'
           _hover={{ opacity: 0.9 }}
           _active={{ opacity: 1 }}
@@ -211,7 +202,7 @@ export default function Create() {
               <Stack spacing={{ base: '6', md: '6' }}>
                 <Stack spacing='2'>
                   <Heading size='3xl' fontWeight='black'>
-                    Create Club
+                    Create Team
                   </Heading>
                   <Text
                     fontSize={{ base: 'md', md: 'lg' }}
@@ -219,15 +210,15 @@ export default function Create() {
                     color='gray'
                     maxW='sm'
                   >
-                    Permissionless DAOs to govern open communities and networks.
-                    Perfect for protocol DAOs, NFT communities, ecosystem DAOs,
-                    and more.
+                    Multisig tool for working groups to manage assets and smart
+                    contracts. Perfect for companies, projects, subDAOs, and
+                    early DAOs progressively decentralizing.
                   </Text>
                 </Stack>
                 <Stack spacing='6'>
                   <Stack spacing='1'>
                     <HStack spacing='2' align='center'>
-                      <Icon as={WalletIcon} color='primary.900' />
+                      <Icon as={WalletIcon} color='secondary.900' />
                       <Heading size='sm' fontWeight='medium'>
                         Treasury Management
                       </Heading>
@@ -235,7 +226,7 @@ export default function Create() {
                   </Stack>
                   <Stack spacing='1'>
                     <HStack spacing='2' align='center'>
-                      <Icon as={LightningBolt} color='primary.900' />
+                      <Icon as={LightningBolt} color='secondary.900' />
                       <Heading size='sm' fontWeight='medium'>
                         Proposals & Automatic Execution
                       </Heading>
@@ -243,15 +234,7 @@ export default function Create() {
                   </Stack>
                   <Stack spacing='1'>
                     <HStack spacing='2' align='center'>
-                      <Icon as={ExtensionOutline} color='primary.900' />
-                      <Heading size='sm' fontWeight='medium'>
-                        Composable Extensions
-                      </Heading>
-                    </HStack>
-                  </Stack>
-                  <Stack spacing='1'>
-                    <HStack spacing='2' align='center'>
-                      <Icon as={VaultOutline} color='primary.900' />
+                      <Icon as={VaultOutline} color='secondary.900' />
                       <Heading size='sm' fontWeight='medium'>
                         On-chain Voting
                       </Heading>
@@ -259,7 +242,7 @@ export default function Create() {
                   </Stack>
                   <Stack spacing='1'>
                     <HStack spacing='2' align='center'>
-                      <Icon as={PlusIcon} color='primary.900' />
+                      <Icon as={PlusIcon} color='secondary.900' />
                       <Heading size='sm' fontWeight='medium'>
                         ...and more!
                       </Heading>
@@ -290,11 +273,11 @@ export default function Create() {
                             fontWeight='light'
                             color='light.500'
                           >
-                            Club Name
+                            Team Name
                           </FormLabel>
                           <InputGroup>
                             <Input
-                              placeholder='Stacks Club'
+                              placeholder='Stacks Team'
                               autoComplete='off'
                               size='lg'
                               value={name}
@@ -317,41 +300,6 @@ export default function Create() {
                           </FormHelperText>
                         </FormControl>
                       </GridItem>
-                      <GridItem colSpan={6}>
-                        <FormControl id='transferrable'>
-                          <FormLabel
-                            htmlFor='transferrable'
-                            fontWeight='light'
-                            color='light.500'
-                            maxW='md'
-                          >
-                            Is this an Investment Club?
-                          </FormLabel>
-                          <ButtonGroup
-                            bg='base.900'
-                            borderRadius='lg'
-                            p='1'
-                            spacing='2'
-                          >
-                            <Stack align='center' direction='row' spacing='3'>
-                              <RadioGroup
-                                defaultValue='yes'
-                                onChange={() => {}}
-                                value='yes'
-                              >
-                                <Stack direction='row'>
-                                  <Radio size='md' value='yes'>
-                                    Yes
-                                  </Radio>
-                                  <Radio size='md' value='no'>
-                                    No
-                                  </Radio>
-                                </Stack>
-                              </RadioGroup>
-                            </Stack>
-                          </ButtonGroup>
-                        </FormControl>
-                      </GridItem>
                     </Grid>
                   </Stack>
                   <Stack spacing='6'>
@@ -360,14 +308,14 @@ export default function Create() {
                       buttonName='Continue'
                       template={coreDAO()}
                       onSuccess={(coreTx) =>
-                        onSuccess(coreTx?.txId, createClub)
+                        onSuccess(coreTx?.txId, createTeam)
                       }
                       isDisabled={!canDeploy}
                     />
                     <Stack direction='row' justify='center'>
                       <Checkbox
                         size='sm'
-                        colorScheme='primary'
+                        colorScheme='secondary'
                         onChange={(e) => setIsChecked(e.currentTarget.checked)}
                       >
                         <Text as='span' textAlign='center'>

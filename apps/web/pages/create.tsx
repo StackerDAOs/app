@@ -40,7 +40,6 @@ import {
   ExtensionOutline,
   LightningBolt,
   PlusIcon,
-  VaultOutline,
   WalletIcon,
   XIcon,
 } from 'ui/components/icons';
@@ -80,7 +79,6 @@ const FinishedState = ({ name }: any) => (
 export default function Create() {
   const data = useGlobalState((state) => state.club);
   const dao = useDAO(nameToSlug(data?.name));
-
   const [transactionId, setTransactionId] = React.useState(dao?.data?.tx_id);
   const [isChecked, setIsChecked] = React.useState(false);
   const [validationResult, setValidationResult] = React.useState<
@@ -149,7 +147,7 @@ export default function Create() {
     >
       <Stack position='fixed' bottom='0' right='0' left='0'>
         <Alert
-          bg='primary-accent.900'
+          bg='primary.900'
           borderColor='dark.500'
           borderWidth='1px'
           color='light.900'
@@ -251,14 +249,6 @@ export default function Create() {
                   </Stack>
                   <Stack spacing='1'>
                     <HStack spacing='2' align='center'>
-                      <Icon as={VaultOutline} color='primary.900' />
-                      <Heading size='sm' fontWeight='medium'>
-                        On-chain Voting
-                      </Heading>
-                    </HStack>
-                  </Stack>
-                  <Stack spacing='1'>
-                    <HStack spacing='2' align='center'>
                       <Icon as={PlusIcon} color='primary.900' />
                       <Heading size='sm' fontWeight='medium'>
                         ...and more!
@@ -313,7 +303,7 @@ export default function Create() {
                             </InputRightElement>
                           </InputGroup>
                           <FormHelperText fontWeight='light' color='gray'>
-                            An easily identifyable name for your team.
+                            An easily identifyable name for your Club.
                           </FormHelperText>
                         </FormControl>
                       </GridItem>
@@ -327,12 +317,7 @@ export default function Create() {
                           >
                             Is this an Investment Club?
                           </FormLabel>
-                          <ButtonGroup
-                            bg='base.900'
-                            borderRadius='lg'
-                            p='1'
-                            spacing='2'
-                          >
+                          <ButtonGroup p='1' spacing='2'>
                             <Stack align='center' direction='row' spacing='3'>
                               <RadioGroup
                                 defaultValue='yes'
@@ -343,7 +328,7 @@ export default function Create() {
                                   <Radio size='md' value='yes'>
                                     Yes
                                   </Radio>
-                                  <Radio size='md' value='no'>
+                                  <Radio size='md' value='no' isDisabled>
                                     No
                                   </Radio>
                                 </Stack>

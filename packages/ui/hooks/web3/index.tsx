@@ -12,5 +12,6 @@ export { useProposal } from './useProposal';
 export { useProposals } from './useProposals';
 export { useSubmissions } from './useSubmissions';
 export { useToken } from './useToken';
+export { useTeam } from './useTeam';
 export { useTransaction } from './useTransaction';
 export { useVaultBalance } from './useVaultBalance';
