@@ -501,11 +501,11 @@ const components = {
       link: {
         color: 'light.900',
         _hover: {
-          color: 'primary.900',
+          color: 'light.500',
           textDecoration: 'none',
         },
         _active: {
-          color: 'primary.900',
+          color: 'light.500',
           textDecoration: 'none',
         },
       },
