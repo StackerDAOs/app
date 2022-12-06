@@ -63,7 +63,6 @@ import {
   WalletIcon,
   XIcon,
 } from 'ui/components/icons';
-import { shortenAddress, validateStacksAddress } from '@stacks-os/utils';
 import { nameToSlug, nameToSymbol } from 'utils';
 import { getTransaction } from 'api/clubs';
 import { debounce, defaultTo, includes, size } from 'lodash';
@@ -86,7 +85,6 @@ export default function Create() {
   >(null);
   const [isDoneTyping, setIsDoneTyping] = React.useState(false);
   const canDeploy = isChecked && data.name && !transactionId;
-  const { currentStep, setStep } = useSteps();
   const transaction = useTransaction(transactionId);
   const isReady =
     transaction?.data?.tx_status === 'pending' ||
@@ -100,9 +98,6 @@ export default function Create() {
     const txId = transactionId;
     const userAddress = transaction?.sender_address;
     const contractAddress = transaction?.smart_contract?.contract_id;
-    const config = {
-      memberAddresses: data?.members,
-    };
 
     action.mutate(
       {
@@ -113,7 +108,6 @@ export default function Create() {
           tx_id: txId,
           contract_address: contractAddress,
           creator_address: userAddress,
-          config,
         },
         userAddress,
       },
@@ -161,7 +155,7 @@ export default function Create() {
           governance rules, and more.
         </Text>
         <ButtonGroup as={Flex} spacing='6'>
-          <Link href={`/create/${nameToSlug(data?.name)}`}>
+          <Link href={`/create/${nameToSlug(data?.name)}/extensions`}>
             <Button variant='dark' isFullWidth rightIcon={<ArrowRight />}>
               Continue
             </Button>
@@ -343,7 +337,7 @@ export default function Create() {
                             />
                           </InputGroup>
                           <FormHelperText fontWeight='light' color='gray'>
-                            Easily identifyable name for your team.
+                            An easily identifyable name for your team.
                           </FormHelperText>
                         </FormControl>
                       </GridItem>

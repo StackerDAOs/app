@@ -27,7 +27,6 @@ export const ClubVaultCard = (props: any) => {
   const data = useVaultStore((state) => state.vault);
   const extension = findExtension(dao?.extensions, 'Vault');
   const transaction = useTransaction(extension?.tx_id);
-  const alreadyDeployed = dao?.extensions.length > 0;
   const createExtension = useCreateExtension();
   console.log('vault', data.listOfAllowedTokens);
   const onSuccess = async (payload: any) => {
@@ -51,7 +50,7 @@ export const ClubVaultCard = (props: any) => {
       <Stack
         as={Flex}
         direction='row'
-        w='85%'
+        w='80%'
         p={{ base: '12', md: '12' }}
         bg='dark.800'
         borderWidth='1px'
@@ -90,7 +89,7 @@ export const ClubVaultCard = (props: any) => {
                 >
                   <Stack spacing='3'>
                     <Heading size='2xl' fontWeight='thin'>
-                      Vault
+                      Club Treasury
                     </Heading>
                     <Text
                       fontSize={{ base: 'md', md: 'lg' }}

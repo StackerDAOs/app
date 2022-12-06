@@ -49,7 +49,7 @@ export const ClubTokenCard = (props: any) => {
       <Stack
         as={Flex}
         direction='row'
-        w='85%'
+        w='80%'
         p={{ base: '12', md: '12' }}
         bg='dark.800'
         borderWidth='1px'
@@ -95,10 +95,9 @@ export const ClubTokenCard = (props: any) => {
                       fontWeight='light'
                       color='gray'
                     >
-                      Governance tokens are also non-transferable, issued to
-                      Club Pass holders who deposit funds at an amount
-                      representing the deposit's pro rata share of the Club's
-                      treasury, and define a member's voting power.
+                      Governance tokens are also non-transferable, represent the
+                      deposit's pro rata share of the Club's treasury, and
+                      define a member's voting power.
                     </Text>
                   </Stack>
                   <Stack spacing={{ base: '8', md: '10' }}>

@@ -7,14 +7,19 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Circle,
+  Container,
   Flex,
   Grid,
   GridItem,
   Heading,
   HStack,
   Icon,
+  Progress,
   Stack,
+  Tag,
+  Text,
 } from 'ui';
+import { Card } from 'ui/components/cards';
 import { ConnectButton } from 'ui/components/buttons';
 import { Step } from 'ui/components/feedback';
 import { useDAO, useFormWizard } from 'ui/hooks';
@@ -27,6 +32,10 @@ import {
   ClubVaultForm,
   ClubFundraiseCard,
   ClubFundraiseForm,
+  ClubSubmissionCard,
+  ClubSubmissionForm,
+  ClubVotingCard,
+  ClubVotingForm,
 } from '@components/onboarding';
 import { Notification } from '@components/feedback';
 import {
@@ -35,6 +44,9 @@ import {
   HomeOutline,
   XIcon,
 } from 'ui/components/icons';
+import { motion, FADE_IN_VARIANTS } from 'ui/animation';
+import { getPercentage } from 'utils';
+import { size } from 'lodash';
 
 const components = [
   {
@@ -46,12 +58,20 @@ const components = [
     component: <ClubTokenForm />,
   },
   {
-    title: 'Create Fundraise',
+    title: 'Create Vault',
     component: <ClubVaultForm />,
   },
   {
     title: 'Create Fundraise',
     component: <ClubFundraiseForm />,
+  },
+  {
+    title: 'Create Voting',
+    component: <ClubVotingForm />,
+  },
+  {
+    title: 'Create Submission',
+    component: <ClubSubmissionForm />,
   },
 ];
 
@@ -73,12 +93,16 @@ const CurrentCard = ({
       return <ClubVaultCard isLoading={isLoading} dao={dao} />;
     case 3:
       return <ClubFundraiseCard isLoading={isLoading} dao={dao} />;
+    case 4:
+      return <ClubVotingCard isLoading={isLoading} dao={dao} />;
+    case 5:
+      return <ClubSubmissionCard isLoading={isLoading} dao={dao} />;
     default:
       return <ClubMembershipCard isLoading={isLoading} dao={dao} />;
   }
 };
 
-export default function Create() {
+export default function Launch() {
   const dao = useDAO();
   const {
     setStep,
@@ -114,16 +138,6 @@ export default function Create() {
         px='16'
       >
         <Breadcrumb spacing='2' separator={<ChevronRight fontSize='sm' />}>
-          <BreadcrumbItem
-            color='gray'
-            _hover={{
-              color: 'light.900',
-            }}
-          >
-            <BreadcrumbLink as={Link} href='/create'>
-              Create
-            </BreadcrumbLink>
-          </BreadcrumbItem>
           <BreadcrumbItem isCurrentPage>
             <BreadcrumbLink
               href='#'
@@ -135,18 +149,6 @@ export default function Create() {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <HStack spacing='3'>
-          {[0, 1, 2, 3, 4, 5].map((id) => (
-            <Step
-              key={id}
-              cursor='pointer'
-              isActive={currentStepIndex === id}
-              isCompleted={currentStepIndex > id}
-              isLastStep={5 === id}
-              onClick={() => setStep(id)}
-            />
-          ))}
-        </HStack>
         <ConnectButton
           variant='inverted'
           size='sm'
@@ -154,11 +156,169 @@ export default function Create() {
           _active={{ opacity: 1 }}
         />
       </Flex>
-      <Stack spacing='8' px='16'>
-        <Grid templateColumns='repeat(5, 1fr)'>
-          <CurrentCard {...props} />
-          <GridItem colSpan={3}>{currentElement}</GridItem>
-        </Grid>
+      <Stack as={Flex} justify='center' align='center' h='75vh' bg='dark.900'>
+        <Stack spacing='8' px='16'>
+          <motion.div
+            variants={FADE_IN_VARIANTS}
+            initial={FADE_IN_VARIANTS.hidden}
+            animate={FADE_IN_VARIANTS.enter}
+            exit={FADE_IN_VARIANTS.exit}
+            transition={{ duration: 0.8, type: 'linear' }}
+          >
+            <Stack spacing={{ base: '6', md: '6' }} maxW='2xl'>
+              <Text
+                lineHeight='1'
+                as='h1'
+                fontSize='7xl'
+                letterSpacing='tight'
+                fontWeight='black'
+                bgGradient='linear(to-br, #624AF2 50%, #1c1f21 100%)'
+                bgClip='text'
+              >
+                {dao?.data?.name}{' '}
+                <Text
+                  as='span'
+                  fontWeight='thin'
+                  letterSpacing='wide'
+                  color='gray'
+                >
+                  Launchpad
+                </Text>
+              </Text>
+            </Stack>
+          </motion.div>
+          <Stack spacing='8'>
+            <Link href={`/create/${dao?.data?.slug}/extensions`}>
+              <Stack spacing='0' cursor='pointer'>
+                <Stack spacing='2'>
+                  <Stack spacing='3'>
+                    <Stack spacing='0'>
+                      <Grid templateColumns='repeat(5, 1fr)' gap={8}>
+                        <GridItem colSpan={{ base: 2, md: 4 }}>
+                          <Stack spacing='1'>
+                            <HStack align='flex-start' spacing='4'>
+                              <Stack spacing='1' maxW='lg' align='flex-start'>
+                                <Stack spacing='3'>
+                                  {size(dao?.data?.extensions) >= 6 ? (
+                                    <Tag
+                                      color='primary.500'
+                                      bg='dark.800'
+                                      alignSelf='self-start'
+                                      size='sm'
+                                      borderRadius='3xl'
+                                    >
+                                      <Text as='span' fontWeight='regular'>
+                                        Complete
+                                      </Text>
+                                    </Tag>
+                                  ) : (
+                                    <Tag
+                                      color='yellow.500'
+                                      bg='dark.800'
+                                      alignSelf='self-start'
+                                      size='sm'
+                                      borderRadius='3xl'
+                                    >
+                                      <Text as='span' fontWeight='regular'>
+                                        Incomplete
+                                      </Text>
+                                    </Tag>
+                                  )}
+                                  <HStack>
+                                    <Heading size='md' fontWeight='black'>
+                                      Add &amp; Deploy Extensions
+                                    </Heading>
+                                    <Button
+                                      variant='link'
+                                      rightIcon={
+                                        <Icon
+                                          as={ArrowRight}
+                                          color='light.900'
+                                          fontSize='2xl'
+                                        />
+                                      }
+                                    />
+                                  </HStack>
+                                </Stack>
+                                <Text
+                                  fontSize='sm'
+                                  fontWeight='light'
+                                  color='gray'
+                                >
+                                  Extensions are smart contracts that give your
+                                  Club additional functionality. You must
+                                  complete this step before you can launch your
+                                  Club.
+                                </Text>
+                              </Stack>
+                            </HStack>
+                          </Stack>
+                        </GridItem>
+                      </Grid>
+                    </Stack>
+                  </Stack>
+                </Stack>
+              </Stack>
+            </Link>
+            <Link href={`/create/${dao?.data?.slug}/launch`}>
+              <Stack spacing='0' cursor='pointer'>
+                <Stack spacing='2'>
+                  <Stack spacing='3'>
+                    <Stack spacing='0'>
+                      <Grid templateColumns='repeat(5, 1fr)' gap={8}>
+                        <GridItem colSpan={{ base: 2, md: 4 }}>
+                          <Stack spacing='1'>
+                            <HStack align='flex-start' spacing='4'>
+                              <Stack spacing='1' maxW='lg' align='flex-start'>
+                                <Stack spacing='3'>
+                                  <Tag
+                                    color='yellow.500'
+                                    bg='dark.800'
+                                    alignSelf='self-start'
+                                    size='sm'
+                                    borderRadius='3xl'
+                                  >
+                                    <Text as='span' fontWeight='regular'>
+                                      Incomplete
+                                    </Text>
+                                  </Tag>
+                                  <HStack>
+                                    <Heading size='md' fontWeight='black'>
+                                      Launch Club
+                                    </Heading>
+                                    <Button
+                                      variant='link'
+                                      rightIcon={
+                                        <Icon
+                                          as={ArrowRight}
+                                          color='light.900'
+                                          fontSize='2xl'
+                                        />
+                                      }
+                                    />
+                                  </HStack>
+                                </Stack>
+                                <Text
+                                  fontSize='sm'
+                                  fontWeight='light'
+                                  color='gray'
+                                >
+                                  To launch, you need to deploy your final Club
+                                  contract which will run the smart contract
+                                  code that initializes and activates your Club.
+                                </Text>
+                              </Stack>
+                            </HStack>
+                          </Stack>
+                        </GridItem>
+                      </Grid>
+                    </Stack>
+                  </Stack>
+                </Stack>
+              </Stack>
+            </Link>
+          </Stack>
+        </Stack>
       </Stack>
     </Stack>
   );

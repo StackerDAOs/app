@@ -23,10 +23,25 @@ const generateClarityList = (
   return memberList;
 };
 
+const generateClarityListOfAssets = (
+  allowlist: string[],
+  vaultContract: string,
+) => {
+  let allowList = '';
+  allowlist.forEach((address, index) => {
+    allowList += `(try! (contract-call? '${vaultContract} set-allowed '${address} true))`;
+    if (index !== allowlist?.length - 1) {
+      allowList += `  \n    `;
+    }
+  });
+  return allowList;
+};
+
 export const bootstrapProposal = (
   coreDao: string,
   extensions: BootstrapExtensions,
-  members: string[],
+  members?: string[],
+  allowlist?: string[],
 ) => {
   const {
     vaultContract,
@@ -36,6 +51,13 @@ export const bootstrapProposal = (
     submissionContract,
     votingContract,
   } = extensions;
+
+  const memberList = members
+    ? generateClarityList(members, nftMembershipContract)
+    : '';
+  const allowList = allowlist
+    ? generateClarityListOfAssets(allowlist, vaultContract)
+    : '';
 
   return `
 (impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
@@ -53,7 +75,9 @@ export const bootstrapProposal = (
       )
     ))
 
-    ${generateClarityList(members, nftMembershipContract)}
+    ${memberList}
+    
+    ${allowList}
 
     (try! (contract-call? '${investmentClubContract} start))
 

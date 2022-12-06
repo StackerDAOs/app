@@ -16,17 +16,20 @@ import {
   RadioGroup,
   SimpleGrid,
   Stack,
+  Square,
   Tag,
   TagLabel,
   TagCloseButton,
   Text,
+  VStack,
 } from 'ui';
 import { useTransaction } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { shortenAddress } from '@stacks-os/utils';
+import { shortenAddress, validateContractAddress } from '@stacks-os/utils';
 import { useVaultStore } from 'store';
 import { findExtension } from 'utils';
-import { ArrowLeft, ArrowRight, CheckCircle } from 'ui/components/icons';
+import Papa from 'papaparse';
+import { UploadIcon, CheckCircle } from 'ui/components/icons';
 
 const AllowlistSelectForm = () => {
   const vault = useVaultStore((state) => state.vault);
@@ -64,19 +67,74 @@ const AllowlistSelectForm = () => {
 };
 
 const AddTokenForm = () => {
+  const inputRef = React.useRef<any>(null);
   const vault = useVaultStore((state) => state.vault);
   const addAllowedToken = useVaultStore((state) => state.addAllowedToken);
   const removeAllowedToken = useVaultStore((state) => state.removeAllowedToken);
+  const [filename, setFilename] = React.useState('');
+
+  const handleFilePickerClick = () => {
+    inputRef.current.click();
+  };
+
+  const handleFileUpload = (event: any) => {
+    const file = event.target.files[0];
+    setFilename(file.name);
+    Papa.parse(file, {
+      complete: (results: any) => {
+        const validAddresses = results.data
+          .flat()
+          .filter((address: string) => validateContractAddress(address));
+        console.log({ validAddresses });
+        validAddresses.forEach((member: any) => {
+          addAllowedToken(member);
+        });
+      },
+    });
+  };
   return (
-    <Grid templateColumns='repeat(2, 1fr)' gap={6}>
-      <GridItem colSpan={2}>
+    <Grid templateColumns='repeat(5, 1fr)' gap={6}>
+      <GridItem colSpan={1}>
+        <FormControl id='upload-member'>
+          <Stack spacing='3'>
+            <VStack
+              bg='dark.800'
+              py='3'
+              px='6'
+              spacing='3'
+              onClick={handleFilePickerClick}
+              borderColor='dark.500'
+              borderWidth='1px'
+              borderRadius='lg'
+            >
+              <Square size='8' bg='dark.500' borderRadius='lg'>
+                <Icon as={UploadIcon} boxSize='4' color='muted' />
+              </Square>
+              <VStack spacing='1'>
+                <HStack spacing='1' whiteSpace='nowrap'>
+                  <Button variant='unstyled' color='light.900' size='sm'>
+                    Upload asset addresses
+                  </Button>
+                </HStack>
+                <Text fontSize='xs' color='muted'>
+                  {filename ? `${filename}` : `CSV or XLSX`}
+                </Text>
+              </VStack>
+              <input
+                type='file'
+                ref={inputRef}
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+              />
+            </VStack>
+          </Stack>
+        </FormControl>
+      </GridItem>
+      <GridItem colSpan={4}>
         <FormControl id='asset'>
-          <FormLabel htmlFor='asset' fontWeight='light' color='light.500'>
-            Asset Contract Addresses
-          </FormLabel>
           <Stack spacing='3'>
             <Input
-              placeholder='SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE'
+              placeholder='Asset Contract Address'
               autoComplete='off'
               size='lg'
               onKeyDown={(e) => {
@@ -89,10 +147,14 @@ const AddTokenForm = () => {
                 }
               }}
             />
+            <FormHelperText fontWeight='light' color='gray'>
+              Assets added manually will automatically be added to any CSV or
+              XLSX file you upload.
+            </FormHelperText>
             <HStack spacing={4}>
-              <SimpleGrid columns={4} spacing={4}>
+              <SimpleGrid columns={3} spacing={4}>
                 {vault.listOfAllowedTokens.map((asset: string) => (
-                  <Tag key={asset} size='lg' borderRadius='full' variant='dark'>
+                  <Tag key={asset} size='sm' borderRadius='full' variant='dark'>
                     <TagLabel>{asset && shortenAddress(asset)}</TagLabel>
                     <TagCloseButton onClick={() => removeAllowedToken(asset)} />
                   </Tag>

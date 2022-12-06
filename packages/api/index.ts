@@ -25,7 +25,7 @@ export async function getDAO(name: string) {
     const { data, error } = await supabase
       .from('Organizations')
       .select(
-        'id, name, slug, contractAddress, prefix, Extensions (contractAddress, ExtensionTypes (name))',
+        'id, name, slug, contractAddress, prefix, Extensions (contractAddress, ExtensionTypes (name), config)',
       )
       .eq('slug', name);
     if (error) throw error;

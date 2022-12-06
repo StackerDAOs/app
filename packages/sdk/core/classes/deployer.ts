@@ -5,6 +5,7 @@ import {
   clubMembershipExtension,
   governanceTokenExtension,
   submissionExtension,
+  bootstrapProposal,
   transferStxProposal,
   upgradeProtocolProposal,
   upgradeAllowedAssetsProposal,
@@ -22,6 +23,7 @@ import type {
   TransferStxParams,
   UpgradeProtocolParams,
   UpgradeAllowedAssetsParams,
+  ClubBootstrapParams,
 } from '../../common';
 
 /**
@@ -244,6 +246,7 @@ export class Deployer {
    *  membershipPassAddress: "SP3WV3VC6GM1WF215SDHP0MESQ3BNXHB1N6TPB70S.club-membership-pass",
    *  clubAddress: "SP3WV3VC6GM1WF215SDHP0MESQ3BNXHB1N6TPB70S.investment-club",
    *  votingAddress: "SP3WV3VC6GM1WF215SDHP0MESQ3BNXHB1N6TPB70S.club-voting",
+   *  proposalDurationInBlocks: 144,
    *  minimumProposalStartDelay: 144,
    *  maximumProposalStartDelay: 1000000,
    * });
@@ -256,6 +259,7 @@ export class Deployer {
    *  membershipPassAddress: string;
    *  clubAddress: string;
    *  votingAddress: string;
+   *  proposalDurationInBlocks: number;
    *  minimumProposalStartDelay: number;
    *  maximumProposalStartDelay: number;
    *  onFinish?: (payload: FinishedTxData) => void;
@@ -341,6 +345,69 @@ export class Deployer {
       governanceTokenAddress,
       executionDelay,
       this.coreAddress,
+    );
+    return this.openContractCallDeploy({
+      contractName,
+      codeBody,
+      onFinish: (payload) => {
+        params?.onFinish?.(payload);
+      },
+      onCancel: (error) => {
+        params?.onCancel?.(error);
+      },
+    });
+  }
+
+  /** ------------------------------------------------------------------------------------------------------------------
+   *   Bootstrap Proposals
+   *  ------------------------------------------------------------------------------------------------------------------
+   */
+
+  /**
+   * Deploys a Bootstrap Proposal for Clubs to the Stacks blockchain.
+   *
+   * @remarks Deploys a Bootstrap Proposal and returns the tx data of the deployed contract
+   *
+   * @example
+   * ```javascript
+   * const contractAddress = await sdk.deployer.deployBootstrap({
+   *  contractName: "transfer-funds",
+   *  extensions: {
+   *   vaultContract: string;
+   *   governanceTokenContract: string;
+   *   nftMembershipContract: string;
+   *   investmentClubContract: string;
+   *   submissionContract: string;
+   *   votingContract: string;
+   *   },
+   *  members: ['SP3WV3VC6GM1WF215SDHP0MESQ3BNXHB1N6TPB70S', 'SP4WV3VC6GM1WF215SDHP0MESQ3BNXHB1N6TPB70S'],
+   *  allowlist: ['SP123.miami-coin', 'SP123.miami-coin'],
+   * });
+   * ```
+   *
+   * @param params - the parameters for the Transfer STX Proposal
+   * ```javascript
+   * interface ClubBootstrapParams {
+   *  contractName: string;
+   *  extensions: BootstrapExtensions;
+   *  members?: string[];
+   *  allowlist?: string[];
+   *  onFinish?: (payload: FinishedTxData) => void;
+   *  onCancel?: (error?: string) => void;
+   * }
+   * ```
+   *
+   * @returns the txId and txRaw of the deployed contract
+   */
+  public async deployBootstrap(
+    params: ClubBootstrapParams,
+  ): Promise<FinishedTxData | undefined> {
+    const { contractName, extensions, members, allowlist } = params;
+    const codeBody = bootstrapProposal(
+      this.coreAddress,
+      extensions,
+      members,
+      allowlist,
     );
     return this.openContractCallDeploy({
       contractName,

@@ -16,17 +16,25 @@ import {
   RadioGroup,
   SimpleGrid,
   Stack,
+  Square,
   Tag,
   TagLabel,
   TagCloseButton,
   Text,
+  VStack,
 } from 'ui';
 import { useTransaction } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { shortenAddress } from '@stacks-os/utils';
+import { shortenAddress, validateStacksAddress } from '@stacks-os/utils';
 import { useSteps, useClubMembershipPass, useGlobalState } from 'store';
 import { findExtension } from 'utils';
-import { ArrowLeft, ArrowRight, CheckCircle } from 'ui/components/icons';
+import Papa from 'papaparse';
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle,
+  UploadIcon,
+} from 'ui/components/icons';
 import { FileUpload } from '@components/forms';
 
 const NFTMetadataForm = () => {
@@ -35,21 +43,15 @@ const NFTMetadataForm = () => {
   const maxSupply = useClubMembershipPass(
     (state) => state.membershipPass.maxSupply,
   );
-  const isTransferrable = useClubMembershipPass(
-    (state) => state.membershipPass.isTransferrable,
-  );
   const updateName = useClubMembershipPass((state) => state.updateName);
   const updateSymbol = useClubMembershipPass((state) => state.updateSymbol);
   const updateMaxSupply = useClubMembershipPass(
     (state) => state.updateMaxSupply,
   );
-  const handleSelect = useClubMembershipPass(
-    (state) => state.handleSelectTransferrable,
-  );
 
   return (
-    <Grid templateColumns='repeat(3, 1fr)' gap={6}>
-      <GridItem colSpan={2}>
+    <Grid templateColumns='repeat(5, 1fr)' gap={6}>
+      <GridItem colSpan={3}>
         <FormControl id='name'>
           <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
             Name
@@ -80,7 +82,7 @@ const NFTMetadataForm = () => {
       <GridItem colSpan={1}>
         <FormControl id='name'>
           <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
-            Max Supply
+            Max supply
           </FormLabel>
           <Input
             placeholder='99'
@@ -91,52 +93,41 @@ const NFTMetadataForm = () => {
           />
         </FormControl>
       </GridItem>
-      <GridItem colSpan={3}>
-        <FormControl id='transferrable'>
-          <FormLabel
-            htmlFor='transferrable'
-            fontWeight='light'
-            color='light.500'
-            maxW='md'
-          >
-            Do you want to keep your Membership Pass non-transferrable in the
-            future?
-          </FormLabel>
-          <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
-            <Stack align='center' direction='row' spacing='3'>
-              <RadioGroup
-                defaultValue='yes'
-                onChange={handleSelect}
-                value={isTransferrable}
-              >
-                <Stack direction='row'>
-                  <Radio size='md' value='yes'>
-                    Yes
-                  </Radio>
-                  <Radio size='md' value='no'>
-                    No
-                  </Radio>
-                </Stack>
-              </RadioGroup>
-            </Stack>
-          </ButtonGroup>
-        </FormControl>
-      </GridItem>
     </Grid>
   );
 };
 
 export const ClubMembershipPassForm = (props: any) => {
   const { dao, back, next } = props;
+  const inputRef = React.useRef<any>(null);
   const extension = findExtension(dao?.extensions, 'NFT Membership');
   const transaction = useTransaction(extension?.tx_id);
   const data = useClubMembershipPass((state) => state.membershipPass);
-  const isTransferrable = useClubMembershipPass(
-    (state) => state.membershipPass.isTransferrable,
-  );
   const members = useGlobalState((state) => state.club.members);
   const addMember = useGlobalState((state) => state.addMember);
   const removeMember = useGlobalState((state) => state.removeMember);
+
+  const [filename, setFilename] = React.useState('');
+
+  const handleFilePickerClick = () => {
+    inputRef.current.click();
+  };
+
+  const handleFileUpload = (event: any) => {
+    const file = event.target.files[0];
+    setFilename(file.name);
+    Papa.parse(file, {
+      complete: (results: any) => {
+        const validAddresses = results.data
+          .flat()
+          .filter((address: string) => validateStacksAddress(address));
+        console.log({ validAddresses });
+        validAddresses.forEach((member: any) => {
+          addMember(member);
+        });
+      },
+    });
+  };
 
   const FinishedState = () => {
     return (
@@ -172,7 +163,6 @@ export const ClubMembershipPassForm = (props: any) => {
             Continue
           </Button>
         </ButtonGroup>
-        <FileUpload />
       </Stack>
     );
   };
@@ -180,8 +170,8 @@ export const ClubMembershipPassForm = (props: any) => {
   return (
     <Stack spacing='2'>
       <GridItem colSpan={3}>
-        {transaction?.data?.tx_status !== 'pending' ||
-        transaction?.data?.tx_status !== 'success' ? (
+        {transaction?.data?.tx_status === 'pending' ||
+        transaction?.data?.tx_status === 'success' ? (
           <FinishedState />
         ) : (
           <Stack
@@ -192,7 +182,7 @@ export const ClubMembershipPassForm = (props: any) => {
           >
             <Box
               as='form'
-              py='12'
+              py='10'
               bg='dark.900'
               w='100%'
               overflowY='scroll'
@@ -219,87 +209,120 @@ export const ClubMembershipPassForm = (props: any) => {
                         <Text fontSize='lg' fontWeight='medium'>
                           NFT Metadata
                         </Text>
+                        <Text color='light.500' fontSize='sm' maxW='lg'>
+                          Standard metadata for your NFT. The max supply
+                          represents the # of members allowed in your Club.
+                          Capped at 99.
+                        </Text>
                       </Box>
                       <NFTMetadataForm />
                     </Stack>
-                    {isTransferrable === 'no' ? (
-                      <motion.div
-                        key={1}
-                        variants={FADE_IN_VARIANTS}
-                        initial={FADE_IN_VARIANTS.hidden}
-                        animate={FADE_IN_VARIANTS.enter}
-                        exit={FADE_IN_VARIANTS.exit}
-                        transition={{ duration: 0.8, type: 'linear' }}
-                      >
-                        <Stack spacing='6' direction='column'>
-                          <Box>
-                            <Text fontSize='lg' fontWeight='medium'>
-                              Club Members
-                            </Text>
-                            <Text color='light.500' fontSize='sm' maxW='lg'>
-                              Members will be minted a Club Pass and be able to
-                              deposit funds into the Club once live. At least 2
-                              members are required.
-                            </Text>
-                          </Box>
-                          <Stack spacing='3' direction='column'>
-                            <FormControl id='member'>
-                              <FormLabel
-                                htmlFor='name'
-                                fontWeight='light'
-                                color='light.500'
+                    <Stack spacing='6' direction='column'>
+                      <Box>
+                        <Text fontSize='lg' fontWeight='medium'>
+                          Club Members
+                        </Text>
+                        <Text color='light.500' fontSize='sm' maxW='lg'>
+                          Members will be minted a Club Pass and be able to
+                          deposit funds into the Club once live. At least 2
+                          members are required.
+                        </Text>
+                      </Box>
+                      <Grid templateColumns='repeat(5, 1fr)' gap={6}>
+                        <GridItem colSpan={1}>
+                          <FormControl id='upload-member'>
+                            <Stack spacing='3'>
+                              <VStack
+                                bg='dark.800'
+                                py='3'
+                                px='6'
+                                spacing='3'
+                                onClick={handleFilePickerClick}
+                                borderColor='dark.500'
+                                borderWidth='1px'
+                                borderRadius='lg'
                               >
-                                STX Address
-                              </FormLabel>
-                              <Stack spacing='3'>
-                                <Input
-                                  placeholder='SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE'
-                                  autoComplete='off'
-                                  size='lg'
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                      e.preventDefault();
-                                      console.log(
-                                        'value',
-                                        e.currentTarget.value,
-                                      );
-                                      addMember(e.currentTarget.value);
-                                      e.currentTarget.value = '';
-                                    }
-                                  }}
+                                <Square
+                                  size='8'
+                                  bg='dark.500'
+                                  borderRadius='lg'
+                                >
+                                  <Icon
+                                    as={UploadIcon}
+                                    boxSize='4'
+                                    color='muted'
+                                  />
+                                </Square>
+                                <VStack spacing='1'>
+                                  <HStack spacing='1' whiteSpace='nowrap'>
+                                    <Button
+                                      variant='unstyled'
+                                      color='light.900'
+                                      size='sm'
+                                    >
+                                      Upload Club member addresses
+                                    </Button>
+                                  </HStack>
+                                  <Text fontSize='xs' color='muted'>
+                                    {filename ? `${filename}` : `CSV or XLSX`}
+                                  </Text>
+                                </VStack>
+                                <input
+                                  type='file'
+                                  ref={inputRef}
+                                  onChange={handleFileUpload}
+                                  style={{ display: 'none' }}
                                 />
-                                <FormHelperText fontWeight='light' color='gray'>
-                                  Members will be minted a Club Pass and be able
-                                  to deposit funds into the Club once live. At
-                                  least 2 members are required.
-                                </FormHelperText>
-                                <HStack spacing={4}>
-                                  <SimpleGrid columns={4} spacing={4}>
-                                    {members.map(
-                                      (member: string, index: number) => (
-                                        <Tag
-                                          key={index}
-                                          size='lg'
-                                          borderRadius='full'
-                                          variant='dark'
-                                        >
-                                          <TagLabel>
-                                            {member && shortenAddress(member)}
-                                          </TagLabel>
-                                          <TagCloseButton
-                                            onClick={() => removeMember(member)}
-                                          />
-                                        </Tag>
-                                      ),
-                                    )}
-                                  </SimpleGrid>
-                                </HStack>
-                              </Stack>
-                            </FormControl>
-                          </Stack>
-                        </Stack>
-                      </motion.div>
-                    ) : null}
+                              </VStack>
+                            </Stack>
+                          </FormControl>
+                        </GridItem>
+                        <GridItem colSpan={4}>
+                          <FormControl id='member'>
+                            <Stack spacing='3'>
+                              <Input
+                                placeholder='STX Address'
+                                autoComplete='off'
+                                size='lg'
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    console.log('value', e.currentTarget.value);
+                                    addMember(e.currentTarget.value);
+                                    e.currentTarget.value = '';
+                                  }
+                                }}
+                              />
+                              <FormHelperText fontWeight='light' color='gray'>
+                                Members you add manually will automatically be
+                                added to any CSV or XLSX file you upload.
+                              </FormHelperText>
+                              <HStack>
+                                <SimpleGrid columns={3} spacing={4}>
+                                  {members.map(
+                                    (member: string, index: number) => (
+                                      <Tag
+                                        key={index}
+                                        size='sm'
+                                        borderRadius='full'
+                                        variant='dark'
+                                      >
+                                        <TagLabel>
+                                          {member && shortenAddress(member)}
+                                        </TagLabel>
+                                        <TagCloseButton
+                                          onClick={() => removeMember(member)}
+                                        />
+                                      </Tag>
+                                    ),
+                                  )}
+                                </SimpleGrid>
+                              </HStack>
+                            </Stack>
+                          </FormControl>
+                        </GridItem>
+                      </Grid>
+                    </Stack>
                   </Stack>
                 </Stack>
               </motion.div>

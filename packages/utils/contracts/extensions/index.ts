@@ -452,7 +452,7 @@ export const clubExtension = (
 (define-public (ragequit (membershipTokenId uint))
   (begin
     (asserts! (is-eq false (is-raising)) ERR_CLAIM_WINDOW_NOT_OPEN)
-    (try! (contract-call? '${vaultContract} stx-transfer (get-payout tx-sender) tx-sender none))
+    (try! (contract-call? '${vaultContract} withdraw-stx (get-payout tx-sender) tx-sender))
     (try! (contract-call? '${nftMembershipContract} burn membershipTokenId tx-sender))
     (contract-call? '${governanceTokenContract} burn (unwrap-panic (contract-call? '${governanceTokenContract} get-balance tx-sender)) tx-sender)
   )
@@ -479,7 +479,7 @@ export const clubExtension = (
         (payout (get-payout member))
       )
       (print { event: "distribute", member: member, payout: payout })
-      (ok (contract-call? '${vaultContract} stx-transfer payout member none))
+      (ok (contract-call? '${vaultContract} withdraw-stx payout member))
     )
   )
 )
@@ -497,7 +497,7 @@ export const clubExtension = (
 
 (define-read-only (get-treasury-balance (blockHeight uint))
   (at-block
-    (unwrap! (get-block-info? id-header-hash blockHeight) u0) (contract-call? '${vaultContract} get-balance)
+    (unwrap! (get-block-info? id-header-hash blockHeight) u0) (contract-call? '${vaultContract} get-balance-stx)
   )
 )
 
@@ -544,9 +544,9 @@ export const submissionExtension = (
   nftMembershipContract: string,
   investmentClubContract: string,
   votingContract: string,
-  proposalDuration: number,
-  minimumProposalStartDelay: number,
-  maximumProposalStartDelay: number,
+  proposalDuration: number = 144,
+  minimumProposalStartDelay: number = 0,
+  maximumProposalStartDelay: number = 0,
   coreDao: string,
 ) => `
 (impl-trait '${traitPrincipal}.extension-trait.extension-trait)

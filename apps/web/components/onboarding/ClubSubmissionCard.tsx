@@ -16,37 +16,42 @@ import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { defaultTo } from 'lodash';
 import { useTransaction } from 'ui/hooks';
 import { getTransaction } from 'api/clubs';
-import { useClubMembershipPass, useGlobalState } from 'store';
+import {
+  useFundraiseStore,
+  useGlobalState,
+  useClubTokenStore,
+  useClubMembershipPass,
+  useVotingStore,
+  useSubmissionStore,
+} from 'store';
 import { findExtension, getExplorerLink } from 'utils';
 import { CLUB_EXTENSION_TYPES } from 'api/constants';
 import { useCreateExtension } from 'api/clubs/mutations/extensions';
 
-export const ClubMembershipCard = (props: any) => {
+export const ClubSubmissionCard = (props: any) => {
   const { isLoading, dao } = props;
   const sdk = new StacksSDK(dao?.contract_address);
-  const data = useClubMembershipPass((state) => state.membershipPass);
-  const members = useGlobalState((state) => state.club.members);
-  const extension = findExtension(dao?.extensions, 'NFT Membership');
+  const membershipPass = useClubMembershipPass((state) => state.membershipPass);
+  const submissionStore = useSubmissionStore((state) => state.submission);
+  const extension = findExtension(dao?.extensions, 'Submission');
   const transaction = useTransaction(extension?.tx_id);
-  const formIsValidated = data.name?.length > 4 && data.symbol?.length >= 3;
-  const alreadyDeployed = dao?.extensions.length > 0;
+
   const createExtension = useCreateExtension();
   const onSuccess = async (payload: any) => {
     const txId = payload.txId;
+    console.log('txId', txId);
     const transaction = await getTransaction(txId);
-    const name = data?.name;
+    console.log('transaction', transaction);
     const userAddress = transaction?.sender_address;
     const contractAddress = transaction?.smart_contract?.contract_id;
     createExtension.mutate({
       club_id: dao?.id,
       contract_address: contractAddress,
-      extension_type_id: CLUB_EXTENSION_TYPES.NFT_MEMBERSHIP,
+      extension_type_id: CLUB_EXTENSION_TYPES.SUBMISSION,
       tx_id: txId,
-      config: {
-        members,
-      },
     });
   };
+
   return (
     <GridItem colSpan={{ base: 5, md: 3, lg: 2 }}>
       <Stack
@@ -82,7 +87,7 @@ export const ClubMembershipCard = (props: any) => {
                   borderRadius='3xl'
                 >
                   <Text as='span' fontWeight='regular'>
-                    Governance
+                    Action
                   </Text>
                 </Badge>
                 <Stack
@@ -91,16 +96,15 @@ export const ClubMembershipCard = (props: any) => {
                 >
                   <Stack spacing='3'>
                     <Heading size='2xl' fontWeight='thin'>
-                      Club Pass
+                      Proposal Submission
                     </Heading>
                     <Text
                       fontSize={{ base: 'md', md: 'lg' }}
                       fontWeight='light'
                       color='gray'
                     >
-                      Club Passes are non-transferable NFTs and define your
-                      Club&apos;s membership. They are required to deposit into
-                      the Club.
+                      Submit on-chain proposals as a Club Pass holder. Clubs can
+                      approve proposals to change these rules.
                     </Text>
                   </Stack>
                   <Stack spacing={{ base: '8', md: '10' }}>
@@ -117,7 +121,27 @@ export const ClubMembershipCard = (props: any) => {
                             borderColor='dark.500'
                           >
                             <Text fontSize='lg' fontWeight='thin' color='gray'>
-                              Name
+                              Voting Power
+                            </Text>
+                            <Text
+                              fontSize='lg'
+                              fontWeight='thin'
+                              color='light.500'
+                            >
+                              {membershipPass?.name}
+                            </Text>
+                          </Stack>
+                          <Stack
+                            pt='1'
+                            px='1'
+                            align='center'
+                            direction='row'
+                            justify='space-between'
+                            borderTopWidth='1px'
+                            borderColor='dark.500'
+                          >
+                            <Text fontSize='lg' fontWeight='thin' color='gray'>
+                              Duration in Blocks
                             </Text>
                             <Text
                               fontSize='lg'
@@ -125,8 +149,8 @@ export const ClubMembershipCard = (props: any) => {
                               color='light.500'
                             >
                               {defaultTo(
-                                data.name === '' ? undefined : data.name,
-                                '---',
+                                submissionStore.proposalDuration,
+                                '144',
                               )}
                             </Text>
                           </Stack>
@@ -140,7 +164,7 @@ export const ClubMembershipCard = (props: any) => {
                             borderColor='dark.500'
                           >
                             <Text fontSize='lg' fontWeight='thin' color='gray'>
-                              Symbol
+                              Start Delay
                             </Text>
                             <Text
                               fontSize='lg'
@@ -148,72 +172,15 @@ export const ClubMembershipCard = (props: any) => {
                               color='light.500'
                             >
                               {defaultTo(
-                                data.symbol === '' ? undefined : data.symbol,
-                                '---',
-                              )}
-                            </Text>
-                          </Stack>
-                          <Stack
-                            pt='1'
-                            px='1'
-                            align='center'
-                            direction='row'
-                            justify='space-between'
-                            borderTopWidth='1px'
-                            borderColor='dark.500'
-                          >
-                            <Text fontSize='lg' fontWeight='thin' color='gray'>
-                              Max supply
-                            </Text>
-                            <Text
-                              fontSize='lg'
-                              fontWeight='thin'
-                              color='light.500'
-                            >
+                                submissionStore.minimumProposalStartDelay,
+                                '144',
+                              )}{' '}
+                              -{' '}
                               {defaultTo(
-                                data.maxSupply === '' ? '99' : data.maxSupply,
-                                '---',
-                              )}
-                            </Text>
-                          </Stack>
-                          <Stack
-                            pt='1'
-                            px='1'
-                            align='center'
-                            direction='row'
-                            justify='space-between'
-                            borderTopWidth='1px'
-                            borderColor='dark.500'
-                          >
-                            <Text fontSize='lg' fontWeight='thin' color='gray'>
-                              Total Members
-                            </Text>
-                            <Text
-                              fontSize='lg'
-                              fontWeight='thin'
-                              color='light.500'
-                            >
-                              {defaultTo(members.length, 1)}
-                            </Text>
-                          </Stack>
-                          <Stack
-                            pt='1'
-                            px='1'
-                            align='center'
-                            direction='row'
-                            justify='space-between'
-                            borderTopWidth='1px'
-                            borderColor='dark.500'
-                          >
-                            <Text fontSize='lg' fontWeight='thin' color='gray'>
-                              Non-transferrable
-                            </Text>
-                            <Text
-                              fontSize='lg'
-                              fontWeight='thin'
-                              color='light.500'
-                            >
-                              {data.isTransferrable === 'yes' ? 'Yes' : 'No'}
+                                submissionStore.maximumProposalStartDelay,
+                                '1008',
+                              )}{' '}
+                              blocks
                             </Text>
                           </Stack>
                         </Stack>
@@ -237,11 +204,29 @@ export const ClubMembershipCard = (props: any) => {
             ) : (
               <Button
                 variant={!extension ? 'primary' : 'outline'}
-                isDisabled={isLoading || !!extension || !formIsValidated}
+                isDisabled={isLoading || !!extension}
                 onClick={() =>
-                  sdk.deployer.deployMembershipPass({
-                    contractName: 'club-pass',
-                    tokenName: data.name,
+                  sdk.deployer.deploySubmission({
+                    contractName: 'submission',
+                    membershipPassAddress: findExtension(
+                      dao?.extensions,
+                      'NFT Membership',
+                    )?.contract_address,
+                    clubAddress: findExtension(
+                      dao?.extensions,
+                      'Investment Club',
+                    )?.contract_address,
+                    votingAddress: findExtension(dao?.extensions, 'Voting')
+                      ?.contract_address,
+                    proposalDurationInBlocks: Number(
+                      submissionStore.proposalDuration,
+                    ),
+                    minimumProposalStartDelay: Number(
+                      submissionStore.minimumProposalStartDelay,
+                    ),
+                    maximumProposalStartDelay: Number(
+                      submissionStore.maximumProposalStartDelay,
+                    ),
                     onFinish: onSuccess,
                   })
                 }

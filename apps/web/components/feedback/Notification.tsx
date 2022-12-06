@@ -15,7 +15,7 @@ import Link from 'next/link';
 import { InfoIcon } from 'ui/components/icons';
 
 export const Notification = (props: { path: string }) => (
-  <Box as='section' position='fixed' bottom='5' right='5'>
+  <Box as='section' position='fixed' bottom='2' right='2'>
     <Flex direction='row-reverse'>
       <Box
         width={{ base: 'full', sm: 'md' }}

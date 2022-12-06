@@ -1,6 +1,14 @@
 import { Deployer } from './classes';
-import { getClient } from 'ui/components';
+import { getClient, TxType, FinishedTxData } from 'ui/components';
+import { contractPrincipalCV } from 'ui/components';
+import { splitContractAddress } from '@stacks-os/utils';
 import type { MicroStacksClient } from 'ui/components';
+
+interface InitInterface {
+  proposalAddress: string;
+  onFinish?: (payload: FinishedTxData) => void;
+  onCancel?: (error?: string) => void;
+}
 
 export class StacksSDK {
   public client: MicroStacksClient;
@@ -22,4 +30,23 @@ export class StacksSDK {
   }
 
   public getDeployer() {}
+
+  public init(params: InitInterface) {
+    const [contractAddress, contractName] = splitContractAddress(
+      this.coreAddress,
+    );
+    this.client.signTransaction(TxType.ContractCall, {
+      contractAddress: contractAddress,
+      contractName: contractName,
+      functionName: 'init',
+      functionArgs: [contractPrincipalCV(params?.proposalAddress)],
+      postConditions: [],
+      onFinish: (payload) => {
+        params?.onFinish?.(payload);
+      },
+      onCancel: (error) => {
+        params?.onCancel?.(error);
+      },
+    });
+  }
 }

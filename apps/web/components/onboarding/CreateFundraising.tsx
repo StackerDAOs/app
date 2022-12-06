@@ -364,7 +364,7 @@ export const CreateFundraising = (props: any) => {
                         >
                           Fundraise and open new windows where the Club can
                           issue more Club Passes to add members, accept new
-                          deposits, and issue depositors new governance tokens.
+                          deposits, and more.
                         </Text>
                       </Stack>
                       <Stack spacing={{ base: '8', md: '10' }}>

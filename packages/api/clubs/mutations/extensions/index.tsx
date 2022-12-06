@@ -7,7 +7,8 @@ type Extension = {
   extension_type_id: number;
   tx_id: string;
   config?: {
-    allowed_tokens: string[];
+    members?: string[];
+    allowed_tokens?: string[];
   };
 };
 

@@ -64,7 +64,7 @@ const NameForm = () => {
             value={minimumDeposit}
             size='lg'
             color='white'
-            bg='dark.700'
+            bg='dark.900'
             borderColor='rgba(240, 246, 252, 0.1)'
             onChange={(e: any) => handleSelectMinimumDeposit(e.target.value)}
           >
@@ -108,7 +108,7 @@ const NameForm = () => {
             color='light.500'
             maxW='md'
           >
-            Do you want to enable multiple funding rounds in the future?
+            Do you want to enable funding rounds in the future?
           </FormLabel>
           <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
             <Stack align='center' direction='row' spacing='3'>

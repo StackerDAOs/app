@@ -52,7 +52,7 @@ export const ClubFundraiseCard = (props: any) => {
       <Stack
         as={Flex}
         direction='row'
-        w='85%'
+        w='80%'
         p={{ base: '12', md: '12' }}
         bg='dark.800'
         borderWidth='1px'
@@ -100,7 +100,7 @@ export const ClubFundraiseCard = (props: any) => {
                     >
                       Fundraise and open new windows where the Club can issue
                       more Club Passes to add members, accept new deposits, and
-                      issue depositors new governance tokens.
+                      more.
                     </Text>
                   </Stack>
                   <Stack spacing={{ base: '8', md: '10' }}>
@@ -147,7 +147,11 @@ export const ClubFundraiseCard = (props: any) => {
                               fontWeight='thin'
                               color='light.500'
                             >
-                              {defaultTo(minimumDeposit, 0)} STX
+                              {defaultTo(
+                                Number(minimumDeposit).toLocaleString('en-US'),
+                                0,
+                              )}{' '}
+                              STX
                             </Text>
                           </Stack>
                           <Stack
@@ -191,7 +195,9 @@ export const ClubFundraiseCard = (props: any) => {
                               {defaultTo(
                                 fundraiseGoalAmount == ''
                                   ? null
-                                  : fundraiseGoalAmount,
+                                  : Number(fundraiseGoalAmount).toLocaleString(
+                                      'en-US',
+                                    ),
                                 '0',
                               )}{' '}
                               STX
@@ -221,7 +227,7 @@ export const ClubFundraiseCard = (props: any) => {
                 isDisabled={isLoading || !!extension}
                 onClick={() =>
                   sdk.deployer.deployClub({
-                    contractName: 'club-v2',
+                    contractName: 'club-v5',
                     membershipPassAddress: findExtension(
                       dao?.extensions,
                       'NFT Membership',

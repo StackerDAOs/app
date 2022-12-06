@@ -1,5 +1,14 @@
 import type { FinishedTxData } from 'ui/components';
 
+type BootstrapExtensions = {
+  vaultContract: string;
+  governanceTokenContract: string;
+  nftMembershipContract: string;
+  investmentClubContract: string;
+  submissionContract: string;
+  votingContract: string;
+};
+
 export interface ContractCallParams {
   onFinish?: (payload: FinishedTxData) => void;
   onCancel?: (error?: string) => void;
@@ -38,9 +47,9 @@ export interface SubmissionParams extends ContractCallParams {
   membershipPassAddress: string;
   clubAddress: string;
   votingAddress: string;
-  proposalDurationInBlocks: number;
-  minimumProposalStartDelay: number;
-  maximumProposalStartDelay: number;
+  proposalDurationInBlocks?: number;
+  minimumProposalStartDelay?: number;
+  maximumProposalStartDelay?: number;
 }
 
 export interface VotingParams extends ContractCallParams {
@@ -48,6 +57,13 @@ export interface VotingParams extends ContractCallParams {
   membershipPassAddress: string;
   governanceTokenAddress: string;
   executionDelay?: number;
+}
+
+export interface ClubBootstrapParams extends ContractCallParams {
+  contractName: string;
+  extensions: BootstrapExtensions;
+  members?: string[];
+  allowlist?: string[];
 }
 
 export interface TransferStxParams extends ContractCallParams {

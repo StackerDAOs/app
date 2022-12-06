@@ -2,12 +2,9 @@ import React from 'react';
 import {
   Box,
   BoxProps,
-  Circle,
   createIcon,
-  Icon,
   Stack,
   StackProps,
-  SimpleGrid,
   useId,
   useRadio,
   useRadioGroup,
@@ -71,7 +68,7 @@ export const RadioCard = (props: RadioCardProps) => {
       cursor='pointer'
       borderRadius='lg'
       borderWidth='1px'
-      bg={state.isChecked ? 'dark.900' : 'dark.700'}
+      bg={state.isChecked ? 'dark.800' : 'dark.900'}
       borderColor={state.isChecked ? 'primary.800' : 'dark.500'}
       {...labelProps}
       sx={{
@@ -84,13 +81,6 @@ export const RadioCard = (props: RadioCardProps) => {
       <input {...inputProps} aria-labelledby={id} />
       <Box sx={styles} {...checkboxProps} {...rest}>
         <Stack direction='row'>
-          {/* {state.isChecked ? (
-            <Circle bg='accent' size='4' color='primary.900'>
-              <Icon as={CheckIcon} boxSize='2.5' color='inverted' />
-            </Circle>
-          ) : (
-            <Circle borderWidth='2px' size='4' />
-          )} */}
           <Box flex='1'>{children}</Box>
         </Stack>
       </Box>

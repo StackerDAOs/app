@@ -80,6 +80,35 @@ export const useCreateClub = () => {
   });
 };
 
+export async function updateClub(club: {
+  contract_address: string;
+  config: any;
+}) {
+  try {
+    const { data, error } = await supabase
+      .from('clubs')
+      .update({ config: club.config })
+      .match({
+        contract_address: club.contract_address,
+      });
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useUpdateClub = () => {
+  const queryClient = useQueryClient();
+  return useMutation(updateClub, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('dao');
+      queryClient.invalidateQueries('clubs');
+      queryClient.invalidateQueries('investment-club');
+    },
+  });
+};
+
 export async function updateBootrapAddress(club: {
   contract_address?: string;
   bootstrap_address?: string;
