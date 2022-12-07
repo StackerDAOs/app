@@ -31,6 +31,7 @@ export const TeamMembershipCard = (props: any) => {
       tx_id: txId,
       config: {
         members,
+        signalsRequired: data?.signalsRequired,
       },
     });
   };
@@ -179,9 +180,8 @@ export const TeamMembershipCard = (props: any) => {
                 variant={!extension ? 'secondary' : 'outline'}
                 isDisabled={isLoading || !!extension || !formIsValidated}
                 onClick={() =>
-                  sdk.deployer.deployMembershipPass({
-                    contractName: 'club-pass',
-                    tokenName: 'TOKEN',
+                  sdk.deployer.deployMultisig({
+                    contractName: 'multisig-v2',
                     onFinish: onSuccess,
                   })
                 }

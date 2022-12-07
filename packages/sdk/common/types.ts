@@ -1,12 +1,17 @@
 import type { FinishedTxData } from 'ui/components';
 
-type BootstrapExtensions = {
+export type BootstrapExtensions = {
   vaultContract: string;
   governanceTokenContract: string;
   nftMembershipContract: string;
   investmentClubContract: string;
   submissionContract: string;
   votingContract: string;
+};
+
+export type BootstrapTeamExtensions = {
+  vaultContract: string;
+  multisigContract: string;
 };
 
 export interface ContractCallParams {
@@ -59,9 +64,20 @@ export interface VotingParams extends ContractCallParams {
   executionDelay?: number;
 }
 
+export interface MultisigParams extends ContractCallParams {
+  contractName: string;
+}
+
 export interface ClubBootstrapParams extends ContractCallParams {
   contractName: string;
   extensions: BootstrapExtensions;
+  members?: string[];
+  allowlist?: string[];
+}
+
+export interface TeamBootstrapParams extends ContractCallParams {
+  contractName: string;
+  extensions: BootstrapTeamExtensions;
   members?: string[];
   allowlist?: string[];
 }

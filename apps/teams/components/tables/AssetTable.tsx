@@ -215,7 +215,6 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
             {listItems.map((item: any) => {
               const { contractAddress, name, decimals } = item;
               let { balance, totalSent, totalReceived } = item;
-              console.log({ item, balance, totalSent, totalReceived });
               switch (name) {
                 case 'Stacks':
                   balance = ustxToStx(item.balance);

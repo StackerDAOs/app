@@ -1,13 +1,5 @@
 import { traitPrincipal } from 'api/constants';
-
-type BootstrapExtensions = {
-  vaultContract: string;
-  governanceTokenContract: string;
-  nftMembershipContract: string;
-  investmentClubContract: string;
-  submissionContract: string;
-  votingContract: string;
-};
+import { BootstrapExtensions, BootstrapTeamExtensions } from 'sdk/common';
 
 const generateClarityList = (
   members: string[],
@@ -80,6 +72,55 @@ export const bootstrapProposal = (
     ${allowList}
 
     (try! (contract-call? '${investmentClubContract} start))
+
+    (print { message: "...to be a completely separate network and separate block chain, yet share CPU power with Bitcoin.", sender: sender })
+    (ok true)
+  )
+)
+`;
+};
+
+const generateTeamMembers = (members: string[], multisigContract: string) => {
+  let memberList = '';
+  members.forEach((address, index) => {
+    memberList += `(try! (contract-call? '${multisigContract} set-approver '${address} true))`;
+    if (index !== members?.length - 1) {
+      memberList += `  \n    `;
+    }
+  });
+  return memberList;
+};
+
+export const bootstrapTeamProposal = (
+  coreDao: string,
+  extensions: BootstrapTeamExtensions,
+  members?: string[],
+  allowlist?: string[],
+) => {
+  const { vaultContract, multisigContract } = extensions;
+
+  const teamMemberList = members
+    ? generateTeamMembers(members, multisigContract)
+    : '';
+  const allowList = allowlist
+    ? generateClarityListOfAssets(allowlist, vaultContract)
+    : '';
+
+  return `
+(impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
+
+(define-public (execute (sender principal))
+  (begin
+    (try! (contract-call? '${coreDao} set-extensions
+      (list
+        { extension: '${vaultContract}, enabled: true }
+        { extension: '${multisigContract}, enabled: true }
+      )
+    ))
+
+    ${teamMemberList}
+    
+    ${allowList}
 
     (print { message: "...to be a completely separate network and separate block chain, yet share CPU power with Bitcoin.", sender: sender })
     (ok true)

@@ -5,28 +5,27 @@ import { StacksSDK } from 'sdk';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { defaultTo } from 'lodash';
 import { useTransaction } from 'ui/hooks';
-import { getTransaction } from 'api/clubs';
+import { getTransaction } from 'api/teams';
 import { useVaultStore } from 'store';
 import { findExtension, getExplorerLink } from 'utils';
-import { CLUB_EXTENSION_TYPES } from 'api/constants';
-import { useCreateExtension } from 'api/clubs/mutations/extensions';
+import { TEAM_EXTENSION_TYPES } from 'api/constants';
+import { useCreateExtension } from 'api/teams/mutations/extensions';
 
-export const ClubVaultCard = (props: any) => {
+export const TeamVaultCard = (props: any) => {
   const { isLoading, dao } = props;
   const sdk = new StacksSDK(dao?.contract_address);
   const data = useVaultStore((state) => state.vault);
   const extension = findExtension(dao?.extensions, 'Vault');
   const transaction = useTransaction(extension?.tx_id);
   const createExtension = useCreateExtension();
-  console.log('vault', data.listOfAllowedTokens);
   const onSuccess = async (payload: any) => {
     const { txId } = payload;
     const tx = await getTransaction(txId);
     const contractAddress = tx?.smart_contract?.contract_id;
     createExtension.mutate({
-      club_id: dao?.id,
+      team_id: dao?.id,
       contract_address: contractAddress,
-      extension_type_id: CLUB_EXTENSION_TYPES.VAULT,
+      extension_type_id: TEAM_EXTENSION_TYPES.VAULT,
       tx_id: txId,
       config: {
         allowed_tokens: data.listOfAllowedTokens,
@@ -59,7 +58,7 @@ export const ClubVaultCard = (props: any) => {
             <Stack spacing='8'>
               <Stack spacing='4'>
                 <Badge
-                  color='primary.900'
+                  color='secondary.900'
                   bg='dark.500'
                   alignSelf='start'
                   size='lg'
@@ -77,14 +76,14 @@ export const ClubVaultCard = (props: any) => {
                 >
                   <Stack spacing='3'>
                     <Heading size='2xl' fontWeight='thin'>
-                      Club Treasury
+                      Team Treasury
                     </Heading>
                     <Text
                       fontSize={{ base: 'md', md: 'lg' }}
                       fontWeight='light'
                       color='gray'
                     >
-                      Your vault will store your Club&apos;s assets, like
+                      Your vault will store your Team&apos;s assets, like
                       fungible tokens and NFTs.
                     </Text>
                   </Stack>
@@ -152,11 +151,11 @@ export const ClubVaultCard = (props: any) => {
               </Stack>
             ) : (
               <Button
-                variant={!extension ? 'primary' : 'outline'}
+                variant={!extension ? 'secondary' : 'outline'}
                 isDisabled={isLoading || !!extension}
                 onClick={() =>
                   sdk.deployer.deployVault({
-                    contractName: 'vault',
+                    contractName: 'multisig-vault',
                     requireAllowList: true,
                     onFinish: onSuccess,
                   })

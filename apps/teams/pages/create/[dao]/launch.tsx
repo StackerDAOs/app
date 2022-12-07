@@ -74,8 +74,6 @@ export default function Create() {
     ),
   );
 
-  console.log({ dao, currentProgress });
-
   return (
     <Stack spacing='10'>
       <Flex

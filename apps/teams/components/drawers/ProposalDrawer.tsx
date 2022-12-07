@@ -74,7 +74,6 @@ export const ProposalDrawer = (props: ProposalDrawerProps) => {
   });
   const selectedTemplate = getValues('template');
   const selectedVaultType = getValues('vaultType');
-  console.log({ vault });
   let codeBody: string = '';
   switch (selectedVaultType) {
     case '1':

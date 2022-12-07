@@ -6,11 +6,13 @@ import {
   governanceTokenExtension,
   submissionExtension,
   bootstrapProposal,
+  bootstrapTeamProposal,
   transferStxProposal,
   upgradeProtocolProposal,
   upgradeAllowedAssetsProposal,
   vaultExtension,
   votingExtension,
+  multisigExtension,
 } from 'utils/contracts';
 import type { MicroStacksClient, FinishedTxData } from 'ui/components';
 import type {
@@ -20,10 +22,12 @@ import type {
   SubmissionParams,
   VaultParams,
   VotingParams,
+  MultisigParams,
   TransferStxParams,
   UpgradeProtocolParams,
   UpgradeAllowedAssetsParams,
   ClubBootstrapParams,
+  TeamBootstrapParams,
 } from '../../common';
 
 /**
@@ -358,6 +362,44 @@ export class Deployer {
     });
   }
 
+  /**
+   * Deploys a Multisig extension to the Stacks blockchain.
+   *
+   * @remarks Deploys a Multisig extension and returns the tx data of the deployed contract
+   *
+   * @example
+   * ```javascript
+   * const contractAddress = await sdk.deployer.deployMultisig({
+   *  contractName: "multisig",
+   * });
+   * ```
+   *
+   * @param params - the parameters for the Multisig extension
+   * ```javascript
+   * interface MultisigParams {
+   *  contractName: string;
+   * }
+   * ```
+   *
+   * @returns the txId and txRaw of the deployed contract
+   */
+  public async deployMultisig(
+    params: MultisigParams,
+  ): Promise<FinishedTxData | undefined> {
+    const { contractName } = params;
+    const codeBody = multisigExtension(this.coreAddress);
+    return this.openContractCallDeploy({
+      contractName,
+      codeBody,
+      onFinish: (payload) => {
+        params?.onFinish?.(payload);
+      },
+      onCancel: (error) => {
+        params?.onCancel?.(error);
+      },
+    });
+  }
+
   /** ------------------------------------------------------------------------------------------------------------------
    *   Bootstrap Proposals
    *  ------------------------------------------------------------------------------------------------------------------
@@ -385,7 +427,7 @@ export class Deployer {
    * });
    * ```
    *
-   * @param params - the parameters for the Transfer STX Proposal
+   * @param params - the parameters for the Bootstrap Proposal for Clubs
    * ```javascript
    * interface ClubBootstrapParams {
    *  contractName: string;
@@ -404,6 +446,59 @@ export class Deployer {
   ): Promise<FinishedTxData | undefined> {
     const { contractName, extensions, members, allowlist } = params;
     const codeBody = bootstrapProposal(
+      this.coreAddress,
+      extensions,
+      members,
+      allowlist,
+    );
+    return this.openContractCallDeploy({
+      contractName,
+      codeBody,
+      onFinish: (payload) => {
+        params?.onFinish?.(payload);
+      },
+      onCancel: (error) => {
+        params?.onCancel?.(error);
+      },
+    });
+  }
+
+  /**
+   * Deploys a Bootstrap Proposal for Teams to the Stacks blockchain.
+   *
+   * @remarks Deploys a Bootstrap Proposal and returns the tx data of the deployed contract
+   *
+   * @example
+   * ```javascript
+   * const contractAddress = await sdk.deployer.deployTeamBootstrap({
+   *  contractName: "lfg-team",
+   *  extensions: {
+   *   vaultContract: string;
+   *   },
+   *  members: ['SP3WV3VC6GM1WF215SDHP0MESQ3BNXHB1N6TPB70S', 'SP4WV3VC6GM1WF215SDHP0MESQ3BNXHB1N6TPB70S'],
+   *  allowlist: ['SP123.miami-coin', 'SP123.miami-coin'],
+   * });
+   * ```
+   *
+   * @param params - the parameters for the  Bootstrap Proposal for Teams
+   * ```javascript
+   * interface TeamBootstrapParams {
+   *  contractName: string;
+   *  extensions: TeamBootstrapParams;
+   *  members?: string[];
+   *  allowlist?: string[];
+   *  onFinish?: (payload: FinishedTxData) => void;
+   *  onCancel?: (error?: string) => void;
+   * }
+   * ```
+   *
+   * @returns the txId and txRaw of the deployed contract
+   */
+  public async deployTeamBootstrap(
+    params: TeamBootstrapParams,
+  ): Promise<FinishedTxData | undefined> {
+    const { contractName, extensions, members, allowlist } = params;
+    const codeBody = bootstrapTeamProposal(
       this.coreAddress,
       extensions,
       members,

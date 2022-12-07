@@ -134,8 +134,6 @@ export default function Create() {
     debouncedValidateInput(value);
   };
 
-  console.log({ transaction, isReady });
-
   return (
     <Stack
       h='100vh'

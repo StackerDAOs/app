@@ -13,13 +13,22 @@ import {
 import { ConnectButton } from 'ui/components/buttons';
 import { Step } from 'ui/components/feedback';
 import { useTeam, useFormWizard } from 'ui/hooks';
-import { TeamMembershipForm, TeamMembershipCard } from '@components/onboarding';
+import {
+  TeamMembershipForm,
+  TeamMembershipCard,
+  TeamVaultForm,
+  TeamVaultCard,
+} from '@components/onboarding';
 import { ChevronRight } from 'ui/components/icons';
 
 const components = [
   {
     title: 'Create Team Membership',
     component: <TeamMembershipForm />,
+  },
+  {
+    title: 'Create Team Vault',
+    component: <TeamVaultForm />,
   },
 ];
 
@@ -35,6 +44,8 @@ const CurrentCard = ({
   switch (currentStep) {
     case 0:
       return <TeamMembershipCard isLoading={isLoading} dao={dao} />;
+    case 1:
+      return <TeamVaultCard isLoading={isLoading} dao={dao} />;
     default:
       return <TeamMembershipCard isLoading={isLoading} dao={dao} />;
   }

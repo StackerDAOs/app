@@ -3,6 +3,7 @@ import {
   Alert,
   AlertDescription,
   Box,
+  ButtonGroup,
   Button,
   FormControl,
   FormHelperText,
@@ -15,99 +16,160 @@ import {
   Icon,
   Input,
   Progress,
+  Radio,
+  RadioGroup,
+  SimpleGrid,
   Stack,
   Tag,
+  TagLabel,
+  TagCloseButton,
   Text,
 } from 'ui';
 import { Card } from 'ui/components/cards';
-import { RadioButton, RadioButtonGroup } from 'ui/components/forms';
 import { StacksSDK } from 'sdk';
-import { getTransaction } from 'api/clubs';
-import { useUpdateBootstrap, useUpdateInitTxId } from 'api/clubs/mutations';
-import { useDAO, useTransaction } from 'ui/hooks';
+import Papa from 'papaparse';
+import { getTransaction } from 'api/teams';
+import { useUpdateBootstrap, useUpdateInitTxId } from 'api/teams/mutations';
+import { useTeam, useTransaction } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { useSubmissionStore } from 'store';
-import { findExtension, estimateDays, getPercentage } from 'utils';
+import { shortenAddress, validateContractAddress } from '@stacks-os/utils';
+import { useVaultStore } from 'store';
+import { findExtension, getPercentage } from 'utils';
 import { filter, size } from 'lodash';
-import { InfoIcon } from 'ui/components/icons';
+import { CheckIcon, InfoIcon, UploadIcon } from 'ui/components/icons';
 
-const NameForm = () => {
-  const submission = useSubmissionStore((state) => state.submission);
-
-  const handleMinStartBlock = useSubmissionStore(
-    (state) => state.updateMinimumStartDelay,
-  );
-
-  const handleMaxStartBlock = useSubmissionStore(
-    (state) => state.updateMaximumStartDelay,
-  );
-
+const AllowlistSelectForm = () => {
+  const vault = useVaultStore((state) => state.vault);
+  const handleSelect = useVaultStore((state) => state.handleSelectAllowList);
   return (
-    <Grid templateColumns='repeat(6, 1fr)' gap='8'>
-      <GridItem colSpan={3}>
-        <Stack spacing='6' direction='column'>
-          <Stack spacing='3' direction='column'>
-            <FormControl id='min-block'>
-              <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
-                Minimum Start Block{' '}
-              </FormLabel>
-              <Stack spacing='3'>
-                <Input
-                  placeholder='0'
-                  autoComplete='off'
-                  size='lg'
-                  onChange={(e: any) => handleMinStartBlock(e.target.value)}
-                  value={submission.minimumProposalStartDelay}
-                />
-                <FormHelperText fontWeight='light' color='gray'>
-                  This requires all proposals to wait ~{' '}
-                  {estimateDays(Number(submission.minimumProposalStartDelay))}{' '}
-                  days before voting begins.
-                </FormHelperText>
-              </Stack>
-            </FormControl>
-          </Stack>
+    <FormControl id='transferrable'>
+      <FormLabel
+        htmlFor='transferrable'
+        fontWeight='light'
+        color='light.500'
+        maxW='md'
+      >
+        Do you want to require all assets stored in the vault to be whitelisted?
+      </FormLabel>
+      <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
+        <Stack align='center' direction='row' spacing='3'>
+          <RadioGroup
+            defaultValue='yes'
+            onChange={handleSelect}
+            value={vault.hasAllowList}
+          >
+            <Stack direction='row'>
+              <Radio variant='secondary' size='md' value='yes'>
+                Yes
+              </Radio>
+              <Radio variant='secondary' size='md' value='no' isDisabled>
+                No
+              </Radio>
+            </Stack>
+          </RadioGroup>
         </Stack>
-      </GridItem>
-      <GridItem colSpan={3}>
-        <Stack spacing='6' direction='column'>
-          <Stack spacing='3' direction='column'>
-            <FormControl id='max-block'>
-              <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
-                Maximum Start Block{' '}
-              </FormLabel>
-              <Stack spacing='3'>
-                <Input
-                  placeholder='0'
-                  autoComplete='off'
-                  size='lg'
-                  onChange={(e: any) => handleMaxStartBlock(e.target.value)}
-                  value={submission.maximumProposalStartDelay}
-                />
-                <FormHelperText fontWeight='light' color='gray'>
-                  This requires all proposals must go live for a vote within ~{' '}
-                  {estimateDays(Number(submission.maximumProposalStartDelay))}{' '}
-                  days.
-                </FormHelperText>
-              </Stack>
-            </FormControl>
+      </ButtonGroup>
+    </FormControl>
+  );
+};
+
+const AddTokenForm = () => {
+  const inputRef = React.useRef<any>(null);
+  const vault = useVaultStore((state) => state.vault);
+  const addAllowedToken = useVaultStore((state) => state.addAllowedToken);
+  const removeAllowedToken = useVaultStore((state) => state.removeAllowedToken);
+  const [filename, setFilename] = React.useState('');
+
+  const handleFilePickerClick = () => {
+    inputRef.current.click();
+  };
+
+  const handleFileUpload = (event: any) => {
+    const file = event.target.files[0];
+    setFilename(file.name);
+    Papa.parse(file, {
+      complete: (results: any) => {
+        const validAddresses = results.data
+          .flat()
+          .filter((address: string) => validateContractAddress(address));
+        validAddresses.forEach((member: any) => {
+          addAllowedToken(member);
+        });
+      },
+    });
+  };
+  return (
+    <Grid templateColumns='repeat(5, 1fr)' gap={6}>
+      <GridItem colSpan={4}>
+        <FormControl id='asset'>
+          <HStack spacing='1' align='baseline' justify='space-between'>
+            <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
+              Allowlist
+            </FormLabel>
+            <Button
+              variant='link'
+              color='gray'
+              size='sm'
+              leftIcon={<UploadIcon />}
+              onClick={handleFilePickerClick}
+            >
+              <Text as='span' fontSize='sm' fontWeight='light'>
+                Upload file
+              </Text>
+              <input
+                type='file'
+                ref={inputRef}
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+              />
+            </Button>
+          </HStack>
+          <Stack spacing='3'>
+            <Input
+              placeholder='Asset Contract Address'
+              autoComplete='off'
+              size='lg'
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  addAllowedToken(e.currentTarget.value);
+                }
+              }}
+            />
+            <FormHelperText fontWeight='light' color='gray'>
+              {filename && (
+                <HStack spacing='1' align='center'>
+                  <Icon as={CheckIcon} fontSize='sm' />
+                  <Text as='span' fontSize='sm'>
+                    {filename}
+                  </Text>
+                </HStack>
+              )}{' '}
+            </FormHelperText>
+            <HStack spacing={4}>
+              <SimpleGrid columns={3} spacing={4}>
+                {vault.listOfAllowedTokens.map((asset: string) => (
+                  <Tag key={asset} size='sm' borderRadius='full' variant='dark'>
+                    <TagLabel>{asset && shortenAddress(asset)}</TagLabel>
+                    <TagCloseButton onClick={() => removeAllowedToken(asset)} />
+                  </Tag>
+                ))}
+              </SimpleGrid>
+            </HStack>
           </Stack>
-        </Stack>
+        </FormControl>
       </GridItem>
     </Grid>
   );
 };
 
 const FinishedState = () => {
-  const dao = useDAO();
+  const dao = useTeam();
   const updateBootstrap = useUpdateBootstrap();
   const transaction = useTransaction(dao?.data?.bootstrap_tx_id);
   const updateInitTxId = useUpdateInitTxId();
   const activationTransaction = useTransaction(dao?.data?.activation_tx_id);
-  const nftMembershipPassExtension = findExtension(
-    dao?.data?.extensions,
-    'NFT Membership',
-  );
+  const multisigExtension = findExtension(dao?.data?.extensions, 'Team');
   const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
   const sdk = new StacksSDK(dao?.data?.contract_address);
   const onSuccess = async (payload: any) => {
@@ -158,7 +220,7 @@ const FinishedState = () => {
         >
           <Stack spacing={{ base: '6', md: '6' }}>
             <Progress
-              colorScheme='primary'
+              colorScheme='secondary'
               borderRadius='lg'
               size='md'
               value={getPercentage(2, currentProgress)}
@@ -218,39 +280,22 @@ const FinishedState = () => {
                       <GridItem colSpan={{ base: 1, md: 1 }}>
                         {!transaction?.data && (
                           <Button
-                            variant='primary'
+                            variant='secondary'
                             onClick={() =>
-                              sdk.deployer.deployBootstrap({
+                              sdk.deployer.deployTeamBootstrap({
                                 contractName: 'lfg',
                                 extensions: {
                                   vaultContract: findExtension(
                                     dao?.data?.extensions,
                                     'Vault',
                                   )?.contract_address,
-                                  nftMembershipContract: findExtension(
+                                  multisigContract: findExtension(
                                     dao?.data?.extensions,
-                                    'NFT Membership',
-                                  )?.contract_address,
-                                  governanceTokenContract: findExtension(
-                                    dao?.data?.extensions,
-                                    'Governance Token',
-                                  )?.contract_address,
-                                  investmentClubContract: findExtension(
-                                    dao?.data?.extensions,
-                                    'Investment Club',
-                                  )?.contract_address,
-                                  votingContract: findExtension(
-                                    dao?.data?.extensions,
-                                    'Voting',
-                                  )?.contract_address,
-                                  submissionContract: findExtension(
-                                    dao?.data?.extensions,
-                                    'Submission',
+                                    'Team',
                                   )?.contract_address,
                                 },
                                 members:
-                                  nftMembershipPassExtension?.data?.config
-                                    ?.members,
+                                  multisigExtension?.data?.config?.members,
                                 allowlist:
                                   vaultExtension?.data?.config?.allowed_tokens,
                                 onFinish: onSuccess,
@@ -326,7 +371,7 @@ const FinishedState = () => {
                       <GridItem colSpan={{ base: 1, md: 1 }}>
                         {!activationTransaction?.data && (
                           <Button
-                            variant='primary'
+                            variant='secondary'
                             onClick={() =>
                               sdk.init({
                                 proposalAddress: dao?.data?.bootstrap_address,
@@ -364,7 +409,7 @@ const FinishedState = () => {
           m='0 auto'
         >
           <HStack spacing='2'>
-            <Icon as={InfoIcon} color='primary.900' fontSize='lg' />
+            <Icon as={InfoIcon} color='secondary.900' fontSize='lg' />
             <AlertDescription>
               The following steps must be compeleted in the order they are
               presented.
@@ -376,14 +421,11 @@ const FinishedState = () => {
   );
 };
 
-export const ClubSubmissionForm = (props: any) => {
+export const TeamVaultForm = (props: any) => {
   const { dao } = props;
-  const extension = findExtension(dao?.extensions, 'Submission');
+  const extension = findExtension(dao?.extensions, 'Vault');
   const transaction = useTransaction(extension?.tx_id);
-  const submissionStore = useSubmissionStore((state) => state.submission);
-  const handleSelectProposalDuration = useSubmissionStore(
-    (state) => state.updateProposalDuration,
-  );
+  const hasAllowList = useVaultStore((state) => state.vault.hasAllowList);
 
   return (
     <Stack spacing='2'>
@@ -425,43 +467,33 @@ export const ClubSubmissionForm = (props: any) => {
                     <Stack spacing='6' direction='column'>
                       <Box>
                         <Text fontSize='lg' fontWeight='medium'>
-                          Submission Details
-                        </Text>
-                        <Text color='light.500' fontSize='sm' maxW='md'>
-                          Select the submission parameters for your Club.
+                          Vault Configuration
                         </Text>
                       </Box>
-                      <Grid templateColumns='repeat(5, 1fr)' gap='8'>
-                        <GridItem colSpan={5}>
-                          <FormControl>
-                            <FormLabel
-                              htmlFor='durationInDays'
-                              fontWeight='light'
-                              color='gray'
-                            >
-                              Proposal duration
-                            </FormLabel>
-                            <RadioButtonGroup
-                              defaultValue='1'
-                              size='lg'
-                              onChange={(value: any) => {
-                                handleSelectProposalDuration(value);
-                              }}
-                              value={submissionStore.proposalDuration}
-                            >
-                              <RadioButton value='144'>1 day</RadioButton>
-                              <RadioButton value='288'>2 days</RadioButton>
-                              <RadioButton value='432'>3 days</RadioButton>
-                              <RadioButton value='1008'>1 week</RadioButton>
-                            </RadioButtonGroup>
-                            <FormHelperText fontWeight='light' color='gray'>
-                              This can be changed later via a proposal passed by
-                              the Club members.
-                            </FormHelperText>
-                          </FormControl>
-                        </GridItem>
-                      </Grid>
-                      <NameForm />
+                      <AllowlistSelectForm />
+                      {hasAllowList === 'yes' ? (
+                        <motion.div
+                          key={1}
+                          variants={FADE_IN_VARIANTS}
+                          initial={FADE_IN_VARIANTS.hidden}
+                          animate={FADE_IN_VARIANTS.enter}
+                          exit={FADE_IN_VARIANTS.exit}
+                          transition={{ duration: 0.8, type: 'linear' }}
+                        >
+                          <Stack spacing='6' direction='column'>
+                            <Box>
+                              <Text fontSize='lg' fontWeight='medium'>
+                                Assets
+                              </Text>
+                              <Text color='light.500' fontSize='sm' maxW='md'>
+                                Add NFT and Token contract addresses to the
+                                allowlist.
+                              </Text>
+                            </Box>
+                            <AddTokenForm />
+                          </Stack>
+                        </motion.div>
+                      ) : null}
                     </Stack>
                   </Stack>
                 </Stack>

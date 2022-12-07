@@ -140,7 +140,6 @@ export const ClubMembershipPassForm = (props: any) => {
         const validAddresses = results.data
           .flat()
           .filter((address: string) => validateStacksAddress(address));
-        console.log({ validAddresses });
         validAddresses.forEach((member: any) => {
           addMember(member);
         });

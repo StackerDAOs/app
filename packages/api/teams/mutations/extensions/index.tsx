@@ -8,6 +8,7 @@ type Extension = {
   tx_id: string;
   config?: {
     members?: string[];
+    signalsRequired?: string;
     allowed_tokens?: string[];
   };
 };
@@ -28,8 +29,7 @@ export const useCreateExtension = () => {
   const queryClient = useQueryClient();
   return useMutation(createExtension, {
     onSuccess: () => {
-      queryClient.invalidateQueries('extensions');
-      queryClient.invalidateQueries('dao');
+      queryClient.invalidateQueries('team');
     },
   });
 };

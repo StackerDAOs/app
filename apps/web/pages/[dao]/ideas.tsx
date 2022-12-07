@@ -31,7 +31,6 @@ export default function Ideas() {
   const ideas = useIdeas(filter);
   const { stxAddress } = useAccount();
   const { openSignMessage } = useOpenSignMessage();
-  console.log({ ideas });
 
   const handleResult = React.useCallback(async (response: any) => {
     if (response?.status === 200) {
