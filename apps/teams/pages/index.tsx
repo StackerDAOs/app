@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Button, Box, Divider, Heading, HStack, Stack, Text } from 'ui';
+import { Button, Box, Icon, Heading, HStack, Stack, Text } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { AppLayout } from '@components/layout';
 import { Card } from 'ui/components/cards';
@@ -43,7 +43,7 @@ export default function Web() {
               bg='dark.900'
               border='1px solid'
               borderColor='dark.500'
-              w='375px'
+              w='25vw'
             >
               <Box
                 py={{ base: '3', md: '3' }}
@@ -56,9 +56,14 @@ export default function Web() {
                   <Text fontSize='md' fontWeight='medium' color='light.900'>
                     My Teams
                   </Text>
+                  <Link href='/create'>
+                    <Icon
+                      as={PlusIcon}
+                      _hover={{ cursor: 'pointer', color: 'light.500' }}
+                    />
+                  </Link>
                 </HStack>
               </Box>
-              <Divider borderColor='dark.500' />
               <Stack
                 spacing={{ base: '0', md: '1' }}
                 justify='center'
@@ -88,11 +93,6 @@ export default function Web() {
                 </Stack>
               </Stack>
             </Card>
-            <Link href='/create'>
-              <Button variant='link' size='sm' leftIcon={<PlusIcon />}>
-                Create a Team
-              </Button>
-            </Link>
           </Stack>
         </Stack>
       ) : (
