@@ -1,4 +1,4 @@
-export { useAccountBalance } from './useAccountBalance';
+export { useAccountBalance, useTeamAccountBalance } from './useAccountBalance';
 export { useAuth } from './useAuth';
 export { useBlocks } from './useBlocks';
 export { useClubs } from './useClubs';
@@ -6,10 +6,10 @@ export { useContract } from './useContract';
 export { useDAO } from './useDAO';
 export { useExtension } from './useExtension';
 export { useGovernanceToken } from './useGovernanceToken';
-export { useIdeas } from './useIdeas';
+export { useIdeas, useTeamIdeas } from './useIdeas';
 export { useInvestmentClub } from './useInvestmentClub';
 export { useProposal } from './useProposal';
-export { useProposals } from './useProposals';
+export { useProposals, useTeamProposals } from './useProposals';
 export { useSubmissions } from './useSubmissions';
 export { useToken } from './useToken';
 export { useTeam } from './useTeam';

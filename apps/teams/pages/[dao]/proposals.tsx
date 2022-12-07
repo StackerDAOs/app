@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
   Badge,
+  Box,
+  Button,
+  Flex,
   Heading,
   HStack,
   Radio,
@@ -11,10 +14,9 @@ import {
   Stack,
   Text,
 } from 'ui';
-import { useProposals } from 'ui/hooks';
+import { useTeam, useTeamProposals } from 'ui/hooks';
 import { SectionHeader } from 'ui/components/layout';
 import { DashboardLayout } from '@components/layout';
-import { Wrapper } from '@components/containers';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { EmptyState } from '@components/misc';
 import { Card } from 'ui/components/cards';
@@ -23,13 +25,51 @@ import { capitalize, map, size } from 'lodash';
 const MotionGrid = motion(SimpleGrid);
 
 export default function Proposals() {
+  const dao = useTeam();
+  const isActive = dao?.data?.active;
   const router = useRouter();
-  const { dao } = router.query as any;
+  const slug = router.query?.dao as any;
   const [filter, setFilter] = React.useState('active');
-  const proposals = useProposals();
+  const proposals = useTeamProposals();
 
   if (proposals.isLoading) {
     return null;
+  }
+
+  if (!isActive) {
+    return (
+      <Stack align='center' justify='center' h='75vh'>
+        <Card bg='dark.900' border='1px solid' borderColor='dark.500' w='25vw'>
+          <Box
+            py={{ base: '3', md: '3' }}
+            px={{ base: '6', md: '6' }}
+            bg='dark.700'
+            borderTopLeftRadius='lg'
+            borderTopRightRadius='lg'
+          >
+            <HStack justify='center'>
+              <Text fontSize='md' fontWeight='medium' color='light.900'>
+                Proposals are not active yet
+              </Text>
+            </HStack>
+          </Box>
+          <Stack
+            spacing={{ base: '0', md: '1' }}
+            justify='center'
+            py={{ base: '3', md: '3' }}
+            px={{ base: '6', md: '6' }}
+          >
+            <Stack spacing='3'>
+              <HStack justify='center' cursor='default'>
+                <Button variant='default' size='sm' isDisabled>
+                  Activate
+                </Button>
+              </HStack>
+            </Stack>
+          </Stack>
+        </Card>
+      </Stack>
+    );
   }
 
   if (size(proposals?.data) < 1) {
@@ -61,6 +101,7 @@ export default function Proposals() {
       </Stack>
     );
   }
+
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -69,7 +110,7 @@ export default function Proposals() {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.25, type: 'linear' }}
     >
-      <Wrapper>
+      <Stack spacing='8'>
         <Stack spacing='1'>
           <SectionHeader
             justify={{ base: 'flex-start', md: 'space-between' }}
@@ -134,7 +175,7 @@ export default function Proposals() {
                           scale: 1,
                         }}
                       >
-                        <Link href={`/${dao}/proposals/${contractAddress}`}>
+                        <Link href={`/${slug}/proposals/${contractAddress}`}>
                           <Card
                             bg='dark.700'
                             display='flex'
@@ -213,9 +254,31 @@ export default function Proposals() {
             </motion.div>
           </Stack>
         </Stack>
-      </Wrapper>
+      </Stack>
     </motion.div>
   );
 }
 
-Proposals.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;
+Proposals.getLayout = (page: any) => (
+  <DashboardLayout
+    header={
+      <Flex
+        justify='space-between'
+        align='center'
+        borderBottomWidth='1px'
+        borderBottomColor='dark.500'
+        py='5'
+        px='4'
+      >
+        <Heading size='md' fontWeight='black' letterSpacing='tight'>
+          Proposals
+        </Heading>
+        <Button variant='default' size='sm' isDisabled>
+          Create Proposal
+        </Button>
+      </Flex>
+    }
+  >
+    {page}
+  </DashboardLayout>
+);

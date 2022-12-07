@@ -17,7 +17,7 @@ import {
 import type { TextProps, ButtonProps } from '@chakra-ui/react';
 import { useAccount, useAuth } from 'ui/components';
 import { ConnectButton } from 'ui/components/buttons';
-import { useAccountBalance, useDAO } from 'ui/hooks';
+import { useTeamAccountBalance, useTeam } from 'ui/hooks';
 import { ChevronDown } from 'ui/components/icons';
 import Avatar from 'boring-avatars';
 import { ustxToStx } from 'utils';
@@ -32,7 +32,7 @@ export const UserProfile = (props: UserProfileProps) => {
   const { openAuthRequest } = useAuth();
   const stxAddress = account?.stxAddress as string;
   const { club } = props;
-  const { data } = useAccountBalance();
+  const { data } = useTeamAccountBalance();
   const switchAccount = () => {
     openAuthRequest();
   };
@@ -193,7 +193,7 @@ export const NavButton = (props: NavButtonProps) => {
 
 export const Sidebar = () => {
   const router = useRouter();
-  const dao = useDAO();
+  const dao = useTeam();
   const { dao: slug } = router.query as any;
   const isSelected = (path: string) => router.pathname.split('/')[2] === path;
 

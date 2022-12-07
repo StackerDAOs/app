@@ -119,9 +119,7 @@ export async function getIdeas({ queryKey }: any) {
   const [_, organizationId, stxAddress, filter] = queryKey;
   const query = supabase
     .from('ideas')
-    .select(
-      '*, teams!inner(id, name), votes!inner(user_address, idea_id, direction)',
-    )
+    .select('*, teams!inner(id, name)')
     .order('created_at', { ascending: false })
     .eq('teams.id', organizationId)
     .eq('submitted_by', stxAddress);
@@ -147,11 +145,8 @@ export async function getProposals({ queryKey }: any) {
   const [_, organizationId] = queryKey;
   const query = supabase
     .from('proposals')
-    .select(
-      '*, submission:submissions!inner(id, title, description, body, team_id)',
-    )
-    .order('created_at', { ascending: false })
-    .eq('submissions.team_id', organizationId);
+    .select('*')
+    .order('created_at', { ascending: false });
   try {
     const { data: proposals, error } = await query;
     if (error) throw error;

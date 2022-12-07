@@ -149,7 +149,7 @@ export async function updateInitTxId(club: {
   try {
     const { data, error } = await supabase
       .from('clubs')
-      .update({ activation_tx_id: club.activation_tx_id, active: true })
+      .update({ activation_tx_id: club.activation_tx_id })
       .match({
         contract_address: club.contract_address,
       });

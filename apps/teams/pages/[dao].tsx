@@ -26,7 +26,7 @@ import { DashboardLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 import { ConnectButton, DepositButton } from 'ui/components/buttons';
-import { useDAO } from 'ui/hooks';
+import { useTeam } from 'ui/hooks';
 import { getPercentage, findExtension } from 'utils';
 import { ArrowRight } from 'ui/components/icons';
 import { TransactionTable } from '@components/tables';
@@ -35,8 +35,8 @@ export default function Dashboard() {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { isSignedIn } = useAuth();
   const router = useRouter();
-  const dao = useDAO();
-
+  const dao = useTeam();
+  const isActive = dao?.data?.active;
   const [depositAmount, setDepositAmount] = React.useState('');
   const handleInputDeposit = (e: any) => {
     const re = /^[0-9.\b]+$/;
@@ -44,13 +44,46 @@ export default function Dashboard() {
       setDepositAmount(e.target.value);
     }
   };
-  const investmentClubExtension = findExtension(
-    dao?.data?.extensions,
-    'Investment Club',
-  );
+  const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
 
   if (dao?.isLoading && dao?.isFetching) {
     return null;
+  }
+
+  if (!isActive) {
+    return (
+      <Stack align='center' justify='center' h='75vh'>
+        <Card bg='dark.900' border='1px solid' borderColor='dark.500' w='25vw'>
+          <Box
+            py={{ base: '3', md: '3' }}
+            px={{ base: '6', md: '6' }}
+            bg='dark.700'
+            borderTopLeftRadius='lg'
+            borderTopRightRadius='lg'
+          >
+            <HStack justify='center'>
+              <Text fontSize='md' fontWeight='medium' color='light.900'>
+                Dashboard is not active yet
+              </Text>
+            </HStack>
+          </Box>
+          <Stack
+            spacing={{ base: '0', md: '1' }}
+            justify='center'
+            py={{ base: '3', md: '3' }}
+            px={{ base: '6', md: '6' }}
+          >
+            <Stack spacing='3'>
+              <HStack justify='center' cursor='default'>
+                <Button variant='default' size='sm' isDisabled>
+                  Activate
+                </Button>
+              </HStack>
+            </Stack>
+          </Stack>
+        </Card>
+      </Stack>
+    );
   }
 
   if (!isSignedIn) {
@@ -294,7 +327,7 @@ export default function Dashboard() {
                           variant='primary'
                           size='sm'
                           investmentClubAddress={
-                            investmentClubExtension?.contract_address
+                            vaultExtension?.contract_address
                           }
                           amount={depositAmount}
                         />
@@ -551,7 +584,7 @@ Dashboard.getLayout = (page: any) => (
         <Heading size='md' fontWeight='black' letterSpacing='tight'>
           Dashboard
         </Heading>
-        <Button variant='default' size='sm'>
+        <Button variant='default' size='sm' isDisabled>
           Create proposal
         </Button>
       </Flex>
