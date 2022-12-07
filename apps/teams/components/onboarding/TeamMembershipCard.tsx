@@ -36,8 +36,6 @@ export const TeamMembershipCard = (props: any) => {
     });
   };
 
-  console.log({ members });
-
   return (
     <GridItem colSpan={{ base: 5, md: 3, lg: 2 }}>
       <Stack

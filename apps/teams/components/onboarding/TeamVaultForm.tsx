@@ -36,7 +36,12 @@ import { shortenAddress, validateContractAddress } from '@stacks-os/utils';
 import { useVaultStore } from 'store';
 import { findExtension, getPercentage } from 'utils';
 import { filter, size } from 'lodash';
-import { CheckIcon, InfoIcon, UploadIcon } from 'ui/components/icons';
+import {
+  ArrowRight,
+  CheckIcon,
+  InfoIcon,
+  UploadIcon,
+} from 'ui/components/icons';
 
 const AllowlistSelectForm = () => {
   const vault = useVaultStore((state) => state.vault);
@@ -397,25 +402,32 @@ const FinishedState = () => {
             </Stack>
           </Card>
         </Stack>
-        <Alert
-          bg='dark.800'
-          borderColor='dark.500'
-          borderWidth='1px'
-          color='light.900'
-          status='info'
-          borderRadius='lg'
-          textAlign='center'
-          justifyContent='center'
-          m='0 auto'
-        >
-          <HStack spacing='2'>
-            <Icon as={InfoIcon} color='secondary.900' fontSize='lg' />
-            <AlertDescription>
-              The following steps must be compeleted in the order they are
-              presented.
-            </AlertDescription>
-          </HStack>
-        </Alert>
+        {transaction?.data?.tx_status === 'success' &&
+        activationTransaction?.data?.tx_status === 'success' ? (
+          <Button variant='link' rightIcon={<ArrowRight />}>
+            Go to Dashboard
+          </Button>
+        ) : (
+          <Alert
+            bg='dark.800'
+            borderColor='dark.500'
+            borderWidth='1px'
+            color='light.900'
+            status='info'
+            borderRadius='lg'
+            textAlign='center'
+            justifyContent='center'
+            m='0 auto'
+          >
+            <HStack spacing='2'>
+              <Icon as={InfoIcon} color='secondary.900' fontSize='lg' />
+              <AlertDescription>
+                The following steps must be compeleted in the order they are
+                presented.
+              </AlertDescription>
+            </HStack>
+          </Alert>
+        )}
       </Stack>
     </Stack>
   );

@@ -24,7 +24,7 @@ import { useUpdateBootstrap, useUpdateInitTxId } from 'api/clubs/mutations';
 import { Card } from 'ui/components/cards';
 import { ConnectButton } from 'ui/components/buttons';
 import { useDAO, useExtension, useTransaction } from 'ui/hooks';
-import { ChevronRight, InfoIcon } from 'ui/components/icons';
+import { ArrowRight, ChevronRight, InfoIcon } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { findExtension, getPercentage } from 'utils';
 import { filter, size } from 'lodash';
@@ -328,25 +328,32 @@ export default function Create() {
               </Stack>
             </Card>
           </Stack>
-          <Alert
-            bg='dark.800'
-            borderColor='dark.500'
-            borderWidth='1px'
-            color='light.900'
-            status='info'
-            borderRadius='lg'
-            textAlign='center'
-            justifyContent='center'
-            m='0 auto'
-          >
-            <HStack spacing='2'>
-              <Icon as={InfoIcon} color='primary.900' fontSize='lg' />
-              <AlertDescription>
-                The following steps must be compeleted in the order they are
-                presented.
-              </AlertDescription>
-            </HStack>
-          </Alert>
+          {transaction?.data?.tx_status === 'success' &&
+          activationTransaction?.data?.tx_status === 'success' ? (
+            <Button variant='link' rightIcon={<ArrowRight />}>
+              Go to Dashboard
+            </Button>
+          ) : (
+            <Alert
+              bg='dark.800'
+              borderColor='dark.500'
+              borderWidth='1px'
+              color='light.900'
+              status='info'
+              borderRadius='lg'
+              textAlign='center'
+              justifyContent='center'
+              m='0 auto'
+            >
+              <HStack spacing='2'>
+                <Icon as={InfoIcon} color='primary.900' fontSize='lg' />
+                <AlertDescription>
+                  The following steps must be compeleted in the order they are
+                  presented.
+                </AlertDescription>
+              </HStack>
+            </Alert>
+          )}
         </Stack>
       </Stack>
     </Stack>
