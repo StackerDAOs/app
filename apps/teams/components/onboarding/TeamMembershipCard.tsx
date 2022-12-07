@@ -5,35 +5,38 @@ import { StacksSDK } from 'sdk';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { defaultTo } from 'lodash';
 import { useTransaction } from 'ui/hooks';
-import { getTransaction } from 'api/clubs';
-import { useFundraiseStore, useGlobalState } from 'store';
+import { getTransaction } from 'api/teams';
+import { useTeamMembershipStore } from 'store';
 import { findExtension, getExplorerLink } from 'utils';
-import { CLUB_EXTENSION_TYPES } from 'api/constants';
-import { useCreateExtension } from 'api/clubs/mutations/extensions';
+import { TEAM_EXTENSION_TYPES } from 'api/constants';
+import { useCreateExtension } from 'api/teams/mutations/extensions';
 
-export const ClubFundraiseCard = (props: any) => {
+export const TeamMembershipCard = (props: any) => {
   const { isLoading, dao } = props;
   const sdk = new StacksSDK(dao?.contract_address);
-  const data = useGlobalState((state) => state.club);
-  const extension = findExtension(dao?.extensions, 'Investment Club');
+  const data = useTeamMembershipStore((state) => state.team);
+  const members = useTeamMembershipStore((state) => state.team.members);
+  const extension = findExtension(dao?.extensions, 'Team');
   const transaction = useTransaction(extension?.tx_id);
-  const minimumDeposit = useFundraiseStore((state) => state.minimumDeposit);
-  const durationInDays = useFundraiseStore((state) => state.durationInDays);
-  const fundraiseGoalAmount = useFundraiseStore(
-    (state) => state.fundraiseGoalAmount,
-  );
+  const formIsValidated = data;
   const createExtension = useCreateExtension();
   const onSuccess = async (payload: any) => {
     const { txId } = payload;
     const tx = await getTransaction(txId);
     const contractAddress = tx?.smart_contract?.contract_id;
     createExtension.mutate({
-      club_id: dao?.id,
+      team_id: dao?.id,
       contract_address: contractAddress,
-      extension_type_id: CLUB_EXTENSION_TYPES.INVESTMENT_CLUB,
+      extension_type_id: TEAM_EXTENSION_TYPES.TEAM,
       tx_id: txId,
+      config: {
+        members,
+      },
     });
   };
+
+  console.log({ members });
+
   return (
     <GridItem colSpan={{ base: 5, md: 3, lg: 2 }}>
       <Stack
@@ -69,7 +72,7 @@ export const ClubFundraiseCard = (props: any) => {
                   borderRadius='3xl'
                 >
                   <Text as='span' fontWeight='regular'>
-                    Fundraising
+                    Multisignature
                   </Text>
                 </Badge>
                 <Stack
@@ -78,16 +81,15 @@ export const ClubFundraiseCard = (props: any) => {
                 >
                   <Stack spacing='3'>
                     <Heading size='2xl' fontWeight='thin'>
-                      Club Fundraise
+                      Team Membership
                     </Heading>
                     <Text
                       fontSize={{ base: 'md', md: 'lg' }}
                       fontWeight='light'
                       color='gray'
                     >
-                      Fundraise and open new windows where the Club can issue
-                      more Club Passes to add members, accept new deposits, and
-                      more.
+                      Team members will be able to sign off on proposals and
+                      manage the team&apos;s treasury.
                     </Text>
                   </Stack>
                   <Stack spacing={{ base: '8', md: '10' }}>
@@ -104,17 +106,14 @@ export const ClubFundraiseCard = (props: any) => {
                             borderColor='dark.500'
                           >
                             <Text fontSize='lg' fontWeight='thin' color='gray'>
-                              Club Name
+                              Signals Required
                             </Text>
                             <Text
                               fontSize='lg'
                               fontWeight='thin'
                               color='light.500'
                             >
-                              {defaultTo(
-                                data.name === '' ? undefined : data.name,
-                                '---',
-                              )}
+                              {data?.signalsRequired}
                             </Text>
                           </Stack>
                           <Stack
@@ -127,18 +126,14 @@ export const ClubFundraiseCard = (props: any) => {
                             borderColor='dark.500'
                           >
                             <Text fontSize='lg' fontWeight='thin' color='gray'>
-                              Minimum Deposit
+                              Total Members
                             </Text>
                             <Text
                               fontSize='lg'
                               fontWeight='thin'
                               color='light.500'
                             >
-                              {defaultTo(
-                                Number(minimumDeposit).toLocaleString('en-US'),
-                                0,
-                              )}{' '}
-                              STX
+                              {defaultTo(members.length, 1)}
                             </Text>
                           </Stack>
                           <Stack
@@ -151,43 +146,14 @@ export const ClubFundraiseCard = (props: any) => {
                             borderColor='dark.500'
                           >
                             <Text fontSize='lg' fontWeight='thin' color='gray'>
-                              Duration
+                              Member Limit
                             </Text>
                             <Text
                               fontSize='lg'
                               fontWeight='thin'
                               color='light.500'
                             >
-                              ~ {defaultTo(durationInDays, 1)}{' '}
-                              {durationInDays === '1' ? 'day' : 'days'}
-                            </Text>
-                          </Stack>
-                          <Stack
-                            pt='1'
-                            px='1'
-                            align='center'
-                            direction='row'
-                            justify='space-between'
-                            borderTopWidth='1px'
-                            borderColor='dark.500'
-                          >
-                            <Text fontSize='lg' fontWeight='thin' color='gray'>
-                              Raise Goal
-                            </Text>
-                            <Text
-                              fontSize='lg'
-                              fontWeight='thin'
-                              color='light.500'
-                            >
-                              {defaultTo(
-                                fundraiseGoalAmount === ''
-                                  ? null
-                                  : Number(fundraiseGoalAmount).toLocaleString(
-                                      'en-US',
-                                    ),
-                                '0',
-                              )}{' '}
-                              STX
+                              No limit
                             </Text>
                           </Stack>
                         </Stack>
@@ -211,23 +177,11 @@ export const ClubFundraiseCard = (props: any) => {
             ) : (
               <Button
                 variant={!extension ? 'primary' : 'outline'}
-                isDisabled={isLoading || !!extension}
+                isDisabled={isLoading || !!extension || !formIsValidated}
                 onClick={() =>
-                  sdk.deployer.deployClub({
-                    contractName: 'club-v5',
-                    membershipPassAddress: findExtension(
-                      dao?.extensions,
-                      'NFT Membership',
-                    )?.contract_address,
-                    governanceTokenAddress: findExtension(
-                      dao?.extensions,
-                      'Governance Token',
-                    )?.contract_address,
-                    vaultAddress: findExtension(dao?.extensions, 'Vault')
-                      ?.contract_address,
-                    minimumDepositAmount: Number(minimumDeposit),
-                    fundraisingDurationInBlocks: Number(durationInDays) * 144,
-                    fundraiseGoal: Number(fundraiseGoalAmount),
+                  sdk.deployer.deployMembershipPass({
+                    contractName: 'club-pass',
+                    tokenName: 'TOKEN',
                     onFinish: onSuccess,
                   })
                 }

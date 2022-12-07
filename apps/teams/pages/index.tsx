@@ -102,7 +102,7 @@ export default function Web() {
                 Connect your wallet
               </Heading>
               <Text color='gray' maxW='md'>
-                Add, view, and manage your Clubs.
+                Add, view, and manage your Teams.
               </Text>
             </Stack>
             <ConnectButton

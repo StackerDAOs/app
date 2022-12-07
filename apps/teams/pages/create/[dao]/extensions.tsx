@@ -12,47 +12,14 @@ import {
 } from 'ui';
 import { ConnectButton } from 'ui/components/buttons';
 import { Step } from 'ui/components/feedback';
-import { useDAO, useFormWizard } from 'ui/hooks';
-import {
-  ClubMembershipPassForm,
-  ClubMembershipCard,
-  ClubTokenCard,
-  ClubVaultCard,
-  ClubTokenForm,
-  ClubVaultForm,
-  ClubFundraiseCard,
-  ClubFundraiseForm,
-  ClubSubmissionCard,
-  ClubSubmissionForm,
-  ClubVotingCard,
-  ClubVotingForm,
-} from '@components/onboarding';
+import { useTeam, useFormWizard } from 'ui/hooks';
+import { TeamMembershipForm, TeamMembershipCard } from '@components/onboarding';
 import { ChevronRight } from 'ui/components/icons';
 
 const components = [
   {
-    title: 'Create Membership Pass',
-    component: <ClubMembershipPassForm />,
-  },
-  {
-    title: 'Create Token',
-    component: <ClubTokenForm />,
-  },
-  {
-    title: 'Create Vault',
-    component: <ClubVaultForm />,
-  },
-  {
-    title: 'Create Fundraise',
-    component: <ClubFundraiseForm />,
-  },
-  {
-    title: 'Create Voting',
-    component: <ClubVotingForm />,
-  },
-  {
-    title: 'Create Submission',
-    component: <ClubSubmissionForm />,
+    title: 'Create Team Membership',
+    component: <TeamMembershipForm />,
   },
 ];
 
@@ -67,24 +34,14 @@ const CurrentCard = ({
 }) => {
   switch (currentStep) {
     case 0:
-      return <ClubMembershipCard isLoading={isLoading} dao={dao} />;
-    case 1:
-      return <ClubTokenCard isLoading={isLoading} dao={dao} />;
-    case 2:
-      return <ClubVaultCard isLoading={isLoading} dao={dao} />;
-    case 3:
-      return <ClubFundraiseCard isLoading={isLoading} dao={dao} />;
-    case 4:
-      return <ClubVotingCard isLoading={isLoading} dao={dao} />;
-    case 5:
-      return <ClubSubmissionCard isLoading={isLoading} dao={dao} />;
+      return <TeamMembershipCard isLoading={isLoading} dao={dao} />;
     default:
-      return <ClubMembershipCard isLoading={isLoading} dao={dao} />;
+      return <TeamMembershipCard isLoading={isLoading} dao={dao} />;
   }
 };
 
 export default function Extensions() {
-  const dao = useDAO();
+  const dao = useTeam();
   const {
     setStep,
     step,
@@ -130,7 +87,7 @@ export default function Extensions() {
                 textDecoration: 'none',
               }}
             >
-              {dao?.data?.name || 'Club'}
+              {dao?.data?.name || 'Team'}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem isCurrentPage>
@@ -145,7 +102,7 @@ export default function Extensions() {
           </BreadcrumbItem>
         </Breadcrumb>
         <HStack spacing='3'>
-          {[0, 1, 2, 3, 4, 5].map((id) => (
+          {[0, 1].map((id) => (
             <Step
               key={id}
               cursor='pointer'

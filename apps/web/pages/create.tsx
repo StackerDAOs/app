@@ -113,7 +113,7 @@ export default function Create() {
       },
       {
         onSuccess: () => {
-          setTransactionId(transactionId);
+          setTransactionId(txId);
         },
       },
     );

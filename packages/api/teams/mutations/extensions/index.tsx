@@ -2,7 +2,7 @@ import { supabase } from '../../../supabase';
 import { useMutation, useQueryClient } from 'react-query';
 
 type Extension = {
-  club_id: number;
+  team_id: number;
   contract_address: string;
   extension_type_id: number;
   tx_id: string;

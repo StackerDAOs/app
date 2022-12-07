@@ -89,6 +89,7 @@ export default function Create() {
   const createTeam = useCreateTeam();
   const onSuccess = async (txId: string, action: any) => {
     const tx = await getTransaction(txId);
+    console.log({ tx });
     const name = data?.name;
     const slug = nameToSlug(name);
     const userAddress = tx?.sender_address;
@@ -96,7 +97,7 @@ export default function Create() {
 
     action.mutate(
       {
-        club: {
+        team: {
           name,
           slug,
           tx_id: txId,
@@ -107,7 +108,7 @@ export default function Create() {
       },
       {
         onSuccess: () => {
-          setTransactionId(transactionId);
+          setTransactionId(txId);
         },
       },
     );
@@ -132,6 +133,8 @@ export default function Create() {
     updateName(value);
     debouncedValidateInput(value);
   };
+
+  console.log({ transaction, isReady });
 
   return (
     <Stack
