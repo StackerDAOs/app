@@ -23,6 +23,8 @@ import { size } from 'lodash';
 
 export default function Launch() {
   const dao = useTeam();
+  const hasCompleted =
+    !!dao?.data?.bootstrap_tx_id && !!dao?.data?.activation_tx_id;
 
   return (
     <Stack spacing='10'>
@@ -97,9 +99,9 @@ export default function Launch() {
                             <HStack align='flex-start' spacing='4'>
                               <Stack spacing='1' maxW='lg' align='flex-start'>
                                 <Stack spacing='3'>
-                                  {size(dao?.data?.extensions) >= 6 ? (
+                                  {size(dao?.data?.extensions) >= 2 ? (
                                     <Tag
-                                      color='secondary.500'
+                                      color='green.500'
                                       bg='dark.800'
                                       alignSelf='self-start'
                                       size='sm'
@@ -169,17 +171,31 @@ export default function Launch() {
                             <HStack align='flex-start' spacing='4'>
                               <Stack spacing='1' maxW='lg' align='flex-start'>
                                 <Stack spacing='3'>
-                                  <Tag
-                                    color='yellow.500'
-                                    bg='dark.800'
-                                    alignSelf='self-start'
-                                    size='sm'
-                                    borderRadius='3xl'
-                                  >
-                                    <Text as='span' fontWeight='regular'>
-                                      Incomplete
-                                    </Text>
-                                  </Tag>
+                                  {hasCompleted ? (
+                                    <Tag
+                                      color='green.500'
+                                      bg='dark.800'
+                                      alignSelf='self-start'
+                                      size='sm'
+                                      borderRadius='3xl'
+                                    >
+                                      <Text as='span' fontWeight='regular'>
+                                        Complete
+                                      </Text>
+                                    </Tag>
+                                  ) : (
+                                    <Tag
+                                      color='yellow.500'
+                                      bg='dark.800'
+                                      alignSelf='self-start'
+                                      size='sm'
+                                      borderRadius='3xl'
+                                    >
+                                      <Text as='span' fontWeight='regular'>
+                                        Incomplete
+                                      </Text>
+                                    </Tag>
+                                  )}
                                   <HStack>
                                     <Heading size='md' fontWeight='black'>
                                       Launch Team
