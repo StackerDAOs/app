@@ -16,12 +16,10 @@ import {
   RadioGroup,
   SimpleGrid,
   Stack,
-  Square,
   Tag,
   TagLabel,
   TagCloseButton,
   Text,
-  VStack,
 } from 'ui';
 import { useTransaction } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
@@ -29,7 +27,7 @@ import { shortenAddress, validateContractAddress } from '@stacks-os/utils';
 import { useVaultStore } from 'store';
 import { findExtension } from 'utils';
 import Papa from 'papaparse';
-import { UploadIcon, CheckCircle } from 'ui/components/icons';
+import { UploadIcon, CheckIcon, CheckCircle } from 'ui/components/icons';
 
 const AllowlistSelectForm = () => {
   const vault = useVaultStore((state) => state.vault);
@@ -85,7 +83,6 @@ const AddTokenForm = () => {
         const validAddresses = results.data
           .flat()
           .filter((address: string) => validateContractAddress(address));
-        console.log({ validAddresses });
         validAddresses.forEach((member: any) => {
           addAllowedToken(member);
         });
@@ -94,44 +91,30 @@ const AddTokenForm = () => {
   };
   return (
     <Grid templateColumns='repeat(5, 1fr)' gap={6}>
-      <GridItem colSpan={1}>
-        <FormControl id='upload-member'>
-          <Stack spacing='3'>
-            <VStack
-              bg='dark.800'
-              py='3'
-              px='6'
-              spacing='3'
+      <GridItem colSpan={4}>
+        <FormControl id='asset'>
+          <HStack spacing='1' align='baseline' justify='space-between'>
+            <FormLabel htmlFor='name' fontWeight='light' color='light.500'>
+              Assets
+            </FormLabel>
+            <Button
+              variant='link'
+              color='gray'
+              size='sm'
+              leftIcon={<UploadIcon />}
               onClick={handleFilePickerClick}
-              borderColor='dark.500'
-              borderWidth='1px'
-              borderRadius='lg'
             >
-              <Square size='8' bg='dark.500' borderRadius='lg'>
-                <Icon as={UploadIcon} boxSize='4' color='muted' />
-              </Square>
-              <VStack spacing='1'>
-                <HStack spacing='1' whiteSpace='nowrap'>
-                  <Button variant='unstyled' color='light.900' size='sm'>
-                    Upload asset addresses
-                  </Button>
-                </HStack>
-                <Text fontSize='xs' color='muted'>
-                  {filename ? `${filename}` : `CSV or XLSX`}
-                </Text>
-              </VStack>
+              <Text as='span' fontSize='sm' fontWeight='light'>
+                Upload file
+              </Text>
               <input
                 type='file'
                 ref={inputRef}
                 onChange={handleFileUpload}
                 style={{ display: 'none' }}
               />
-            </VStack>
-          </Stack>
-        </FormControl>
-      </GridItem>
-      <GridItem colSpan={4}>
-        <FormControl id='asset'>
+            </Button>
+          </HStack>
           <Stack spacing='3'>
             <Input
               placeholder='Asset Contract Address'
@@ -145,8 +128,14 @@ const AddTokenForm = () => {
               }}
             />
             <FormHelperText fontWeight='light' color='gray'>
-              Assets added manually will automatically be added to any CSV or
-              XLSX file you upload.
+              {filename && (
+                <HStack spacing='1' align='center'>
+                  <Icon as={CheckIcon} fontSize='sm' />
+                  <Text as='span' fontSize='sm'>
+                    {filename}
+                  </Text>
+                </HStack>
+              )}{' '}
             </FormHelperText>
             <HStack spacing={4}>
               <SimpleGrid columns={3} spacing={4}>
@@ -257,7 +246,7 @@ export const ClubVaultForm = (props: any) => {
                           <Stack spacing='6' direction='column'>
                             <Box>
                               <Text fontSize='lg' fontWeight='medium'>
-                                Assets
+                                Allowlist
                               </Text>
                               <Text color='light.500' fontSize='sm' maxW='md'>
                                 Add NFT and Token contract addresses to the

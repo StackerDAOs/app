@@ -18,7 +18,6 @@ export const ClubVaultCard = (props: any) => {
   const extension = findExtension(dao?.extensions, 'Vault');
   const transaction = useTransaction(extension?.tx_id);
   const createExtension = useCreateExtension();
-  console.log('vault', data.listOfAllowedTokens);
   const onSuccess = async (payload: any) => {
     const { txId } = payload;
     const tx = await getTransaction(txId);

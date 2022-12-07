@@ -60,7 +60,6 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
     totalSent: vaultBalance?.data?.stx?.total_sent,
     totalReceived: vaultBalance?.data?.stx?.total_received,
   };
-  console.log(vaultBalance?.data?.stx?.balance);
   const withStacks = fungibleTokensList.concat(stacks);
 
   const listItems =
@@ -215,7 +214,6 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
             {listItems.map((item: any) => {
               const { contractAddress, name, decimals } = item;
               let { balance, totalSent, totalReceived } = item;
-              console.log({ item, balance, totalSent, totalReceived });
               switch (name) {
                 case 'Stacks':
                   balance = ustxToStx(item.balance);

@@ -14,12 +14,10 @@ import {
   Input,
   SimpleGrid,
   Stack,
-  Square,
   Tag,
   TagLabel,
   TagCloseButton,
   Text,
-  VStack,
 } from 'ui';
 import { useTransaction } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
@@ -27,7 +25,7 @@ import { shortenAddress, validateStacksAddress } from '@stacks-os/utils';
 import { useClubMembershipPass, useGlobalState } from 'store';
 import { findExtension } from 'utils';
 import Papa from 'papaparse';
-import { CheckCircle, UploadIcon } from 'ui/components/icons';
+import { CheckCircle, CheckIcon, UploadIcon } from 'ui/components/icons';
 
 const NFTMetadataForm = () => {
   const name = useClubMembershipPass((state) => state.membershipPass.name);
@@ -212,56 +210,42 @@ export const ClubMembershipPassForm = (props: any) => {
                         </Text>
                       </Box>
                       <Grid templateColumns='repeat(5, 1fr)' gap={6}>
-                        <GridItem colSpan={1}>
-                          <FormControl id='upload-member'>
-                            <Stack spacing='3'>
-                              <VStack
-                                bg='dark.800'
-                                py='3'
-                                px='6'
-                                spacing='3'
-                                onClick={handleFilePickerClick}
-                                borderColor='dark.500'
-                                borderWidth='1px'
-                                borderRadius='lg'
+                        <GridItem colSpan={4}>
+                          <FormControl id='member'>
+                            <HStack
+                              spacing='1'
+                              align='baseline'
+                              justify='space-between'
+                            >
+                              <FormLabel
+                                htmlFor='name'
+                                fontWeight='light'
+                                color='light.500'
                               >
-                                <Square
-                                  size='8'
-                                  bg='dark.500'
-                                  borderRadius='lg'
+                                Member Address
+                              </FormLabel>
+                              <Button
+                                variant='link'
+                                color='gray'
+                                size='sm'
+                                leftIcon={<UploadIcon />}
+                                onClick={handleFilePickerClick}
+                              >
+                                <Text
+                                  as='span'
+                                  fontSize='sm'
+                                  fontWeight='light'
                                 >
-                                  <Icon
-                                    as={UploadIcon}
-                                    boxSize='4'
-                                    color='muted'
-                                  />
-                                </Square>
-                                <VStack spacing='1'>
-                                  <HStack spacing='1' whiteSpace='nowrap'>
-                                    <Button
-                                      variant='unstyled'
-                                      color='light.900'
-                                      size='sm'
-                                    >
-                                      Upload Club member addresses
-                                    </Button>
-                                  </HStack>
-                                  <Text fontSize='xs' color='muted'>
-                                    {filename ? `${filename}` : `CSV or XLSX`}
-                                  </Text>
-                                </VStack>
+                                  Upload file
+                                </Text>
                                 <input
                                   type='file'
                                   ref={inputRef}
                                   onChange={handleFileUpload}
                                   style={{ display: 'none' }}
                                 />
-                              </VStack>
-                            </Stack>
-                          </FormControl>
-                        </GridItem>
-                        <GridItem colSpan={4}>
-                          <FormControl id='member'>
+                              </Button>
+                            </HStack>
                             <Stack spacing='3'>
                               <Input
                                 placeholder='STX Address'
@@ -277,8 +261,14 @@ export const ClubMembershipPassForm = (props: any) => {
                                 }}
                               />
                               <FormHelperText fontWeight='light' color='gray'>
-                                Members you add manually will automatically be
-                                added to any CSV or XLSX file you upload.
+                                {filename && (
+                                  <HStack spacing='1' align='center'>
+                                    <Icon as={CheckIcon} fontSize='sm' />
+                                    <Text as='span' fontSize='sm'>
+                                      {filename}
+                                    </Text>
+                                  </HStack>
+                                )}{' '}
                               </FormHelperText>
                               <HStack>
                                 <SimpleGrid columns={3} spacing={4}>
