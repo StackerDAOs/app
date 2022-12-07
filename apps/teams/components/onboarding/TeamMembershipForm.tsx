@@ -193,6 +193,7 @@ export const TeamMembershipForm = (props: any) => {
                                 }}
                               />
                               <FormHelperText fontWeight='light' color='gray'>
+                                No limit on the number of members.{' '}
                                 {filename && (
                                   <HStack spacing='1' align='center'>
                                     <Icon as={CheckIcon} fontSize='sm' />
@@ -200,7 +201,7 @@ export const TeamMembershipForm = (props: any) => {
                                       {filename}
                                     </Text>
                                   </HStack>
-                                )}{' '}
+                                )}
                               </FormHelperText>
                               <HStack>
                                 <SimpleGrid columns={3} spacing={4}>

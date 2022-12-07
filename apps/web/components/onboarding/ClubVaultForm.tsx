@@ -128,6 +128,7 @@ const AddTokenForm = () => {
               }}
             />
             <FormHelperText fontWeight='light' color='gray'>
+              No limit on number of assets.{' '}
               {filename && (
                 <HStack spacing='1' align='center'>
                   <Icon as={CheckIcon} fontSize='sm' />

@@ -16,13 +16,13 @@ import {
   Text,
 } from 'ui';
 import { ConnectButton } from 'ui/components/buttons';
-import { useDAO } from 'ui/hooks';
+import { useTeam } from 'ui/hooks';
 import { ArrowRight, ChevronRight } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { size } from 'lodash';
 
 export default function Launch() {
-  const dao = useDAO();
+  const dao = useTeam();
 
   return (
     <Stack spacing='10'>
@@ -144,9 +144,9 @@ export default function Launch() {
                                   color='gray'
                                 >
                                   Extensions are smart contracts that give your
-                                  Club additional functionality. You must
+                                  Team additional functionality. You must
                                   complete this step before you can launch your
-                                  Club.
+                                  Team.
                                 </Text>
                               </Stack>
                             </HStack>
@@ -182,7 +182,7 @@ export default function Launch() {
                                   </Tag>
                                   <HStack>
                                     <Heading size='md' fontWeight='black'>
-                                      Launch Club
+                                      Launch Team
                                     </Heading>
                                     <Button
                                       variant='link'
@@ -201,9 +201,9 @@ export default function Launch() {
                                   fontWeight='light'
                                   color='gray'
                                 >
-                                  To launch, you need to deploy your final Club
+                                  To launch, you need to deploy your final Team
                                   contract which will run the smart contract
-                                  code that initializes and activates your Club.
+                                  code that initializes and activates your Team.
                                 </Text>
                               </Stack>
                             </HStack>

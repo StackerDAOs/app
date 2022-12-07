@@ -261,6 +261,7 @@ export const ClubMembershipPassForm = (props: any) => {
                                 }}
                               />
                               <FormHelperText fontWeight='light' color='gray'>
+                                No limit on the number of members.{' '}
                                 {filename && (
                                   <HStack spacing='1' align='center'>
                                     <Icon as={CheckIcon} fontSize='sm' />
