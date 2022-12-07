@@ -43,3 +43,63 @@ export const useCreateTeam = () => {
     },
   });
 };
+
+export async function updateBootrapAddress(team: {
+  contract_address?: string;
+  bootstrap_address?: string;
+  bootstrap_tx_id?: string;
+}) {
+  try {
+    const { data, error } = await supabase
+      .from('teams')
+      .update({
+        bootstrap_address: team.bootstrap_address,
+        bootstrap_tx_id: team.bootstrap_tx_id,
+      })
+      .match({
+        contract_address: team.contract_address,
+      });
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useUpdateBootstrap = () => {
+  const queryClient = useQueryClient();
+  return useMutation(updateBootrapAddress, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('team');
+      queryClient.invalidateQueries('teams');
+    },
+  });
+};
+
+export async function updateInitTxId(team: {
+  contract_address?: string;
+  activation_tx_id?: string;
+}) {
+  try {
+    const { data, error } = await supabase
+      .from('teams')
+      .update({ activation_tx_id: team.activation_tx_id, active: true })
+      .match({
+        contract_address: team.contract_address,
+      });
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useUpdateInitTxId = () => {
+  const queryClient = useQueryClient();
+  return useMutation(updateInitTxId, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('team');
+      queryClient.invalidateQueries('teams');
+    },
+  });
+};

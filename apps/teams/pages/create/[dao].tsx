@@ -48,7 +48,7 @@ export default function Launch() {
           </BreadcrumbItem>
         </Breadcrumb>
         <ConnectButton
-          variant='inverted'
+          variant='secondary-inverted'
           size='sm'
           _hover={{ opacity: 0.9 }}
           _active={{ opacity: 1 }}
@@ -70,7 +70,7 @@ export default function Launch() {
                 fontSize='7xl'
                 letterSpacing='tight'
                 fontWeight='black'
-                bgGradient='linear(to-br, #624AF2 50%, #1c1f21 100%)'
+                bgGradient='linear(to-br, #7301fa 50%, #1c1f21 100%)'
                 bgClip='text'
               >
                 {dao?.data?.name}{' '}
@@ -99,7 +99,7 @@ export default function Launch() {
                                 <Stack spacing='3'>
                                   {size(dao?.data?.extensions) >= 6 ? (
                                     <Tag
-                                      color='primary.500'
+                                      color='secondary.500'
                                       bg='dark.800'
                                       alignSelf='self-start'
                                       size='sm'

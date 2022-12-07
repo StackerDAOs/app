@@ -47,7 +47,6 @@ export const AppLayout = ({ children }: any) => (
         _active={{ opacity: 1 }}
       />
     </Flex>
-
     <motion.div
       variants={FADE_IN_VARIANTS}
       initial={FADE_IN_VARIANTS.hidden}

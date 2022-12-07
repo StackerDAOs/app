@@ -19,23 +19,23 @@ import {
   Text,
 } from 'ui';
 import { StacksSDK } from 'sdk';
-import { getTransaction } from 'api/clubs';
-import { useUpdateBootstrap, useUpdateInitTxId } from 'api/clubs/mutations';
+import { getTransaction } from 'api/teams';
+import { useUpdateBootstrap, useUpdateInitTxId } from 'api/teams/mutations';
 import { Card } from 'ui/components/cards';
 import { ConnectButton } from 'ui/components/buttons';
-import { useDAO, useExtension, useTransaction } from 'ui/hooks';
+import { useTeam, useExtension, useTransaction } from 'ui/hooks';
 import { ChevronRight, InfoIcon } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { findExtension, getPercentage } from 'utils';
 import { filter, size } from 'lodash';
 
 export default function Create() {
-  const dao = useDAO();
+  const dao = useTeam();
   const updateBootstrap = useUpdateBootstrap();
   const transaction = useTransaction(dao?.data?.bootstrap_tx_id);
   const updateInitTxId = useUpdateInitTxId();
   const activationTransaction = useTransaction(dao?.data?.activation_tx_id);
-  const membershipPassExtension = useExtension('NFT Membership');
+  const multisigExtension = useExtension('Team');
   const vaultExtension = useExtension('Vault');
   const sdk = new StacksSDK(dao?.data?.contract_address);
   const onSuccess = async (payload: any) => {
@@ -116,7 +116,7 @@ export default function Create() {
           </BreadcrumbItem>
         </Breadcrumb>
         <ConnectButton
-          variant='inverted'
+          variant='secondary-inverted'
           size='sm'
           _hover={{ opacity: 0.9 }}
           _active={{ opacity: 1 }}
@@ -133,7 +133,7 @@ export default function Create() {
           >
             <Stack spacing={{ base: '6', md: '6' }}>
               <Progress
-                colorScheme='primary'
+                colorScheme='secondary'
                 borderRadius='lg'
                 size='md'
                 value={getPercentage(2, currentProgress)}
@@ -193,7 +193,7 @@ export default function Create() {
                         <GridItem colSpan={{ base: 1, md: 1 }}>
                           {!transaction?.data && (
                             <Button
-                              variant='primary'
+                              variant='secondary'
                               onClick={() =>
                                 sdk.deployer.deployBootstrap({
                                   contractName: 'lfg',
@@ -224,8 +224,7 @@ export default function Create() {
                                     )?.contract_address,
                                   },
                                   members:
-                                    membershipPassExtension?.data?.config
-                                      ?.members,
+                                    multisigExtension?.data?.config?.members,
                                   allowlist:
                                     vaultExtension?.data?.config
                                       ?.allowed_tokens,
@@ -302,7 +301,7 @@ export default function Create() {
                         <GridItem colSpan={{ base: 1, md: 1 }}>
                           {!activationTransaction?.data && (
                             <Button
-                              variant='primary'
+                              variant='secondary'
                               onClick={() =>
                                 sdk.init({
                                   proposalAddress: dao?.data?.bootstrap_address,
@@ -342,7 +341,7 @@ export default function Create() {
             m='0 auto'
           >
             <HStack spacing='2'>
-              <Icon as={InfoIcon} color='primary.900' fontSize='lg' />
+              <Icon as={InfoIcon} color='secondary.900' fontSize='lg' />
               <AlertDescription>
                 The following steps must be compeleted in the order they are
                 presented.

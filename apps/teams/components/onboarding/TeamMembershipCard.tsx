@@ -63,7 +63,7 @@ export const TeamMembershipCard = (props: any) => {
             <Stack spacing='8'>
               <Stack spacing='4'>
                 <Badge
-                  color='primary.900'
+                  color='secondary.900'
                   bg='dark.500'
                   alignSelf='start'
                   size='lg'
@@ -176,7 +176,7 @@ export const TeamMembershipCard = (props: any) => {
               </Stack>
             ) : (
               <Button
-                variant={!extension ? 'primary' : 'outline'}
+                variant={!extension ? 'secondary' : 'outline'}
                 isDisabled={isLoading || !!extension || !formIsValidated}
                 onClick={() =>
                   sdk.deployer.deployMembershipPass({

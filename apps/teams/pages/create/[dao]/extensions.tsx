@@ -61,6 +61,7 @@ export default function Extensions() {
     next,
   };
   const currentElement = React.cloneElement(step.component, props);
+  console.log(currentStepIndex);
 
   return (
     <Stack spacing='10'>
@@ -108,13 +109,14 @@ export default function Extensions() {
               cursor='pointer'
               isActive={currentStepIndex === id}
               isCompleted={currentStepIndex > id}
-              isLastStep={id === 5}
+              isLastStep={id === 1}
+              borderColor='secondary.900'
               onClick={() => setStep(id)}
             />
           ))}
         </HStack>
         <ConnectButton
-          variant='inverted'
+          variant='secondary-inverted'
           size='sm'
           _hover={{ opacity: 0.9 }}
           _active={{ opacity: 1 }}
