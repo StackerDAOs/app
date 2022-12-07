@@ -94,8 +94,6 @@ export const TeamMembershipForm = (props: any) => {
     });
   };
 
-  console.log({ members });
-
   return (
     <Stack spacing='2'>
       <GridItem colSpan={3}>

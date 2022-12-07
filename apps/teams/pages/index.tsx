@@ -66,6 +66,13 @@ export default function Web() {
                 px={{ base: '6', md: '6' }}
               >
                 <Stack spacing='3'>
+                  {teams?.length === 0 && (
+                    <HStack justify='center' cursor='default'>
+                      <Text fontSize='md' fontWeight='light' color='gray'>
+                        No Teams found
+                      </Text>
+                    </HStack>
+                  )}
                   {teams?.map((team: any, i: number) => (
                     <HStack justify='space-between' cursor='default'>
                       <Text fontSize='md' fontWeight='light' color='gray'>

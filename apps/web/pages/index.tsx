@@ -66,6 +66,13 @@ export default function Web() {
                 px={{ base: '6', md: '6' }}
               >
                 <Stack spacing='3'>
+                  {clubs?.length === 0 && (
+                    <HStack justify='center' cursor='default'>
+                      <Text fontSize='md' fontWeight='light' color='gray'>
+                        No Clubs found
+                      </Text>
+                    </HStack>
+                  )}
                   {clubs?.map((club: any, i: number) => (
                     <HStack justify='space-between' cursor='default'>
                       <Text fontSize='md' fontWeight='light' color='gray'>
