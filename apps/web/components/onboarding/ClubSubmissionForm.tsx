@@ -111,11 +111,12 @@ const FinishedState = () => {
   );
   const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
   const sdk = new StacksSDK(dao?.data?.contract_address);
+
   const onSuccess = async (payload: any) => {
     const { txId } = payload;
-    const tx = await getTransaction(txId);
-    const contractAddress = tx?.smart_contract?.contract_id;
     try {
+      const tx = await getTransaction(txId);
+      const contractAddress = tx?.smart_contract?.contract_id;
       updateBootstrap.mutate({
         contract_address: dao?.data?.contract_address,
         bootstrap_address: contractAddress,
@@ -125,6 +126,7 @@ const FinishedState = () => {
       console.error({ e });
     }
   };
+
   const onActivationSuccess = async (payload: any) => {
     const { txId } = payload;
     try {
