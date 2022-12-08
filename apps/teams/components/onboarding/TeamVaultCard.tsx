@@ -144,7 +144,10 @@ export const TeamVaultCard = (props: any) => {
             {transaction?.data?.tx_status === 'pending' ||
             transaction?.data?.tx_status === 'success' ? (
               <Stack align='center'>
-                <Link href={getExplorerLink(transaction?.data?.tx_id)}>
+                <Link
+                  href={getExplorerLink(transaction?.data?.tx_id)}
+                  target='_blank'
+                >
                   <Button variant='dark' isFullWidth>
                     View transaction
                   </Button>
