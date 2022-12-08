@@ -330,9 +330,11 @@ export default function Create() {
           </Stack>
           {transaction?.data?.tx_status === 'success' &&
           activationTransaction?.data?.tx_status === 'success' ? (
-            <Button variant='link' rightIcon={<ArrowRight />}>
-              Go to Dashboard
-            </Button>
+            <Link href={`/${dao?.data?.slug}`}>
+              <Button variant='link' rightIcon={<ArrowRight />}>
+                Go to Dashboard
+              </Button>
+            </Link>
           ) : (
             <Alert
               bg='dark.800'

@@ -30,6 +30,7 @@ import { useDAO } from 'ui/hooks';
 import { getPercentage, findExtension } from 'utils';
 import { ArrowRight } from 'ui/components/icons';
 import { TransactionTable } from '@components/tables';
+import { useActivateClub } from 'api/clubs/mutations';
 
 export default function Dashboard() {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -37,6 +38,7 @@ export default function Dashboard() {
   const router = useRouter();
   const dao = useDAO();
   const isActive = dao?.data?.active;
+  const activate = useActivateClub();
   const [depositAmount, setDepositAmount] = React.useState('');
   const handleInputDeposit = (e: any) => {
     const re = /^[0-9.\b]+$/;
@@ -78,7 +80,16 @@ export default function Dashboard() {
           >
             <Stack spacing='3'>
               <HStack justify='center' cursor='default'>
-                <Button variant='default' size='sm'>
+                <Button
+                  variant='default'
+                  size='sm'
+                  onClick={() => {
+                    activate.mutate({
+                      contract_address: dao?.data?.contract_address,
+                    });
+                  }}
+                  isLoading={activate.isLoading}
+                >
                   Activate
                 </Button>
               </HStack>
@@ -587,7 +598,7 @@ Dashboard.getLayout = (page: any) => (
         <Heading size='md' fontWeight='black' letterSpacing='tight'>
           Dashboard
         </Heading>
-        <Button variant='default' size='sm' isDisabled>
+        <Button variant='default' size='sm'>
           Create proposal
         </Button>
       </Flex>

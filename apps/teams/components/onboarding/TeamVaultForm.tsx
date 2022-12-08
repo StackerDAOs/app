@@ -322,7 +322,9 @@ const FinishedState = () => {
                           <Button variant='dark' isLoading />
                         )}
                         {transaction?.data?.tx_status === 'success' && (
-                          <Button variant='dark'>Complete</Button>
+                          <Button variant='dark' isDisabled>
+                            Completed
+                          </Button>
                         )}
                       </GridItem>
                     </Grid>
@@ -400,7 +402,11 @@ const FinishedState = () => {
                         {activationTransaction?.data?.tx_status ===
                           'pending' && <Button variant='dark' isLoading />}
                         {activationTransaction?.data?.tx_status ===
-                          'success' && <Button variant='dark'>Complete</Button>}
+                          'success' && (
+                          <Button variant='dark' isDisabled>
+                            Completed
+                          </Button>
+                        )}
                       </GridItem>
                     </Grid>
                   </Stack>

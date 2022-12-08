@@ -30,6 +30,7 @@ import { useTeam } from 'ui/hooks';
 import { getPercentage, findExtension } from 'utils';
 import { ArrowRight } from 'ui/components/icons';
 import { TransactionTable } from '@components/tables';
+import { useActivateTeam } from 'api/teams/mutations';
 
 export default function Dashboard() {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -37,6 +38,7 @@ export default function Dashboard() {
   const router = useRouter();
   const dao = useTeam();
   const isActive = dao?.data?.active;
+  const activate = useActivateTeam();
   const [depositAmount, setDepositAmount] = React.useState('');
   const handleInputDeposit = (e: any) => {
     const re = /^[0-9.\b]+$/;
@@ -75,7 +77,16 @@ export default function Dashboard() {
           >
             <Stack spacing='3'>
               <HStack justify='center' cursor='default'>
-                <Button variant='default' size='sm' isDisabled>
+                <Button
+                  variant='default'
+                  size='sm'
+                  onClick={() => {
+                    activate.mutate({
+                      contract_address: dao?.data?.contract_address,
+                    });
+                  }}
+                  isLoading={activate.isLoading}
+                >
                   Activate
                 </Button>
               </HStack>
@@ -348,187 +359,6 @@ export default function Dashboard() {
             </Grid>
           </Stack>
         </Stack>
-        <Grid templateColumns='repeat(6, 1fr)' gap={6}>
-          <GridItem colSpan={2}>
-            <Card bg='dark.800' h='200px'>
-              <Stack spacing='0'>
-                <Stack
-                  px={{ base: '6', md: '6' }}
-                  py={{ base: '6', md: '6' }}
-                  spacing='6'
-                >
-                  <Heading
-                    color='light.900'
-                    fontSize='lg'
-                    fontWeight='regular'
-                    letterSpacing='tight'
-                  >
-                    All-time Stats
-                  </Heading>
-                  <Stack spacing='6'>
-                    <Stack spacing='3'>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Tokens Minted
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='regular'
-                          color='light.900'
-                        >
-                          1,242 STACK
-                        </Text>
-                      </HStack>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Total Raised
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='regular'
-                          color='light.900'
-                        >
-                          12,242 STX
-                        </Text>
-                      </HStack>
-                    </Stack>
-                    <HStack justify='space-between'>
-                      <Text fontSize='md' fontWeight='regular' color='gray'>
-                        Avg Deposit
-                      </Text>
-                      <Text
-                        fontSize='md'
-                        fontWeight='regular'
-                        color='light.900'
-                      >
-                        75 STX
-                      </Text>
-                    </HStack>
-                  </Stack>
-                </Stack>
-              </Stack>
-            </Card>
-          </GridItem>
-          <GridItem colSpan={2}>
-            <Card bg='dark.800' h='200px'>
-              <Stack spacing='0'>
-                <Stack
-                  px={{ base: '6', md: '6' }}
-                  py={{ base: '6', md: '6' }}
-                  spacing='6'
-                >
-                  <Heading
-                    color='light.900'
-                    fontSize='lg'
-                    fontWeight='regular'
-                    letterSpacing='tight'
-                  >
-                    Current Round
-                  </Heading>
-                  <Stack spacing='6'>
-                    <Stack spacing='3'>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Total Depositors
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='regular'
-                          color='light.900'
-                        >
-                          3
-                        </Text>
-                      </HStack>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Total Amount
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='regular'
-                          color='light.900'
-                        >
-                          1,242 STX
-                        </Text>
-                      </HStack>
-                    </Stack>
-                    <Stack spacing='1'>
-                      <Progress
-                        colorScheme='whiteAlpha'
-                        borderRadius='lg'
-                        size='md'
-                        value={getPercentage(10000, 5000)}
-                        bg='dark.500'
-                      />
-                    </Stack>
-                  </Stack>
-                </Stack>
-              </Stack>
-            </Card>
-          </GridItem>
-          <GridItem colSpan={2}>
-            <Card bg='dark.800' h='200px'>
-              <Stack spacing='0'>
-                <Stack
-                  px={{ base: '6', md: '6' }}
-                  py={{ base: '6', md: '6' }}
-                  spacing='6'
-                >
-                  <Heading
-                    color='light.900'
-                    fontSize='lg'
-                    fontWeight='regular'
-                    letterSpacing='tight'
-                  >
-                    My Holdings
-                  </Heading>
-                  <Stack spacing='6'>
-                    <Stack spacing='6'>
-                      <Stack spacing='3'>
-                        <HStack justify='space-between'>
-                          <Text fontSize='md' fontWeight='regular' color='gray'>
-                            My Tokens
-                          </Text>
-                          <Text
-                            fontSize='md'
-                            fontWeight='regular'
-                            color='light.900'
-                          >
-                            150 STACK
-                          </Text>
-                        </HStack>
-                        <HStack justify='space-between'>
-                          <Text fontSize='md' fontWeight='regular' color='gray'>
-                            Amount Deposited
-                          </Text>
-                          <Text
-                            fontSize='md'
-                            fontWeight='regular'
-                            color='light.900'
-                          >
-                            150 STX
-                          </Text>
-                        </HStack>
-                      </Stack>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Ownership %
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='regular'
-                          color='light.900'
-                        >
-                          5%
-                        </Text>
-                      </HStack>
-                    </Stack>
-                  </Stack>
-                </Stack>
-              </Stack>
-            </Card>
-          </GridItem>
-        </Grid>
         <Card bg='dark.900'>
           <Stack spacing='5'>
             <Box px={{ base: '4', md: '6' }} pt='5'>
@@ -584,7 +414,7 @@ Dashboard.getLayout = (page: any) => (
         <Heading size='md' fontWeight='black' letterSpacing='tight'>
           Dashboard
         </Heading>
-        <Button variant='default' size='sm' isDisabled>
+        <Button variant='default' size='sm'>
           Create proposal
         </Button>
       </Flex>

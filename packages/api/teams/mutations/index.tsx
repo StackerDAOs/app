@@ -103,3 +103,28 @@ export const useUpdateInitTxId = () => {
     },
   });
 };
+
+export async function activateTeam(team: { contract_address?: string }) {
+  try {
+    const { data, error } = await supabase
+      .from('teams')
+      .update({ active: true })
+      .match({
+        contract_address: team.contract_address,
+      });
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useActivateTeam = () => {
+  const queryClient = useQueryClient();
+  return useMutation(activateTeam, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('team');
+      queryClient.invalidateQueries('teams');
+    },
+  });
+};

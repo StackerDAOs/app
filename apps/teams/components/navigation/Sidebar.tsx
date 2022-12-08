@@ -44,7 +44,7 @@ export const UserProfile = (props: UserProfileProps) => {
           spacing='3'
           cursor='pointer'
           borderRadius='lg'
-          py='4'
+          pt='4'
           px='6'
           justify='center'
         >

@@ -190,6 +190,7 @@ export const useActivateClub = () => {
   const queryClient = useQueryClient();
   return useMutation(activateClub, {
     onSuccess: () => {
+      queryClient.invalidateQueries('dao');
       queryClient.invalidateQueries('clubs');
     },
   });
