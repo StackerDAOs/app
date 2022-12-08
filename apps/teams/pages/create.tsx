@@ -88,32 +88,32 @@ export default function Create() {
     transaction?.data?.tx_status === 'success';
   const createTeam = useCreateTeam();
   const onSuccess = async (txId: string, action: any) => {
-    const tx = await getTransaction(txId);
-    console.log({ tx });
-    const name = data?.name;
-    const slug = nameToSlug(name);
-    const userAddress = tx?.sender_address;
-    const contractAddress = tx?.smart_contract?.contract_id;
-
-    action.mutate(
-      {
-        team: {
-          name,
-          slug,
-          tx_id: txId,
-          contract_address: contractAddress,
-          creator_address: userAddress,
+    try {
+      const tx = await getTransaction(txId);
+      const slug = nameToSlug(data?.name);
+      const userAddress = tx?.sender_address;
+      const contractAddress = tx?.smart_contract?.contract_id;
+      await action.mutate(
+        {
+          team: {
+            name: data?.name,
+            slug,
+            tx_id: txId,
+            contract_address: contractAddress,
+            creator_address: userAddress,
+          },
+          userAddress,
         },
-        userAddress,
-      },
-      {
-        onSuccess: () => {
-          setTransactionId(txId);
+        {
+          onSuccess: () => {
+            setTransactionId(txId);
+          },
         },
-      },
-    );
+      );
+    } catch (error) {
+      console.log('onSuccess | Teams', { error });
+    }
   };
-  // TODO: `hasIncompleteClubmake` query to clubs table to check for existing Clubs created by current STX address
   const hasIncompleteClub = !!dao?.data && !dao?.data?.active;
   const name = useGlobalState((state) => state.club.name);
   const updateName = useGlobalState((state) => state.updateName);
@@ -305,6 +305,7 @@ export default function Create() {
                   </Stack>
                   <Stack spacing='6'>
                     <StacksDeploy
+                      name={data?.name}
                       variant='default'
                       buttonName='Continue'
                       template={coreDAO()}

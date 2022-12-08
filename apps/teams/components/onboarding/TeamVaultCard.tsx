@@ -155,7 +155,7 @@ export const TeamVaultCard = (props: any) => {
                 isDisabled={isLoading || !!extension}
                 onClick={() =>
                   sdk.deployer.deployVault({
-                    contractName: 'multisig-vault',
+                    contractName: 'multisig-vault-v2',
                     requireAllowList: true,
                     onFinish: onSuccess,
                   })

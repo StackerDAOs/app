@@ -5,6 +5,7 @@ import { useAuth, useOpenContractDeploy } from '@micro-stacks/react';
 import { useGenerateName, useTransaction } from 'ui/hooks';
 
 interface StacksDeployProps extends ButtonProps {
+  name: string;
   template: string;
   contractName?: string;
   buttonName?: string;
@@ -16,6 +17,7 @@ interface StacksDeployProps extends ButtonProps {
 
 export const StacksDeploy = (props: StacksDeployProps) => {
   const {
+    name,
     template,
     contractName,
     buttonName,
@@ -52,7 +54,9 @@ export const StacksDeploy = (props: StacksDeployProps) => {
         onCancel: callback,
       });
     }
-  }, [isSignedIn, template]);
+
+    console.log('name changed', { name });
+  }, [name, isSignedIn, template]);
 
   if (transaction.data?.tx_status === 'pending') {
     return (

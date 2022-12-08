@@ -72,7 +72,6 @@ export default function Extensions() {
     next,
   };
   const currentElement = React.cloneElement(step.component, props);
-  console.log(currentStepIndex);
 
   return (
     <Stack spacing='10'>

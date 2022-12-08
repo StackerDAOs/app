@@ -92,33 +92,34 @@ export default function Create() {
     transaction?.data?.tx_status === 'success';
   const createClub = useCreateClub();
   const onSuccess = async (txId: string, action: any) => {
-    const tx = await getTransaction(txId);
-    const name = data?.name;
-    const slug = nameToSlug(name);
-    const typeId = CLUB_TYPES.INVESTMENT_CLUB;
-    const userAddress = tx?.sender_address;
-    const contractAddress = tx?.smart_contract?.contract_id;
-
-    action.mutate(
-      {
-        club: {
-          name,
-          slug,
-          type_id: typeId,
-          tx_id: txId,
-          contract_address: contractAddress,
-          creator_address: userAddress,
+    try {
+      const tx = await getTransaction(txId);
+      const slug = nameToSlug(data?.name);
+      const typeId = CLUB_TYPES.INVESTMENT_CLUB;
+      const userAddress = tx?.sender_address;
+      const contractAddress = tx?.smart_contract?.contract_id;
+      await action.mutate(
+        {
+          club: {
+            name: data?.name,
+            slug,
+            type_id: typeId,
+            tx_id: txId,
+            contract_address: contractAddress,
+            creator_address: userAddress,
+          },
+          userAddress,
         },
-        userAddress,
-      },
-      {
-        onSuccess: () => {
-          setTransactionId(txId);
+        {
+          onSuccess: () => {
+            setTransactionId(txId);
+          },
         },
-      },
-    );
+      );
+    } catch (error) {
+      console.log('onSuccess | Clubs', { error });
+    }
   };
-  // TODO: `hasIncompleteClubmake` query to clubs table to check for existing Clubs created by current STX address
   const hasIncompleteClub = !!dao?.data && !dao?.data?.active;
   const name = useGlobalState((state) => state.club.name);
   const updateName = useGlobalState((state) => state.updateName);
@@ -341,6 +342,7 @@ export default function Create() {
                   </Stack>
                   <Stack spacing='6'>
                     <StacksDeploy
+                      name={data?.name}
                       variant='default'
                       buttonName='Continue'
                       template={coreDAO()}

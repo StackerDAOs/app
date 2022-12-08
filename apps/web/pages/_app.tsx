@@ -56,10 +56,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: any) {
                 name='viewport'
                 content='initial-scale=1.0, width=device-width'
               />
-              <meta
-                name='image'
-                content='https://web-nine-zeta.vercel.app/images/proposal-hero.png'
-              />
+              <meta name='image' content='/meta-image.png' />
               <link
                 rel='icon'
                 sizes='192x192'

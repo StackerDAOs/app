@@ -179,7 +179,7 @@ export const TeamMembershipCard = (props: any) => {
                 isDisabled={isLoading || !!extension || !formIsValidated}
                 onClick={() =>
                   sdk.deployer.deployMultisig({
-                    contractName: 'multisig-v2',
+                    contractName: 'multisig-v5',
                     onFinish: onSuccess,
                   })
                 }
