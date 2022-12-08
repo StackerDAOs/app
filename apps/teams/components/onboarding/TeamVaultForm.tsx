@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import {
   Alert,
   AlertDescription,
@@ -30,7 +31,7 @@ import { StacksSDK } from 'sdk';
 import Papa from 'papaparse';
 import { getTransaction } from 'api/teams';
 import { useUpdateBootstrap, useUpdateInitTxId } from 'api/teams/mutations';
-import { useTeam, useTransaction } from 'ui/hooks';
+import { useGenerateName, useTeam, useTransaction } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { shortenAddress, validateContractAddress } from '@stacks-os/utils';
 import { useVaultStore } from 'store';
@@ -177,6 +178,7 @@ const FinishedState = () => {
   const multisigExtension = findExtension(dao?.data?.extensions, 'Team');
   const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
   const sdk = new StacksSDK(dao?.data?.contract_address);
+  const { randomName: contractName } = useGenerateName();
   const onSuccess = async (payload: any) => {
     const { txId } = payload;
     const tx = await getTransaction(txId);
@@ -288,7 +290,7 @@ const FinishedState = () => {
                             variant='secondary'
                             onClick={() =>
                               sdk.deployer.deployTeamBootstrap({
-                                contractName: 'lfg',
+                                contractName,
                                 extensions: {
                                   vaultContract: findExtension(
                                     dao?.data?.extensions,
@@ -299,10 +301,12 @@ const FinishedState = () => {
                                     'Team',
                                   )?.contract_address,
                                 },
-                                members:
-                                  multisigExtension?.data?.config?.members,
+                                signalsRequired: Number(
+                                  multisigExtension?.config?.signalsRequired,
+                                ),
+                                members: multisigExtension?.config?.members,
                                 allowlist:
-                                  vaultExtension?.data?.config?.allowed_tokens,
+                                  vaultExtension?.config?.allowed_tokens,
                                 onFinish: onSuccess,
                               })
                             }
@@ -404,9 +408,11 @@ const FinishedState = () => {
         </Stack>
         {transaction?.data?.tx_status === 'success' &&
         activationTransaction?.data?.tx_status === 'success' ? (
-          <Button variant='link' rightIcon={<ArrowRight />}>
-            Go to Dashboard
-          </Button>
+          <Link href={`/${dao?.data?.slug}`}>
+            <Button variant='link' rightIcon={<ArrowRight />}>
+              Go to Dashboard
+            </Button>
+          </Link>
         ) : (
           <Alert
             bg='dark.800'

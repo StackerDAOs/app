@@ -78,6 +78,7 @@ export interface ClubBootstrapParams extends ContractCallParams {
 export interface TeamBootstrapParams extends ContractCallParams {
   contractName: string;
   extensions: BootstrapTeamExtensions;
+  signalsRequired?: number;
   members?: string[];
   allowlist?: string[];
 }

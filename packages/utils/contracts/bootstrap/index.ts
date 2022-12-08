@@ -94,6 +94,7 @@ const generateTeamMembers = (members: string[], multisigContract: string) => {
 export const bootstrapTeamProposal = (
   coreDao: string,
   extensions: BootstrapTeamExtensions,
+  signalsRequired?: number,
   members?: string[],
   allowlist?: string[],
 ) => {
@@ -119,6 +120,8 @@ export const bootstrapTeamProposal = (
     ))
 
     ${teamMemberList}
+
+    (try! (contract-call? '${multisigContract} set-signals-required u${signalsRequired}))
     
     ${allowList}
 

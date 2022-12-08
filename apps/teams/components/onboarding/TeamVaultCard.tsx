@@ -4,7 +4,7 @@ import { Badge, Button, Flex, GridItem, Heading, Stack, Text } from 'ui';
 import { StacksSDK } from 'sdk';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { defaultTo } from 'lodash';
-import { useTransaction } from 'ui/hooks';
+import { useGenerateName, useTransaction } from 'ui/hooks';
 import { getTransaction } from 'api/teams';
 import { useVaultStore } from 'store';
 import { findExtension, getExplorerLink } from 'utils';
@@ -18,6 +18,7 @@ export const TeamVaultCard = (props: any) => {
   const extension = findExtension(dao?.extensions, 'Vault');
   const transaction = useTransaction(extension?.tx_id);
   const createExtension = useCreateExtension();
+  const { randomName: contractName } = useGenerateName();
   const onSuccess = async (payload: any) => {
     const { txId } = payload;
     const tx = await getTransaction(txId);
@@ -155,7 +156,7 @@ export const TeamVaultCard = (props: any) => {
                 isDisabled={isLoading || !!extension}
                 onClick={() =>
                   sdk.deployer.deployVault({
-                    contractName: 'multisig-vault-v2',
+                    contractName,
                     requireAllowList: true,
                     onFinish: onSuccess,
                   })

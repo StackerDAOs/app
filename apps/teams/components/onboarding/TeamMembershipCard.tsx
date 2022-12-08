@@ -4,7 +4,7 @@ import { Badge, Button, Flex, GridItem, Heading, Stack, Text } from 'ui';
 import { StacksSDK } from 'sdk';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { defaultTo } from 'lodash';
-import { useTransaction } from 'ui/hooks';
+import { useGenerateName, useTransaction } from 'ui/hooks';
 import { getTransaction } from 'api/teams';
 import { useTeamMembershipStore } from 'store';
 import { findExtension, getExplorerLink } from 'utils';
@@ -20,6 +20,7 @@ export const TeamMembershipCard = (props: any) => {
   const transaction = useTransaction(extension?.tx_id);
   const formIsValidated = data;
   const createExtension = useCreateExtension();
+  const { randomName: contractName } = useGenerateName();
   const onSuccess = async (payload: any) => {
     const { txId } = payload;
     const tx = await getTransaction(txId);
@@ -179,7 +180,7 @@ export const TeamMembershipCard = (props: any) => {
                 isDisabled={isLoading || !!extension || !formIsValidated}
                 onClick={() =>
                   sdk.deployer.deployMultisig({
-                    contractName: 'multisig-v5',
+                    contractName,
                     onFinish: onSuccess,
                   })
                 }

@@ -475,6 +475,7 @@ export class Deployer {
    *  extensions: {
    *   vaultContract: string;
    *   },
+   *  signalsRequired: 2,
    *  members: ['SP3WV3VC6GM1WF215SDHP0MESQ3BNXHB1N6TPB70S', 'SP4WV3VC6GM1WF215SDHP0MESQ3BNXHB1N6TPB70S'],
    *  allowlist: ['SP123.miami-coin', 'SP123.miami-coin'],
    * });
@@ -485,6 +486,7 @@ export class Deployer {
    * interface TeamBootstrapParams {
    *  contractName: string;
    *  extensions: TeamBootstrapParams;
+   *  signalsRequired: number;
    *  members?: string[];
    *  allowlist?: string[];
    *  onFinish?: (payload: FinishedTxData) => void;
@@ -497,10 +499,12 @@ export class Deployer {
   public async deployTeamBootstrap(
     params: TeamBootstrapParams,
   ): Promise<FinishedTxData | undefined> {
-    const { contractName, extensions, members, allowlist } = params;
+    const { contractName, extensions, signalsRequired, members, allowlist } =
+      params;
     const codeBody = bootstrapTeamProposal(
       this.coreAddress,
       extensions,
+      signalsRequired,
       members,
       allowlist,
     );
