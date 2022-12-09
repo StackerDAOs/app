@@ -23,6 +23,7 @@ export * from './LightBulbOutline';
 export * from './LightningBolt';
 export * from './LogoIcon';
 export * from './MarketplaceIcon';
+export * from './MinusIcon';
 export * from './PlusIcon';
 export * from './ProposalOutline';
 export * from './SettingsIcon';

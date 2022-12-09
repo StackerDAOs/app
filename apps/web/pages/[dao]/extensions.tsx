@@ -194,14 +194,7 @@ export default function Extensions() {
 Extensions.getLayout = (page: any) => (
   <DashboardLayout
     header={
-      <Flex
-        justify='space-between'
-        align='center'
-        borderBottomWidth='1px'
-        borderBottomColor='dark.500'
-        py='5'
-        px='4'
-      >
+      <Flex justify='space-between' align='center' py='5' px='4'>
         <Heading size='md' fontWeight='black' letterSpacing='tight'>
           Extensions
         </Heading>

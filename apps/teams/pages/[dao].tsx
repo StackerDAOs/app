@@ -26,6 +26,7 @@ import { DashboardLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 import { ConnectButton, DepositButton } from 'ui/components/buttons';
+import { CreateProposal } from '@components/drawers';
 import { useTeam } from 'ui/hooks';
 import { getPercentage, findExtension } from 'utils';
 import { ArrowRight } from 'ui/components/icons';
@@ -400,26 +401,26 @@ export default function Dashboard() {
   );
 }
 
+const Header = () => {
+  const dao = useTeam();
+  const isActive = dao?.data?.active;
+
+  return (
+    <Flex justify='space-between' align='center' py='5' px='4'>
+      <Heading size='md' fontWeight='black' letterSpacing='tight'>
+        Dashboard
+      </Heading>
+      <CreateProposal
+        title='Create proposal'
+        variant='default'
+        size='sm'
+        isDisabled={!isActive}
+        _hover={{ opacity: 0.9 }}
+      />
+    </Flex>
+  );
+};
+
 Dashboard.getLayout = (page: any) => (
-  <DashboardLayout
-    header={
-      <Flex
-        justify='space-between'
-        align='center'
-        borderBottomWidth='1px'
-        borderBottomColor='dark.500'
-        py='5'
-        px='4'
-      >
-        <Heading size='md' fontWeight='black' letterSpacing='tight'>
-          Dashboard
-        </Heading>
-        <Button variant='default' size='sm'>
-          Create proposal
-        </Button>
-      </Flex>
-    }
-  >
-    {page}
-  </DashboardLayout>
+  <DashboardLayout header={<Header />}>{page}</DashboardLayout>
 );
