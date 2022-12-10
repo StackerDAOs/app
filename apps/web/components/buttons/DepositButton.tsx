@@ -41,9 +41,9 @@ export const DepositButton = (props: DepositProps) => {
         const href = getExplorerLink(txId);
         reset?.();
         toast({
-          duration: null,
+          duration: 5000,
           position: 'bottom-right',
-          isClosable: false,
+          isClosable: true,
           render: () => (
             <Stack
               direction='row'
@@ -69,7 +69,12 @@ export const DepositButton = (props: DepositProps) => {
                 </Stack>
               </Stack>
               <Button variant='link' size='sm'>
-                <Icon as={XIcon} color='light.900' boxSize='5' />
+                <Icon
+                  as={XIcon}
+                  color='light.900'
+                  boxSize='5'
+                  onClick={() => toast.closeAll()}
+                />
               </Button>
             </Stack>
           ),
