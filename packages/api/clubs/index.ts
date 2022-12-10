@@ -10,6 +10,7 @@ import {
   fetchFtMetadataForContractId,
   fetchNamesByAddress,
   fetchTransaction,
+  fetchAccountTransactions,
 } from 'micro-stacks/api';
 import {
   contractPrincipalCV,
@@ -198,6 +199,19 @@ export async function getAccountBalances(address: string) {
       principal: address as string,
     });
     return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getAccountTransactions(address: string) {
+  try {
+    const network = new stacksNetwork();
+    const transactions = await fetchAccountTransactions({
+      url: network.getCoreApiUrl(),
+      principal: address as string,
+    });
+    return transactions;
   } catch (e: any) {
     console.error({ e });
   }

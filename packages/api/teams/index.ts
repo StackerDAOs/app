@@ -8,6 +8,7 @@ import {
   fetchFtMetadataForContractId,
   fetchNamesByAddress,
   fetchTransaction,
+  fetchAccountTransactions,
 } from 'micro-stacks/api';
 import {
   contractPrincipalCV,
@@ -192,6 +193,28 @@ export async function getAccountBalances(address: string) {
       principal: address as string,
     });
     return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getAccountTransactions(address: string) {
+  try {
+    const network = new stacksNetwork();
+    const transactions = await fetchAccountTransactions({
+      url: network.getCoreApiUrl(),
+      principal: address as string,
+    });
+    console.log({ transactions });
+    return transactions?.results.map((tx: any) => {
+      const { sender_address, tx_id, tx_status, block_height } = tx;
+      return {
+        creator: sender_address,
+        txId: tx_id,
+        status: tx_status,
+        blockHeight: block_height,
+      };
+    });
   } catch (e: any) {
     console.error({ e });
   }
@@ -413,6 +436,29 @@ export async function getTokenId(principal: string, assetIdentifier: string) {
     }
 
     return 0;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getApprover(
+  userPrincipal: string,
+  contractPrincipal: string,
+) {
+  const [contractAddress, contractName] =
+    splitContractAddress(contractPrincipal);
+  try {
+    const network = new stacksNetwork();
+    const isApprover: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
+      senderAddress: userPrincipal,
+      functionArgs: [standardPrincipalCV(userPrincipal)],
+      functionName: 'is-approver',
+    });
+
+    return isApprover;
   } catch (e: any) {
     console.error({ e });
   }

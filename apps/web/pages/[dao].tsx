@@ -25,9 +25,10 @@ import { Card } from 'ui/components/cards';
 import { DashboardLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
-import { ConnectButton, DepositButton } from 'ui/components/buttons';
+import { ConnectButton } from 'ui/components/buttons';
+import { DepositButton } from '@components/buttons';
 import { ProposalDrawer } from '@components/drawers';
-import { useDAO } from 'ui/hooks';
+import { useDAO, useTransactions } from 'ui/hooks';
 import { getPercentage, findExtension } from 'utils';
 import { ArrowRight } from 'ui/components/icons';
 import { TransactionTable } from '@components/tables';
@@ -38,6 +39,14 @@ export default function Dashboard() {
   const { isSignedIn } = useAuth();
   const router = useRouter();
   const dao = useDAO();
+  const investmentClubExtension = findExtension(
+    dao?.data?.extensions,
+    'Investment Club',
+  );
+  const transactions = useTransactions(
+    investmentClubExtension?.contract_address,
+    'vault',
+  );
   const isActive = dao?.data?.active;
   const activate = useActivateClub();
   const [depositAmount, setDepositAmount] = React.useState('');
@@ -47,10 +56,6 @@ export default function Dashboard() {
       setDepositAmount(e.target.value);
     }
   };
-  const investmentClubExtension = findExtension(
-    dao?.data?.extensions,
-    'Investment Club',
-  );
 
   if (dao?.isLoading && dao?.isFetching) {
     return null;
@@ -341,7 +346,7 @@ export default function Dashboard() {
                           title='Deposit'
                           variant='primary'
                           size='sm'
-                          investmentClubAddress={
+                          extensionAddress={
                             investmentClubExtension?.contract_address
                           }
                           amount={depositAmount}
@@ -566,7 +571,12 @@ export default function Dashboard() {
               </Stack>
             </Box>
             <Box overflowX='auto'>
-              <TransactionTable bg='dark.900' variant='simple' size='sm' />
+              <TransactionTable
+                transactions={transactions?.data}
+                bg='dark.900'
+                variant='simple'
+                size='sm'
+              />
             </Box>
             <Stack px={{ base: '4', md: '6' }} pb='5' align='flex-end'>
               {!isMobile && (

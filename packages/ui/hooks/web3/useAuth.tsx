@@ -2,8 +2,9 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 import { useAccount, useAuth as useMicroStacksAuth } from 'ui/components';
-import { useExtension } from 'ui/hooks';
+import { useExtension, useTeamExtension } from 'ui/hooks';
 import { getAccountBalances, getTokenId } from 'api/clubs';
+import { getApprover } from 'api/teams';
 
 export function useAuth() {
   const [interval, setInterval] = React.useState(1000);
@@ -40,6 +41,30 @@ export function useAuth() {
     {
       enabled: !!stxAddress && !!nft?.data,
       refetchInterval: interval,
+    },
+  );
+
+  return { isFetching, isIdle, isLoading, isError, refetch, data };
+}
+
+export function useTeamAuth() {
+  const { stxAddress } = useAccount();
+  const multisig = useTeamExtension('Team');
+
+  const { isFetching, isIdle, isLoading, isError, refetch, data } = useQuery(
+    ['auth', stxAddress],
+    async () => {
+      const isMember = await getApprover(
+        stxAddress as string,
+        multisig?.data?.contract_address,
+      );
+
+      return {
+        isMember,
+      };
+    },
+    {
+      enabled: !!stxAddress && !!multisig?.data,
     },
   );
 

@@ -21,6 +21,7 @@ export const AccountSwitcherButton = (props: AccountSwitcherButtonProps) => {
   const account = useAccount();
   const stxAddress = account?.stxAddress as string;
   const buttonProps = useMenuButton(props);
+
   return (
     <Stack justify='center' p='6'>
       <Stack
@@ -43,7 +44,7 @@ export const AccountSwitcherButton = (props: AccountSwitcherButtonProps) => {
             variant='sunset'
             colors={['#624AF2', '#7301fa', '#eb00ff', '#27cb9f']}
           />
-          <Stack spacing='-1'>
+          <Stack spacing='-1' textAlign='initial'>
             <Text fontWeight='regular' fontSize='xs' color='gray'>
               {truncateAddress(stxAddress)}
             </Text>

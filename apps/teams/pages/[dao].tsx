@@ -8,36 +8,37 @@ import {
   FormControl,
   Grid,
   GridItem,
-  Icon,
   Image,
   Input,
   InputGroup,
   Heading,
   HStack,
-  Progress,
   Stack,
   Text,
   VStack,
-  useBreakpointValue,
 } from 'ui';
 import { useAuth } from 'ui/components';
 import { Card } from 'ui/components/cards';
 import { DashboardLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
-import { ConnectButton, DepositButton } from 'ui/components/buttons';
+import { ConnectButton } from 'ui/components/buttons';
 import { CreateProposal } from '@components/drawers';
-import { useTeam } from 'ui/hooks';
-import { getPercentage, findExtension } from 'utils';
-import { ArrowRight } from 'ui/components/icons';
+import { DepositButton } from '@components/buttons';
+import { useTeam, useTeamTransactions } from 'ui/hooks';
+import { findExtension } from 'utils';
 import { TransactionTable } from '@components/tables';
 import { useActivateTeam } from 'api/teams/mutations';
 
 export default function Dashboard() {
-  const isMobile = useBreakpointValue({ base: true, md: false });
   const { isSignedIn } = useAuth();
   const router = useRouter();
   const dao = useTeam();
+  const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
+  const transactions = useTeamTransactions(
+    vaultExtension?.contract_address,
+    'vault',
+  );
   const isActive = dao?.data?.active;
   const activate = useActivateTeam();
   const [depositAmount, setDepositAmount] = React.useState('');
@@ -47,7 +48,6 @@ export default function Dashboard() {
       setDepositAmount(e.target.value);
     }
   };
-  const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
 
   if (dao?.isLoading && dao?.isFetching) {
     return null;
@@ -185,75 +185,8 @@ export default function Dashboard() {
         <Stack spacing='6'>
           <Stack spacing='8'>
             <Grid templateColumns='repeat(9, 1fr)' gap={6}>
-              <GridItem colSpan={5}>
-                <Card bg='dark.800' h='225px'>
-                  <Stack spacing='0'>
-                    <Stack
-                      px={{ base: '6', md: '6' }}
-                      py={{ base: '6', md: '6' }}
-                      spacing='6'
-                    >
-                      <Heading
-                        color='light.900'
-                        fontSize='lg'
-                        fontWeight='regular'
-                        letterSpacing='tight'
-                      >
-                        Fundraise Progress
-                      </Heading>
-                      <Stack spacing='6'>
-                        <Stack spacing='6'>
-                          <Stack spacing='3'>
-                            <HStack justify='space-between'>
-                              <Text
-                                fontSize='md'
-                                fontWeight='regular'
-                                color='gray'
-                              >
-                                Amount Raised
-                              </Text>
-                              <Text
-                                fontSize='md'
-                                fontWeight='regular'
-                                color='light.900'
-                              >
-                                1,242 STX
-                              </Text>
-                            </HStack>
-                            <HStack justify='space-between'>
-                              <Text
-                                fontSize='md'
-                                fontWeight='regular'
-                                color='gray'
-                              >
-                                Funding Goal
-                              </Text>
-                              <Text
-                                fontSize='md'
-                                fontWeight='regular'
-                                color='light.900'
-                              >
-                                10,000 STX
-                              </Text>
-                            </HStack>
-                          </Stack>
-                          <Stack spacing='1'>
-                            <Progress
-                              colorScheme='primary'
-                              borderRadius='lg'
-                              size='md'
-                              value={getPercentage(10000, 5000)}
-                              bg='dark.500'
-                            />
-                          </Stack>
-                        </Stack>
-                      </Stack>
-                    </Stack>
-                  </Stack>
-                </Card>
-              </GridItem>
               <GridItem colSpan={4}>
-                <Card h='225px' bg='dark.900'>
+                <Card h='fit-content' bg='dark.900'>
                   <Stack spacing='0'>
                     <Stack
                       spacing='6'
@@ -272,16 +205,8 @@ export default function Dashboard() {
                         fontWeight='regular'
                         letterSpacing='tight'
                       >
-                        Open to deposits
+                        Vault
                       </Heading>
-                      <Text
-                        color='light.500'
-                        fontSize='sm'
-                        fontWeight='regular'
-                      >
-                        Closes in ~ {dao?.data?.config?.durationInDays} days{' '}
-                        {/* TODO: fetch block height and do estimate */}
-                      </Text>
                     </Stack>
                     <Stack
                       px={{ base: '6', md: '6' }}
@@ -338,20 +263,67 @@ export default function Dashboard() {
                           title='Deposit'
                           variant='primary'
                           size='sm'
-                          investmentClubAddress={
-                            vaultExtension?.contract_address
-                          }
+                          vaultAddress={vaultExtension?.contract_address}
                           amount={depositAmount}
                         />
-                        <Text
-                          color='gray'
-                          textAlign='center'
-                          fontSize='sm'
-                          fontWeight='light'
-                        >
-                          Minimum deposit amount is{' '}
-                          {dao?.data?.config?.minimumDeposit} STX
-                        </Text>
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                </Card>
+              </GridItem>
+              <GridItem colSpan={5}>
+                <Card bg='dark.800'>
+                  <Stack spacing='0'>
+                    <Stack
+                      px={{ base: '6', md: '6' }}
+                      py={{ base: '6', md: '6' }}
+                      spacing='6'
+                    >
+                      <Heading
+                        color='light.900'
+                        fontSize='lg'
+                        fontWeight='regular'
+                        letterSpacing='tight'
+                      >
+                        Fundraise Progress
+                      </Heading>
+                      <Stack spacing='6'>
+                        <Stack spacing='6'>
+                          <Stack spacing='3'>
+                            <HStack justify='space-between'>
+                              <Text
+                                fontSize='md'
+                                fontWeight='regular'
+                                color='gray'
+                              >
+                                Amount Raised
+                              </Text>
+                              <Text
+                                fontSize='md'
+                                fontWeight='regular'
+                                color='light.900'
+                              >
+                                1,242 STX
+                              </Text>
+                            </HStack>
+                            <HStack justify='space-between'>
+                              <Text
+                                fontSize='md'
+                                fontWeight='regular'
+                                color='gray'
+                              >
+                                Funding Goal
+                              </Text>
+                              <Text
+                                fontSize='md'
+                                fontWeight='regular'
+                                color='light.900'
+                              >
+                                10,000 STX
+                              </Text>
+                            </HStack>
+                          </Stack>
+                        </Stack>
                       </Stack>
                     </Stack>
                   </Stack>
@@ -360,42 +332,41 @@ export default function Dashboard() {
             </Grid>
           </Stack>
         </Stack>
-        <Card bg='dark.900'>
-          <Stack spacing='5'>
-            <Box px={{ base: '4', md: '6' }} pt='5'>
-              <Stack
-                direction={{ base: 'column', md: 'row' }}
-                justify='space-between'
-                align='center'
-              >
-                <Text
-                  color='light.900'
-                  fontSize='lg'
-                  fontWeight='regular'
-                  letterSpacing='tight'
-                >
-                  Activity
-                </Text>
-                <InputGroup maxW='xs'>
-                  <Input placeholder='Search' />
-                </InputGroup>
+        <Grid templateColumns='repeat(6, 1fr)' gap={6}>
+          <GridItem colSpan={6}>
+            <Card bg='dark.900'>
+              <Stack spacing='5'>
+                <Box px={{ base: '4', md: '6' }} pt='5'>
+                  <Stack
+                    direction={{ base: 'column', md: 'row' }}
+                    justify='space-between'
+                    align='center'
+                  >
+                    <Text
+                      color='light.900'
+                      fontSize='lg'
+                      fontWeight='regular'
+                      letterSpacing='tight'
+                    >
+                      Activity
+                    </Text>
+                    <InputGroup maxW='xs'>
+                      <Input placeholder='Search' />
+                    </InputGroup>
+                  </Stack>
+                </Box>
+                <Box overflowX='auto'>
+                  <TransactionTable
+                    transactions={transactions?.data}
+                    bg='dark.900'
+                    variant='simple'
+                    size='sm'
+                  />
+                </Box>
               </Stack>
-            </Box>
-            <Box overflowX='auto'>
-              <TransactionTable bg='dark.900' variant='simple' size='sm' />
-            </Box>
-            <Stack px={{ base: '4', md: '6' }} pb='5' align='flex-end'>
-              {!isMobile && (
-                <HStack>
-                  <Text color='light.900' fontWeight='light' fontSize='sm'>
-                    All transactions
-                  </Text>
-                  <Icon as={ArrowRight} />
-                </HStack>
-              )}
-            </Stack>
-          </Stack>
-        </Card>
+            </Card>
+          </GridItem>
+        </Grid>
       </Stack>
     </motion.div>
   );

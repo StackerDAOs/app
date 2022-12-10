@@ -54,8 +54,6 @@ export const StacksDeploy = (props: StacksDeployProps) => {
         onCancel: callback,
       });
     }
-
-    console.log('name changed', { name });
   }, [name, isSignedIn, template]);
 
   if (transaction.data?.tx_status === 'pending') {

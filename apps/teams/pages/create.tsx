@@ -93,15 +93,17 @@ export default function Create() {
       const slug = nameToSlug(data?.name);
       const userAddress = tx?.sender_address;
       const contractAddress = tx?.smart_contract?.contract_id;
+      const team = {
+        name: data?.name,
+        slug,
+        tx_id: txId,
+        contract_address: contractAddress,
+        creator_address: userAddress,
+      };
+
       await action.mutate(
         {
-          team: {
-            name: data?.name,
-            slug,
-            tx_id: txId,
-            contract_address: contractAddress,
-            creator_address: userAddress,
-          },
+          team,
           userAddress,
         },
         {
