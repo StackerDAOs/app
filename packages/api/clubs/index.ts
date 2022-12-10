@@ -204,14 +204,23 @@ export async function getAccountBalances(address: string) {
   }
 }
 
-export async function getAccountTransactions(address: string) {
+export async function getAccountTransactions(address: string, limit = 5) {
   try {
     const network = new stacksNetwork();
     const transactions = await fetchAccountTransactions({
       url: network.getCoreApiUrl(),
       principal: address as string,
+      limit,
     });
-    return transactions;
+    return transactions?.results.map((tx: any) => {
+      const { sender_address, tx_id, tx_status, block_height } = tx;
+      return {
+        creator: sender_address,
+        txId: tx_id,
+        status: tx_status,
+        blockHeight: block_height,
+      };
+    });
   } catch (e: any) {
     console.error({ e });
   }

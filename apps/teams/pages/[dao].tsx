@@ -230,6 +230,7 @@ export default function Dashboard() {
                               fontWeight='regular'
                               autoComplete='off'
                               placeholder='0.0'
+                              value={depositAmount}
                               onChange={handleInputDeposit}
                             />
                           </FormControl>
@@ -265,6 +266,7 @@ export default function Dashboard() {
                           size='sm'
                           vaultAddress={vaultExtension?.contract_address}
                           amount={depositAmount}
+                          reset={() => setDepositAmount('')}
                         />
                       </Stack>
                     </Stack>

@@ -4,4 +4,5 @@ export interface DepositProps extends ButtonProps {
   title: string;
   amount: string;
   vaultAddress: string;
+  reset?: () => void;
 }

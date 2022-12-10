@@ -313,6 +313,7 @@ export default function Dashboard() {
                               fontWeight='regular'
                               autoComplete='off'
                               placeholder='0.0'
+                              value={depositAmount}
                               onChange={handleInputDeposit}
                             />
                           </FormControl>
@@ -350,6 +351,7 @@ export default function Dashboard() {
                             investmentClubExtension?.contract_address
                           }
                           amount={depositAmount}
+                          reset={() => setDepositAmount('')}
                         />
                         <Text
                           color='gray'
