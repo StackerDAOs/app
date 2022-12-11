@@ -1,14 +1,18 @@
 import { traitPrincipal } from 'api/constants';
 import { size } from 'lodash';
 
+type Recipient = {
+  to: string;
+  amount: string;
+};
+
 const generateClarityList = (
-  recipients: string[],
   vaultContract: string,
-  amount: number,
+  recipients: Recipient[],
 ) => {
   let recipientList = '';
-  recipients.forEach((recipientAddress, index) => {
-    recipientList += `(try! (contract-call? '${vaultContract} withdraw-stx u${amount} '${recipientAddress} none))`;
+  recipients.forEach((recipient, index) => {
+    recipientList += `(try! (contract-call? '${vaultContract} withdraw-stx u${recipient.amount} '${recipient.to}))`;
     if (index !== recipients?.length - 1) {
       recipientList += `  \n    `;
     }
@@ -16,36 +20,31 @@ const generateClarityList = (
   return recipientList;
 };
 
-export const transferProposal = (
+const generateClarityListOfAssets = (
+  allowlist: string[],
   vaultContract: string,
-  recipients: string[],
-  amount: number,
 ) => {
-  return `
-(impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
-
-(define-public (execute (sender principal))
-  (begin
-    ${generateClarityList(recipients, vaultContract, amount)}
-    (print {event: "execute", sender: sender})
-    (ok true)
-  )
-)
-`;
+  let allowList = '';
+  allowlist.forEach((address, index) => {
+    allowList += `(try! (contract-call? '${vaultContract} set-allowed '${address} true))`;
+    if (index !== allowlist?.length - 1) {
+      allowList += `  \n    `;
+    }
+  });
+  return allowList;
 };
 
 export const transferStxProposal = (
   vaultContract: string,
-  recipients: string[],
+  recipient: string,
   amount: number,
-  memo?: any,
 ) => {
   return `
 (impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
 
 (define-public (execute (sender principal))
   (begin
-    ${generateClarityList(recipients, vaultContract, amount)}
+    (try! (contract-call? '${vaultContract} withdraw-stx u${amount} '${recipient}))
     (print {event: "execute", sender: sender})
     (ok true)
   )
@@ -149,6 +148,34 @@ export const upgradeAllowedAssetsProposal = (params: any) => {
 (define-public (execute (sender principal))
   (begin
     ${allowedAssets(params)}
+    (print {event: "execute", sender: sender})
+    (ok true)
+  )
+)
+`;
+};
+
+export const vaultTemplateProposal = (
+  vaultContract: string,
+  recipients?: Recipient[],
+  allowlist?: string[],
+) => {
+  const memberList = recipients
+    ? generateClarityList(vaultContract, recipients)
+    : '';
+  const allowList = allowlist
+    ? generateClarityListOfAssets(allowlist, vaultContract)
+    : '';
+
+  return `
+(impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
+
+(define-public (execute (sender principal))
+  (begin
+    ${allowList}
+
+    ${memberList}
+    
     (print {event: "execute", sender: sender})
     (ok true)
   )

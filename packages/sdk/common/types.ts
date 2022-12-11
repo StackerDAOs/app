@@ -9,6 +9,11 @@ export type BootstrapExtensions = {
   votingContract: string;
 };
 
+export type Recipient = {
+  to: string;
+  amount: string;
+};
+
 export type BootstrapTeamExtensions = {
   vaultContract: string;
   multisigContract: string;
@@ -86,7 +91,7 @@ export interface TeamBootstrapParams extends ContractCallParams {
 export interface TransferStxParams extends ContractCallParams {
   contractName: string;
   from: string;
-  to: string[];
+  to: string;
   amount: number;
 }
 
@@ -122,4 +127,11 @@ export interface UpgradeAllowedAssetsParams extends ContractCallParams {
   vaultAddress: string;
   allowed?: string[];
   disabled?: string[];
+}
+
+export interface VaultTemplateParams extends ContractCallParams {
+  contractName: string;
+  vaultAddress: string;
+  recipients?: Recipient[];
+  allowlist?: string[];
 }

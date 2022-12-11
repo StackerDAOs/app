@@ -10,6 +10,7 @@ import {
   transferStxProposal,
   upgradeProtocolProposal,
   upgradeAllowedAssetsProposal,
+  vaultTemplateProposal,
   vaultExtension,
   votingExtension,
   multisigExtension,
@@ -26,6 +27,7 @@ import type {
   TransferStxParams,
   UpgradeProtocolParams,
   UpgradeAllowedAssetsParams,
+  VaultTemplateParams,
   ClubBootstrapParams,
   TeamBootstrapParams,
 } from '../../common';
@@ -623,9 +625,9 @@ export class Deployer {
   }
 
   /**
-   * Deploys a Protocol Upgrade Proposal to the Stacks blockchain.
+   * Deploys an Allowlist Upgrade Proposal to the Stacks blockchain.
    *
-   * @remarks Deploys a Protocol Upgrade Proposal and returns the tx data of the deployed contract
+   * @remarks Deploys an Allowlist Upgrade Proposal and returns the tx data of the deployed contract
    *
    * @example
    * ```javascript
@@ -636,7 +638,7 @@ export class Deployer {
    * });
    * ```
    *
-   * @param params - the parameters for the Protocol Upgrade Proposal
+   * @param params - the parameters for the Allowlist Upgrade Proposal
    * ```javascript
    * interface upgradeAllowedAssetsProposal {
    *  contractName: string;
@@ -657,6 +659,54 @@ export class Deployer {
     const codeBody = upgradeAllowedAssetsProposal({
       ...rest,
     });
+    return this.openContractCallDeploy({
+      contractName,
+      codeBody,
+      onFinish: (payload) => {
+        params?.onFinish?.(payload);
+      },
+      onCancel: (error) => {
+        params?.onCancel?.(error);
+      },
+    });
+  }
+
+  /**
+   * Deploys an optional Transfer STX and Allowlist Upgrade to the Stacks blockchain.
+   *
+   * @remarks Deploys an optional Transfer STX and Allowlist Upgrade and returns the tx data of the deployed contract
+   *
+   * @example
+   * ```javascript
+   * const contractAddress = await sdk.deployer.deployVaultTemplate({
+   *  contractName: "transfer-funds",
+   *  vaultAddress: "SP3WV3VC6GM1WF215SDHP0MESQ3BNXHB1N6TPB70S.vault",
+   *  recipients: ['ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM','ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50'],
+   *  allowlist: ['ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.miami-coin','ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50.newyork-coin'],
+   *  amount: 1500,
+   * });
+   * ```
+   *
+   * @param params - the parameters for the Template Proposal
+   * ```javascript
+   * interface VaultTemplateParams {
+   *  contractName: string;
+   *  vaultAddress: string;
+   *  recipients?: string[];
+   *  allowlist?: string[];
+   *  amount?: number;
+   *  onFinish?: (payload: FinishedTxData) => void;
+   *  onCancel?: (error?: string) => void;
+   * }
+   * ```
+   *
+   * @returns the txId and txRaw of the deployed contract
+   */
+  public async deployVaultTemplate(
+    params: VaultTemplateParams,
+  ): Promise<FinishedTxData | undefined> {
+    const { contractName, vaultAddress, recipients, allowlist } = params;
+    const codeBody = vaultTemplateProposal(vaultAddress, recipients, allowlist);
     return this.openContractCallDeploy({
       contractName,
       codeBody,

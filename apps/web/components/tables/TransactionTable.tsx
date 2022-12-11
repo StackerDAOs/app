@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import {
-  Badge,
   HStack,
   Icon,
   Table,
@@ -30,13 +29,25 @@ interface TransactionTableProps extends TableProps {
 
 export const TransactionTable = (props: TransactionTableProps) => {
   const { transactions } = props;
+  const statusLabel = (status: string) => {
+    switch (status) {
+      case 'success':
+        return 'Confirmed';
+      case 'pending':
+        return 'Pending';
+      case 'failed':
+        return 'Failed';
+      default:
+        return 'Pending';
+    }
+  };
 
   return (
     <Table {...props}>
       <Thead>
         <Tr bg='dark.700' borderColor='dark.500'>
-          <Th>Name</Th>
-          <Th>Transaction ID</Th>
+          <Th>Creator</Th>
+          <Th>TX</Th>
           <Th>Block Height</Th>
           <Th>Status</Th>
           <Th />
@@ -69,22 +80,16 @@ export const TransactionTable = (props: TransactionTableProps) => {
                 <Text fontWeight='medium'>{transaction.blockHeight}</Text>
               </Td>
               <Td>
-                <Badge
-                  size='sm'
+                <Text
                   fontWeight='medium'
                   color={
                     transaction.status === 'success'
-                      ? 'primary.900'
-                      : 'light.900'
+                      ? 'primary.500'
+                      : 'yellow.500'
                   }
-                  bg='dark.500'
-                  alignSelf='start'
-                  py='1'
-                  px='3'
-                  borderRadius='3xl'
                 >
-                  {transaction.status}
-                </Badge>
+                  {statusLabel(transaction.status)}
+                </Text>
               </Td>
               <Td>
                 <HStack>

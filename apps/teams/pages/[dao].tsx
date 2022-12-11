@@ -262,7 +262,7 @@ export default function Dashboard() {
                       <Stack spacing='3'>
                         <DepositButton
                           title='Deposit'
-                          variant='primary'
+                          variant='secondary'
                           size='sm'
                           vaultAddress={vaultExtension?.contract_address}
                           amount={depositAmount}
