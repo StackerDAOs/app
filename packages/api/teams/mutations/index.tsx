@@ -24,6 +24,12 @@ type Submission = {
   post_conditions: object;
 };
 
+type Proposal = {
+  contract_address: string;
+  tx_id: string;
+  proposed_by: string;
+};
+
 export async function createTeam({
   team,
   userAddress,
@@ -157,6 +163,27 @@ export const useCreateSubmission = () => {
   return useMutation(createSubmission, {
     onSuccess: () => {
       queryClient.invalidateQueries('submissions');
+    },
+  });
+};
+
+export async function createProposal(proposal: Proposal) {
+  try {
+    const { data, error } = await supabase
+      .from('proposals')
+      .insert([{ ...proposal }]);
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useCreateProposal = () => {
+  const queryClient = useQueryClient();
+  return useMutation(createProposal, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('proposals');
     },
   });
 };

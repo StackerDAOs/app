@@ -95,7 +95,6 @@ export const Sidebar = () => {
               </Link>
               {[
                 { label: 'Vault', route: '/vault' },
-                { label: 'Ideas', route: '/ideas' },
                 {
                   label: 'Proposals',
                   route: '/proposals',

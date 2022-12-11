@@ -30,17 +30,18 @@ import {
   Textarea,
   useDisclosure,
 } from 'ui';
+import { useAccount } from 'ui/components';
 import { Card } from 'ui/components/cards';
 import { RadioCardGroup, RadioCard } from 'ui/components/forms';
 import { useGenerateName, useTeam, useTeamSubmissions } from 'ui/hooks';
-import { useCreateSubmission } from 'api/teams/mutations';
+import { useCreateSubmission, useCreateProposal } from 'api/teams/mutations';
 import { useProposalStore } from 'store';
 import { size } from 'lodash';
 import { findExtension } from 'utils';
 import { PlusIcon, MinusIcon, ArrowRight } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { DotStep } from 'ui/components/feedback';
-import { getMultisigData, getTransaction } from 'api/teams';
+import { getTransaction } from 'api/teams';
 import { truncateAddress } from '@stacks-os/utils';
 
 interface ProposalDrawerProps extends ButtonProps {
@@ -898,6 +899,8 @@ const ProtocolUpgrade = () => {
 
 export const CreateProposal = (props: ProposalDrawerProps) => {
   const dao = useTeam();
+  const account = useAccount();
+  const stxAddress = account?.stxAddress as string;
   const sdk = new StacksSDK(dao?.data?.contract_address);
   const multisigExtension = findExtension(dao?.data?.extensions, 'Team');
   const proposal = useProposalStore((state) => state.proposal);
@@ -905,6 +908,7 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
   const focusField = React.useRef<HTMLInputElement>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const submissions = useTeamSubmissions();
+  const createProposal = useCreateProposal();
 
   return (
     <>
@@ -1058,18 +1062,6 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
                                   </GridItem>
                                   <GridItem colSpan={{ base: 1, md: 1 }}>
                                     <Button
-                                      variant='link'
-                                      onClick={async () => {
-                                        const signals = await getMultisigData(
-                                          multisigExtension?.contract_address,
-                                          submission?.contract_address,
-                                        );
-                                        console.log({ signals });
-                                      }}
-                                    >
-                                      Get signals
-                                    </Button>
-                                    <Button
                                       variant='secondary'
                                       size='sm'
                                       onClick={() =>
@@ -1078,6 +1070,15 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
                                             multisigExtension?.contract_address,
                                           proposalAddress:
                                             submission?.contract_address,
+                                          onFinish(payload) {
+                                            const { txId } = payload;
+                                            createProposal.mutate({
+                                              contract_address:
+                                                submission?.contract_address,
+                                              proposed_by: stxAddress as string,
+                                              tx_id: txId,
+                                            });
+                                          },
                                         })
                                       }
                                     >

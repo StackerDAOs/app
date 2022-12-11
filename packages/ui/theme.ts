@@ -719,7 +719,6 @@ const components = {
   Tabs: {
     baseStyle: {
       tab: {
-        my: '1',
         _focus: {
           boxShadow: 'none',
         },

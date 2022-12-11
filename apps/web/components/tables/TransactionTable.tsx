@@ -45,10 +45,9 @@ export const TransactionTable = (props: TransactionTableProps) => {
   return (
     <Table {...props}>
       <Thead>
-        <Tr bg='dark.700' borderColor='dark.500'>
+        <Tr bg='dark.900' borderColor='dark.500'>
           <Th>Creator</Th>
           <Th>TX</Th>
-          <Th>Block Height</Th>
           <Th>Status</Th>
           <Th />
         </Tr>
@@ -75,9 +74,6 @@ export const TransactionTable = (props: TransactionTableProps) => {
                 <Text fontWeight='medium'>
                   {truncateAddress(transaction.txId)}
                 </Text>
-              </Td>
-              <Td>
-                <Text fontWeight='medium'>{transaction.blockHeight}</Text>
               </Td>
               <Td>
                 <Text

@@ -3,9 +3,15 @@ import {
   Box,
   ButtonGroup,
   Button,
+  FormControl,
   Flex,
+  Grid,
+  GridItem,
   Heading,
   HStack,
+  Image,
+  Input,
+  InputGroup,
   Stack,
   Text,
   Tab,
@@ -13,19 +19,32 @@ import {
   TabList,
   TabPanel,
   TabPanels,
+  VStack,
 } from 'ui';
-import { SectionHeader } from 'ui/components/layout';
 import { DashboardLayout } from '@components/layout';
 import { Card } from 'ui/components/cards';
-import { AssetTable } from '@components/tables';
-import { useTeam } from 'ui/hooks';
+import { DepositButton } from '@components/buttons';
+import { TransactionTable } from '@components/tables';
+import { useTeam, useTeamTransactions } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { map } from 'lodash';
+import { findExtension } from 'utils';
 
 export default function Vault() {
+  const [depositAmount, setDepositAmount] = React.useState('');
   const dao = useTeam();
   const isActive = dao?.data?.active;
-  const [tab, setTab] = React.useState('Tokens');
+  const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
+  const transactions = useTeamTransactions(
+    vaultExtension?.contract_address,
+    'vault',
+  );
+  const handleInputDeposit = (e: any) => {
+    const re = /^[0-9.\b]+$/;
+    if (e.target.value === '' || re.test(e.target.value)) {
+      setDepositAmount(e.target.value);
+    }
+  };
 
   if (!isActive) {
     return (
@@ -72,39 +91,175 @@ export default function Vault() {
       transition={{ duration: 0.25, type: 'linear' }}
     >
       <Stack spacing='8'>
+        <Stack spacing='6'>
+          <Stack spacing='8'>
+            <Grid templateColumns='repeat(9, 1fr)' gap={6}>
+              <GridItem colSpan={5}>
+                <Card h='fit-content' bg='dark.900'>
+                  <Stack spacing='0'>
+                    <Stack
+                      spacing='6'
+                      justify='space-between'
+                      direction='row'
+                      px={{ base: '6', md: '6' }}
+                      py={{ base: '3', md: '3' }}
+                      bg='dark.700'
+                      borderTopLeftRadius='md'
+                      borderTopRightRadius='md'
+                      align='center'
+                    >
+                      <Heading
+                        color='light.900'
+                        fontSize='md'
+                        fontWeight='regular'
+                        letterSpacing='tight'
+                      >
+                        Vault
+                      </Heading>
+                    </Stack>
+                    <Stack
+                      px={{ base: '6', md: '6' }}
+                      py={{ base: '6', md: '6' }}
+                      spacing='6'
+                    >
+                      <HStack
+                        justify='space-between'
+                        align='center'
+                        spacing='2'
+                      >
+                        <VStack align='flex-start' spacing='2'>
+                          <FormControl>
+                            <Input
+                              py='1'
+                              px='2'
+                              bg='dark.900'
+                              type='tel'
+                              border='none'
+                              fontSize='2xl'
+                              fontWeight='regular'
+                              autoComplete='off'
+                              placeholder='0.0'
+                              value={depositAmount}
+                              onChange={handleInputDeposit}
+                            />
+                          </FormControl>
+                        </VStack>
+                        <HStack
+                          bg='dark.900'
+                          borderRadius='lg'
+                          borderColor='dark.500'
+                          borderWidth='1px'
+                          py='1'
+                          px='3'
+                        >
+                          <Image
+                            cursor='pointer'
+                            height='16px'
+                            src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                            alt='logo'
+                          />
+
+                          <Text
+                            fontSize='sm'
+                            fontWeight='semibold'
+                            color='light.500'
+                          >
+                            STX
+                          </Text>
+                        </HStack>
+                      </HStack>
+                      <Stack spacing='3'>
+                        <DepositButton
+                          title='Deposit'
+                          variant='secondary'
+                          size='sm'
+                          vaultAddress={vaultExtension?.contract_address}
+                          amount={depositAmount}
+                          reset={() => {}}
+                        />
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                </Card>
+              </GridItem>
+              <GridItem colSpan={4}>
+                <Card bg='dark.800' h='189px'>
+                  <Stack
+                    px={{ base: '6', md: '6' }}
+                    py={{ base: '6', md: '6' }}
+                    spacing='6'
+                  >
+                    <Heading
+                      color='light.900'
+                      fontSize='lg'
+                      fontWeight='regular'
+                      letterSpacing='tight'
+                    >
+                      Treasury
+                    </Heading>
+                    <Stack spacing='3' justify='center' h='full'>
+                      <HStack justify='space-between'>
+                        <Text fontSize='md' fontWeight='regular' color='gray'>
+                          Balance
+                        </Text>
+                        <Text
+                          fontSize='md'
+                          fontWeight='medium'
+                          color='light.900'
+                        >
+                          1,242{' '}
+                          <Text as='span' fontSize='sm' fontWeight='thin'>
+                            STX
+                          </Text>
+                        </Text>
+                      </HStack>
+                      <HStack justify='space-between'>
+                        <Text fontSize='md' fontWeight='regular' color='gray'>
+                          Tokens
+                        </Text>
+                        <Text
+                          fontSize='md'
+                          fontWeight='medium'
+                          color='light.900'
+                        >
+                          7
+                        </Text>
+                      </HStack>
+                      <HStack justify='space-between'>
+                        <Text fontSize='md' fontWeight='regular' color='gray'>
+                          Collectibles
+                        </Text>
+                        <Text
+                          fontSize='md'
+                          fontWeight='medium'
+                          color='light.900'
+                        >
+                          2
+                        </Text>
+                      </HStack>
+                    </Stack>
+                  </Stack>
+                </Card>
+              </GridItem>
+            </Grid>
+          </Stack>
+        </Stack>
         <Stack spacing='1'>
-          <SectionHeader
-            justify={{ base: 'flex-start', md: 'space-between' }}
-            align={{ base: 'flex-start', md: 'space-between' }}
-            color='light.900'
-          >
-            <Stack spacing='3'>
-              <Text fontSize='md' fontWeight='light' color='text-muted'>
-                {tab}
-              </Text>
-              <Heading mt='0 !important' size='lg' fontWeight='medium'>
-                Manage Assets
-              </Heading>
-            </Stack>
-          </SectionHeader>
-          <Tabs
-            color='light.900'
-            variant='unstyled'
-            isFitted
-            onChange={(tabIndex: number) =>
-              setTab(['Tokens', 'Collectibles'][tabIndex])
-            }
-          >
+          <Tabs color='light.900' variant='unstyled' isFitted>
             <TabList>
-              <ButtonGroup bg='dark.900' borderRadius='lg' px='1'>
+              <ButtonGroup
+                bg='dark.900'
+                borderRadius='lg'
+                borderWidth='1px'
+                borderColor='dark.500'
+              >
                 {map(['Tokens', 'Collectibles'], (item) => (
                   <Tab
                     key={item}
-                    fontSize='md'
                     borderRadius='lg'
                     color='light.500'
-                    px='4'
                     w='50%'
+                    fontSize='sm'
                     _selected={{
                       color: 'light.900',
                       bg: 'dark.700',
@@ -124,7 +279,37 @@ export default function Vault() {
                   exit={FADE_IN_VARIANTS.exit}
                   transition={{ duration: 0.25, type: 'linear' }}
                 >
-                  <AssetTable type='fungible' variant='simple' />
+                  <Card>
+                    <Stack spacing='5'>
+                      <Box px={{ base: '4', md: '6' }} pt='5'>
+                        <Stack
+                          direction={{ base: 'column', md: 'row' }}
+                          justify='space-between'
+                          align='center'
+                        >
+                          <Text
+                            color='light.900'
+                            fontSize='lg'
+                            fontWeight='regular'
+                            letterSpacing='tight'
+                          >
+                            Tokens
+                          </Text>
+                          <InputGroup maxW='xs'>
+                            <Input placeholder='Search' />
+                          </InputGroup>
+                        </Stack>
+                      </Box>
+                      <Box overflowX='auto'>
+                        <TransactionTable
+                          transactions={transactions?.data}
+                          bg='dark.900'
+                          variant='simple'
+                          size='sm'
+                        />
+                      </Box>
+                    </Stack>
+                  </Card>
                 </motion.div>
               </TabPanel>
               <TabPanel px='0'>
@@ -135,7 +320,37 @@ export default function Vault() {
                   exit={FADE_IN_VARIANTS.exit}
                   transition={{ duration: 0.25, type: 'linear' }}
                 >
-                  <AssetTable type='nonFungible' />
+                  <Card>
+                    <Stack spacing='5'>
+                      <Box px={{ base: '4', md: '6' }} pt='5'>
+                        <Stack
+                          direction={{ base: 'column', md: 'row' }}
+                          justify='space-between'
+                          align='center'
+                        >
+                          <Text
+                            color='light.900'
+                            fontSize='lg'
+                            fontWeight='regular'
+                            letterSpacing='tight'
+                          >
+                            Collectibles
+                          </Text>
+                          <InputGroup maxW='xs'>
+                            <Input placeholder='Search' />
+                          </InputGroup>
+                        </Stack>
+                      </Box>
+                      <Box overflowX='auto'>
+                        <TransactionTable
+                          transactions={transactions?.data}
+                          bg='dark.900'
+                          variant='simple'
+                          size='sm'
+                        />
+                      </Box>
+                    </Stack>
+                  </Card>
                 </motion.div>
               </TabPanel>
             </TabPanels>

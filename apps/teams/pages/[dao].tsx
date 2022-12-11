@@ -1,38 +1,46 @@
 import React from 'react';
 import Link from 'next/link';
+import { StacksSDK } from 'sdk';
 import { useRouter } from 'next/router';
 import {
   Box,
   Button,
   Flex,
-  FormControl,
   Grid,
   GridItem,
-  Image,
   Input,
   InputGroup,
   Heading,
   HStack,
+  Progress,
   Stack,
+  Tag,
   Text,
-  VStack,
 } from 'ui';
-import { useAuth } from 'ui/components';
+import { useAccount, useAuth } from 'ui/components';
 import { Card } from 'ui/components/cards';
 import { DashboardLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 import { ConnectButton } from 'ui/components/buttons';
 import { CreateProposal } from '@components/drawers';
-import { DepositButton } from '@components/buttons';
-import { useTeam, useTeamTransactions } from 'ui/hooks';
+import {
+  useTeam,
+  useTeamTransactions,
+  useTeamProposals,
+  useTeamSubmissions,
+} from 'ui/hooks';
 import { findExtension } from 'utils';
+import { truncateAddress } from '@stacks-os/utils';
+import { size } from 'lodash';
 import { TransactionTable } from '@components/tables';
-import { useActivateTeam } from 'api/teams/mutations';
+import { useActivateTeam, useCreateProposal } from 'api/teams/mutations';
 
 export default function Dashboard() {
   const { isSignedIn } = useAuth();
   const router = useRouter();
+  const account = useAccount();
+  const stxAddress = account?.stxAddress as string;
   const dao = useTeam();
   const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
   const transactions = useTeamTransactions(
@@ -41,13 +49,12 @@ export default function Dashboard() {
   );
   const isActive = dao?.data?.active;
   const activate = useActivateTeam();
-  const [depositAmount, setDepositAmount] = React.useState('');
-  const handleInputDeposit = (e: any) => {
-    const re = /^[0-9.\b]+$/;
-    if (e.target.value === '' || re.test(e.target.value)) {
-      setDepositAmount(e.target.value);
-    }
-  };
+
+  const sdk = new StacksSDK(dao?.data?.contract_address);
+  const multisigExtension = findExtension(dao?.data?.extensions, 'Team');
+  const proposals = useTeamProposals();
+  const submissions = useTeamSubmissions();
+  const createProposal = useCreateProposal();
 
   if (dao?.isLoading && dao?.isFetching) {
     return null;
@@ -186,157 +193,187 @@ export default function Dashboard() {
           <Stack spacing='8'>
             <Grid templateColumns='repeat(9, 1fr)' gap={6}>
               <GridItem colSpan={4}>
-                <Card h='fit-content' bg='dark.900'>
-                  <Stack spacing='0'>
-                    <Stack
-                      spacing='6'
-                      justify='space-between'
-                      direction='row'
-                      px={{ base: '6', md: '6' }}
+                <Stack spacing='3'>
+                  <Card bg='dark.900' border='1px solid'>
+                    <Box
                       py={{ base: '3', md: '3' }}
-                      bg='dark.700'
-                      borderTopLeftRadius='md'
-                      borderTopRightRadius='md'
-                      align='center'
-                    >
-                      <Heading
-                        color='light.900'
-                        fontSize='md'
-                        fontWeight='regular'
-                        letterSpacing='tight'
-                      >
-                        Vault
-                      </Heading>
-                    </Stack>
-                    <Stack
                       px={{ base: '6', md: '6' }}
-                      py={{ base: '6', md: '6' }}
-                      spacing='6'
+                      bg='dark.900'
+                      borderTopLeftRadius='lg'
+                      borderTopRightRadius='lg'
                     >
-                      <HStack
-                        justify='space-between'
-                        align='center'
-                        spacing='2'
-                      >
-                        <VStack align='flex-start' spacing='2'>
-                          <FormControl>
-                            <Input
-                              py='1'
-                              px='2'
-                              bg='dark.900'
-                              type='tel'
-                              border='none'
-                              fontSize='2xl'
-                              fontWeight='regular'
-                              autoComplete='off'
-                              placeholder='0.0'
-                              value={depositAmount}
-                              onChange={handleInputDeposit}
-                            />
-                          </FormControl>
-                        </VStack>
-                        <HStack
-                          bg='dark.900'
-                          borderRadius='lg'
-                          borderColor='dark.500'
-                          borderWidth='1px'
-                          py='1'
-                          px='3'
+                      <HStack justify='space-between'>
+                        <Text
+                          fontSize='md'
+                          fontWeight='medium'
+                          color='light.900'
                         >
-                          <Image
-                            cursor='pointer'
-                            height='16px'
-                            src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
-                            alt='logo'
-                          />
-
-                          <Text
-                            fontSize='sm'
-                            fontWeight='semibold'
-                            color='light.500'
-                          >
-                            STX
-                          </Text>
-                        </HStack>
+                          Latest Proposal
+                        </Text>
                       </HStack>
+                    </Box>
+                    <Stack
+                      spacing={{ base: '0', md: '1' }}
+                      justify='center'
+                      py={{ base: '3', md: '3' }}
+                      px={{ base: '6', md: '6' }}
+                      h={proposals?.data?.length === 0 ? '30vh' : 'auto'}
+                    >
                       <Stack spacing='3'>
-                        <DepositButton
-                          title='Deposit'
-                          variant='secondary'
-                          size='sm'
-                          vaultAddress={vaultExtension?.contract_address}
-                          amount={depositAmount}
-                          reset={() => setDepositAmount('')}
-                        />
+                        {proposals?.data?.length === 0 && (
+                          <HStack justify='center' cursor='default'>
+                            <Text fontSize='md' fontWeight='light' color='gray'>
+                              No Proposals found
+                            </Text>
+                          </HStack>
+                        )}
+                        {proposals?.data?.length !== 0 && (
+                          <Stack spacing='6' py='3'>
+                            {proposals?.data?.map(({ submission }: any) => (
+                              <Stack>
+                                <Box>
+                                  <Stack>
+                                    <Text fontSize='sm' color='light.500'>
+                                      {submission.title}
+                                    </Text>
+                                    <Stack direction='row' align='baseline'>
+                                      <Heading size='md'>1</Heading>
+                                      <Text
+                                        aria-hidden
+                                        fontWeight='semibold'
+                                        color='muted'
+                                      >
+                                        / 3
+                                      </Text>
+                                      <Box srOnly>out of 3</Box>
+                                    </Stack>
+                                  </Stack>
+                                </Box>
+                                <Progress
+                                  value={(100 / 200) * 100}
+                                  size='xs'
+                                  borderRadius='none'
+                                  colorScheme='secondary'
+                                  bg='dark.500'
+                                />
+                              </Stack>
+                            ))}
+                          </Stack>
+                        )}
                       </Stack>
                     </Stack>
-                  </Stack>
-                </Card>
+                  </Card>
+                </Stack>
               </GridItem>
               <GridItem colSpan={5}>
-                <Card bg='dark.800'>
-                  <Stack spacing='0'>
-                    <Stack
+                <Stack spacing='3'>
+                  <Card bg='dark.900' border='1px solid' borderColor='dark.500'>
+                    <Box
+                      py={{ base: '3', md: '3' }}
                       px={{ base: '6', md: '6' }}
-                      py={{ base: '6', md: '6' }}
-                      spacing='6'
+                      bg='dark.700'
+                      borderTopLeftRadius='lg'
+                      borderTopRightRadius='lg'
                     >
-                      <Heading
-                        color='light.900'
-                        fontSize='lg'
-                        fontWeight='regular'
-                        letterSpacing='tight'
-                      >
-                        Fundraise Progress
-                      </Heading>
-                      <Stack spacing='6'>
-                        <Stack spacing='6'>
-                          <Stack spacing='3'>
-                            <HStack justify='space-between'>
-                              <Text
-                                fontSize='md'
-                                fontWeight='regular'
-                                color='gray'
+                      <HStack justify='space-between'>
+                        <Text
+                          fontSize='md'
+                          fontWeight='medium'
+                          color='light.900'
+                        >
+                          Submissions
+                        </Text>
+                      </HStack>
+                    </Box>
+                    <Stack
+                      spacing={{ base: '0', md: '1' }}
+                      justify='center'
+                      py={{ base: '3', md: '3' }}
+                      px={{ base: '6', md: '6' }}
+                      h={submissions?.data?.length === 0 ? '30vh' : 'auto'}
+                    >
+                      <Stack spacing='3'>
+                        {submissions?.data?.length === 0 && (
+                          <HStack justify='center' cursor='default'>
+                            <Text fontSize='md' fontWeight='light' color='gray'>
+                              No Submissions found
+                            </Text>
+                          </HStack>
+                        )}
+                        {submissions?.data?.length !== 0 && (
+                          <Stack spacing='6' py='3'>
+                            {submissions?.data?.map((submission: any) => (
+                              <Grid
+                                templateColumns='repeat(5, 1fr)'
+                                gap={8}
+                                alignItems='center'
                               >
-                                Amount Raised
-                              </Text>
-                              <Text
-                                fontSize='md'
-                                fontWeight='regular'
-                                color='light.900'
-                              >
-                                1,242 STX
-                              </Text>
-                            </HStack>
-                            <HStack justify='space-between'>
-                              <Text
-                                fontSize='md'
-                                fontWeight='regular'
-                                color='gray'
-                              >
-                                Funding Goal
-                              </Text>
-                              <Text
-                                fontSize='md'
-                                fontWeight='regular'
-                                color='light.900'
-                              >
-                                10,000 STX
-                              </Text>
-                            </HStack>
+                                <GridItem colSpan={{ base: 2, md: 4 }}>
+                                  <Stack spacing='2'>
+                                    {size([]) < 6 && (
+                                      <Tag
+                                        color='yellow.500'
+                                        bg='dark.800'
+                                        alignSelf='self-start'
+                                        size='sm'
+                                        borderRadius='3xl'
+                                      >
+                                        <Text as='span' fontWeight='regular'>
+                                          Pending
+                                        </Text>
+                                      </Tag>
+                                    )}
+                                    <HStack align='flex-start' spacing='4'>
+                                      <Stack spacing='1' maxW='lg'>
+                                        <Heading size='xs' fontWeight='black'>
+                                          {truncateAddress(
+                                            submission?.contract_address,
+                                          )}
+                                        </Heading>
+                                      </Stack>
+                                    </HStack>
+                                  </Stack>
+                                </GridItem>
+                                <GridItem colSpan={{ base: 1, md: 1 }}>
+                                  <Button
+                                    variant='secondary'
+                                    size='sm'
+                                    onClick={() =>
+                                      sdk.submit({
+                                        extensionAddress:
+                                          multisigExtension?.contract_address,
+                                        proposalAddress:
+                                          submission?.contract_address,
+                                        onFinish(payload) {
+                                          const { txId } = payload;
+                                          createProposal.mutate({
+                                            contract_address:
+                                              submission?.contract_address,
+                                            proposed_by: stxAddress as string,
+                                            tx_id: txId,
+                                          });
+                                        },
+                                      })
+                                    }
+                                  >
+                                    Propose
+                                  </Button>
+                                </GridItem>
+                              </Grid>
+                            ))}
                           </Stack>
-                        </Stack>
+                        )}
                       </Stack>
                     </Stack>
-                  </Stack>
-                </Card>
+                  </Card>
+                </Stack>
               </GridItem>
             </Grid>
           </Stack>
         </Stack>
         <Grid templateColumns='repeat(6, 1fr)' gap={6}>
           <GridItem colSpan={6}>
-            <Card bg='dark.900'>
+            <Card>
               <Stack spacing='5'>
                 <Box px={{ base: '4', md: '6' }} pt='5'>
                   <Stack
