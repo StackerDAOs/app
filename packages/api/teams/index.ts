@@ -94,7 +94,7 @@ export async function getSubmissions({ queryKey }: any) {
   const [_, organizationId, stxAddress, filter] = queryKey;
   const query = supabase
     .from('submissions')
-    .select('*, teams!inner(id, name)')
+    .select('*, teams!inner(id, name, contract_address)')
     .order('created_at', { ascending: false })
     .eq('teams.id', organizationId)
     .eq('submitted_by', stxAddress);
@@ -146,7 +146,9 @@ export async function getProposals({ queryKey }: any) {
   const [_, organizationId] = queryKey;
   const query = supabase
     .from('proposals')
-    .select('*')
+    .select(
+      '*, submission:submissions!inner(id, title, description, body, team_id)',
+    )
     .order('created_at', { ascending: false });
   try {
     const { data: proposals, error } = await query;
@@ -464,60 +466,72 @@ export async function getApprover(
   }
 }
 
+export async function getDBProposal(address: string) {
+  try {
+    const { data, error } = await supabase
+      .from('proposals')
+      .select(
+        'id, contract_address, submission:submissions!inner(title, description, body)',
+      )
+      .eq('contract_address', address)
+      .limit(1);
+    if (error) throw error;
+    return data[0];
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
 export async function getProposal(
-  contractAddress: string,
+  extensionAddress: string,
   proposalAddress: string,
+  userAddress: string,
 ) {
   const [proposalContractAddress, proposalContractName] =
     splitContractAddress(proposalAddress);
   try {
     const network = new stacksNetwork();
-    const proposal: any = await fetchReadOnlyFunction({
+    const [contractAddress, contractName] =
+      splitContractAddress(extensionAddress);
+    const signalsRequired: any = await fetchReadOnlyFunction({
       network,
-      contractAddress: contractAddress?.split('.')[0],
-      contractName: contractAddress?.split('.')[1],
+      contractAddress,
+      contractName,
+      senderAddress: contractAddress,
+      functionArgs: [],
+      functionName: 'get-signals-required',
+    });
+    const signalsReceived: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
       senderAddress: contractAddress,
       functionArgs: [
         contractPrincipalCV(proposalContractAddress, proposalContractName),
       ],
-      functionName: 'get-proposal-data',
+      functionName: 'get-signals',
     });
-
-    const { data, error } = await supabase
-      .from('proposals')
-      .select(
-        '*, submission:submissions!inner(id, title, description, body, team_id)',
-      )
-      .order('created_at', { ascending: false })
-      .eq('submissions.contract_address', proposalAddress);
-    if (error) throw error;
-
-    // Fetch quorum threshold for proposals
-    const quorumThreshold: any = await fetchReadOnlyFunction({
+    const hasSignaled: any = await fetchReadOnlyFunction({
       network,
-      contractAddress: contractAddress.split('.')[0],
-      contractName: contractAddress?.split('.')[1],
-      senderAddress: contractAddress.split('.')[0],
-      functionArgs: [stringAsciiCV('quorumThreshold')],
-      functionName: 'get-parameter',
+      contractAddress,
+      contractName,
+      senderAddress: contractAddress,
+      functionArgs: [
+        contractPrincipalCV(proposalContractAddress, proposalContractName),
+        standardPrincipalCV(userAddress),
+      ],
+      functionName: 'has-signaled',
     });
 
-    // Fetch execution delay for executing proposals
-    const executionDelay: any = await fetchReadOnlyFunction({
-      network,
-      contractAddress: contractAddress.split('.')[0],
-      contractName: contractAddress?.split('.')[1],
-      senderAddress: contractAddress.split('.')[0],
-      functionArgs: [stringAsciiCV('executionDelay')],
-      functionName: 'get-parameter',
-    });
+    const dbProposal = await getDBProposal(proposalAddress);
+    const submission = dbProposal?.submission;
 
     return {
-      contractAddress: proposalAddress,
-      details: data[0],
-      info: proposal,
-      quorumThreshold,
-      executionDelay,
+      principalAddress: proposalAddress,
+      submission,
+      signalsRequired: Number(signalsRequired),
+      signalsReceived: Number(signalsReceived),
+      hasSignaled,
     };
   } catch (e: any) {
     console.error({ e });
@@ -726,6 +740,28 @@ export async function getUserteams(address: string | undefined) {
       return teams;
     }
     return [];
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getMultisigData(
+  multisigAddress: string,
+  proposalAddress: string,
+) {
+  try {
+    const network = new stacksNetwork();
+    const [contractAddress, contractName] =
+      splitContractAddress(multisigAddress);
+    const signals: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
+      senderAddress: multisigAddress,
+      functionArgs: [contractPrincipalCV(proposalAddress)],
+      functionName: 'get-signals',
+    });
+    return signals;
   } catch (e: any) {
     console.error({ e });
   }

@@ -98,24 +98,29 @@ export default function Create() {
       const typeId = CLUB_TYPES.INVESTMENT_CLUB;
       const userAddress = tx?.sender_address;
       const contractAddress = tx?.smart_contract?.contract_id;
-      await action.mutate(
-        {
-          club: {
-            name: data?.name,
-            slug,
-            type_id: typeId,
-            tx_id: txId,
-            contract_address: contractAddress,
-            creator_address: userAddress,
+      if (!userAddress || !contractAddress) {
+        throw new Error('No user address or contract address');
+      } else {
+        const club = {
+          name: data?.name,
+          slug,
+          type_id: typeId,
+          tx_id: txId,
+          contract_address: contractAddress,
+          creator_address: userAddress,
+        };
+        await action.mutate(
+          {
+            club,
+            userAddress,
           },
-          userAddress,
-        },
-        {
-          onSuccess: () => {
-            setTransactionId(txId);
+          {
+            onSuccess: () => {
+              setTransactionId(txId);
+            },
           },
-        },
-      );
+        );
+      }
     } catch (error) {
       console.log('onSuccess | Clubs', { error });
     }

@@ -1,7 +1,9 @@
 // Hook (use-proposal.tsx)
 import { useQuery } from 'react-query';
-import { useExtension } from 'ui/hooks';
+import { useAccount } from 'ui/components';
+import { useExtension, useTeamExtension } from 'ui/hooks';
 import { getProposal } from 'api/clubs';
+import { getProposal as getTeamProposal } from 'api/teams';
 
 export function useProposal(id: string) {
   const votingExtension = useExtension('Voting');
@@ -13,6 +15,28 @@ export function useProposal(id: string) {
     },
     {
       enabled: !!votingExtension?.data,
+    },
+  );
+
+  return { isFetching, isIdle, isLoading, isError, data };
+}
+
+export function useTeamProposal(id: string) {
+  const account = useAccount();
+  const stxAddress = account?.stxAddress as string;
+  const multisigExtension = useTeamExtension('Team');
+
+  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+    ['proposal', id],
+    async () => {
+      return await getTeamProposal(
+        multisigExtension?.data?.contract_address,
+        id,
+        stxAddress,
+      );
+    },
+    {
+      enabled: !!multisigExtension?.data,
     },
   );
 

@@ -13,6 +13,17 @@ type Team = {
   tx_id: string;
 };
 
+type Submission = {
+  title: string;
+  description: string;
+  body: string;
+  contract_address: string;
+  tx_id: string;
+  submitted_by: string;
+  team_id: number;
+  post_conditions: object;
+};
+
 export async function createTeam({
   team,
   userAddress,
@@ -125,6 +136,27 @@ export const useActivateTeam = () => {
     onSuccess: () => {
       queryClient.invalidateQueries('team');
       queryClient.invalidateQueries('teams');
+    },
+  });
+};
+
+export async function createSubmission(submission: Submission) {
+  try {
+    const { data, error } = await supabase
+      .from('submissions')
+      .insert([{ ...submission }]);
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export const useCreateSubmission = () => {
+  const queryClient = useQueryClient();
+  return useMutation(createSubmission, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('submissions');
     },
   });
 };
