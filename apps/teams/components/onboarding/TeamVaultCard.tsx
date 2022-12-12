@@ -19,19 +19,29 @@ export const TeamVaultCard = (props: any) => {
   const transaction = useTransaction(extension?.tx_id);
   const createExtension = useCreateExtension();
   const { randomName: contractName } = useGenerateName();
-  const onSuccess = async (payload: any) => {
-    const { txId } = payload;
-    const tx = await getTransaction(txId);
-    const contractAddress = tx?.smart_contract?.contract_id;
-    createExtension.mutate({
-      team_id: dao?.id,
-      contract_address: contractAddress,
-      extension_type_id: TEAM_EXTENSION_TYPES.VAULT,
-      tx_id: txId,
-      config: {
-        allowed_tokens: data.listOfAllowedTokens,
-      },
-    });
+  const onFinish = (payload: any) => {
+    setTimeout(async () => {
+      const { txId } = payload;
+      const tx = await getTransaction(txId);
+      const contractAddress = tx?.smart_contract?.contract_id;
+      if (!contractAddress) {
+        throw new Error('No contract address returned from transaction.');
+      } else {
+        try {
+          createExtension.mutate({
+            team_id: dao?.id,
+            contract_address: contractAddress,
+            extension_type_id: TEAM_EXTENSION_TYPES.VAULT,
+            tx_id: txId,
+            config: {
+              allowed_tokens: data.listOfAllowedTokens,
+            },
+          });
+        } catch (e: any) {
+          console.error({ e });
+        }
+      }
+    }, 1000);
   };
   return (
     <GridItem colSpan={{ base: 5, md: 3, lg: 2 }}>
@@ -161,7 +171,7 @@ export const TeamVaultCard = (props: any) => {
                   sdk.deployer.deployVault({
                     contractName,
                     requireAllowList: true,
-                    onFinish: onSuccess,
+                    onFinish,
                   })
                 }
               >

@@ -87,34 +87,36 @@ export default function Create() {
     transaction?.data?.tx_status === 'pending' ||
     transaction?.data?.tx_status === 'success';
   const createTeam = useCreateTeam();
-  const onSuccess = async (txId: string, action: any) => {
+  const onSuccess = (txId: string, action: any) => {
     try {
-      const tx = await getTransaction(txId);
-      const slug = nameToSlug(data?.name);
-      const userAddress = tx?.sender_address;
-      const contractAddress = tx?.smart_contract?.contract_id;
-      if (!userAddress || !contractAddress) {
-        throw new Error('No user address or contract address');
-      } else {
-        const team = {
-          name: data?.name,
-          slug,
-          tx_id: txId,
-          contract_address: contractAddress,
-          creator_address: userAddress,
-        };
-        await action.mutate(
-          {
-            team,
-            userAddress,
-          },
-          {
-            onSuccess: () => {
-              setTransactionId(txId);
+      setTimeout(async () => {
+        const tx = await getTransaction(txId);
+        const slug = nameToSlug(data?.name);
+        const userAddress = tx?.sender_address;
+        const contractAddress = tx?.smart_contract?.contract_id;
+        if (!userAddress || !contractAddress) {
+          throw new Error('No user address or contract address');
+        } else {
+          const team = {
+            name: data?.name,
+            slug,
+            tx_id: txId,
+            contract_address: contractAddress,
+            creator_address: userAddress,
+          };
+          await action.mutate(
+            {
+              team,
+              userAddress,
             },
-          },
-        );
-      }
+            {
+              onSuccess: () => {
+                setTransactionId(txId);
+              },
+            },
+          );
+        }
+      }, 2500);
     } catch (error) {
       console.log('onSuccess | Teams', { error });
     }

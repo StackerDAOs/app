@@ -17,6 +17,11 @@ type SelectTemplateProps = {
   tokenAddress: string;
   recipients: Recipient[];
   allowlist: string[];
+  data: {
+    title: string;
+    description: string;
+    body: string;
+  };
 };
 
 const INITIAL_FORM_DATA: SelectTemplateProps = {
@@ -30,6 +35,11 @@ const INITIAL_FORM_DATA: SelectTemplateProps = {
   tokenAddress: '',
   recipients: [],
   allowlist: [],
+  data: {
+    title: '',
+    description: '',
+    body: '',
+  },
 };
 
 interface SelectProposalStore {
@@ -41,6 +51,11 @@ interface SelectProposalStore {
   addRecipient: (recipient: { to: string; amount: string }) => void;
   updateTokenAddress: (tokenAddress: string) => void;
   addToken: (tokenAddress: string) => void;
+  updateProposalData: (data: {
+    title: string;
+    description: string;
+    body: string;
+  }) => void;
 }
 
 export const useProposalStore = create<SelectProposalStore>()((set) => ({
@@ -87,6 +102,19 @@ export const useProposalStore = create<SelectProposalStore>()((set) => ({
     set((state) => {
       return produce(state, (draft) => {
         draft.proposal.tokenAddress = tokenAddress;
+      });
+    });
+  },
+  updateProposalData: (data: {
+    title: string;
+    description: string;
+    body: string;
+  }) => {
+    set((state) => {
+      return produce(state, (draft) => {
+        draft.proposal.data.title = data.title;
+        draft.proposal.data.description = data.description;
+        draft.proposal.data.body = data.body;
       });
     });
   },

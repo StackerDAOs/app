@@ -174,8 +174,36 @@ const VaultAndAssetManagement = () => {
   const updateTokenAddress = useProposalStore(
     (state) => state.updateTokenAddress,
   );
+  const updateProposalData = useProposalStore(
+    (state) => state.updateProposalData,
+  );
   const addToken = useProposalStore((state) => state.addToken);
   const createSubmission = useCreateSubmission();
+  const onFinishDeployVaultTemplate = (payload: any) => {
+    setTimeout(async () => {
+      const { txId } = payload;
+      const tx = await getTransaction(txId);
+      const contractAddress = tx?.smart_contract?.contract_id;
+      if (!contractAddress) {
+        throw new Error('No contract address returned from transaction.');
+      } else {
+        try {
+          createSubmission.mutate({
+            title: proposal?.data?.title,
+            description: proposal?.data?.description,
+            body: proposal?.data?.body,
+            contract_address: tx?.smart_contract?.contract_id,
+            tx_id: txId,
+            submitted_by: tx?.sender_address,
+            team_id: dao?.data?.id,
+            post_conditions: {},
+          });
+        } catch (e: any) {
+          console.error({ e });
+        }
+      }
+    }, 1000);
+  };
 
   if (step === 3) {
     return (
@@ -197,18 +225,13 @@ const VaultAndAssetManagement = () => {
                     </Text>
                   </Tag>
                   <Heading fontSize='4xl' fontWeight='black' color='light.900'>
-                    Add Dynamic Quorum
+                    {proposal?.data?.title}
                   </Heading>
                   <Text color='gray' fontSize='md' fontWeight='regular'>
-                    Ascot tofu before they sold out, flexitarian literally swag
-                    farm-to-table craft beer neutra vegan wolf typewriter
-                    helvetica iPhone vaporware.
+                    {proposal?.data?.description}
                   </Text>
                   <Text color='light.900' fontSize='lg' fontWeight='regular'>
-                    Iceland organic jianbing, bushwick schlitz waistcoat kogi
-                    portland hammock viral irony chartreuse letterpress.
-                    Kickstarter butcher kinfolk meditation hella, bruh coloring
-                    book hexagon kogi roof party shoreditch.
+                    {proposal?.data?.body}
                   </Text>
                 </Stack>
                 <motion.div
@@ -267,24 +290,7 @@ const VaultAndAssetManagement = () => {
                             vaultAddress: vaultExtension?.contract_address,
                             recipients: proposal.recipients,
                             allowlist: proposal.allowlist,
-                            onFinish: async (data) => {
-                              const tx = await getTransaction(data?.txId);
-                              try {
-                                createSubmission.mutate({
-                                  title: 'Test proposal',
-                                  description: 'Chimichanga time',
-                                  body: 'Chicken chimichanga',
-                                  contract_address:
-                                    tx?.smart_contract?.contract_id,
-                                  tx_id: tx?.tx_id,
-                                  submitted_by: tx?.sender_address,
-                                  team_id: dao?.data?.id,
-                                  post_conditions: {},
-                                });
-                              } catch (error) {
-                                console.log(error);
-                              }
-                            },
+                            onFinish: onFinishDeployVaultTemplate,
                           });
                         }}
                       >
@@ -341,7 +347,13 @@ const VaultAndAssetManagement = () => {
                     autoComplete='off'
                     placeholder='Give your proposal a name'
                     size='md'
-                    value=''
+                    value={proposal?.data?.title}
+                    onChange={(e) =>
+                      updateProposalData({
+                        ...proposal.data,
+                        title: e.target.value,
+                      })
+                    }
                   />
                 </FormControl>
               </GridItem>
@@ -356,7 +368,13 @@ const VaultAndAssetManagement = () => {
                     placeholder='In three sentences or less, explain your proposal'
                     size='md'
                     rows={3}
-                    value=''
+                    value={proposal?.data?.description}
+                    onChange={(e) =>
+                      updateProposalData({
+                        ...proposal.data,
+                        description: e.target.value,
+                      })
+                    }
                   />
                 </FormControl>
               </GridItem>
@@ -371,7 +389,13 @@ const VaultAndAssetManagement = () => {
                     placeholder='Describe your proposal in detail'
                     size='md'
                     rows={10}
-                    value=''
+                    value={proposal?.data?.body}
+                    onChange={(e) =>
+                      updateProposalData({
+                        ...proposal.data,
+                        body: e.target.value,
+                      })
+                    }
                   />
                 </FormControl>
               </GridItem>

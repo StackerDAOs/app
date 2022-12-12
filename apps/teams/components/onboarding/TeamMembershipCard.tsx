@@ -21,20 +21,30 @@ export const TeamMembershipCard = (props: any) => {
   const formIsValidated = data;
   const createExtension = useCreateExtension();
   const { randomName: contractName } = useGenerateName();
-  const onSuccess = async (payload: any) => {
-    const { txId } = payload;
-    const tx = await getTransaction(txId);
-    const contractAddress = tx?.smart_contract?.contract_id;
-    createExtension.mutate({
-      team_id: dao?.id,
-      contract_address: contractAddress,
-      extension_type_id: TEAM_EXTENSION_TYPES.TEAM,
-      tx_id: txId,
-      config: {
-        members,
-        signalsRequired: data?.signalsRequired,
-      },
-    });
+  const onFinish = (payload: any) => {
+    setTimeout(async () => {
+      const { txId } = payload;
+      const tx = await getTransaction(txId);
+      const contractAddress = tx?.smart_contract?.contract_id;
+      if (!contractAddress) {
+        throw new Error('No contract address returned from transaction.');
+      } else {
+        try {
+          createExtension.mutate({
+            team_id: dao?.id,
+            contract_address: contractAddress,
+            extension_type_id: TEAM_EXTENSION_TYPES.TEAM,
+            tx_id: txId,
+            config: {
+              members,
+              signalsRequired: data?.signalsRequired,
+            },
+          });
+        } catch (e: any) {
+          console.error({ e });
+        }
+      }
+    }, 1000);
   };
 
   return (
@@ -184,7 +194,7 @@ export const TeamMembershipCard = (props: any) => {
                 onClick={() =>
                   sdk.deployer.deployMultisig({
                     contractName,
-                    onFinish: onSuccess,
+                    onFinish,
                   })
                 }
               >

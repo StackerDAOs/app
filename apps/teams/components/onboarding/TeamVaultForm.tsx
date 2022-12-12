@@ -180,32 +180,44 @@ const FinishedState = () => {
   const sdk = new StacksSDK(dao?.data?.contract_address);
   const { randomName: contractName } = useGenerateName();
 
-  const onSuccess = async (payload: any) => {
-    const { txId } = payload;
-    try {
-      const tx = await getTransaction(txId);
-      const contractAddress = tx?.smart_contract?.contract_id;
-      console.log({ tx, contractAddress });
-      updateBootstrap.mutate({
-        contract_address: dao?.data?.contract_address,
-        bootstrap_address: contractAddress,
-        bootstrap_tx_id: txId,
-      });
-    } catch (e: any) {
-      console.error({ e });
-    }
+  const onSuccess = (payload: any) => {
+    setTimeout(async () => {
+      const { txId } = payload;
+      try {
+        const tx = await getTransaction(txId);
+        const contractAddress = tx?.smart_contract?.contract_id;
+        if (!contractAddress) {
+          throw new Error('Bootstrap contract address not found');
+        } else {
+          updateBootstrap.mutate({
+            contract_address: dao?.data?.contract_address,
+            bootstrap_address: contractAddress,
+            bootstrap_tx_id: txId,
+          });
+        }
+      } catch (e: any) {
+        console.error({ e });
+      }
+    }, 1000);
   };
 
   const onActivationSuccess = async (payload: any) => {
-    const { txId } = payload;
-    try {
-      updateInitTxId.mutate({
-        contract_address: dao?.data?.contract_address,
-        activation_tx_id: txId,
-      });
-    } catch (e: any) {
-      console.error({ e });
-    }
+    setTimeout(async () => {
+      const { txId } = payload;
+      try {
+        const tx = await getTransaction(txId);
+        if (!tx) {
+          throw new Error('Activation transaction not found');
+        } else {
+          updateInitTxId.mutate({
+            contract_address: dao?.data?.contract_address,
+            activation_tx_id: txId,
+          });
+        }
+      } catch (e: any) {
+        console.error({ e });
+      }
+    }, 1000);
   };
 
   const currentProgress = size(
