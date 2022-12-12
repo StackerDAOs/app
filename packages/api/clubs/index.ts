@@ -713,3 +713,16 @@ export async function getUserClubs(address: string | undefined) {
     console.error({ e });
   }
 }
+
+export async function getSubmission(id: number) {
+  try {
+    const { data, error } = await supabase
+      .from('submissions')
+      .select('*')
+      .eq('id', id);
+    if (error) throw error;
+    return data[0];
+  } catch (e: any) {
+    console.error({ e });
+  }
+}

@@ -90,6 +90,19 @@ export async function getExtension(name: string) {
   }
 }
 
+export async function getSubmission(id: number) {
+  try {
+    const { data, error } = await supabase
+      .from('submissions')
+      .select('*')
+      .eq('id', id);
+    if (error) throw error;
+    return data[0];
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
 export async function getSubmissions({ queryKey }: any) {
   const [_, organizationId, stxAddress, filter] = queryKey;
   const query = supabase

@@ -10,6 +10,7 @@ export { useIdeas, useTeamIdeas } from './useIdeas';
 export { useInvestmentClub } from './useInvestmentClub';
 export { useProposal, useTeamProposal } from './useProposal';
 export { useProposals, useTeamProposals } from './useProposals';
+export { useSubmission, useTeamSubmission } from './useSubmission';
 export { useSubmissions, useTeamSubmissions } from './useSubmissions';
 export { useToken } from './useToken';
 export { useTeam } from './useTeam';

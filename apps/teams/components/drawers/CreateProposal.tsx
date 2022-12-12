@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { StacksSDK } from 'sdk';
 import type { ButtonProps } from 'ui';
 import {
@@ -22,7 +23,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Progress,
   Stack,
   Square,
   Tag,
@@ -30,19 +30,21 @@ import {
   Textarea,
   useDisclosure,
 } from 'ui';
-import { useAccount } from 'ui/components';
 import { Card } from 'ui/components/cards';
 import { RadioCardGroup, RadioCard } from 'ui/components/forms';
-import { useGenerateName, useTeam, useTeamSubmissions } from 'ui/hooks';
-import { useCreateSubmission, useCreateProposal } from 'api/teams/mutations';
+import { useGenerateName, useTeam } from 'ui/hooks';
+import { useCreateSubmission } from 'api/teams/mutations';
 import { useProposalStore } from 'store';
-import { size } from 'lodash';
 import { findExtension } from 'utils';
-import { PlusIcon, MinusIcon, ArrowRight } from 'ui/components/icons';
+import {
+  CheckCircle,
+  PlusIcon,
+  MinusIcon,
+  ArrowRight,
+} from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { DotStep } from 'ui/components/feedback';
 import { getTransaction } from 'api/teams';
-import { truncateAddress } from '@stacks-os/utils';
 
 interface ProposalDrawerProps extends ButtonProps {
   title: string;
@@ -76,15 +78,15 @@ const TemplateSelect = () => {
   );
 
   return (
-    <Stack spacing='6' justify='center'>
-      <Box>
+    <Stack spacing='6' justify='center' px='8' m='0 auto'>
+      <Stack spacing='0' align='flex-start'>
         <Text fontSize='lg' fontWeight='medium'>
           Select a template
         </Text>
         <Text color='light.500' fontSize='sm' maxW='lg'>
           Start building out your proposal by choosing from the options below.
         </Text>
-      </Box>
+      </Stack>
       <Stack spacing='3'>
         <FormControl>
           <RadioCardGroup
@@ -152,6 +154,7 @@ const TemplateSelect = () => {
 const VaultAndAssetManagement = () => {
   const dao = useTeam();
   const [step, setStep] = React.useState(1);
+  const [isProposalDeploying, setIsProposalDeploying] = React.useState(false);
 
   const sdk = new StacksSDK(dao?.data?.contract_address);
   // const vaultAddress = sdk.getVaultAddress();
@@ -180,6 +183,8 @@ const VaultAndAssetManagement = () => {
   const addToken = useProposalStore((state) => state.addToken);
   const createSubmission = useCreateSubmission();
   const onFinishDeployVaultTemplate = (payload: any) => {
+    setStep(step + 1);
+    setIsProposalDeploying(true);
     setTimeout(async () => {
       const { txId } = payload;
       const tx = await getTransaction(txId);
@@ -200,260 +205,42 @@ const VaultAndAssetManagement = () => {
           });
         } catch (e: any) {
           console.error({ e });
+        } finally {
+          setIsProposalDeploying(false);
         }
       }
     }, 1000);
   };
 
-  if (step === 4) {
-    return (
-      <Stack spacing='8' justify='center'>
-        <Stack spacing='4'>
-          <Card h='fit-content' bg='dark.900' border='none'>
-            <Stack spacing='2'>
-              <Stack spacing='6'>
-                <Stack spacing='2'>
-                  <Tag
-                    color='orange.500'
-                    bg='dark.800'
-                    alignSelf='self-start'
-                    size='sm'
-                    borderRadius='3xl'
-                  >
-                    <Text as='span' fontWeight='regular'>
-                      Incomplete
-                    </Text>
-                  </Tag>
-                  <Heading fontSize='4xl' fontWeight='black' color='light.900'>
-                    {proposal?.data?.title}
-                  </Heading>
-                  <Text color='gray' fontSize='md' fontWeight='regular'>
-                    {proposal?.data?.description}
-                  </Text>
-                  <Text color='light.900' fontSize='lg' fontWeight='regular'>
-                    {proposal?.data?.body}
-                  </Text>
-                </Stack>
-                <motion.div
-                  variants={FADE_IN_VARIANTS}
-                  initial={FADE_IN_VARIANTS.hidden}
-                  animate={FADE_IN_VARIANTS.enter}
-                  exit={FADE_IN_VARIANTS.exit}
-                  transition={{ duration: 0.25, type: 'linear' }}
-                >
-                  <Stack spacing='6'>
-                    <Stack spacing='3' filter='blur(2px)'>
-                      <Stack>
-                        <Text color='gray' fontSize='sm' fontWeight='semibold'>
-                          Yes (0)
-                        </Text>
-                        <Progress
-                          colorScheme='primary'
-                          borderRadius='lg'
-                          size='md'
-                          value={0}
-                          bg='dark.500'
-                        />
-                      </Stack>
-                      <Stack>
-                        <Text color='gray' fontSize='sm' fontWeight='semibold'>
-                          No (0)
-                        </Text>
-                        <Progress
-                          colorScheme='whiteAlpha'
-                          borderRadius='lg'
-                          size='md'
-                          value={0}
-                          bg='dark.500'
-                        />
-                      </Stack>
-                      <Stack>
-                        <Text color='gray' fontSize='sm' fontWeight='semibold'>
-                          Quorum ( 0)
-                        </Text>
-                        <Progress
-                          colorScheme='gray'
-                          borderRadius='lg'
-                          size='md'
-                          value={0}
-                          bg='dark.500'
-                        />
-                      </Stack>
-                    </Stack>
-                    <HStack justifyContent='center' spacing='12'>
-                      <Button
-                        isFullWidth
-                        variant='secondary'
-                        onClick={() => {
-                          sdk.deployer.deployVaultTemplate({
-                            contractName,
-                            vaultAddress: vaultExtension?.contract_address,
-                            recipients: proposal.recipients,
-                            allowlist: proposal.allowlist,
-                            onFinish: onFinishDeployVaultTemplate,
-                          });
-                          setStep(step + 1);
-                        }}
-                      >
-                        Deploy
-                      </Button>
-                    </HStack>
-                  </Stack>
-                </motion.div>
-              </Stack>
-            </Stack>
-          </Card>
-        </Stack>
-        <HStack justify='space-between'>
-          <Button
-            size='sm'
-            variant='link'
-            onClick={() => {
-              setStep(step - 1);
-            }}
-          >
-            Back
-          </Button>
-          <Stack align='center'>
-            <HStack spacing='3'>
-              {[1, 2, 3].map((currentStep) => (
-                <DotStep
-                  key={currentStep}
-                  cursor='pointer'
-                  onClick={() => setStep(currentStep)}
-                  isActive={currentStep === step}
-                />
-              ))}
-            </HStack>
-          </Stack>
-          <Button visibility='hidden' />
-        </HStack>
-      </Stack>
-    );
-  }
-
   if (step === 3) {
     return (
-      <Stack spacing='8' justify='center'>
-        <Stack spacing='4'>
-          <Card h='fit-content' bg='dark.900' border='none'>
-            <Stack spacing='2'>
-              <Stack spacing='6'>
-                <Stack spacing='2'>
-                  <Tag
-                    color='orange.500'
-                    bg='dark.800'
-                    alignSelf='self-start'
-                    size='sm'
-                    borderRadius='3xl'
-                  >
-                    <Text as='span' fontWeight='regular'>
-                      Incomplete
-                    </Text>
-                  </Tag>
-                  <Heading fontSize='4xl' fontWeight='black' color='light.900'>
-                    {proposal?.data?.title}
-                  </Heading>
-                  <Text color='gray' fontSize='md' fontWeight='regular'>
-                    {proposal?.data?.description}
-                  </Text>
-                  <Text color='light.900' fontSize='lg' fontWeight='regular'>
-                    {proposal?.data?.body}
-                  </Text>
-                </Stack>
-                <motion.div
-                  variants={FADE_IN_VARIANTS}
-                  initial={FADE_IN_VARIANTS.hidden}
-                  animate={FADE_IN_VARIANTS.enter}
-                  exit={FADE_IN_VARIANTS.exit}
-                  transition={{ duration: 0.25, type: 'linear' }}
-                >
-                  <Stack spacing='6'>
-                    <Stack spacing='3' filter='blur(2px)'>
-                      <Stack>
-                        <Text color='gray' fontSize='sm' fontWeight='semibold'>
-                          Yes (0)
-                        </Text>
-                        <Progress
-                          colorScheme='primary'
-                          borderRadius='lg'
-                          size='md'
-                          value={0}
-                          bg='dark.500'
-                        />
-                      </Stack>
-                      <Stack>
-                        <Text color='gray' fontSize='sm' fontWeight='semibold'>
-                          No (0)
-                        </Text>
-                        <Progress
-                          colorScheme='whiteAlpha'
-                          borderRadius='lg'
-                          size='md'
-                          value={0}
-                          bg='dark.500'
-                        />
-                      </Stack>
-                      <Stack>
-                        <Text color='gray' fontSize='sm' fontWeight='semibold'>
-                          Quorum ( 0)
-                        </Text>
-                        <Progress
-                          colorScheme='gray'
-                          borderRadius='lg'
-                          size='md'
-                          value={0}
-                          bg='dark.500'
-                        />
-                      </Stack>
-                    </Stack>
-                    <HStack justifyContent='center' spacing='12'>
-                      <Button
-                        isFullWidth
-                        variant='secondary'
-                        onClick={() => {
-                          sdk.deployer.deployVaultTemplate({
-                            contractName,
-                            vaultAddress: vaultExtension?.contract_address,
-                            recipients: proposal.recipients,
-                            allowlist: proposal.allowlist,
-                            onFinish: onFinishDeployVaultTemplate,
-                          });
-                          setStep(step + 1);
-                        }}
-                      >
-                        Deploy
-                      </Button>
-                    </HStack>
-                  </Stack>
-                </motion.div>
-              </Stack>
-            </Stack>
-          </Card>
-        </Stack>
-        <HStack justify='space-between'>
-          <Button
-            size='sm'
-            variant='link'
-            onClick={() => {
-              setStep(step - 1);
-            }}
+      <Stack spacing='6' justify='center' px='8' m='0 auto'>
+        <Stack spacing='0' align='flex-start'>
+          <Icon as={CheckCircle} color='primary.900' boxSize='12' />
+          <Text
+            fontSize='xl'
+            fontWeight='bold'
+            color='light.500'
+            textAlign='center'
           >
-            Back
-          </Button>
-          <Stack align='center'>
-            <HStack spacing='3'>
-              {[1, 2, 3].map((currentStep) => (
-                <DotStep
-                  key={currentStep}
-                  cursor='pointer'
-                  onClick={() => setStep(currentStep)}
-                  isActive={currentStep === step}
-                />
-              ))}
-            </HStack>
-          </Stack>
-          <Button visibility='hidden' />
+            Your proposal is being deployed!
+          </Text>
+          <Text
+            fontSize='md'
+            fontWeight='light'
+            color='light.500'
+            textAlign='center'
+            mt='4'
+            maxW='md'
+          >
+            Once your proposal is deployed, you can submit it as a proposal to
+            the DAO
+          </Text>
+        </Stack>
+        <HStack justify='center'>
+          <Link href={`/${dao?.data?.slug}`}>
+            <Button variant='link'>Back to Dashboard</Button>
+          </Link>
         </HStack>
       </Stack>
     );
@@ -461,75 +248,150 @@ const VaultAndAssetManagement = () => {
 
   if (step === 2) {
     return (
-      <Stack spacing='8' justify='center'>
-        <FormControl>
-          <Stack spacing='4'>
-            <Grid templateColumns='repeat(5, 1fr)' gap='4'>
-              <GridItem colSpan={5}>
+      <Stack spacing='6' justify='center' px='8'>
+        <Stack spacing='0' align='flex-start'>
+          <Text fontSize='lg' fontWeight='medium'>
+            Review & Deploy
+          </Text>
+        </Stack>
+        <Stack spacing='3'>
+          <Grid templateColumns='repeat(7, 1fr)' gap={8}>
+            <GridItem colSpan={3}>
+              <Stack
+                as='form'
+                pointerEvents={isProposalDeploying ? 'none' : 'auto'}
+                filter={isProposalDeploying ? 'blur(1px)' : 'none'}
+              >
                 <FormControl>
-                  <FormLabel htmlFor='name' fontWeight='light' color='gray'>
-                    Title
-                  </FormLabel>
-                  <Input
-                    id='title'
-                    autoComplete='off'
-                    placeholder='Give your proposal a name'
-                    size='md'
-                    value={proposal?.data?.title}
-                    onChange={(e) =>
-                      updateProposalData({
-                        ...proposal.data,
-                        title: e.target.value,
-                      })
-                    }
-                  />
+                  <Stack spacing='4'>
+                    <Grid templateColumns='repeat(5, 1fr)' gap='4'>
+                      <GridItem colSpan={5}>
+                        <FormControl>
+                          <FormLabel
+                            htmlFor='name'
+                            fontWeight='light'
+                            color='gray'
+                          >
+                            Title
+                          </FormLabel>
+                          <Input
+                            id='title'
+                            autoComplete='off'
+                            placeholder='Give your proposal a name'
+                            size='md'
+                            value={proposal?.data?.title}
+                            onChange={(e) =>
+                              updateProposalData({
+                                ...proposal.data,
+                                title: e.target.value,
+                              })
+                            }
+                          />
+                        </FormControl>
+                      </GridItem>
+                      <GridItem colSpan={5}>
+                        <FormControl>
+                          <FormLabel
+                            htmlFor='name'
+                            fontWeight='light'
+                            color='gray'
+                          >
+                            TL;DR
+                          </FormLabel>
+                          <Textarea
+                            id='description'
+                            autoComplete='off'
+                            placeholder='In three sentences or less, explain your proposal'
+                            size='md'
+                            rows={2}
+                            value={proposal?.data?.description}
+                            onChange={(e) =>
+                              updateProposalData({
+                                ...proposal.data,
+                                description: e.target.value,
+                              })
+                            }
+                          />
+                        </FormControl>
+                      </GridItem>
+                      <GridItem colSpan={5}>
+                        <FormControl>
+                          <FormLabel
+                            htmlFor='body'
+                            fontWeight='light'
+                            color='gray'
+                          >
+                            Description
+                          </FormLabel>
+                          <Textarea
+                            id='body'
+                            autoComplete='off'
+                            placeholder='Describe your proposal in detail'
+                            size='md'
+                            rows={8}
+                            value={proposal?.data?.body}
+                            onChange={(e) =>
+                              updateProposalData({
+                                ...proposal.data,
+                                body: e.target.value,
+                              })
+                            }
+                          />
+                        </FormControl>
+                      </GridItem>
+                    </Grid>
+                  </Stack>
                 </FormControl>
-              </GridItem>
-              <GridItem colSpan={5}>
-                <FormControl>
-                  <FormLabel htmlFor='name' fontWeight='light' color='gray'>
-                    TL;DR
-                  </FormLabel>
-                  <Textarea
-                    id='description'
-                    autoComplete='off'
-                    placeholder='In three sentences or less, explain your proposal'
-                    size='md'
-                    rows={3}
-                    value={proposal?.data?.description}
-                    onChange={(e) =>
-                      updateProposalData({
-                        ...proposal.data,
-                        description: e.target.value,
-                      })
-                    }
-                  />
-                </FormControl>
-              </GridItem>
-              <GridItem colSpan={5}>
-                <FormControl>
-                  <FormLabel htmlFor='body' fontWeight='light' color='gray'>
-                    Description
-                  </FormLabel>
-                  <Textarea
-                    id='body'
-                    autoComplete='off'
-                    placeholder='Describe your proposal in detail'
-                    size='md'
-                    rows={10}
-                    value={proposal?.data?.body}
-                    onChange={(e) =>
-                      updateProposalData({
-                        ...proposal.data,
-                        body: e.target.value,
-                      })
-                    }
-                  />
-                </FormControl>
-              </GridItem>
-            </Grid>
-          </Stack>
-        </FormControl>
+              </Stack>
+            </GridItem>
+            <GridItem colSpan={4}>
+              <Stack spacing='4'>
+                <Card h='fit-content' bg='dark.900' border='none'>
+                  <Stack spacing='2'>
+                    <Stack spacing='6'>
+                      <Stack spacing='2'>
+                        <Tag
+                          color='orange.500'
+                          bg='dark.800'
+                          alignSelf='self-start'
+                          size='sm'
+                          borderRadius='3xl'
+                        >
+                          <Text as='span' fontWeight='regular'>
+                            Preview
+                          </Text>
+                        </Tag>
+                        <Heading
+                          fontSize='4xl'
+                          fontWeight='black'
+                          color='light.900'
+                        >
+                          {proposal?.data?.title
+                            ? proposal?.data?.title.substring(0, 50)
+                            : 'Untitled'}
+                        </Heading>
+                        <Text color='gray' fontSize='md' fontWeight='regular'>
+                          {proposal?.data?.description
+                            ? proposal?.data?.description.substring(0, 100)
+                            : 'TL;DR'}
+                        </Text>
+                        <Text
+                          color='light.900'
+                          fontSize='lg'
+                          fontWeight='regular'
+                        >
+                          {proposal?.data?.body
+                            ? proposal?.data?.body.substring(0, 500)
+                            : 'Description'}
+                        </Text>
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                </Card>
+              </Stack>
+            </GridItem>
+          </Grid>
+        </Stack>
         <HStack justify='space-between'>
           <Button
             size='sm'
@@ -542,7 +404,7 @@ const VaultAndAssetManagement = () => {
           </Button>
           <Stack align='center'>
             <HStack spacing='3'>
-              {[1, 2, 3].map((currentStep) => (
+              {[1, 2].map((currentStep) => (
                 <DotStep
                   key={currentStep}
                   cursor='pointer'
@@ -553,12 +415,24 @@ const VaultAndAssetManagement = () => {
             </HStack>
           </Stack>
           <Button
+            variant='secondary'
             size='sm'
-            variant='dark'
-            rightIcon={<ArrowRight />}
-            onClick={() => setStep(step + 1)}
+            isDisabled={
+              !proposal?.data?.title ||
+              !proposal?.data?.body ||
+              !proposal?.data?.description
+            }
+            onClick={() => {
+              sdk.deployer.deployVaultTemplate({
+                contractName,
+                vaultAddress: vaultExtension?.contract_address,
+                recipients: proposal.recipients,
+                allowlist: proposal.allowlist,
+                onFinish: onFinishDeployVaultTemplate,
+              });
+            }}
           >
-            Continue
+            Deploy Proposal
           </Button>
         </HStack>
       </Stack>
@@ -566,8 +440,13 @@ const VaultAndAssetManagement = () => {
   }
 
   return (
-    <Stack spacing='8' justify='center'>
-      <Stack spacing='4'>
+    <Stack spacing='6' justify='center' px='8' m='0 auto'>
+      <Stack spacing='0' align='flex-start'>
+        <Text fontSize='lg' fontWeight='medium'>
+          Configure your proposal
+        </Text>
+      </Stack>
+      <Stack spacing='3'>
         <Card
           h='fit-content'
           bg={proposal.isTransferSelected ? 'dark.800' : 'dark.900'}
@@ -857,7 +736,7 @@ const VaultAndAssetManagement = () => {
         </Button>
         <Stack align='center'>
           <HStack spacing='3'>
-            {[1, 2, 3].map((currentStep) => (
+            {[1, 2].map((currentStep) => (
               <DotStep
                 key={currentStep}
                 cursor='pointer'
@@ -1050,17 +929,10 @@ const ProtocolUpgrade = () => {
 };
 
 export const CreateProposal = (props: ProposalDrawerProps) => {
-  const dao = useTeam();
-  const account = useAccount();
-  const stxAddress = account?.stxAddress as string;
-  const sdk = new StacksSDK(dao?.data?.contract_address);
-  const multisigExtension = findExtension(dao?.data?.extensions, 'Team');
   const proposal = useProposalStore((state) => state.proposal);
   const { title } = props;
   const focusField = React.useRef<HTMLInputElement>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const submissions = useTeamSubmissions();
-  const createProposal = useCreateProposal();
 
   return (
     <>
@@ -1070,7 +942,7 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
       <Drawer
         isOpen={isOpen}
         placement='right'
-        size='full'
+        size='xl'
         onClose={onClose}
         initialFocusRef={focusField}
       >
@@ -1105,148 +977,34 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
               px={{ base: '6', md: '6' }}
               py={{ base: '6', md: '6' }}
               spacing='2'
-              maxW='7xl'
+              maxW='6xl'
               m='0 auto'
             >
-              <Grid templateColumns='repeat(9, 1fr)' gap={12}>
-                <GridItem colSpan={5}>
-                  <Box as='form'>
-                    {!proposal.selectedTemplate && <TemplateSelect />}
-                    {proposal.selectedTemplate === '1' && (
-                      <motion.div
-                        variants={FADE_IN_VARIANTS}
-                        initial={FADE_IN_VARIANTS.hidden}
-                        animate={FADE_IN_VARIANTS.enter}
-                        exit={FADE_IN_VARIANTS.exit}
-                        transition={{ duration: 0.75, type: 'linear' }}
-                      >
-                        <VaultAndAssetManagement />
-                      </motion.div>
-                    )}
-                    {proposal.selectedTemplate === '2' && (
-                      <motion.div
-                        variants={FADE_IN_VARIANTS}
-                        initial={FADE_IN_VARIANTS.hidden}
-                        animate={FADE_IN_VARIANTS.enter}
-                        exit={FADE_IN_VARIANTS.exit}
-                        transition={{ duration: 0.75, type: 'linear' }}
-                      >
-                        <ProtocolUpgrade />
-                      </motion.div>
-                    )}
-                  </Box>
-                </GridItem>
-                <GridItem colSpan={4}>
-                  <Stack spacing='3'>
-                    <Card
-                      bg='dark.900'
-                      border='1px solid'
-                      borderColor='dark.500'
-                    >
-                      <Box
-                        py={{ base: '3', md: '3' }}
-                        px={{ base: '6', md: '6' }}
-                        bg='dark.700'
-                        borderTopLeftRadius='lg'
-                        borderTopRightRadius='lg'
-                      >
-                        <HStack justify='space-between'>
-                          <Text
-                            fontSize='md'
-                            fontWeight='medium'
-                            color='light.900'
-                          >
-                            Submissions
-                          </Text>
-                        </HStack>
-                      </Box>
-                      <Stack
-                        spacing={{ base: '0', md: '1' }}
-                        justify='center'
-                        py={{ base: '3', md: '3' }}
-                        px={{ base: '6', md: '6' }}
-                      >
-                        <Stack spacing='3'>
-                          {submissions?.data?.length === 0 && (
-                            <HStack justify='center' cursor='default'>
-                              <Text
-                                fontSize='md'
-                                fontWeight='light'
-                                color='gray'
-                              >
-                                No Submissions found
-                              </Text>
-                            </HStack>
-                          )}
-                          {submissions?.data?.length !== 0 && (
-                            <Stack spacing='6' py='3'>
-                              {submissions?.data?.map((submission: any) => (
-                                <Grid
-                                  templateColumns='repeat(5, 1fr)'
-                                  gap={8}
-                                  alignItems='center'
-                                >
-                                  <GridItem colSpan={{ base: 2, md: 4 }}>
-                                    <Stack spacing='2'>
-                                      {size([]) < 6 && (
-                                        <Tag
-                                          color='yellow.500'
-                                          bg='dark.800'
-                                          alignSelf='self-start'
-                                          size='sm'
-                                          borderRadius='3xl'
-                                        >
-                                          <Text as='span' fontWeight='regular'>
-                                            Pending
-                                          </Text>
-                                        </Tag>
-                                      )}
-                                      <HStack align='flex-start' spacing='4'>
-                                        <Stack spacing='1' maxW='lg'>
-                                          <Heading size='xs' fontWeight='black'>
-                                            {truncateAddress(
-                                              submission?.contract_address,
-                                            )}
-                                          </Heading>
-                                        </Stack>
-                                      </HStack>
-                                    </Stack>
-                                  </GridItem>
-                                  <GridItem colSpan={{ base: 1, md: 1 }}>
-                                    <Button
-                                      variant='secondary'
-                                      size='sm'
-                                      onClick={() =>
-                                        sdk.submit({
-                                          extensionAddress:
-                                            multisigExtension?.contract_address,
-                                          proposalAddress:
-                                            submission?.contract_address,
-                                          onFinish(payload) {
-                                            const { txId } = payload;
-                                            createProposal.mutate({
-                                              contract_address:
-                                                submission?.contract_address,
-                                              proposed_by: stxAddress as string,
-                                              tx_id: txId,
-                                            });
-                                          },
-                                        })
-                                      }
-                                    >
-                                      Propose
-                                    </Button>
-                                  </GridItem>
-                                </Grid>
-                              ))}
-                            </Stack>
-                          )}
-                        </Stack>
-                      </Stack>
-                    </Card>
-                  </Stack>
-                </GridItem>
-              </Grid>
+              <Box as='form'>
+                {!proposal.selectedTemplate && <TemplateSelect />}
+                {proposal.selectedTemplate === '1' && (
+                  <motion.div
+                    variants={FADE_IN_VARIANTS}
+                    initial={FADE_IN_VARIANTS.hidden}
+                    animate={FADE_IN_VARIANTS.enter}
+                    exit={FADE_IN_VARIANTS.exit}
+                    transition={{ duration: 0.75, type: 'linear' }}
+                  >
+                    <VaultAndAssetManagement />
+                  </motion.div>
+                )}
+                {proposal.selectedTemplate === '2' && (
+                  <motion.div
+                    variants={FADE_IN_VARIANTS}
+                    initial={FADE_IN_VARIANTS.hidden}
+                    animate={FADE_IN_VARIANTS.enter}
+                    exit={FADE_IN_VARIANTS.exit}
+                    transition={{ duration: 0.75, type: 'linear' }}
+                  >
+                    <ProtocolUpgrade />
+                  </motion.div>
+                )}
+              </Box>
             </Stack>
           </DrawerBody>
         </DrawerContent>
