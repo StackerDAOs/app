@@ -170,6 +170,9 @@ const AddTokenForm = () => {
 };
 
 const FinishedState = () => {
+  const [isRequestPending, setIsRequestPending] = React.useState(false);
+  const [isRequestPendingForActivation, setIsRequestPendingForActivation] =
+    React.useState(false);
   const dao = useTeam();
   const updateBootstrap = useUpdateBootstrap();
   const transaction = useTransaction(dao?.data?.bootstrap_tx_id);
@@ -181,6 +184,7 @@ const FinishedState = () => {
   const { randomName: contractName } = useGenerateName();
 
   const onSuccess = (payload: any) => {
+    setIsRequestPending(true);
     setTimeout(async () => {
       const { txId } = payload;
       try {
@@ -197,11 +201,14 @@ const FinishedState = () => {
         }
       } catch (e: any) {
         console.error({ e });
+      } finally {
+        setIsRequestPending(false);
       }
     }, 1000);
   };
 
   const onActivationSuccess = async (payload: any) => {
+    setIsRequestPendingForActivation(true);
     setTimeout(async () => {
       const { txId } = payload;
       try {
@@ -216,6 +223,8 @@ const FinishedState = () => {
         }
       } catch (e: any) {
         console.error({ e });
+      } finally {
+        setIsRequestPendingForActivation(false);
       }
     }, 1000);
   };
@@ -330,9 +339,10 @@ const FinishedState = () => {
                             Deploy
                           </Button>
                         )}
-                        {transaction?.data?.tx_status === 'pending' && (
-                          <Button variant='dark' isLoading />
-                        )}
+                        {isRequestPending ||
+                          (transaction?.data?.tx_status === 'pending' && (
+                            <Button variant='dark' isLoading />
+                          ))}
                         {transaction?.data?.tx_status === 'success' && (
                           <Button variant='dark' isDisabled>
                             Completed
@@ -411,8 +421,9 @@ const FinishedState = () => {
                             Activate
                           </Button>
                         )}
-                        {activationTransaction?.data?.tx_status ===
-                          'pending' && <Button variant='dark' isLoading />}
+                        {isRequestPendingForActivation ||
+                          (activationTransaction?.data?.tx_status ===
+                            'pending' && <Button variant='dark' isLoading />)}
                         {activationTransaction?.data?.tx_status ===
                           'success' && (
                           <Button variant='dark' isDisabled>

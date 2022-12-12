@@ -205,6 +205,133 @@ const VaultAndAssetManagement = () => {
     }, 1000);
   };
 
+  if (step === 4) {
+    return (
+      <Stack spacing='8' justify='center'>
+        <Stack spacing='4'>
+          <Card h='fit-content' bg='dark.900' border='none'>
+            <Stack spacing='2'>
+              <Stack spacing='6'>
+                <Stack spacing='2'>
+                  <Tag
+                    color='orange.500'
+                    bg='dark.800'
+                    alignSelf='self-start'
+                    size='sm'
+                    borderRadius='3xl'
+                  >
+                    <Text as='span' fontWeight='regular'>
+                      Incomplete
+                    </Text>
+                  </Tag>
+                  <Heading fontSize='4xl' fontWeight='black' color='light.900'>
+                    {proposal?.data?.title}
+                  </Heading>
+                  <Text color='gray' fontSize='md' fontWeight='regular'>
+                    {proposal?.data?.description}
+                  </Text>
+                  <Text color='light.900' fontSize='lg' fontWeight='regular'>
+                    {proposal?.data?.body}
+                  </Text>
+                </Stack>
+                <motion.div
+                  variants={FADE_IN_VARIANTS}
+                  initial={FADE_IN_VARIANTS.hidden}
+                  animate={FADE_IN_VARIANTS.enter}
+                  exit={FADE_IN_VARIANTS.exit}
+                  transition={{ duration: 0.25, type: 'linear' }}
+                >
+                  <Stack spacing='6'>
+                    <Stack spacing='3' filter='blur(2px)'>
+                      <Stack>
+                        <Text color='gray' fontSize='sm' fontWeight='semibold'>
+                          Yes (0)
+                        </Text>
+                        <Progress
+                          colorScheme='primary'
+                          borderRadius='lg'
+                          size='md'
+                          value={0}
+                          bg='dark.500'
+                        />
+                      </Stack>
+                      <Stack>
+                        <Text color='gray' fontSize='sm' fontWeight='semibold'>
+                          No (0)
+                        </Text>
+                        <Progress
+                          colorScheme='whiteAlpha'
+                          borderRadius='lg'
+                          size='md'
+                          value={0}
+                          bg='dark.500'
+                        />
+                      </Stack>
+                      <Stack>
+                        <Text color='gray' fontSize='sm' fontWeight='semibold'>
+                          Quorum ( 0)
+                        </Text>
+                        <Progress
+                          colorScheme='gray'
+                          borderRadius='lg'
+                          size='md'
+                          value={0}
+                          bg='dark.500'
+                        />
+                      </Stack>
+                    </Stack>
+                    <HStack justifyContent='center' spacing='12'>
+                      <Button
+                        isFullWidth
+                        variant='secondary'
+                        onClick={() => {
+                          sdk.deployer.deployVaultTemplate({
+                            contractName,
+                            vaultAddress: vaultExtension?.contract_address,
+                            recipients: proposal.recipients,
+                            allowlist: proposal.allowlist,
+                            onFinish: onFinishDeployVaultTemplate,
+                          });
+                          setStep(step + 1);
+                        }}
+                      >
+                        Deploy
+                      </Button>
+                    </HStack>
+                  </Stack>
+                </motion.div>
+              </Stack>
+            </Stack>
+          </Card>
+        </Stack>
+        <HStack justify='space-between'>
+          <Button
+            size='sm'
+            variant='link'
+            onClick={() => {
+              setStep(step - 1);
+            }}
+          >
+            Back
+          </Button>
+          <Stack align='center'>
+            <HStack spacing='3'>
+              {[1, 2, 3].map((currentStep) => (
+                <DotStep
+                  key={currentStep}
+                  cursor='pointer'
+                  onClick={() => setStep(currentStep)}
+                  isActive={currentStep === step}
+                />
+              ))}
+            </HStack>
+          </Stack>
+          <Button visibility='hidden' />
+        </HStack>
+      </Stack>
+    );
+  }
+
   if (step === 3) {
     return (
       <Stack spacing='8' justify='center'>
@@ -292,6 +419,7 @@ const VaultAndAssetManagement = () => {
                             allowlist: proposal.allowlist,
                             onFinish: onFinishDeployVaultTemplate,
                           });
+                          setStep(step + 1);
                         }}
                       >
                         Deploy
@@ -956,6 +1084,9 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
             py='4'
             px={{ base: '8', md: '8' }}
           >
+            <Button variant='dark' size='sm' onClick={onClose}>
+              Cancel
+            </Button>
             <Breadcrumb spacing='2'>
               <BreadcrumbItem isCurrentPage color='gray'>
                 <BreadcrumbLink
@@ -968,9 +1099,6 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </Breadcrumb>
-            <Button variant='dark' size='sm' onClick={onClose}>
-              Cancel
-            </Button>
           </Flex>
           <DrawerBody p='0'>
             <Stack

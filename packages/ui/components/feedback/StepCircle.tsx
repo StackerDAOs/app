@@ -1,5 +1,4 @@
-import { Circle, Icon, SquareProps } from '@chakra-ui/react';
-import { CheckIcon } from 'ui/components/icons';
+import { Circle, SquareProps } from '@chakra-ui/react';
 
 interface RadioCircleProps extends SquareProps {
   isCompleted: boolean;
@@ -15,12 +14,6 @@ export const StepCircle = (props: RadioCircleProps) => {
       borderWidth={isCompleted ? '0' : isActive ? '2px' : '1px'}
       borderColor={isActive ? 'primary.900' : 'dark.500'}
       {...props}
-    >
-      {isCompleted ? (
-        <Icon as={CheckIcon} color='inverted' boxSize='4' />
-      ) : (
-        <Circle bg={isActive ? 'accent' : 'border'} size='3' />
-      )}
-    </Circle>
+    />
   );
 };

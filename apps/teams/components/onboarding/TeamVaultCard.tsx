@@ -12,6 +12,7 @@ import { TEAM_EXTENSION_TYPES } from 'api/constants';
 import { useCreateExtension } from 'api/teams/mutations/extensions';
 
 export const TeamVaultCard = (props: any) => {
+  const [isRequestPending, setIsRequestPending] = React.useState(false);
   const { isLoading, dao } = props;
   const sdk = new StacksSDK(dao?.contract_address);
   const data = useVaultStore((state) => state.vault);
@@ -20,6 +21,7 @@ export const TeamVaultCard = (props: any) => {
   const createExtension = useCreateExtension();
   const { randomName: contractName } = useGenerateName();
   const onFinish = (payload: any) => {
+    setIsRequestPending(true);
     setTimeout(async () => {
       const { txId } = payload;
       const tx = await getTransaction(txId);
@@ -39,6 +41,8 @@ export const TeamVaultCard = (props: any) => {
           });
         } catch (e: any) {
           console.error({ e });
+        } finally {
+          setIsRequestPending(false);
         }
       }
     }, 1000);
@@ -151,19 +155,28 @@ export const TeamVaultCard = (props: any) => {
             </Stack>
           </motion.div>
           <Stack spacing='6'>
+            {isRequestPending && (
+              <Button
+                variant={!extension ? 'secondary' : 'outline'}
+                isDisabled
+                isLoading
+                isFullWidth
+              />
+            )}
             {transaction?.data?.tx_status === 'pending' ||
-            transaction?.data?.tx_status === 'success' ? (
-              <Stack align='center'>
-                <Link
-                  href={getExplorerLink(transaction?.data?.tx_id)}
-                  target='_blank'
-                >
-                  <Button variant='dark' isFullWidth>
-                    View transaction
-                  </Button>
-                </Link>
-              </Stack>
-            ) : (
+              (transaction?.data?.tx_status === 'success' && (
+                <Stack align='center'>
+                  <Link
+                    href={getExplorerLink(transaction?.data?.tx_id)}
+                    target='_blank'
+                  >
+                    <Button variant='dark' isFullWidth>
+                      View transaction
+                    </Button>
+                  </Link>
+                </Stack>
+              ))}
+            {!isRequestPending && !extension && (
               <Button
                 variant={!extension ? 'secondary' : 'outline'}
                 isDisabled={isLoading || !!extension}
