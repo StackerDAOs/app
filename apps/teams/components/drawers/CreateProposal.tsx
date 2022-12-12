@@ -8,6 +8,8 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
+  ButtonGroup,
+  Circle,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -25,6 +27,11 @@ import {
   InputRightElement,
   Stack,
   Square,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Tag,
   Text,
   Textarea,
@@ -36,6 +43,7 @@ import { useGenerateName, useTeam } from 'ui/hooks';
 import { useCreateSubmission } from 'api/teams/mutations';
 import { useProposalStore } from 'store';
 import { findExtension } from 'utils';
+import { map, size } from 'lodash';
 import {
   CheckCircle,
   PlusIcon,
@@ -45,6 +53,7 @@ import {
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { DotStep } from 'ui/components/feedback';
 import { getTransaction } from 'api/teams';
+import { truncateAddress } from '@stacks-os/utils';
 
 interface ProposalDrawerProps extends ButtonProps {
   title: string;
@@ -78,7 +87,7 @@ const TemplateSelect = () => {
   );
 
   return (
-    <Stack spacing='6' justify='center' px='8' m='0 auto'>
+    <Stack spacing='6' justify='center' px='8' m='0 auto' maxW='4xl'>
       <Stack spacing='0' align='flex-start'>
         <Text fontSize='lg' fontWeight='medium'>
           Select a template
@@ -182,6 +191,8 @@ const VaultAndAssetManagement = () => {
   );
   const addToken = useProposalStore((state) => state.addToken);
   const createSubmission = useCreateSubmission();
+  console.log('recipients', proposal?.recipients);
+
   const onFinishDeployVaultTemplate = (payload: any) => {
     setStep(step + 1);
     setIsProposalDeploying(true);
@@ -214,7 +225,7 @@ const VaultAndAssetManagement = () => {
 
   if (step === 3) {
     return (
-      <Stack spacing='6' justify='center' px='8' m='0 auto'>
+      <Stack spacing='6' justify='center' px='8' m='0 auto' maxW='4xl'>
         <Stack spacing='0' align='flex-start'>
           <Icon as={CheckCircle} color='primary.900' boxSize='12' />
           <Text
@@ -248,15 +259,15 @@ const VaultAndAssetManagement = () => {
 
   if (step === 2) {
     return (
-      <Stack spacing='6' justify='center' px='8'>
+      <Stack spacing='6' justify='center' px='8' m='0 auto' maxW='6xl'>
         <Stack spacing='0' align='flex-start'>
           <Text fontSize='lg' fontWeight='medium'>
             Review & Deploy
           </Text>
         </Stack>
         <Stack spacing='3'>
-          <Grid templateColumns='repeat(7, 1fr)' gap={8}>
-            <GridItem colSpan={3}>
+          <Grid templateColumns='repeat(7, 1fr)' gap={16}>
+            <GridItem colSpan={4}>
               <Stack
                 as='form'
                 pointerEvents={isProposalDeploying ? 'none' : 'auto'}
@@ -344,50 +355,256 @@ const VaultAndAssetManagement = () => {
                 </FormControl>
               </Stack>
             </GridItem>
-            <GridItem colSpan={4}>
-              <Stack spacing='4'>
-                <Card h='fit-content' bg='dark.900' border='none'>
-                  <Stack spacing='2'>
-                    <Stack spacing='6'>
-                      <Stack spacing='2'>
-                        <Tag
-                          color='orange.500'
-                          bg='dark.800'
-                          alignSelf='self-start'
-                          size='sm'
-                          borderRadius='3xl'
+            <GridItem colSpan={3}>
+              <Stack spacing='3'>
+                <Tabs color='light.900' variant='unstyled' isFitted>
+                  <TabList>
+                    <ButtonGroup
+                      bg='dark.900'
+                      borderRadius='lg'
+                      borderWidth='1px'
+                      borderColor='dark.500'
+                    >
+                      {map(['Preview', 'Details', 'Code'], (item) => (
+                        <Tab
+                          key={item}
+                          borderRadius='lg'
+                          color='light.500'
+                          w='50%'
+                          fontSize='sm'
+                          _selected={{
+                            color: 'light.900',
+                            bg: 'dark.700',
+                          }}
                         >
-                          <Text as='span' fontWeight='regular'>
-                            Preview
-                          </Text>
-                        </Tag>
-                        <Heading
-                          fontSize='4xl'
-                          fontWeight='black'
-                          color='light.900'
-                        >
-                          {proposal?.data?.title
-                            ? proposal?.data?.title.substring(0, 50)
-                            : 'Untitled'}
-                        </Heading>
-                        <Text color='gray' fontSize='md' fontWeight='regular'>
-                          {proposal?.data?.description
-                            ? proposal?.data?.description.substring(0, 100)
-                            : 'TL;DR'}
-                        </Text>
-                        <Text
-                          color='light.900'
-                          fontSize='lg'
-                          fontWeight='regular'
-                        >
-                          {proposal?.data?.body
-                            ? proposal?.data?.body.substring(0, 500)
-                            : 'Description'}
-                        </Text>
-                      </Stack>
-                    </Stack>
-                  </Stack>
-                </Card>
+                          {item}
+                        </Tab>
+                      ))}
+                    </ButtonGroup>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel px='0'>
+                      <motion.div
+                        variants={FADE_IN_VARIANTS}
+                        initial={FADE_IN_VARIANTS.hidden}
+                        animate={FADE_IN_VARIANTS.enter}
+                        exit={FADE_IN_VARIANTS.exit}
+                        transition={{ duration: 0.25, type: 'linear' }}
+                      >
+                        <Card h='fit-content' bg='dark.900' border='none'>
+                          <Stack spacing='2'>
+                            <Stack spacing='6'>
+                              <Stack spacing='2'>
+                                <Tag
+                                  color='orange.500'
+                                  bg='dark.800'
+                                  alignSelf='self-start'
+                                  size='sm'
+                                  borderRadius='3xl'
+                                >
+                                  <Text as='span' fontWeight='regular'>
+                                    Status
+                                  </Text>
+                                </Tag>
+                                <Heading
+                                  fontSize='4xl'
+                                  fontWeight='black'
+                                  color='light.900'
+                                >
+                                  {proposal?.data?.title
+                                    ? proposal?.data?.title.substring(0, 50)
+                                    : 'Untitled'}
+                                </Heading>
+                                <Text
+                                  color='gray'
+                                  fontSize='md'
+                                  fontWeight='regular'
+                                >
+                                  {proposal?.data?.description
+                                    ? proposal?.data?.description.substring(
+                                        0,
+                                        100,
+                                      )
+                                    : 'TL;DR'}
+                                </Text>
+                                <Text
+                                  color='light.900'
+                                  fontSize='lg'
+                                  fontWeight='regular'
+                                >
+                                  {proposal?.data?.body
+                                    ? proposal?.data?.body.substring(0, 350)
+                                    : 'Description'}
+                                </Text>
+                              </Stack>
+                            </Stack>
+                          </Stack>
+                        </Card>
+                      </motion.div>
+                    </TabPanel>
+                    <TabPanel px='0'>
+                      <motion.div
+                        variants={FADE_IN_VARIANTS}
+                        initial={FADE_IN_VARIANTS.hidden}
+                        animate={FADE_IN_VARIANTS.enter}
+                        exit={FADE_IN_VARIANTS.exit}
+                        transition={{ duration: 0.25, type: 'linear' }}
+                      >
+                        <Card h='fit-content' bg='dark.900' border='none'>
+                          <Stack spacing='2'>
+                            <Stack spacing='6'>
+                              {size(proposal?.recipients) > 0 && (
+                                <Stack spacing='2'>
+                                  <Box>
+                                    <Text fontSize='lg' fontWeight='medium'>
+                                      Transfers
+                                    </Text>
+                                  </Box>
+                                  {map(proposal?.recipients, (recipient) => (
+                                    <HStack
+                                      align='space-between'
+                                      justify='space-between'
+                                    >
+                                      <HStack spacing='3'>
+                                        <Circle
+                                          size='8'
+                                          bg='dark.800'
+                                          borderWidth='1px'
+                                          borderColor='dark.500'
+                                        >
+                                          <Icon
+                                            as={ArrowRight}
+                                            boxSize='4'
+                                            color='secondary.900'
+                                          />
+                                        </Circle>
+                                        <Stack spacing='1'>
+                                          <Text
+                                            color='light.900'
+                                            fontSize='sm'
+                                            fontWeight='semibold'
+                                          >
+                                            {truncateAddress(recipient?.to)}
+                                          </Text>
+                                        </Stack>
+                                      </HStack>
+                                      <HStack spacing='1'>
+                                        <Image
+                                          cursor='pointer'
+                                          height='15px'
+                                          src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                                          alt='logo'
+                                        />
+                                        <Text
+                                          color='light.900'
+                                          fontSize='sm'
+                                          fontWeight='semibold'
+                                        >
+                                          {recipient?.amount}
+                                        </Text>
+
+                                        <Text
+                                          fontSize='sm'
+                                          fontWeight='semibold'
+                                          color='light.500'
+                                        >
+                                          STX
+                                        </Text>
+                                      </HStack>
+                                    </HStack>
+                                  ))}
+                                </Stack>
+                              )}
+                              {size(proposal?.allowlist) > 0 && (
+                                <Stack spacing='2'>
+                                  <Box>
+                                    <Text fontSize='lg' fontWeight='medium'>
+                                      Allowlist
+                                    </Text>
+                                  </Box>
+                                  {map(proposal?.recipients, (recipient) => (
+                                    <HStack
+                                      align='space-between'
+                                      justify='space-between'
+                                    >
+                                      <HStack spacing='3'>
+                                        <Circle
+                                          size='8'
+                                          bg='dark.800'
+                                          borderWidth='1px'
+                                          borderColor='dark.500'
+                                        >
+                                          <Icon
+                                            as={ArrowRight}
+                                            boxSize='4'
+                                            color='secondary.900'
+                                          />
+                                        </Circle>
+                                        <Stack spacing='1'>
+                                          <Text
+                                            color='light.900'
+                                            fontSize='sm'
+                                            fontWeight='semibold'
+                                          >
+                                            {truncateAddress(recipient?.to)}
+                                          </Text>
+                                        </Stack>
+                                      </HStack>
+                                      <HStack spacing='1'>
+                                        <Image
+                                          cursor='pointer'
+                                          height='15px'
+                                          src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                                          alt='logo'
+                                        />
+                                        <Text
+                                          color='light.900'
+                                          fontSize='sm'
+                                          fontWeight='semibold'
+                                        >
+                                          {recipient?.amount}
+                                        </Text>
+
+                                        <Text
+                                          fontSize='sm'
+                                          fontWeight='semibold'
+                                          color='light.500'
+                                        >
+                                          STX
+                                        </Text>
+                                      </HStack>
+                                    </HStack>
+                                  ))}
+                                </Stack>
+                              )}
+                            </Stack>
+                          </Stack>
+                        </Card>
+                      </motion.div>
+                    </TabPanel>
+                    <TabPanel px='0'>
+                      <motion.div
+                        variants={FADE_IN_VARIANTS}
+                        initial={FADE_IN_VARIANTS.hidden}
+                        animate={FADE_IN_VARIANTS.enter}
+                        exit={FADE_IN_VARIANTS.exit}
+                        transition={{ duration: 0.25, type: 'linear' }}
+                      >
+                        <Card h='fit-content' bg='dark.900' border='none'>
+                          <Stack spacing='2'>
+                            <Text
+                              fontSize='sm'
+                              fontWeight='semibold'
+                              color='gray'
+                            >
+                              Coming soon
+                            </Text>
+                          </Stack>
+                        </Card>
+                      </motion.div>
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
               </Stack>
             </GridItem>
           </Grid>
@@ -440,7 +657,7 @@ const VaultAndAssetManagement = () => {
   }
 
   return (
-    <Stack spacing='6' justify='center' px='8' m='0 auto'>
+    <Stack spacing='6' justify='center' px='8' m='0 auto' maxW='4xl'>
       <Stack spacing='0' align='flex-start'>
         <Text fontSize='lg' fontWeight='medium'>
           Configure your proposal
@@ -700,7 +917,7 @@ const VaultAndAssetManagement = () => {
                             <Input
                               id='address'
                               autoComplete='off'
-                              placeholder='Recipient address'
+                              placeholder='Token address'
                               size='lg'
                               value={proposal.tokenAddress}
                               onChange={(e) =>
@@ -771,6 +988,7 @@ const ProtocolUpgrade = () => {
       px={{ base: '8', md: '8' }}
       py={{ base: '8', md: '8' }}
       justify='center'
+      maxW='4xl'
     >
       <Box>
         <Text fontSize='lg' fontWeight='medium'>
@@ -942,7 +1160,7 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
       <Drawer
         isOpen={isOpen}
         placement='right'
-        size='xl'
+        size='full'
         onClose={onClose}
         initialFocusRef={focusField}
       >
@@ -977,7 +1195,6 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
               px={{ base: '6', md: '6' }}
               py={{ base: '6', md: '6' }}
               spacing='2'
-              maxW='6xl'
               m='0 auto'
             >
               <Box as='form'>

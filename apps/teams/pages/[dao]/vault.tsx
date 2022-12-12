@@ -94,6 +94,65 @@ export default function Vault() {
         <Stack spacing='6'>
           <Stack spacing='8'>
             <Grid templateColumns='repeat(9, 1fr)' gap={6}>
+              <GridItem colSpan={4}>
+                <Card bg='dark.800' h='189px'>
+                  <Stack
+                    px={{ base: '6', md: '6' }}
+                    py={{ base: '6', md: '6' }}
+                    spacing='6'
+                  >
+                    <Heading
+                      color='light.900'
+                      fontSize='lg'
+                      fontWeight='regular'
+                      letterSpacing='tight'
+                    >
+                      Treasury
+                    </Heading>
+                    <Stack spacing='3' justify='center' h='full'>
+                      <HStack justify='space-between'>
+                        <Text fontSize='md' fontWeight='regular' color='gray'>
+                          Balance
+                        </Text>
+                        <Text
+                          fontSize='md'
+                          fontWeight='medium'
+                          color='light.900'
+                        >
+                          1,242{' '}
+                          <Text as='span' fontSize='sm' fontWeight='thin'>
+                            STX
+                          </Text>
+                        </Text>
+                      </HStack>
+                      <HStack justify='space-between'>
+                        <Text fontSize='md' fontWeight='regular' color='gray'>
+                          Tokens
+                        </Text>
+                        <Text
+                          fontSize='md'
+                          fontWeight='medium'
+                          color='light.900'
+                        >
+                          7
+                        </Text>
+                      </HStack>
+                      <HStack justify='space-between'>
+                        <Text fontSize='md' fontWeight='regular' color='gray'>
+                          Collectibles
+                        </Text>
+                        <Text
+                          fontSize='md'
+                          fontWeight='medium'
+                          color='light.900'
+                        >
+                          2
+                        </Text>
+                      </HStack>
+                    </Stack>
+                  </Stack>
+                </Card>
+              </GridItem>
               <GridItem colSpan={5}>
                 <Card h='fit-content' bg='dark.900'>
                   <Stack spacing='0'>
@@ -178,65 +237,6 @@ export default function Vault() {
                           reset={() => {}}
                         />
                       </Stack>
-                    </Stack>
-                  </Stack>
-                </Card>
-              </GridItem>
-              <GridItem colSpan={4}>
-                <Card bg='dark.800' h='189px'>
-                  <Stack
-                    px={{ base: '6', md: '6' }}
-                    py={{ base: '6', md: '6' }}
-                    spacing='6'
-                  >
-                    <Heading
-                      color='light.900'
-                      fontSize='lg'
-                      fontWeight='regular'
-                      letterSpacing='tight'
-                    >
-                      Treasury
-                    </Heading>
-                    <Stack spacing='3' justify='center' h='full'>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Balance
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          1,242{' '}
-                          <Text as='span' fontSize='sm' fontWeight='thin'>
-                            STX
-                          </Text>
-                        </Text>
-                      </HStack>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Tokens
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          7
-                        </Text>
-                      </HStack>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Collectibles
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          2
-                        </Text>
-                      </HStack>
                     </Stack>
                   </Stack>
                 </Card>

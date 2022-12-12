@@ -319,16 +319,16 @@ export default function Dashboard() {
                                         borderRadius='3xl'
                                       >
                                         <Text as='span' fontWeight='regular'>
-                                          Pending
+                                          {truncateAddress(
+                                            submission?.contract_address,
+                                          )}
                                         </Text>
                                       </Tag>
                                     )}
                                     <HStack align='flex-start' spacing='4'>
                                       <Stack spacing='1' maxW='lg'>
                                         <Heading size='xs' fontWeight='black'>
-                                          {truncateAddress(
-                                            submission?.contract_address,
-                                          )}
+                                          {submission?.title}
                                         </Heading>
                                       </Stack>
                                     </HStack>

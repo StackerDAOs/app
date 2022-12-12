@@ -116,7 +116,6 @@ export const Sidebar = () => {
               <Stack spacing='3'>
                 <NavHeading>Configuration</NavHeading>
                 <Stack spacing='1'>
-                  <NavButton label='Help' isSelected={isSelected('Help')} />
                   <NavButton
                     label='Settings'
                     isSelected={isSelected('Settings')}
