@@ -14,6 +14,7 @@ export default function ProposalView() {
   const router = useRouter();
   const { address } = router.query as any;
   const proposal = useTeamProposal(address);
+  console.log({ proposal });
 
   if (proposal?.isLoading) {
     return null;

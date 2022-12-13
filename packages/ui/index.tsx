@@ -106,6 +106,7 @@ export {
   TagRightIcon,
   Text,
   Textarea,
+  Tooltip,
   VStack,
   ChakraProvider,
   useBreakpointValue,
@@ -114,6 +115,7 @@ export {
   toast,
   useToast,
   useMenuButton,
+  useTooltip,
 } from '@chakra-ui/react';
 export type {
   BoxProps,
@@ -124,5 +126,6 @@ export type {
   StackProps,
   TableProps,
   TextareaProps,
+  TooltipProps,
 } from '@chakra-ui/react';
 export { theme } from './theme';

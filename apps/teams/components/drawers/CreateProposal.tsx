@@ -74,8 +74,8 @@ const templateOptions = [
   },
   {
     id: '3',
-    label: 'Core Protocol',
-    name: 'Protocol upgrades',
+    label: 'Governance',
+    name: 'Rule Changes',
     description: 'Change membership, governance parameters, etc.',
   },
 ];

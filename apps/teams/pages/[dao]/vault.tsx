@@ -173,7 +173,7 @@ export default function Vault() {
                         fontWeight='regular'
                         letterSpacing='tight'
                       >
-                        Vault
+                        Vault Deposit
                       </Heading>
                     </Stack>
                     <Stack
@@ -364,7 +364,7 @@ export default function Vault() {
 Vault.getLayout = (page: any) => (
   <DashboardLayout
     header={
-      <Flex justify='space-between' align='center' py='5' px='4'>
+      <Flex justify='space-between' align='center' py='6' px='4'>
         <Heading size='md' fontWeight='black' letterSpacing='tight'>
           Vault
         </Heading>

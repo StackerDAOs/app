@@ -4,23 +4,68 @@ import {
   Button,
   Circle,
   Flex,
+  Grid,
+  GridItem,
   Heading,
   HStack,
   Icon,
   SimpleGrid,
   Stack,
   Text,
+  Tag,
 } from 'ui';
-import { useTeam } from 'ui/hooks';
-import { SectionHeader } from 'ui/components/layout';
 import { DashboardLayout } from '@components/layout';
-import { motion, FADE_IN_VARIANTS } from 'ui/animation';
+import { SectionHeader } from 'ui/components/layout';
 import { Card } from 'ui/components/cards';
-import { LightningBolt, SwapArrows } from 'ui/components/icons';
+import { useTeam } from 'ui/hooks';
+import { motion, FADE_IN_VARIANTS } from 'ui/animation';
+import { map } from 'lodash';
+import { EllipsisIcon, LightningBolt, SwapArrows } from 'ui/components/icons';
+import { truncateAddress } from '@stacks-os/utils';
+
+const extensionOptions = [
+  {
+    id: '1',
+    icon: LightningBolt,
+    name: 'Buy & Sell NFTs',
+    description: 'Buy and sell NFTs via proposal submissions.',
+  },
+  {
+    id: '2',
+    icon: SwapArrows,
+    name: 'Swap Tokens',
+    description: 'Bring DeFi to your team with token swapping .',
+  },
+  {
+    id: '3',
+    icon: LightningBolt,
+    name: 'NFT Auction',
+    description: 'Auction off NFTs via the Gamma protocol.',
+  },
+  {
+    id: '4',
+    icon: LightningBolt,
+    name: 'Stacking',
+    description: 'Stacks STX through Friedger Pool.',
+  },
+  {
+    id: '5',
+    icon: LightningBolt,
+    name: 'CityCoins Stacking',
+    description: 'Stack MIA or NYC through the CityCoins protocol.',
+  },
+  {
+    id: '6',
+    icon: LightningBolt,
+    name: 'CityCoins Mining',
+    description: 'Mine MIA or NYC through the CityCoins protocol.',
+  },
+];
 
 export default function Extensions() {
   const dao = useTeam();
   const isActive = dao?.data?.active;
+  const extensions = dao?.data?.extensions;
 
   if (!isActive) {
     return (
@@ -35,7 +80,7 @@ export default function Extensions() {
           >
             <HStack justify='center'>
               <Text fontSize='md' fontWeight='medium' color='light.900'>
-                Extensions are not active yet
+                Vault is not active yet
               </Text>
             </HStack>
           </Box>
@@ -67,7 +112,59 @@ export default function Extensions() {
       transition={{ duration: 0.25, type: 'linear' }}
     >
       <Stack spacing='8'>
-        <Stack spacing='1'>
+        <Stack spacing='6'>
+          <Stack spacing='8'>
+            <Grid templateColumns='repeat(9, 1fr)' gap={0}>
+              {map(extensions, (extension) => (
+                <GridItem colSpan={3}>
+                  <Card bg='dark.800' w='fit-content'>
+                    <Grid
+                      templateColumns='repeat(5, 1fr)'
+                      gap={8}
+                      alignItems='center'
+                      pl={{ base: '3', md: '3' }}
+                      py={{ base: '3', md: '3' }}
+                    >
+                      <GridItem colSpan={{ base: 2, md: 4 }}>
+                        <Stack spacing='2'>
+                          <Tag
+                            color='green.500'
+                            bg='dark.800'
+                            alignSelf='self-start'
+                            size='sm'
+                            borderRadius='3xl'
+                          >
+                            <Text as='span' fontWeight='regular'>
+                              Enabled
+                            </Text>
+                          </Tag>
+                          <HStack align='flex-start' spacing='4'>
+                            <Stack spacing='1' maxW='lg'>
+                              <Heading size='sm' fontWeight='black'>
+                                {extension?.extension_types?.name}
+                              </Heading>
+                              <Text
+                                fontSize='sm'
+                                fontWeight='light'
+                                color='gray'
+                              >
+                                {truncateAddress(extension?.contract_address)}
+                              </Text>
+                            </Stack>
+                          </HStack>
+                        </Stack>
+                      </GridItem>
+                      <GridItem colSpan={{ base: 1, md: 1 }}>
+                        <Icon as={EllipsisIcon} boxSize='6' />
+                      </GridItem>
+                    </Grid>
+                  </Card>
+                </GridItem>
+              ))}
+            </Grid>
+          </Stack>
+        </Stack>
+        <Stack spacing='3'>
           <SectionHeader
             justify={{ base: 'flex-start', md: 'space-between' }}
             align={{ base: 'flex-start', md: 'space-between' }}
@@ -75,115 +172,51 @@ export default function Extensions() {
           >
             <Stack spacing='3'>
               <Text fontSize='md' fontWeight='light' color='text-muted'>
-                Explore Contracts
+                Browse
               </Text>
               <Heading mt='0 !important' size='lg' fontWeight='medium'>
-                Browse Extensions
+                Extensions
               </Heading>
             </Stack>
           </SectionHeader>
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing='6'>
-            <Card h='fit-content' bg='dark.700'>
-              <Stack spacing='0'>
-                <Stack
-                  px={{ base: '6', md: '6' }}
-                  py={{ base: '6', md: '6' }}
-                  spacing='2'
-                >
-                  <Stack spacing='1'>
-                    <HStack align='baseline'>
-                      <Circle bg='dark.500' size='7' mb='3'>
+          <SimpleGrid columns={{ base: 1, md: 4 }} spacing='6'>
+            {map(extensionOptions, (extension) => (
+              <Card h='fit-content' bg='dark.900'>
+                <Stack spacing='0'>
+                  <Stack
+                    px={{ base: '6', md: '6' }}
+                    py={{ base: '6', md: '6' }}
+                    spacing='3'
+                  >
+                    <Stack spacing='1' align='center'>
+                      <Circle bg='dark.500' size='8' mb='3'>
                         <Icon
-                          as={LightningBolt}
+                          as={extension?.icon}
                           boxSize='4'
                           color='primary.900'
                         />
                       </Circle>
-                      <Heading
-                        mt='0 !important'
-                        size='sm'
-                        fontWeight='semibold'
+                      <HStack align='baseline'>
+                        <Heading size='sm' fontWeight='semibold'>
+                          {extension?.name}
+                        </Heading>
+                      </HStack>
+                      <Text
+                        fontSize='sm'
+                        fontWeight='regular'
+                        color='gray'
+                        textAlign='center'
                       >
-                        Buy &amp; Sell NFTs
-                      </Heading>
-                    </HStack>
-
-                    <Text fontSize='md' fontWeight='thin' color='text-default'>
-                      Buy and sell NFTs via proposal submissions.
-                    </Text>
+                        {extension?.description}
+                      </Text>
+                    </Stack>
+                    <Button variant='secondary' size='sm' isDisabled>
+                      Add
+                    </Button>
                   </Stack>
-                  <Button variant='default' isDisabled>
-                    Add
-                  </Button>
                 </Stack>
-              </Stack>
-            </Card>
-            <Card h='fit-content' bg='dark.700'>
-              <Stack spacing='0'>
-                <Stack
-                  px={{ base: '6', md: '6' }}
-                  py={{ base: '6', md: '6' }}
-                  spacing='2'
-                >
-                  <Stack spacing='1'>
-                    <HStack align='baseline'>
-                      <Circle bg='dark.500' size='7' mb='3'>
-                        <Icon as={SwapArrows} boxSize='4' color='primary.900' />
-                      </Circle>
-                      <Heading
-                        mt='0 !important'
-                        size='sm'
-                        fontWeight='semibold'
-                      >
-                        Swap Tokens
-                      </Heading>
-                    </HStack>
-
-                    <Text fontSize='md' fontWeight='thin' color='text-default'>
-                      Bring DeFi to your team by adding token swap integration.
-                    </Text>
-                  </Stack>
-                  <Button variant='default' isDisabled>
-                    Add
-                  </Button>
-                </Stack>
-              </Stack>
-            </Card>
-            <Card h='fit-content' bg='dark.700'>
-              <Stack spacing='0'>
-                <Stack
-                  px={{ base: '6', md: '6' }}
-                  py={{ base: '6', md: '6' }}
-                  spacing='2'
-                >
-                  <Stack spacing='1'>
-                    <HStack align='baseline'>
-                      <Circle bg='dark.500' size='7' mb='3'>
-                        <Icon
-                          as={LightningBolt}
-                          boxSize='4'
-                          color='primary.900'
-                        />
-                      </Circle>
-                      <Heading
-                        mt='0 !important'
-                        size='sm'
-                        fontWeight='semibold'
-                      >
-                        NFT Auction
-                      </Heading>
-                    </HStack>
-
-                    <Text fontSize='md' fontWeight='thin' color='text-default'>
-                      Auction off NFTs via the Gamma auction protocol.
-                    </Text>
-                  </Stack>
-                  <Button variant='default' isDisabled>
-                    Add
-                  </Button>
-                </Stack>
-              </Stack>
-            </Card>
+              </Card>
+            ))}
           </SimpleGrid>
         </Stack>
       </Stack>
@@ -194,13 +227,10 @@ export default function Extensions() {
 Extensions.getLayout = (page: any) => (
   <DashboardLayout
     header={
-      <Flex justify='space-between' align='center' py='5' px='4'>
+      <Flex justify='space-between' align='center' py='6' px='4'>
         <Heading size='md' fontWeight='black' letterSpacing='tight'>
-          Extensions
+          Vault
         </Heading>
-        <Button variant='default' size='sm' isDisabled>
-          Add Extensions
-        </Button>
       </Flex>
     }
   >

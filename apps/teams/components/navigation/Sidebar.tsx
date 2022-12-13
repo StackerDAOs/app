@@ -86,7 +86,7 @@ export const Sidebar = () => {
           <Stack>
             <AccountSwitcher dao={dao?.data?.name} />
             <Divider borderColor='dark.500' mt='0 !important' />
-            <Stack spacing='2' py='3'>
+            <Stack spacing='1' py='1'>
               <Link href={`/${slug}`}>
                 <NavButton
                   label='Dashboard'

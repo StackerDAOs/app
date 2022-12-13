@@ -12,6 +12,7 @@ export * from './ChevronRight';
 export * from './CopyClipboard';
 export * from './DashboardOutline';
 export * from './DelegateIcon';
+export * from './EllipsisIcon';
 export * from './ExtensionOutline';
 export * from './ExternalLinkIcon';
 export * from './GearIcon';
