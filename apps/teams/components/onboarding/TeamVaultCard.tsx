@@ -155,14 +155,6 @@ export const TeamVaultCard = (props: any) => {
             </Stack>
           </motion.div>
           <Stack spacing='6'>
-            {isRequestPending && (
-              <Button
-                variant={!extension ? 'secondary' : 'outline'}
-                isDisabled
-                isLoading
-                isFullWidth
-              />
-            )}
             {transaction?.data?.tx_status === 'pending' ||
               (transaction?.data?.tx_status === 'success' && (
                 <Stack align='center'>
@@ -176,10 +168,11 @@ export const TeamVaultCard = (props: any) => {
                   </Link>
                 </Stack>
               ))}
-            {!isRequestPending && !extension && (
+            {!extension && (
               <Button
                 variant={!extension ? 'secondary' : 'outline'}
                 isDisabled={isLoading || !!extension}
+                isLoading={isRequestPending}
                 onClick={() =>
                   sdk.deployer.deployVault({
                     contractName,

@@ -217,7 +217,9 @@ export default function Vault() {
                       size='sm'
                       vaultAddress={vaultExtension?.contract_address}
                       amount={depositAmount}
-                      reset={() => {}}
+                      reset={() => {
+                        setDepositAmount('');
+                      }}
                     />
                   </Stack>
                 </Stack>

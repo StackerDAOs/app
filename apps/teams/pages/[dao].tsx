@@ -20,6 +20,7 @@ import { Card } from 'ui/components/cards';
 import { DashboardLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { ConnectButton } from 'ui/components/buttons';
+import { CreateProposal } from '@components/drawers';
 import {
   useTeam,
   useTeamTransactions,
@@ -260,90 +261,150 @@ export default function Dashboard() {
               </GridItem>
               <GridItem colSpan={5}>
                 <Stack spacing='3'>
-                  <Card bg='dark.900' h='210px'>
-                    <Box
-                      py={{ base: '3', md: '3' }}
-                      px={{ base: '6', md: '6' }}
-                      bg='dark.900'
-                      borderTopLeftRadius='lg'
-                      borderTopRightRadius='lg'
-                    >
-                      <HStack justify='space-between'>
-                        <Text
-                          fontSize='lg'
-                          fontWeight='regular'
-                          color='light.900'
-                          letterSpacing='tight'
-                        >
-                          Latest Proposal
-                        </Text>
-                        <Link
-                          href={`${router.pathname}/proposals/${proposal?.data?.principalAddress}`}
-                        >
-                          <Button variant='link' size='sm' color='gray'>
-                            View
-                          </Button>
-                        </Link>
-                      </HStack>
-                    </Box>
-                    <Stack
-                      spacing={{ base: '0', md: '1' }}
-                      justify='center'
-                      py={{ base: '3', md: '3' }}
-                      px={{ base: '6', md: '6' }}
-                      h={!proposal ? '30vh' : 'auto'}
-                    >
-                      <Stack spacing='3'>
-                        {!proposal && (
-                          <HStack justify='center' cursor='default'>
+                  {!proposal?.data && (
+                    <Card bg='dark.900' h='210px'>
+                      <Box
+                        py={{ base: '3', md: '3' }}
+                        px={{ base: '6', md: '6' }}
+                        bg='dark.900'
+                        borderTopLeftRadius='lg'
+                        borderTopRightRadius='lg'
+                      >
+                        <HStack justify='flex-start'>
+                          <Text
+                            fontSize='lg'
+                            fontWeight='regular'
+                            color='light.900'
+                            letterSpacing='tight'
+                          >
+                            Latest Proposal
+                          </Text>
+                        </HStack>
+                      </Box>
+                      <Stack
+                        spacing={{ base: '0', md: '1' }}
+                        justify='center'
+                        py={{ base: '3', md: '3' }}
+                        px={{ base: '6', md: '6' }}
+                        h={!proposal?.data ? '15vh' : 'auto'}
+                      >
+                        <Stack spacing='3'>
+                          <Stack
+                            spacing='3'
+                            justify='center'
+                            align='center'
+                            cursor='default'
+                          >
                             <Text fontSize='md' fontWeight='light' color='gray'>
-                              No Proposals found
+                              No proposals found
                             </Text>
-                          </HStack>
-                        )}
-                        {!!proposal && (
-                          <Stack spacing='6'>
-                            <Stack spacing='3'>
-                              <Box>
-                                <Stack spacing='2'>
-                                  <Stack spacing='0'>
-                                    <Text fontSize='md' color='light.500'>
-                                      {proposal?.data?.submission.title}
-                                    </Text>
-                                    <Text fontSize='sm' color='gray'>
-                                      {proposal?.data?.submission.description}
-                                    </Text>
-                                  </Stack>
-                                  <Stack direction='row' align='baseline'>
-                                    <Heading size='md'>
-                                      {proposal?.data?.signalsReceived}
-                                    </Heading>
-                                    <Text
-                                      aria-hidden
-                                      fontWeight='semibold'
-                                      color='muted'
-                                    >
-                                      / {proposal?.data?.signalsRequired}
-                                    </Text>
-                                    <Box srOnly>
-                                      out of {proposal?.data?.signalsRequired}
-                                    </Box>
-                                  </Stack>
-                                </Stack>
-                              </Box>
-                              <Progress
-                                value={latestProposalProgress}
-                                size='xs'
-                                borderRadius='none'
-                                colorScheme='secondary'
-                                bg='dark.500'
-                              />
-                            </Stack>
+
+                            <CreateProposal
+                              title='Create proposal'
+                              variant='secondary'
+                              size='sm'
+                              isDisabled={!isActive}
+                              _hover={{ opacity: 0.9 }}
+                            />
                           </Stack>
-                        )}
+                        </Stack>
                       </Stack>
-                    </Stack>
-                  </Card>
+                    </Card>
+                  )}
+                  {!!proposal?.data && (
+                    <Card bg='dark.900' h='210px'>
+                      <Box
+                        py={{ base: '3', md: '3' }}
+                        px={{ base: '6', md: '6' }}
+                        bg='dark.900'
+                        borderTopLeftRadius='lg'
+                        borderTopRightRadius='lg'
+                      >
+                        <HStack justify='space-between'>
+                          <Text
+                            fontSize='lg'
+                            fontWeight='regular'
+                            color='light.900'
+                            letterSpacing='tight'
+                          >
+                            Latest Proposal
+                          </Text>
+                          <Link
+                            href={`${router.pathname}/proposals/${proposal?.data?.principalAddress}`}
+                          >
+                            <Button variant='link' size='sm' color='gray'>
+                              View
+                            </Button>
+                          </Link>
+                        </HStack>
+                      </Box>
+                      <Stack
+                        spacing={{ base: '0', md: '1' }}
+                        justify='center'
+                        py={{ base: '3', md: '3' }}
+                        px={{ base: '6', md: '6' }}
+                        h={!proposal ? '30vh' : 'auto'}
+                      >
+                        <Stack spacing='3'>
+                          {!proposal && (
+                            <HStack justify='center' cursor='default'>
+                              <Text
+                                fontSize='md'
+                                fontWeight='light'
+                                color='gray'
+                              >
+                                No Proposals found
+                              </Text>
+                            </HStack>
+                          )}
+                          {!!proposal && (
+                            <Stack spacing='6'>
+                              <Stack spacing='3'>
+                                <Box>
+                                  <Stack spacing='2'>
+                                    <Stack spacing='0'>
+                                      <Text fontSize='md' color='light.500'>
+                                        {proposal?.data?.submission.title}
+                                      </Text>
+                                      <Text fontSize='sm' color='gray'>
+                                        {proposal?.data?.submission.description.substring(
+                                          0,
+                                          100,
+                                        )}
+                                        ...
+                                      </Text>
+                                    </Stack>
+                                    <Stack direction='row' align='baseline'>
+                                      <Heading size='md'>
+                                        {proposal?.data?.signalsReceived}
+                                      </Heading>
+                                      <Text
+                                        aria-hidden
+                                        fontWeight='semibold'
+                                        color='muted'
+                                      >
+                                        / {proposal?.data?.signalsRequired}
+                                      </Text>
+                                      <Box srOnly>
+                                        out of {proposal?.data?.signalsRequired}
+                                      </Box>
+                                    </Stack>
+                                  </Stack>
+                                </Box>
+                                <Progress
+                                  value={latestProposalProgress}
+                                  size='xs'
+                                  borderRadius='none'
+                                  colorScheme='secondary'
+                                  bg='dark.500'
+                                />
+                              </Stack>
+                            </Stack>
+                          )}
+                        </Stack>
+                      </Stack>
+                    </Card>
+                  )}
                 </Stack>
               </GridItem>
             </Grid>

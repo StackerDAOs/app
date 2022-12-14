@@ -111,7 +111,7 @@ export async function getSubmissions({ queryKey }: any) {
     .order('created_at', { ascending: false })
     .eq('teams.id', organizationId)
     .eq('submitted_by', stxAddress)
-    .eq('disabled', 'false');
+    .eq('deployed', 'false');
   try {
     if (filter === 'active') {
       const { data: submissions, error } = await query.filter(

@@ -30,7 +30,11 @@ import { Card } from 'ui/components/cards';
 import { StacksSDK } from 'sdk';
 import Papa from 'papaparse';
 import { getTransaction } from 'api/teams';
-import { useUpdateBootstrap, useUpdateInitTxId } from 'api/teams/mutations';
+import {
+  useActivateTeam,
+  useUpdateBootstrap,
+  useUpdateInitTxId,
+} from 'api/teams/mutations';
 import { useGenerateName, useTeam, useTransaction } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { shortenAddress, validateContractAddress } from '@stacks-os/utils';
@@ -182,6 +186,7 @@ const FinishedState = () => {
   const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
   const sdk = new StacksSDK(dao?.data?.contract_address);
   const { randomName: contractName } = useGenerateName();
+  const activate = useActivateTeam();
 
   const onSuccess = (payload: any) => {
     setIsRequestPending(true);
@@ -441,7 +446,16 @@ const FinishedState = () => {
         {transaction?.data?.tx_status === 'success' &&
         activationTransaction?.data?.tx_status === 'success' ? (
           <Link href={`/${dao?.data?.slug}`}>
-            <Button variant='link' rightIcon={<ArrowRight />}>
+            <Button
+              variant='link'
+              rightIcon={<ArrowRight />}
+              onClick={() => {
+                activate.mutate({
+                  contract_address: dao?.data?.contract_address,
+                });
+              }}
+              isLoading={activate.isLoading}
+            >
               Go to Dashboard
             </Button>
           </Link>

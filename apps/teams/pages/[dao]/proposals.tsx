@@ -6,11 +6,13 @@ import {
   Badge,
   Box,
   Button,
+  Circle,
   Flex,
   Grid,
   GridItem,
   Heading,
   HStack,
+  Icon,
   Radio,
   RadioGroup,
   SimpleGrid,
@@ -18,6 +20,7 @@ import {
   Tag,
   Text,
   Tooltip,
+  useToast,
 } from 'ui';
 import { useAccount, useAuth } from 'ui/components';
 import { Card } from 'ui/components/cards';
@@ -27,11 +30,11 @@ import { SectionHeader } from 'ui/components/layout';
 import { ConnectButton } from 'ui/components/buttons';
 import { CreateProposal } from '@components/drawers';
 import { useTeam, useTeamProposals, useTeamSubmissions } from 'ui/hooks';
-import { findExtension } from 'utils';
+import { findExtension, getExplorerLink } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
 import { capitalize, map, size } from 'lodash';
 import { useActivateTeam, useCreateProposal } from 'api/teams/mutations';
-import { InfoIcon } from 'ui/components/icons';
+import { CheckCircle, InfoIcon, XIcon } from 'ui/components/icons';
 
 const MotionGrid = motion(SimpleGrid);
 
@@ -50,6 +53,7 @@ export default function Proposals() {
   const proposals = useTeamProposals();
   const submissions = useTeamSubmissions();
   const createProposal = useCreateProposal();
+  const toast = useToast();
 
   if (dao?.isLoading && dao?.isFetching) {
     return null;
@@ -292,12 +296,83 @@ export default function Proposals() {
                                           submission?.contract_address,
                                         onFinish(payload) {
                                           const { txId } = payload;
-                                          createProposal.mutate({
-                                            contract_address:
-                                              submission?.contract_address,
-                                            proposed_by: stxAddress as string,
-                                            tx_id: txId,
-                                          });
+                                          createProposal.mutate(
+                                            {
+                                              contract_address:
+                                                submission?.contract_address,
+                                              proposed_by: stxAddress as string,
+                                              tx_id: txId,
+                                            },
+                                            {
+                                              onSuccess: () => {
+                                                const href =
+                                                  getExplorerLink(txId);
+                                                toast({
+                                                  duration: 5000,
+                                                  position: 'bottom-right',
+                                                  isClosable: true,
+                                                  render: () => (
+                                                    <Stack
+                                                      direction='row'
+                                                      justify='space-between'
+                                                      py='2'
+                                                      px='3'
+                                                      spacing='3'
+                                                      bg='dark.800'
+                                                      borderRadius='3xl'
+                                                      borderColor='dark.500'
+                                                      borderWidth='1px'
+                                                    >
+                                                      <Stack spacing='2'>
+                                                        <Stack
+                                                          spacing='3'
+                                                          direction='row'
+                                                          align='center'
+                                                        >
+                                                          <Circle
+                                                            size='8'
+                                                            bg='dark.500'
+                                                            borderRadius='3xl'
+                                                          >
+                                                            <Icon
+                                                              as={CheckCircle}
+                                                              color='primary.500'
+                                                              boxSize='5'
+                                                            />
+                                                          </Circle>
+                                                          <a
+                                                            href={href}
+                                                            target='_blank'
+                                                            rel='noreferrer'
+                                                          >
+                                                            <Button
+                                                              variant='link'
+                                                              size='sm'
+                                                            >
+                                                              View transaction
+                                                            </Button>
+                                                          </a>
+                                                        </Stack>
+                                                      </Stack>
+                                                      <Button
+                                                        variant='link'
+                                                        size='sm'
+                                                      >
+                                                        <Icon
+                                                          as={XIcon}
+                                                          color='light.900'
+                                                          boxSize='5'
+                                                          onClick={() =>
+                                                            toast.closeAll()
+                                                          }
+                                                        />
+                                                      </Button>
+                                                    </Stack>
+                                                  ),
+                                                });
+                                              },
+                                            },
+                                          );
                                         },
                                       })
                                     }

@@ -27,7 +27,7 @@ type SelectTemplateProps = {
 
 const INITIAL_FORM_DATA: SelectTemplateProps = {
   selectedTemplate: '',
-  isTransferSelected: false,
+  isTransferSelected: true,
   isAllowListSelected: false,
   recipientDetails: {
     to: '',

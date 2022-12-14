@@ -48,6 +48,7 @@ import {
   PlusIcon,
   MinusIcon,
   ArrowRight,
+  XIcon,
 } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { DotStep } from 'ui/components/feedback';
@@ -86,7 +87,7 @@ const TemplateSelect = () => {
   );
 
   return (
-    <Stack spacing='6' justify='center' px='8' m='0 auto' maxW='4xl'>
+    <Stack spacing='6' justify='center' px='8' m='0 auto' maxW='3xl'>
       <Stack spacing='0' align='flex-start'>
         <Text fontSize='lg' fontWeight='medium'>
           Select a template
@@ -282,96 +283,8 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
           </Text>
         </Stack>
         <Stack spacing='3'>
-          <Grid templateColumns='repeat(7, 1fr)' gap={16}>
-            <GridItem colSpan={4}>
-              <Stack
-                as='form'
-                pointerEvents={isProposalDeploying ? 'none' : 'auto'}
-                filter={isProposalDeploying ? 'blur(1px)' : 'none'}
-              >
-                <FormControl>
-                  <Stack spacing='4'>
-                    <Grid templateColumns='repeat(5, 1fr)' gap='4'>
-                      <GridItem colSpan={5}>
-                        <FormControl>
-                          <FormLabel
-                            htmlFor='name'
-                            fontWeight='light'
-                            color='gray'
-                          >
-                            Title
-                          </FormLabel>
-                          <Input
-                            id='title'
-                            autoComplete='off'
-                            placeholder='Give your proposal a name'
-                            size='md'
-                            value={proposal?.data?.title}
-                            onChange={(e) =>
-                              updateProposalData({
-                                ...proposal.data,
-                                title: e.target.value,
-                              })
-                            }
-                          />
-                        </FormControl>
-                      </GridItem>
-                      <GridItem colSpan={5}>
-                        <FormControl>
-                          <FormLabel
-                            htmlFor='name'
-                            fontWeight='light'
-                            color='gray'
-                          >
-                            TL;DR
-                          </FormLabel>
-                          <Textarea
-                            id='description'
-                            autoComplete='off'
-                            placeholder='In three sentences or less, explain your proposal'
-                            size='md'
-                            rows={2}
-                            value={proposal?.data?.description}
-                            onChange={(e) =>
-                              updateProposalData({
-                                ...proposal.data,
-                                description: e.target.value,
-                              })
-                            }
-                          />
-                        </FormControl>
-                      </GridItem>
-                      <GridItem colSpan={5}>
-                        <FormControl>
-                          <FormLabel
-                            htmlFor='body'
-                            fontWeight='light'
-                            color='gray'
-                          >
-                            Description
-                          </FormLabel>
-                          <Textarea
-                            id='body'
-                            autoComplete='off'
-                            placeholder='Describe your proposal in detail'
-                            size='md'
-                            rows={8}
-                            value={proposal?.data?.body}
-                            onChange={(e) =>
-                              updateProposalData({
-                                ...proposal.data,
-                                body: e.target.value,
-                              })
-                            }
-                          />
-                        </FormControl>
-                      </GridItem>
-                    </Grid>
-                  </Stack>
-                </FormControl>
-              </Stack>
-            </GridItem>
-            <GridItem colSpan={3}>
+          <Grid templateColumns='repeat(5, 1fr)' gap={8}>
+            <GridItem colSpan={5}>
               <Stack spacing='3'>
                 <Tabs color='light.900' variant='unstyled' isFitted>
                   <TabList>
@@ -380,25 +293,125 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                       borderRadius='lg'
                       borderWidth='1px'
                       borderColor='dark.500'
+                      w='35vw'
                     >
-                      {map(['Preview', 'Details', 'Code'], (item) => (
-                        <Tab
-                          key={item}
-                          borderRadius='lg'
-                          color='light.500'
-                          w='50%'
-                          fontSize='sm'
-                          _selected={{
-                            color: 'light.900',
-                            bg: 'dark.700',
-                          }}
-                        >
-                          {item}
-                        </Tab>
-                      ))}
+                      {map(
+                        ['Details', 'Preview', 'On-chain', 'Code'],
+                        (item) => (
+                          <Tab
+                            key={item}
+                            borderRadius='lg'
+                            color='light.500'
+                            // w='50%'
+                            fontSize='sm'
+                            _selected={{
+                              color: 'light.900',
+                              bg: 'dark.700',
+                            }}
+                          >
+                            {item}
+                          </Tab>
+                        ),
+                      )}
                     </ButtonGroup>
                   </TabList>
-                  <TabPanels>
+                  <TabPanels h='55vh' overflow='hidden' overflowY='scroll'>
+                    <TabPanel px='0'>
+                      <motion.div
+                        variants={FADE_IN_VARIANTS}
+                        initial={FADE_IN_VARIANTS.hidden}
+                        animate={FADE_IN_VARIANTS.enter}
+                        exit={FADE_IN_VARIANTS.exit}
+                        transition={{ duration: 0.25, type: 'linear' }}
+                      >
+                        <Stack
+                          as='form'
+                          pointerEvents={isProposalDeploying ? 'none' : 'auto'}
+                          filter={isProposalDeploying ? 'blur(1px)' : 'none'}
+                        >
+                          <FormControl>
+                            <Stack spacing='4'>
+                              <Grid templateColumns='repeat(5, 1fr)' gap='4'>
+                                <GridItem colSpan={5}>
+                                  <FormControl>
+                                    <FormLabel
+                                      htmlFor='name'
+                                      fontWeight='light'
+                                      color='gray'
+                                    >
+                                      Title
+                                    </FormLabel>
+                                    <Input
+                                      id='title'
+                                      autoComplete='off'
+                                      placeholder='Give your proposal a name'
+                                      size='md'
+                                      value={proposal?.data?.title}
+                                      onChange={(e) =>
+                                        updateProposalData({
+                                          ...proposal.data,
+                                          title: e.target.value,
+                                        })
+                                      }
+                                    />
+                                  </FormControl>
+                                </GridItem>
+                                <GridItem colSpan={5}>
+                                  <FormControl>
+                                    <FormLabel
+                                      htmlFor='name'
+                                      fontWeight='light'
+                                      color='gray'
+                                    >
+                                      TL;DR
+                                    </FormLabel>
+                                    <Textarea
+                                      id='description'
+                                      autoComplete='off'
+                                      placeholder='In three sentences or less, explain your proposal'
+                                      size='md'
+                                      rows={2}
+                                      value={proposal?.data?.description}
+                                      onChange={(e) =>
+                                        updateProposalData({
+                                          ...proposal.data,
+                                          description: e.target.value,
+                                        })
+                                      }
+                                    />
+                                  </FormControl>
+                                </GridItem>
+                                <GridItem colSpan={5}>
+                                  <FormControl>
+                                    <FormLabel
+                                      htmlFor='body'
+                                      fontWeight='light'
+                                      color='gray'
+                                    >
+                                      Description
+                                    </FormLabel>
+                                    <Textarea
+                                      id='body'
+                                      autoComplete='off'
+                                      placeholder='Describe your proposal in detail'
+                                      size='md'
+                                      rows={8}
+                                      value={proposal?.data?.body}
+                                      onChange={(e) =>
+                                        updateProposalData({
+                                          ...proposal.data,
+                                          body: e.target.value,
+                                        })
+                                      }
+                                    />
+                                  </FormControl>
+                                </GridItem>
+                              </Grid>
+                            </Stack>
+                          </FormControl>
+                        </Stack>
+                      </motion.div>
+                    </TabPanel>
                     <TabPanel px='0'>
                       <motion.div
                         variants={FADE_IN_VARIANTS}
@@ -423,24 +436,22 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                                   </Text>
                                 </Tag>
                                 <Heading
-                                  fontSize='4xl'
+                                  fontSize='3xl'
                                   fontWeight='black'
                                   color='light.900'
                                 >
                                   {proposal?.data?.title
-                                    ? proposal?.data?.title.substring(0, 50)
+                                    ? proposal?.data?.title
                                     : 'Untitled'}
                                 </Heading>
                                 <Text
                                   color='gray'
-                                  fontSize='md'
-                                  fontWeight='regular'
+                                  fontSize='lg'
+                                  fontWeight='light'
+                                  letterSpacing='tight'
                                 >
                                   {proposal?.data?.description
-                                    ? proposal?.data?.description.substring(
-                                        0,
-                                        100,
-                                      )
+                                    ? proposal?.data?.description
                                     : 'TL;DR'}
                                 </Text>
                                 <Text
@@ -449,7 +460,7 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                                   fontWeight='regular'
                                 >
                                   {proposal?.data?.body
-                                    ? proposal?.data?.body.substring(0, 350)
+                                    ? proposal?.data?.body
                                     : 'Description'}
                                 </Text>
                               </Stack>
@@ -673,10 +684,14 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
   }
 
   return (
-    <Stack spacing='6' justify='center' px='8' m='0 auto' maxW='4xl'>
+    <Stack spacing='6' justify='center' px='8' m='0 auto' maxW='3xl'>
       <Stack spacing='0' align='flex-start'>
         <Text fontSize='lg' fontWeight='medium'>
-          Configure your proposal
+          Asset Management
+        </Text>
+        <Text color='light.500' fontSize='sm' maxW='lg'>
+          You can add as many transfers as you want. You can also add as many
+          token to the allowlist as you want.
         </Text>
       </Stack>
       <Stack spacing='3'>
@@ -902,10 +917,23 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                   <FormControl>
                     <Stack spacing='3'>
                       <HStack
-                        spacing='1'
+                        spacing='3'
                         align='baseline'
                         justify='space-between'
                       >
+                        <Tag
+                          color='blue.500'
+                          bg='dark.800'
+                          alignSelf='self-start'
+                          size='sm'
+                          borderRadius='3xl'
+                        >
+                          <Text as='span' fontWeight='regular'>
+                            {proposal.allowlist.length === 1
+                              ? `${proposal.allowlist.length} token added`
+                              : `${proposal.allowlist.length} tokens added`}
+                          </Text>
+                        </Tag>
                         <Button
                           variant='secondary'
                           color='light.900'
@@ -917,19 +945,6 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                             Add token
                           </Text>
                         </Button>
-                        {proposal.allowlist.length !== 0 && (
-                          <Tag
-                            color='blue.500'
-                            bg='dark.800'
-                            alignSelf='self-start'
-                            size='sm'
-                            borderRadius='3xl'
-                          >
-                            <Text as='span' fontWeight='regular'>
-                              {proposal.allowlist.length}
-                            </Text>
-                          </Tag>
-                        )}
                       </HStack>
                       <Grid templateColumns='repeat(5, 1fr)' gap='4'>
                         <GridItem colSpan={5}>
@@ -1180,7 +1195,7 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
       <Drawer
         isOpen={isOpen}
         placement='right'
-        size='full'
+        size='xl'
         onClose={onClose}
         initialFocusRef={focusField}
       >
@@ -1194,9 +1209,17 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
             py='4'
             px={{ base: '8', md: '8' }}
           >
-            <Button variant='dark' size='sm' onClick={onClose}>
-              Cancel
-            </Button>
+            <Circle
+              size='8'
+              bg='dark.800'
+              borderWidth='1px'
+              borderColor='dark.500'
+              cursor='pointer'
+              onClick={onClose}
+            >
+              <Icon as={XIcon} boxSize='4' />
+            </Circle>
+
             <Breadcrumb spacing='2'>
               <BreadcrumbItem isCurrentPage color='gray'>
                 <BreadcrumbLink
@@ -1205,7 +1228,7 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
                     textDecoration: 'none',
                   }}
                 >
-                  Proposal Dashboard
+                  Create Proposal Contract
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </Breadcrumb>
