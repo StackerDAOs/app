@@ -29,12 +29,22 @@ import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { SectionHeader } from 'ui/components/layout';
 import { ConnectButton } from 'ui/components/buttons';
 import { CreateProposal } from '@components/drawers';
-import { useTeam, useTeamProposals, useTeamSubmissions } from 'ui/hooks';
+import {
+  useTeam,
+  useTeamProposals,
+  useTeamSubmissions,
+  useTeamTransactions,
+} from 'ui/hooks';
 import { findExtension, getExplorerLink } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
 import { capitalize, map, size } from 'lodash';
 import { useActivateTeam, useCreateProposal } from 'api/teams/mutations';
-import { CheckCircle, InfoIcon, XIcon } from 'ui/components/icons';
+import {
+  CheckCircle,
+  InfoIcon,
+  TransferIcon,
+  XIcon,
+} from 'ui/components/icons';
 
 const MotionGrid = motion(SimpleGrid);
 
@@ -50,10 +60,16 @@ export default function Proposals() {
   const activate = useActivateTeam();
   const sdk = new StacksSDK(dao?.data?.contract_address);
   const multisigExtension = findExtension(dao?.data?.extensions, 'Team');
+  const transactions = useTeamTransactions(
+    multisigExtension?.contract_address,
+    'team',
+  );
   const proposals = useTeamProposals();
   const submissions = useTeamSubmissions();
   const createProposal = useCreateProposal();
   const toast = useToast();
+
+  console.log({ transactions });
 
   if (dao?.isLoading && dao?.isFetching) {
     return null;
@@ -240,7 +256,6 @@ export default function Proposals() {
                             <Text fontSize='md' fontWeight='light' color='gray'>
                               No proposals in the queue
                             </Text>
-
                             <CreateProposal
                               title='Create proposal'
                               variant='secondary'
@@ -402,34 +417,63 @@ export default function Proposals() {
                       fontWeight='regular'
                       letterSpacing='tight'
                     >
-                      Activity
+                      Recent Activity
                     </Heading>
-                    <Stack spacing='3' justify='center' h='full'>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Submitted
+                    {transactions?.data?.length !== 0 &&
+                      transactions?.data?.map((transaction: any) => (
+                        <Stack spacing='3' justify='center' h='full'>
+                          <HStack justify='space-between'>
+                            <HStack spacing='2'>
+                              <Circle
+                                size='5'
+                                bg='dark.800'
+                                borderWidth='1px'
+                                borderColor='dark.500'
+                              >
+                                <Icon
+                                  as={TransferIcon}
+                                  boxSize='2'
+                                  color='primary.900'
+                                />
+                              </Circle>
+                              <Text
+                                fontSize='sm'
+                                fontWeight='medium'
+                                color='light.900'
+                              >
+                                {truncateAddress(transaction?.txId)}
+                              </Text>
+                            </HStack>
+                            <a
+                              href={getExplorerLink(transaction?.data?.txId)}
+                              target='_blank'
+                              rel='noreferrer'
+                            >
+                              <Text
+                                fontSize='sm'
+                                fontWeight='regular'
+                                color='gray'
+                                cursor='pointer'
+                              >
+                                View transaction
+                              </Text>
+                            </a>
+                          </HStack>
+                        </Stack>
+                      ))}
+                    {transactions?.data?.length === 0 && (
+                      <Stack
+                        spacing='3'
+                        justify='center'
+                        align='center'
+                        h='15vh'
+                        cursor='default'
+                      >
+                        <Text fontSize='md' fontWeight='light' color='gray'>
+                          No recent activity
                         </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          2
-                        </Text>
-                      </HStack>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Executed
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          1
-                        </Text>
-                      </HStack>
-                    </Stack>
+                      </Stack>
+                    )}
                   </Stack>
                 </Card>
               </GridItem>
@@ -481,6 +525,18 @@ export default function Proposals() {
                       </RadioGroup>
                     </Stack>
                   </SectionHeader>
+                  {!!proposals?.data && (
+                    <Stack
+                      spacing='3'
+                      justify='center'
+                      align='center'
+                      cursor='default'
+                    >
+                      <Text fontSize='md' fontWeight='light' color='gray'>
+                        No proposals found
+                      </Text>
+                    </Stack>
+                  )}
                   <MotionGrid
                     variants={FADE_IN_VARIANTS}
                     initial={FADE_IN_VARIANTS.hidden}

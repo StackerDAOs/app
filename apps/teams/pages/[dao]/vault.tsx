@@ -24,11 +24,39 @@ import {
 import { DashboardLayout } from '@components/layout';
 import { Card } from 'ui/components/cards';
 import { DepositButton } from '@components/buttons';
-import { TransactionTable } from '@components/tables';
-import { useTeam, useTeamTransactions, useTeamVaultBalance } from 'ui/hooks';
+import { AssetTable } from '@components/tables';
+import { useTeam, useTeamVaultBalance } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { map } from 'lodash';
 import { findExtension, ustxToStx } from 'utils';
+
+const transformResponse = (response: any) => {
+  if (!response) return null;
+  const {
+    stx = { balance: '0' },
+    fungible_tokens: fungibleTokens,
+    non_fungible_tokens: nonFungibleTokens,
+  } = response && response;
+  const fungibleToken = {
+    count: Object.keys(fungibleTokens).length,
+    tokens: Object.keys(fungibleTokens).map((key) => ({
+      ...fungibleTokens[key],
+      address: key,
+    })),
+  };
+  const nonFungibleToken = {
+    count: Object.keys(nonFungibleTokens).length,
+    tokens: Object.keys(nonFungibleTokens).map((key) => ({
+      ...nonFungibleTokens[key],
+      address: key,
+    })),
+  };
+  return {
+    stx,
+    fungibleToken,
+    nonFungibleToken,
+  };
+};
 
 export default function Vault() {
   const [depositAmount, setDepositAmount] = React.useState('');
@@ -36,16 +64,14 @@ export default function Vault() {
   const vaultBalance = useTeamVaultBalance();
   const isActive = dao?.data?.active;
   const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
-  const transactions = useTeamTransactions(
-    vaultExtension?.contract_address,
-    'vault',
-  );
   const handleInputDeposit = (e: any) => {
     const re = /^[0-9.\b]+$/;
     if (e.target.value === '' || re.test(e.target.value)) {
       setDepositAmount(e.target.value);
     }
   };
+  const transformedResponse = transformResponse(vaultBalance?.data);
+  console.log({ transformedResponse });
 
   if (!isActive) {
     return (
@@ -114,7 +140,7 @@ export default function Vault() {
                       Balance
                     </Text>
                     <Text fontSize='md' fontWeight='medium' color='light.900'>
-                      {ustxToStx(vaultBalance?.data?.stx?.balance)}{' '}
+                      {ustxToStx(transformedResponse?.stx?.balance)}{' '}
                       <Text as='span' fontSize='sm' fontWeight='thin'>
                         STX
                       </Text>
@@ -125,7 +151,7 @@ export default function Vault() {
                       Tokens
                     </Text>
                     <Text fontSize='md' fontWeight='medium' color='light.900'>
-                      0
+                      {transformedResponse?.fungibleToken?.count}
                     </Text>
                   </HStack>
                   <HStack justify='space-between'>
@@ -133,7 +159,7 @@ export default function Vault() {
                       Collectibles
                     </Text>
                     <Text fontSize='md' fontWeight='medium' color='light.900'>
-                      0
+                      {transformedResponse?.nonFungibleToken?.count}
                     </Text>
                   </HStack>
                 </Stack>
@@ -284,8 +310,8 @@ export default function Vault() {
                         </Stack>
                       </Box>
                       <Box overflowX='auto'>
-                        <TransactionTable
-                          transactions={transactions?.data}
+                        <AssetTable
+                          assets={transformedResponse?.fungibleToken?.tokens}
                           bg='dark.900'
                           variant='simple'
                           size='sm'
@@ -325,8 +351,8 @@ export default function Vault() {
                         </Stack>
                       </Box>
                       <Box overflowX='auto'>
-                        <TransactionTable
-                          transactions={transactions?.data}
+                        <AssetTable
+                          assets={transformedResponse?.nonFungibleToken?.tokens}
                           bg='dark.900'
                           variant='simple'
                           size='sm'

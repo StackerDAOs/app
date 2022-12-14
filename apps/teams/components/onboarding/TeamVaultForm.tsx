@@ -344,10 +344,9 @@ const FinishedState = () => {
                             Deploy
                           </Button>
                         )}
-                        {isRequestPending ||
-                          (transaction?.data?.tx_status === 'pending' && (
-                            <Button variant='dark' isLoading />
-                          ))}
+                        {transaction?.data?.tx_status === 'pending' && (
+                          <Button variant='dark' isLoading={isRequestPending} />
+                        )}
                         {transaction?.data?.tx_status === 'success' && (
                           <Button variant='dark' isDisabled>
                             Completed

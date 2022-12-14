@@ -222,6 +222,7 @@ export async function getAccountTransactions(address: string, limit = 5) {
       principal: address as string,
       limit,
     });
+    console.log('getAccountTransactions', transactions);
     return transactions?.results.map((tx: any) => {
       const { sender_address, tx_id, tx_status, block_height } = tx;
       return {
