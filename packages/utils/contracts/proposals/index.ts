@@ -1,5 +1,6 @@
 import { traitPrincipal } from 'api/constants';
 import { size } from 'lodash';
+import { stxToUstx } from 'utils';
 
 type Recipient = {
   to: string;
@@ -12,7 +13,8 @@ const generateClarityList = (
 ) => {
   let recipientList = '';
   recipients.forEach((recipient, index) => {
-    recipientList += `(try! (contract-call? '${vaultContract} withdraw-stx u${recipient.amount} '${recipient.to}))`;
+    const amountInUstx = stxToUstx(recipient.amount);
+    recipientList += `(try! (contract-call? '${vaultContract} withdraw-stx u${amountInUstx} '${recipient.to}))`;
     if (index !== recipients?.length - 1) {
       recipientList += `  \n    `;
     }

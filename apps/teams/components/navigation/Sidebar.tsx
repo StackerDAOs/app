@@ -99,10 +99,6 @@ export const Sidebar = () => {
                   label: 'Proposals',
                   route: '/proposals',
                 },
-                {
-                  label: 'Extensions',
-                  route: '/extensions',
-                },
               ].map(({ label, route }) => (
                 <Link key={label} href={`/${slug}${route}`}>
                   <NavButton
@@ -116,6 +112,12 @@ export const Sidebar = () => {
               <Stack spacing='3'>
                 <NavHeading>Configuration</NavHeading>
                 <Stack spacing='1'>
+                  <Link href={`/${slug}/extensions`}>
+                    <NavButton
+                      label='Extensions'
+                      isSelected={isSelected('Extensions')}
+                    />
+                  </Link>
                   <NavButton
                     label='Settings'
                     isSelected={isSelected('Settings')}

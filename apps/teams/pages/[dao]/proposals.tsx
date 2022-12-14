@@ -45,7 +45,6 @@ export default function Proposals() {
   const dao = useTeam();
   const isActive = dao?.data?.active;
   const activate = useActivateTeam();
-
   const sdk = new StacksSDK(dao?.data?.contract_address);
   const multisigExtension = findExtension(dao?.data?.extensions, 'Team');
   const proposals = useTeamProposals();
@@ -188,51 +187,7 @@ export default function Proposals() {
         <Stack spacing='6'>
           <Stack spacing='8'>
             <Grid templateColumns='repeat(9, 1fr)' gap={6}>
-              <GridItem colSpan={4}>
-                <Card bg='dark.800'>
-                  <Stack
-                    px={{ base: '6', md: '6' }}
-                    py={{ base: '6', md: '6' }}
-                    spacing='6'
-                  >
-                    <Heading
-                      color='light.900'
-                      fontSize='lg'
-                      fontWeight='regular'
-                      letterSpacing='tight'
-                    >
-                      Proposal Stats
-                    </Heading>
-                    <Stack spacing='3' justify='center' h='full'>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Submitted
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          2
-                        </Text>
-                      </HStack>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Executed
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          1
-                        </Text>
-                      </HStack>
-                    </Stack>
-                  </Stack>
-                </Card>
-              </GridItem>
-              <GridItem colSpan={5}>
+              <GridItem colSpan={6}>
                 <Stack spacing='3'>
                   <Card bg='dark.900' border='1px solid' borderColor='dark.500'>
                     <Box
@@ -272,11 +227,24 @@ export default function Proposals() {
                     >
                       <Stack spacing='3'>
                         {submissions?.data?.length === 0 && (
-                          <HStack justify='center' cursor='default'>
+                          <Stack
+                            spacing='3'
+                            justify='center'
+                            align='center'
+                            cursor='default'
+                          >
                             <Text fontSize='md' fontWeight='light' color='gray'>
-                              No Submissions found
+                              No proposals in the queue
                             </Text>
-                          </HStack>
+
+                            <CreateProposal
+                              title='Create proposal'
+                              variant='secondary'
+                              size='sm'
+                              isDisabled={!isActive}
+                              _hover={{ opacity: 0.9 }}
+                            />
+                          </Stack>
                         )}
                         {submissions?.data?.length !== 0 && (
                           <Stack spacing='6' py='3'>
@@ -346,6 +314,50 @@ export default function Proposals() {
                   </Card>
                 </Stack>
               </GridItem>
+              <GridItem colSpan={3}>
+                <Card bg='dark.900' h='36.5vh'>
+                  <Stack
+                    px={{ base: '6', md: '6' }}
+                    py={{ base: '6', md: '6' }}
+                    spacing='6'
+                  >
+                    <Heading
+                      color='light.900'
+                      fontSize='lg'
+                      fontWeight='regular'
+                      letterSpacing='tight'
+                    >
+                      Activity
+                    </Heading>
+                    <Stack spacing='3' justify='center' h='full'>
+                      <HStack justify='space-between'>
+                        <Text fontSize='md' fontWeight='regular' color='gray'>
+                          Submitted
+                        </Text>
+                        <Text
+                          fontSize='md'
+                          fontWeight='medium'
+                          color='light.900'
+                        >
+                          2
+                        </Text>
+                      </HStack>
+                      <HStack justify='space-between'>
+                        <Text fontSize='md' fontWeight='regular' color='gray'>
+                          Executed
+                        </Text>
+                        <Text
+                          fontSize='md'
+                          fontWeight='medium'
+                          color='light.900'
+                        >
+                          1
+                        </Text>
+                      </HStack>
+                    </Stack>
+                  </Stack>
+                </Card>
+              </GridItem>
             </Grid>
           </Stack>
         </Stack>
@@ -366,10 +378,12 @@ export default function Proposals() {
                     color='light.900'
                   >
                     <Stack spacing='3'>
-                      <Text fontSize='md' fontWeight='light' color='text-muted'>
-                        Explore
-                      </Text>
-                      <Heading mt='0 !important' size='lg' fontWeight='medium'>
+                      <Heading
+                        color='light.900'
+                        fontSize='xl'
+                        fontWeight='medium'
+                        letterSpacing='tight'
+                      >
                         Proposals
                       </Heading>
                     </Stack>
@@ -511,13 +525,13 @@ const Header = () => {
   const isActive = dao?.data?.active;
 
   return (
-    <Flex justify='space-between' align='center' py='5' px='4'>
-      <Heading size='md' fontWeight='black' letterSpacing='tight'>
+    <Flex justify='space-between' align='center' py='6' px='4'>
+      <Heading size='lg' fontWeight='black' letterSpacing='tight'>
         Proposals
       </Heading>
       <CreateProposal
         title='Create proposal'
-        variant='default'
+        variant='secondary-inverted'
         size='sm'
         isDisabled={!isActive}
         _hover={{ opacity: 0.9 }}

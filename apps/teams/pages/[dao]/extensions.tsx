@@ -20,7 +20,7 @@ import { Card } from 'ui/components/cards';
 import { useTeam } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { map } from 'lodash';
-import { EllipsisIcon, LightningBolt, SwapArrows } from 'ui/components/icons';
+import { LightningBolt, SwapArrows } from 'ui/components/icons';
 import { truncateAddress } from '@stacks-os/utils';
 
 const extensionOptions = [
@@ -114,16 +114,15 @@ export default function Extensions() {
       <Stack spacing='8'>
         <Stack spacing='6'>
           <Stack spacing='8'>
-            <Grid templateColumns='repeat(9, 1fr)' gap={0}>
+            <Grid templateColumns='repeat(10, 1fr)' gap={8}>
               {map(extensions, (extension) => (
-                <GridItem colSpan={3}>
-                  <Card bg='dark.800' w='fit-content'>
+                <GridItem colSpan={5}>
+                  <Card bg='dark.800'>
                     <Grid
                       templateColumns='repeat(5, 1fr)'
                       gap={8}
                       alignItems='center'
-                      pl={{ base: '3', md: '3' }}
-                      py={{ base: '3', md: '3' }}
+                      p={{ base: '6', md: '6' }}
                     >
                       <GridItem colSpan={{ base: 2, md: 4 }}>
                         <Stack spacing='2'>
@@ -140,7 +139,7 @@ export default function Extensions() {
                           </Tag>
                           <HStack align='flex-start' spacing='4'>
                             <Stack spacing='1' maxW='lg'>
-                              <Heading size='sm' fontWeight='black'>
+                              <Heading size='md' fontWeight='black'>
                                 {extension?.extension_types?.name}
                               </Heading>
                               <Text
@@ -153,9 +152,6 @@ export default function Extensions() {
                             </Stack>
                           </HStack>
                         </Stack>
-                      </GridItem>
-                      <GridItem colSpan={{ base: 1, md: 1 }}>
-                        <Icon as={EllipsisIcon} boxSize='6' />
                       </GridItem>
                     </Grid>
                   </Card>
@@ -171,10 +167,12 @@ export default function Extensions() {
             color='light.900'
           >
             <Stack spacing='3'>
-              <Text fontSize='md' fontWeight='light' color='text-muted'>
-                Browse
-              </Text>
-              <Heading mt='0 !important' size='lg' fontWeight='medium'>
+              <Heading
+                color='light.900'
+                fontSize='xl'
+                fontWeight='medium'
+                letterSpacing='tight'
+              >
                 Extensions
               </Heading>
             </Stack>
@@ -228,8 +226,8 @@ Extensions.getLayout = (page: any) => (
   <DashboardLayout
     header={
       <Flex justify='space-between' align='center' py='6' px='4'>
-        <Heading size='md' fontWeight='black' letterSpacing='tight'>
-          Vault
+        <Heading size='lg' fontWeight='black' letterSpacing='tight'>
+          Extensions
         </Heading>
       </Flex>
     }

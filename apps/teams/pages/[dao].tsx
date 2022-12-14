@@ -19,12 +19,18 @@ import { useAuth } from 'ui/components';
 import { Card } from 'ui/components/cards';
 import { DashboardLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-
 import { ConnectButton } from 'ui/components/buttons';
-import { useTeam, useTeamTransactions, useTeamProposals } from 'ui/hooks';
-import { findExtension } from 'utils';
+import {
+  useTeam,
+  useTeamTransactions,
+  useTeamProposal,
+  useTeamProposals,
+  useTeamVaultBalance,
+} from 'ui/hooks';
+import { findExtension, ustxToStx } from 'utils';
 import { TransactionTable } from '@components/tables';
 import { useActivateTeam } from 'api/teams/mutations';
+import { defaultTo } from 'lodash';
 
 export default function Dashboard() {
   const { isSignedIn } = useAuth();
@@ -37,8 +43,19 @@ export default function Dashboard() {
   );
   const isActive = dao?.data?.active;
   const activate = useActivateTeam();
-
+  const vaultBalance = useTeamVaultBalance();
   const proposals = useTeamProposals();
+  const proposal = useTeamProposal(proposals?.data?.[0]?.contract_address);
+  const latestProposalSignalsReceived = defaultTo(
+    0,
+    proposal?.data?.signalsReceived,
+  ) as number;
+  const latestProposalSignalsRequired = defaultTo(
+    0,
+    proposal?.data?.signalsRequired,
+  ) as number;
+  const latestProposalProgress =
+    (latestProposalSignalsReceived / latestProposalSignalsRequired) * 100;
 
   if (dao?.isLoading && dao?.isFetching) {
     return null;
@@ -177,7 +194,7 @@ export default function Dashboard() {
           <Stack spacing='8'>
             <Grid templateColumns='repeat(9, 1fr)' gap={6}>
               <GridItem colSpan={4}>
-                <Card bg='dark.800' h='192px'>
+                <Card bg='dark.800' h='210px'>
                   <Stack
                     px={{ base: '6', md: '6' }}
                     py={{ base: '6', md: '6' }}
@@ -189,7 +206,7 @@ export default function Dashboard() {
                       fontWeight='regular'
                       letterSpacing='tight'
                     >
-                      Treasury
+                      Account Details
                     </Heading>
                     <Stack spacing='3' justify='center' h='full'>
                       <HStack justify='space-between'>
@@ -201,7 +218,7 @@ export default function Dashboard() {
                           fontWeight='medium'
                           color='light.900'
                         >
-                          1,242{' '}
+                          {ustxToStx(vaultBalance?.data?.stx?.balance)}{' '}
                           <Text as='span' fontSize='sm' fontWeight='thin'>
                             STX
                           </Text>
@@ -209,26 +226,32 @@ export default function Dashboard() {
                       </HStack>
                       <HStack justify='space-between'>
                         <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Tokens
+                          Total Sent
                         </Text>
                         <Text
                           fontSize='md'
                           fontWeight='medium'
                           color='light.900'
                         >
-                          7
+                          {ustxToStx(vaultBalance?.data?.stx?.total_sent)}{' '}
+                          <Text as='span' fontSize='sm' fontWeight='thin'>
+                            STX
+                          </Text>
                         </Text>
                       </HStack>
                       <HStack justify='space-between'>
                         <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Collectibles
+                          Total Received
                         </Text>
                         <Text
                           fontSize='md'
                           fontWeight='medium'
                           color='light.900'
                         >
-                          2
+                          {ustxToStx(vaultBalance?.data?.stx?.total_received)}{' '}
+                          <Text as='span' fontSize='sm' fontWeight='thin'>
+                            STX
+                          </Text>
                         </Text>
                       </HStack>
                     </Stack>
@@ -237,7 +260,7 @@ export default function Dashboard() {
               </GridItem>
               <GridItem colSpan={5}>
                 <Stack spacing='3'>
-                  <Card bg='dark.900' h='192px'>
+                  <Card bg='dark.900' h='210px'>
                     <Box
                       py={{ base: '3', md: '3' }}
                       px={{ base: '6', md: '6' }}
@@ -247,15 +270,20 @@ export default function Dashboard() {
                     >
                       <HStack justify='space-between'>
                         <Text
-                          fontSize='md'
-                          fontWeight='medium'
+                          fontSize='lg'
+                          fontWeight='regular'
                           color='light.900'
+                          letterSpacing='tight'
                         >
                           Latest Proposal
                         </Text>
-                        <Button variant='link' size='sm' color='gray'>
-                          View All
-                        </Button>
+                        <Link
+                          href={`${router.pathname}/proposals/${proposal?.data?.principalAddress}`}
+                        >
+                          <Button variant='link' size='sm' color='gray'>
+                            View
+                          </Button>
+                        </Link>
                       </HStack>
                     </Box>
                     <Stack
@@ -263,52 +291,54 @@ export default function Dashboard() {
                       justify='center'
                       py={{ base: '3', md: '3' }}
                       px={{ base: '6', md: '6' }}
-                      h={proposals?.data?.length === 0 ? '30vh' : 'auto'}
+                      h={!proposal ? '30vh' : 'auto'}
                     >
                       <Stack spacing='3'>
-                        {proposals?.data?.length === 0 && (
+                        {!proposal && (
                           <HStack justify='center' cursor='default'>
                             <Text fontSize='md' fontWeight='light' color='gray'>
                               No Proposals found
                             </Text>
                           </HStack>
                         )}
-                        {proposals?.data?.length !== 0 && (
+                        {!!proposal && (
                           <Stack spacing='6'>
-                            {proposals?.data?.map(({ submission }: any) => (
-                              <Stack spacing='3'>
-                                <Box>
-                                  <Stack spacing='2'>
-                                    <Stack spacing='0'>
-                                      <Text fontSize='sm' color='light.500'>
-                                        {submission.title}
-                                      </Text>
-                                      <Text fontSize='sm' color='gray'>
-                                        {submission.description}
-                                      </Text>
-                                    </Stack>
-                                    <Stack direction='row' align='baseline'>
-                                      <Heading size='md'>1</Heading>
-                                      <Text
-                                        aria-hidden
-                                        fontWeight='semibold'
-                                        color='muted'
-                                      >
-                                        / 3
-                                      </Text>
-                                      <Box srOnly>out of 3</Box>
-                                    </Stack>
+                            <Stack spacing='3'>
+                              <Box>
+                                <Stack spacing='2'>
+                                  <Stack spacing='0'>
+                                    <Text fontSize='md' color='light.500'>
+                                      {proposal?.data?.submission.title}
+                                    </Text>
+                                    <Text fontSize='sm' color='gray'>
+                                      {proposal?.data?.submission.description}
+                                    </Text>
                                   </Stack>
-                                </Box>
-                                <Progress
-                                  value={(100 / 200) * 100}
-                                  size='xs'
-                                  borderRadius='none'
-                                  colorScheme='secondary'
-                                  bg='dark.500'
-                                />
-                              </Stack>
-                            ))}
+                                  <Stack direction='row' align='baseline'>
+                                    <Heading size='md'>
+                                      {proposal?.data?.signalsReceived}
+                                    </Heading>
+                                    <Text
+                                      aria-hidden
+                                      fontWeight='semibold'
+                                      color='muted'
+                                    >
+                                      / {proposal?.data?.signalsRequired}
+                                    </Text>
+                                    <Box srOnly>
+                                      out of {proposal?.data?.signalsRequired}
+                                    </Box>
+                                  </Stack>
+                                </Stack>
+                              </Box>
+                              <Progress
+                                value={latestProposalProgress}
+                                size='xs'
+                                borderRadius='none'
+                                colorScheme='secondary'
+                                bg='dark.500'
+                              />
+                            </Stack>
                           </Stack>
                         )}
                       </Stack>
@@ -361,7 +391,7 @@ export default function Dashboard() {
 
 const Header = () => (
   <Flex justify='space-between' align='center' py='6' px='4'>
-    <Heading size='md' fontWeight='black' letterSpacing='tight'>
+    <Heading size='lg' fontWeight='black' letterSpacing='tight'>
       Dashboard
     </Heading>
   </Flex>

@@ -215,7 +215,7 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
               amount: 0,
             },
           );
-          createSubmission.mutate({
+          const submission = {
             title: proposal?.data?.title,
             description: proposal?.data?.description,
             body: proposal?.data?.body,
@@ -223,7 +223,12 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
             tx_id: txId,
             submitted_by: tx?.sender_address,
             team_id: dao?.data?.id,
-            post_conditions: postConditions,
+          };
+          createSubmission.mutate({
+            ...submission,
+            ...(proposal?.isTransferSelected && {
+              post_conditions: postConditions,
+            }),
           });
         } catch (e: any) {
           console.error({ e });
@@ -654,8 +659,8 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
               sdk.deployer.deployVaultTemplate({
                 contractName,
                 vaultAddress: vaultExtension?.contract_address,
-                recipients: proposal.recipients,
-                allowlist: proposal.allowlist,
+                recipients: proposal?.recipients,
+                allowlist: proposal?.allowlist,
                 onFinish: onFinishDeployVaultTemplate,
               });
             }}
@@ -732,10 +737,23 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                   <FormControl>
                     <Stack spacing='3'>
                       <HStack
-                        spacing='1'
+                        spacing='3'
                         align='baseline'
                         justify='space-between'
                       >
+                        <Tag
+                          color='blue.500'
+                          bg='dark.800'
+                          alignSelf='self-start'
+                          size='sm'
+                          borderRadius='3xl'
+                        >
+                          <Text as='span' fontWeight='regular'>
+                            {proposal.recipients.length === 1
+                              ? `${proposal.recipients.length} recipient added`
+                              : `${proposal.recipients.length} recipients added`}
+                          </Text>
+                        </Tag>
                         <Button
                           variant='secondary'
                           color='light.900'
@@ -749,21 +767,12 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                             Add recipient
                           </Text>
                         </Button>
-                        {proposal.recipients.length !== 0 && (
-                          <Tag
-                            color='blue.500'
-                            bg='dark.800'
-                            alignSelf='self-start'
-                            size='sm'
-                            borderRadius='3xl'
-                          >
-                            <Text as='span' fontWeight='regular'>
-                              {proposal.recipients.length}
-                            </Text>
-                          </Tag>
-                        )}
                       </HStack>
-                      <Grid templateColumns='repeat(7, 1fr)' gap='4'>
+                      <Grid
+                        templateColumns='repeat(7, 1fr)'
+                        gap='4'
+                        alignItems='center'
+                      >
                         <GridItem colSpan={2}>
                           <HStack
                             justify='space-between'

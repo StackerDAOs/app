@@ -323,6 +323,29 @@ export async function getBalance(
   }
 }
 
+export async function getAllowedAsset(
+  vaultContractAddress: string,
+  assetContract: string,
+) {
+  try {
+    const network = new stacksNetwork();
+    if (!vaultContractAddress) return;
+    const [contractAddress, contractName] =
+      splitContractAddress(vaultContractAddress);
+    const asset: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
+      senderAddress: vaultContractAddress,
+      functionArgs: [contractPrincipalCV(assetContract)],
+      functionName: 'get-allowed-asset',
+    });
+    return asset;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
 export async function getDecimal(principalAddress: string) {
   try {
     const network = new stacksNetwork();

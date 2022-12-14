@@ -92,159 +92,139 @@ export default function Vault() {
       transition={{ duration: 0.25, type: 'linear' }}
     >
       <Stack spacing='8'>
-        <Stack spacing='6'>
-          <Stack spacing='8'>
-            <Grid templateColumns='repeat(9, 1fr)' gap={6}>
-              <GridItem colSpan={4}>
-                <Card bg='dark.800' h='189px'>
-                  <Stack
-                    px={{ base: '6', md: '6' }}
-                    py={{ base: '6', md: '6' }}
-                    spacing='6'
+        <Grid templateColumns='repeat(9, 1fr)' gap={6}>
+          <GridItem colSpan={4}>
+            <Card bg='dark.800' h='189px'>
+              <Stack
+                px={{ base: '6', md: '6' }}
+                py={{ base: '6', md: '6' }}
+                spacing='6'
+              >
+                <Heading
+                  color='light.900'
+                  fontSize='lg'
+                  fontWeight='regular'
+                  letterSpacing='tight'
+                >
+                  Treasury
+                </Heading>
+                <Stack spacing='3' justify='center' h='full'>
+                  <HStack justify='space-between'>
+                    <Text fontSize='md' fontWeight='regular' color='gray'>
+                      Balance
+                    </Text>
+                    <Text fontSize='md' fontWeight='medium' color='light.900'>
+                      {ustxToStx(vaultBalance?.data?.stx?.balance)}{' '}
+                      <Text as='span' fontSize='sm' fontWeight='thin'>
+                        STX
+                      </Text>
+                    </Text>
+                  </HStack>
+                  <HStack justify='space-between'>
+                    <Text fontSize='md' fontWeight='regular' color='gray'>
+                      Tokens
+                    </Text>
+                    <Text fontSize='md' fontWeight='medium' color='light.900'>
+                      0
+                    </Text>
+                  </HStack>
+                  <HStack justify='space-between'>
+                    <Text fontSize='md' fontWeight='regular' color='gray'>
+                      Collectibles
+                    </Text>
+                    <Text fontSize='md' fontWeight='medium' color='light.900'>
+                      0
+                    </Text>
+                  </HStack>
+                </Stack>
+              </Stack>
+            </Card>
+          </GridItem>
+          <GridItem colSpan={5}>
+            <Card h='fit-content' bg='dark.900'>
+              <Stack spacing='0'>
+                <Stack
+                  spacing='6'
+                  justify='space-between'
+                  direction='row'
+                  px={{ base: '6', md: '6' }}
+                  py={{ base: '3', md: '3' }}
+                  bg='dark.700'
+                  borderTopLeftRadius='md'
+                  borderTopRightRadius='md'
+                  align='center'
+                >
+                  <Heading
+                    color='light.900'
+                    fontSize='md'
+                    fontWeight='regular'
+                    letterSpacing='tight'
                   >
-                    <Heading
-                      color='light.900'
-                      fontSize='lg'
-                      fontWeight='regular'
-                      letterSpacing='tight'
-                    >
-                      Treasury
-                    </Heading>
-                    <Stack spacing='3' justify='center' h='full'>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Balance
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          {ustxToStx(vaultBalance?.data?.stx?.balance)}{' '}
-                          <Text as='span' fontSize='sm' fontWeight='thin'>
-                            STX
-                          </Text>
-                        </Text>
-                      </HStack>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Tokens
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          0
-                        </Text>
-                      </HStack>
-                      <HStack justify='space-between'>
-                        <Text fontSize='md' fontWeight='regular' color='gray'>
-                          Collectibles
-                        </Text>
-                        <Text
-                          fontSize='md'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          0
-                        </Text>
-                      </HStack>
-                    </Stack>
-                  </Stack>
-                </Card>
-              </GridItem>
-              <GridItem colSpan={5}>
-                <Card h='fit-content' bg='dark.900'>
-                  <Stack spacing='0'>
-                    <Stack
-                      spacing='6'
-                      justify='space-between'
-                      direction='row'
-                      px={{ base: '6', md: '6' }}
-                      py={{ base: '3', md: '3' }}
-                      bg='dark.700'
-                      borderTopLeftRadius='md'
-                      borderTopRightRadius='md'
-                      align='center'
-                    >
-                      <Heading
-                        color='light.900'
-                        fontSize='md'
-                        fontWeight='regular'
-                        letterSpacing='tight'
-                      >
-                        Vault Deposit
-                      </Heading>
-                    </Stack>
-                    <Stack
-                      px={{ base: '6', md: '6' }}
-                      py={{ base: '6', md: '6' }}
-                      spacing='6'
-                    >
-                      <HStack
-                        justify='space-between'
-                        align='center'
-                        spacing='2'
-                      >
-                        <VStack align='flex-start' spacing='2'>
-                          <FormControl>
-                            <Input
-                              py='1'
-                              px='2'
-                              bg='dark.900'
-                              type='tel'
-                              border='none'
-                              fontSize='2xl'
-                              fontWeight='regular'
-                              autoComplete='off'
-                              placeholder='0.0'
-                              value={depositAmount}
-                              onChange={handleInputDeposit}
-                            />
-                          </FormControl>
-                        </VStack>
-                        <HStack
-                          bg='dark.900'
-                          borderRadius='lg'
-                          borderColor='dark.500'
-                          borderWidth='1px'
+                    Vault Deposit
+                  </Heading>
+                </Stack>
+                <Stack
+                  px={{ base: '6', md: '6' }}
+                  py={{ base: '6', md: '6' }}
+                  spacing='6'
+                >
+                  <HStack justify='space-between' align='center' spacing='2'>
+                    <VStack align='flex-start' spacing='2'>
+                      <FormControl>
+                        <Input
                           py='1'
-                          px='3'
-                        >
-                          <Image
-                            cursor='pointer'
-                            height='16px'
-                            src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
-                            alt='logo'
-                          />
-
-                          <Text
-                            fontSize='sm'
-                            fontWeight='semibold'
-                            color='light.500'
-                          >
-                            STX
-                          </Text>
-                        </HStack>
-                      </HStack>
-                      <Stack spacing='3'>
-                        <DepositButton
-                          title='Deposit'
-                          variant='secondary'
-                          size='sm'
-                          vaultAddress={vaultExtension?.contract_address}
-                          amount={depositAmount}
-                          reset={() => {}}
+                          px='2'
+                          bg='dark.900'
+                          type='tel'
+                          border='none'
+                          fontSize='2xl'
+                          fontWeight='regular'
+                          autoComplete='off'
+                          placeholder='0.0'
+                          value={depositAmount}
+                          onChange={handleInputDeposit}
                         />
-                      </Stack>
-                    </Stack>
+                      </FormControl>
+                    </VStack>
+                    <HStack
+                      bg='dark.900'
+                      borderRadius='lg'
+                      borderColor='dark.500'
+                      borderWidth='1px'
+                      py='1'
+                      px='3'
+                    >
+                      <Image
+                        cursor='pointer'
+                        height='16px'
+                        src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                        alt='logo'
+                      />
+
+                      <Text
+                        fontSize='sm'
+                        fontWeight='semibold'
+                        color='light.500'
+                      >
+                        STX
+                      </Text>
+                    </HStack>
+                  </HStack>
+                  <Stack spacing='3'>
+                    <DepositButton
+                      title='Deposit'
+                      variant='secondary'
+                      size='sm'
+                      vaultAddress={vaultExtension?.contract_address}
+                      amount={depositAmount}
+                      reset={() => {}}
+                    />
                   </Stack>
-                </Card>
-              </GridItem>
-            </Grid>
-          </Stack>
-        </Stack>
+                </Stack>
+              </Stack>
+            </Card>
+          </GridItem>
+        </Grid>
         <Stack spacing='1'>
           <Tabs color='light.900' variant='unstyled' isFitted>
             <TabList>
@@ -366,12 +346,9 @@ Vault.getLayout = (page: any) => (
   <DashboardLayout
     header={
       <Flex justify='space-between' align='center' py='6' px='4'>
-        <Heading size='md' fontWeight='black' letterSpacing='tight'>
+        <Heading size='lg' fontWeight='black' letterSpacing='tight'>
           Vault
         </Heading>
-        <Button variant='default' size='sm' isDisabled>
-          Deposit
-        </Button>
       </Flex>
     }
   >
