@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { StacksSDK } from 'sdk';
 import type { ButtonProps } from 'ui';
 import {
@@ -160,7 +159,7 @@ const TemplateSelect = () => {
   );
 };
 
-const VaultAndAssetManagement = () => {
+const VaultAndAssetManagement = ({ onClose }: any) => {
   const dao = useTeam();
   const [step, setStep] = React.useState(1);
   const [isProposalDeploying, setIsProposalDeploying] = React.useState(false);
@@ -191,7 +190,7 @@ const VaultAndAssetManagement = () => {
   );
   const addToken = useProposalStore((state) => state.addToken);
   const createSubmission = useCreateSubmission();
-  console.log('recipients', proposal?.recipients);
+  console.log({ proposal });
 
   const onFinishDeployVaultTemplate = (payload: any) => {
     setStep(step + 1);
@@ -204,6 +203,18 @@ const VaultAndAssetManagement = () => {
         throw new Error('No contract address returned from transaction.');
       } else {
         try {
+          const postConditions = proposal?.recipients.reduce(
+            (acc, recipient) => ({
+              type: 'stacks',
+              from: vaultExtension?.contract_address,
+              amount: acc.amount + parseInt(recipient.amount, 10),
+            }),
+            {
+              type: 'stacks',
+              from: vaultExtension?.contract_address,
+              amount: 0,
+            },
+          );
           createSubmission.mutate({
             title: proposal?.data?.title,
             description: proposal?.data?.description,
@@ -212,7 +223,7 @@ const VaultAndAssetManagement = () => {
             tx_id: txId,
             submitted_by: tx?.sender_address,
             team_id: dao?.data?.id,
-            post_conditions: {},
+            post_conditions: postConditions,
           });
         } catch (e: any) {
           console.error({ e });
@@ -226,7 +237,7 @@ const VaultAndAssetManagement = () => {
   if (step === 3) {
     return (
       <Stack spacing='6' justify='center' px='8' m='0 auto' maxW='4xl'>
-        <Stack spacing='0' align='flex-start'>
+        <Stack spacing='3' align='center' justify='center' h='50vh'>
           <Icon as={CheckCircle} color='primary.900' boxSize='12' />
           <Text
             fontSize='xl'
@@ -249,9 +260,9 @@ const VaultAndAssetManagement = () => {
           </Text>
         </Stack>
         <HStack justify='center'>
-          <Link href={`/${dao?.data?.slug}`}>
-            <Button variant='link'>Back to Dashboard</Button>
-          </Link>
+          <Button variant='link' onClick={onClose}>
+            View Proposals
+          </Button>
         </HStack>
       </Stack>
     );
@@ -1207,7 +1218,7 @@ export const CreateProposal = (props: ProposalDrawerProps) => {
                     exit={FADE_IN_VARIANTS.exit}
                     transition={{ duration: 0.75, type: 'linear' }}
                   >
-                    <VaultAndAssetManagement />
+                    <VaultAndAssetManagement onClose={onClose} />
                   </motion.div>
                 )}
                 {proposal.selectedTemplate === '2' && (

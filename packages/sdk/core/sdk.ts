@@ -13,6 +13,7 @@ interface InitInterface {
 interface ProposeInterface {
   extensionAddress: string;
   proposalAddress: string;
+  postConditions?: any[];
   onFinish?: (payload: FinishedTxData) => void;
   onCancel?: (error?: string) => void;
 }
@@ -58,7 +59,7 @@ export class StacksSDK {
   }
 
   public propose(params: ProposeInterface) {
-    const { extensionAddress, proposalAddress } = params;
+    const { extensionAddress, proposalAddress, postConditions } = params;
     const [contractAddress, contractName] =
       splitContractAddress(extensionAddress);
     this.client.signTransaction(TxType.ContractCall, {
@@ -66,7 +67,7 @@ export class StacksSDK {
       contractName: contractName,
       functionName: 'propose',
       functionArgs: [contractPrincipalCV(proposalAddress)],
-      postConditions: [],
+      postConditions,
       onFinish: (payload) => {
         params?.onFinish?.(payload);
       },
@@ -77,7 +78,7 @@ export class StacksSDK {
   }
 
   public submit(params: ProposeInterface) {
-    const { extensionAddress, proposalAddress } = params;
+    const { extensionAddress, proposalAddress, postConditions } = params;
     const [contractAddress, contractName] =
       splitContractAddress(extensionAddress);
     this.client.signTransaction(TxType.ContractCall, {
@@ -85,7 +86,7 @@ export class StacksSDK {
       contractName: contractName,
       functionName: 'direct-execute',
       functionArgs: [contractPrincipalCV(proposalAddress)],
-      postConditions: [],
+      postConditions,
       onFinish: (payload) => {
         params?.onFinish?.(payload);
       },

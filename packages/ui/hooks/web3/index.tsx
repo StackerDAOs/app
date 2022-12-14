@@ -16,4 +16,4 @@ export { useToken } from './useToken';
 export { useTeam } from './useTeam';
 export { useTransaction } from './useTransaction';
 export { useTransactions, useTeamTransactions } from './useTransactions';
-export { useVaultBalance } from './useVaultBalance';
+export { useVaultBalance, useTeamVaultBalance } from './useVaultBalance';

@@ -25,14 +25,15 @@ import { DashboardLayout } from '@components/layout';
 import { Card } from 'ui/components/cards';
 import { DepositButton } from '@components/buttons';
 import { TransactionTable } from '@components/tables';
-import { useTeam, useTeamTransactions } from 'ui/hooks';
+import { useTeam, useTeamTransactions, useTeamVaultBalance } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { map } from 'lodash';
-import { findExtension } from 'utils';
+import { findExtension, ustxToStx } from 'utils';
 
 export default function Vault() {
   const [depositAmount, setDepositAmount] = React.useState('');
   const dao = useTeam();
+  const vaultBalance = useTeamVaultBalance();
   const isActive = dao?.data?.active;
   const vaultExtension = findExtension(dao?.data?.extensions, 'Vault');
   const transactions = useTeamTransactions(
@@ -119,7 +120,7 @@ export default function Vault() {
                           fontWeight='medium'
                           color='light.900'
                         >
-                          1,242{' '}
+                          {ustxToStx(vaultBalance?.data?.stx?.balance)}{' '}
                           <Text as='span' fontSize='sm' fontWeight='thin'>
                             STX
                           </Text>
@@ -134,7 +135,7 @@ export default function Vault() {
                           fontWeight='medium'
                           color='light.900'
                         >
-                          7
+                          0
                         </Text>
                       </HStack>
                       <HStack justify='space-between'>
@@ -146,7 +147,7 @@ export default function Vault() {
                           fontWeight='medium'
                           color='light.900'
                         >
-                          2
+                          0
                         </Text>
                       </HStack>
                     </Stack>

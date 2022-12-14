@@ -1,5 +1,6 @@
 import create from 'zustand';
 import produce from 'immer';
+import { stxToUstx } from 'utils';
 
 type Recipient = {
   to: string;

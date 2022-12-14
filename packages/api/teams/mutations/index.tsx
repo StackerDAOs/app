@@ -21,7 +21,14 @@ type Submission = {
   tx_id: string;
   submitted_by: string;
   team_id: number;
-  post_conditions: object;
+  post_conditions?: {
+    type: string;
+    from: string;
+    amount?: number;
+    asset?: string;
+    assetIdentifier?: string;
+    decimals?: number;
+  };
 };
 
 type Proposal = {

@@ -16,6 +16,7 @@ import {
   createAssetInfo,
 } from 'ui/components';
 import { isMainnet, isTestnet } from 'api/constants';
+import { splitContractAddress } from '@stacks-os/utils';
 
 export const appUrl = {
   clubs: isMainnet ? 'https://clubs.stackerdaos.com' : 'http://localhost:3000',
@@ -75,7 +76,8 @@ export const microToStacks = (
   return value;
 };
 
-export const stxToUstx = (stx: string) => parseInt(stx) * 1000000;
+export const stxToUstx = (stx: string | number) =>
+  typeof stx === 'string' ? parseInt(stx) * 1000000 : stx * 1000000;
 
 export const tokenToDecimals = (amount: number, decimals: number) => {
   const convertWithDecimals = 10 ** parseInt(decimals?.toString());
@@ -173,12 +175,12 @@ export const generateWithDelegators = ({
 export const generatePostConditions: any = ({
   postConditions,
   isPassing,
-  assetName,
+  asset,
   fungibleTokenDecimals,
 }: any) => {
   if (postConditions) {
     const { from, amount } = postConditions;
-    const isFungible = has(postConditions, 'assetAddress');
+    const isFungible = has(postConditions, 'asset');
     if (isFungible) {
       // Token Post Condition
       const { assetAddress } = postConditions;
@@ -189,7 +191,7 @@ export const generatePostConditions: any = ({
       const fungibleAssetInfo =
         contractAssetAddress &&
         contractAssetName &&
-        createAssetInfo(contractAssetAddress, contractAssetName, assetName);
+        createAssetInfo(contractAssetAddress, contractAssetName, asset);
       const pc = isPassing
         ? [
             makeContractFungiblePostCondition(
@@ -204,8 +206,7 @@ export const generatePostConditions: any = ({
       return pc;
     } else {
       // STX Post Condition
-      const contractAddress = from?.split('.')[0];
-      const contractName = from?.split('.')[1];
+      const [contractAddress, contractName] = splitContractAddress(from);
       const postConditionCode = FungibleConditionCode.Equal;
       const postConditionAmount = stxToUstx(amount);
       const postConditions = isPassing

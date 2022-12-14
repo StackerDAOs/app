@@ -19,7 +19,7 @@ import {
   uintCV,
   hexToCV,
 } from 'micro-stacks/clarity';
-import { defaultTo } from 'lodash';
+import { add, defaultTo, isEqual } from 'lodash';
 import { splitContractAddress } from '@stacks-os/utils';
 
 export async function getTeam(name: string) {
@@ -485,7 +485,7 @@ export async function getDBProposal(address: string) {
     const { data, error } = await supabase
       .from('proposals')
       .select(
-        'id, contract_address, submission:submissions!inner(title, description, body)',
+        'id, contract_address, submission:submissions!inner(title, description, body, post_conditions)',
       )
       .eq('contract_address', address)
       .limit(1);
@@ -507,7 +507,7 @@ export async function getProposal(
     const network = new stacksNetwork();
     const [contractAddress, contractName] =
       splitContractAddress(extensionAddress);
-    const signalsRequired: any = await fetchReadOnlyFunction({
+    const getSignalsRequired: any = await fetchReadOnlyFunction({
       network,
       contractAddress,
       contractName,
@@ -515,7 +515,7 @@ export async function getProposal(
       functionArgs: [],
       functionName: 'get-signals-required',
     });
-    const signalsReceived: any = await fetchReadOnlyFunction({
+    const getSignalsReceived: any = await fetchReadOnlyFunction({
       network,
       contractAddress,
       contractName,
@@ -537,15 +537,19 @@ export async function getProposal(
       functionName: 'has-signaled',
     });
 
+    const signalsRequired = Number(getSignalsRequired);
+    const signalsReceived = Number(getSignalsReceived);
+    const isExecutable = isEqual(signalsRequired, add(signalsReceived, 1));
     const dbProposal = await getDBProposal(proposalAddress);
     const submission = dbProposal?.submission;
 
     return {
       principalAddress: proposalAddress,
       submission,
-      signalsRequired: Number(signalsRequired),
-      signalsReceived: Number(signalsReceived),
+      signalsRequired,
+      signalsReceived,
       hasSignaled,
+      isExecutable,
     };
   } catch (e: any) {
     console.error({ e });
