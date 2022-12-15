@@ -161,17 +161,6 @@ const FinishedState = ({ next, extension }: any) => (
     <Text fontSize='xl' fontWeight='bold' color='light.500' textAlign='center'>
       You&apos;re all set!
     </Text>
-    <Text
-      fontSize='md'
-      fontWeight='light'
-      color='light.500'
-      textAlign='center'
-      mt='4'
-      maxW='md'
-    >
-      You can now mint your Membership Pass NFTs and distribute them to your
-      members.
-    </Text>
     <ButtonGroup as={Flex} spacing='6'>
       <Button
         variant='default'

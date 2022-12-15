@@ -75,7 +75,7 @@ export default function Dashboard() {
           >
             <HStack justify='center'>
               <Text fontSize='md' fontWeight='medium' color='light.900'>
-                Dashboard is not active yet
+                Dashboard inactive
               </Text>
             </HStack>
           </Box>
