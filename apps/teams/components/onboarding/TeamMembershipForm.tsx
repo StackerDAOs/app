@@ -29,18 +29,24 @@ import { CheckCircle, CheckIcon, UploadIcon } from 'ui/components/icons';
 
 const FinishedState = ({ next, extension }: any) => (
   <Stack spacing='3' align='center' justify='center' h='75vh'>
-    <Icon as={CheckCircle} color='primary.900' boxSize='12' />
-    <Text fontSize='xl' fontWeight='bold' color='light.500' textAlign='center'>
-      You&apos;re all set!
+    <Icon as={CheckCircle} color='primary.900' boxSize='10' />
+    <Text
+      fontSize='lg'
+      fontWeight='regular'
+      color='light.500'
+      textAlign='center'
+    >
+      Contract deployed successfully!
     </Text>
     <ButtonGroup as={Flex} spacing='6'>
       <Button
-        variant='default'
+        variant='dark'
+        size='sm'
         isFullWidth
         isDisabled={!extension}
         onClick={next}
       >
-        Continue
+        Continue to next step
       </Button>
     </ButtonGroup>
   </Stack>

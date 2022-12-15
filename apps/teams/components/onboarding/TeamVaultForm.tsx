@@ -297,8 +297,8 @@ const FinishedState = () => {
                                 color='gray'
                               >
                                 This is the smart contract code that enables all
-                                the extensions you deployed, mint your Club
-                                passes to members, and more.
+                                the extensions you deployed, and prepares your
+                                Team for activation.
                               </Text>
                             </Stack>
                           </HStack>
@@ -390,10 +390,9 @@ const FinishedState = () => {
                                 fontWeight='light'
                                 color='gray'
                               >
-                                Make a contract call to the `init` function from
-                                the previously deployed initialization contract
-                                that will execute the code and activate your
-                                Club.
+                                Once you complete activatation, your
+                                configuration will be live and you will be able
+                                to start using your Team.
                               </Text>
                             </Stack>
                           </HStack>

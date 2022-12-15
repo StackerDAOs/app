@@ -5,11 +5,15 @@ import { Card } from 'ui/components/cards';
 import { useTeam, useTransaction } from 'ui/hooks';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
-export const ProposalCard = ({ contractAddress, submission }: any) => {
+export const ProposalCard = (props: any) => {
+  const {
+    contract_address: contractAddress,
+    tx_id: transactionId,
+    submission,
+  } = props;
   const dao = useTeam();
-  const { title, description, tx_id: transactionId } = submission;
+  const { title, description } = submission;
   const transaction = useTransaction(transactionId);
-  console.log({ transaction });
 
   return (
     <motion.div
@@ -21,15 +25,19 @@ export const ProposalCard = ({ contractAddress, submission }: any) => {
     >
       <Link href={`/${dao?.data?.slug}/proposals/${contractAddress}`}>
         <Card
-          bg='dark.700'
+          bg='dark.900'
           display='flex'
           alignItems='flex-start'
-          minH='200px'
+          h='fit-content'
           position='relative'
           px={{ base: '6', md: '6' }}
           py={{ base: '6', md: '6' }}
+          pointerEvents={
+            transaction?.data?.tx_status === 'pending' ? 'none' : 'auto'
+          }
           _hover={{
             cursor: 'pointer',
+            bg: 'dark.800',
           }}
         >
           <Stack direction='row' justify='center'>
@@ -44,16 +52,34 @@ export const ProposalCard = ({ contractAddress, submission }: any) => {
             >
               <HStack justify='space-between'>
                 <HStack>
-                  <Badge
-                    bg='dark.500'
-                    color='primary.900'
-                    size='sm'
-                    py='1'
-                    px='5'
-                    borderRadius='3xl'
-                  >
-                    Pending
-                  </Badge>
+                  {transaction?.data?.tx_status === 'pending' && (
+                    <Badge
+                      bg='dark.800'
+                      color='yellow.500'
+                      size='sm'
+                      py='1'
+                      px='5'
+                      borderWidth='1px'
+                      borderRadius='3xl'
+                      borderColor='dark.500'
+                    >
+                      Pending
+                    </Badge>
+                  )}
+                  {transaction?.data?.tx_status === 'success' && (
+                    <Badge
+                      bg='dark.800'
+                      color='secondary.900'
+                      size='sm'
+                      py='1'
+                      px='5'
+                      borderWidth='1px'
+                      borderRadius='3xl'
+                      borderColor='dark.500'
+                    >
+                      Active
+                    </Badge>
+                  )}
                 </HStack>
               </HStack>
               <Stack>

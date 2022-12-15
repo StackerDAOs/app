@@ -54,6 +54,7 @@ export default function Proposals() {
   );
   const proposals = useTeamProposals();
   const submissions = useTeamSubmissions();
+  console.log({ proposals });
 
   if (dao?.isLoading && dao?.isFetching) {
     return null;
