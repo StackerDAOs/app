@@ -330,7 +330,7 @@ export default function Dashboard() {
                             Latest Proposal
                           </Text>
                           <Link
-                            href={`${router.pathname}/proposals/${proposal?.data?.principalAddress}`}
+                            href={`${dao?.data?.slug}/proposals/${proposal?.data?.principalAddress}`}
                           >
                             <Button variant='link' size='sm' color='gray'>
                               View
