@@ -97,14 +97,7 @@ export const ProposalQueueCard = (submission: any) => {
       },
     });
 
-  console.log({
-    title,
-    contractAddress,
-    transactionId,
-    multisigExtension,
-    sdk,
-    transaction,
-  });
+  console.log({ submission, transaction });
   return (
     <Grid templateColumns='repeat(5, 1fr)' gap={8} alignItems='center'>
       <GridItem colSpan={{ base: 2, md: 4 }}>
