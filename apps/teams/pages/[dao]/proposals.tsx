@@ -63,13 +63,12 @@ export default function Proposals() {
   const transactions = useTeamTransactions(
     multisigExtension?.contract_address,
     'team',
+    3,
   );
   const proposals = useTeamProposals();
   const submissions = useTeamSubmissions();
   const createProposal = useCreateProposal();
   const toast = useToast();
-
-  console.log({ transactions });
 
   if (dao?.isLoading && dao?.isFetching) {
     return null;
@@ -421,7 +420,7 @@ export default function Proposals() {
                     </Heading>
                     {transactions?.data?.length !== 0 &&
                       transactions?.data?.map((transaction: any) => (
-                        <Stack spacing='3' justify='center' h='full'>
+                        <Stack spacing='6' justify='center' h='full'>
                           <HStack justify='space-between'>
                             <HStack spacing='2'>
                               <Circle
@@ -445,7 +444,7 @@ export default function Proposals() {
                               </Text>
                             </HStack>
                             <a
-                              href={getExplorerLink(transaction?.data?.txId)}
+                              href={getExplorerLink(transaction?.txId)}
                               target='_blank'
                               rel='noreferrer'
                             >

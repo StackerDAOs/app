@@ -3,11 +3,11 @@ import { getAccountTransactions } from 'api/clubs';
 import { getAccountTransactions as getTeamAccountTransactions } from 'api/teams';
 
 // Hook (use-transactions.tsx)
-export function useTransactions(address: string, type: string) {
+export function useTransactions(address: string, type: string, filter = 5) {
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
     [`${type}-transactions`, address],
     async () => {
-      const data = await getAccountTransactions(address);
+      const data = await getAccountTransactions(address, filter);
       return data;
     },
     {
@@ -20,11 +20,11 @@ export function useTransactions(address: string, type: string) {
 }
 
 // Hook (use-team-transactions.tsx)
-export function useTeamTransactions(address: string, type: string) {
+export function useTeamTransactions(address: string, type: string, filter = 5) {
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
     [`${type}-transactions`, address],
     async () => {
-      const data = await getTeamAccountTransactions(address);
+      const data = await getTeamAccountTransactions(address, filter);
       return data;
     },
     {
