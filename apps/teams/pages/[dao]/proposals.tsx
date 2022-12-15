@@ -2,7 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
-  Badge,
   Box,
   Button,
   Circle,
@@ -21,7 +20,7 @@ import {
 } from 'ui';
 import { useAuth } from 'ui/components';
 import { Card } from 'ui/components/cards';
-import { ProposalQueueCard } from '@components/cards';
+import { ProposalCard, ProposalQueueCard } from '@components/cards';
 import { DashboardLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { SectionHeader } from 'ui/components/layout';
@@ -45,7 +44,6 @@ export default function Proposals() {
   const [filter, setFilter] = React.useState('active');
   const { isSignedIn } = useAuth();
   const router = useRouter();
-  const slug = router.query?.dao as any;
   const dao = useTeam();
   const isActive = dao?.data?.active;
   const activate = useActivateTeam();
@@ -193,9 +191,14 @@ export default function Proposals() {
         <Stack spacing='6'>
           <Stack spacing='8'>
             <Grid templateColumns='repeat(9, 1fr)' gap={6}>
-              <GridItem colSpan={6}>
+              <GridItem colSpan={5}>
                 <Stack spacing='3'>
-                  <Card bg='dark.900' border='1px solid' borderColor='dark.500'>
+                  <Card
+                    bg='dark.900'
+                    border='1px solid'
+                    borderColor='dark.500'
+                    h='fit-content'
+                  >
                     <Box
                       py={{ base: '3', md: '3' }}
                       px={{ base: '6', md: '6' }}
@@ -227,14 +230,14 @@ export default function Proposals() {
                     <Stack
                       spacing={{ base: '0', md: '1' }}
                       justify='center'
-                      py={{ base: '3', md: '3' }}
-                      px={{ base: '6', md: '6' }}
                       h={submissions?.data?.length === 0 ? '30vh' : 'auto'}
                     >
                       <Stack spacing='3'>
                         {submissions?.data?.length === 0 && (
                           <Stack
                             spacing='3'
+                            py={{ base: '3', md: '3' }}
+                            px={{ base: '6', md: '6' }}
                             justify='center'
                             align='center'
                             cursor='default'
@@ -252,10 +255,11 @@ export default function Proposals() {
                           </Stack>
                         )}
                         {submissions?.data?.length !== 0 && (
-                          <Stack spacing='6' py='3'>
+                          <Stack spacing='0'>
                             {submissions?.data?.map((data: any) => (
                               <ProposalQueueCard
-                                submission={data?.submission}
+                                key={data?.submission?.tx_id}
+                                submission={data}
                               />
                             ))}
                           </Stack>
@@ -265,8 +269,8 @@ export default function Proposals() {
                   </Card>
                 </Stack>
               </GridItem>
-              <GridItem colSpan={3}>
-                <Card bg='dark.900' h='36vh'>
+              <GridItem colSpan={4}>
+                <Card bg='dark.800' h='fit-content'>
                   <Stack
                     px={{ base: '6', md: '6' }}
                     py={{ base: '6', md: '6' }}
@@ -386,7 +390,7 @@ export default function Proposals() {
                       </RadioGroup>
                     </Stack>
                   </SectionHeader>
-                  {!!proposals?.data && (
+                  {proposals?.data?.length === 0 && (
                     <Stack
                       spacing='3'
                       justify='center'
@@ -408,99 +412,9 @@ export default function Proposals() {
                     spacing='6'
                     color='white'
                   >
-                    {map(
-                      proposals?.data,
-                      ({
-                        contract_address: contractAddress,
-                        submission: { title, description },
-                      }) => (
-                        <motion.div
-                          variants={FADE_IN_VARIANTS}
-                          initial={FADE_IN_VARIANTS.hidden}
-                          animate={FADE_IN_VARIANTS.enter}
-                          exit={FADE_IN_VARIANTS.exit}
-                          transition={{ duration: 0.25, type: 'linear' }}
-                          whileHover={{
-                            scale: 1.015,
-                          }}
-                          whileTap={{
-                            scale: 1,
-                          }}
-                        >
-                          <Link href={`/${slug}/proposals/${contractAddress}`}>
-                            <Card
-                              bg='dark.700'
-                              display='flex'
-                              alignItems='flex-start'
-                              minH='200px'
-                              position='relative'
-                              px={{ base: '6', md: '6' }}
-                              py={{ base: '6', md: '6' }}
-                              _hover={{
-                                cursor: 'pointer',
-                              }}
-                            >
-                              <Stack direction='row' justify='center'>
-                                <Stack
-                                  spacing='4'
-                                  direction={{
-                                    base: 'row',
-                                    md: 'column',
-                                  }}
-                                  justify='space-between'
-                                  color='white'
-                                >
-                                  <HStack justify='space-between'>
-                                    <HStack>
-                                      <Badge
-                                        bg='dark.500'
-                                        color='primary.900'
-                                        size='sm'
-                                        py='1'
-                                        px='5'
-                                        borderRadius='3xl'
-                                      >
-                                        Pending
-                                      </Badge>
-                                    </HStack>
-                                  </HStack>
-                                  <Stack>
-                                    <HStack spacing='3' justify='space-between'>
-                                      <Stack direction='column' spacing='3'>
-                                        <HStack align='center' spacing='2'>
-                                          <Text
-                                            fontWeight='black'
-                                            fontSize='lg'
-                                            lineHeight='1.15'
-                                          >
-                                            {title}
-                                          </Text>
-                                        </HStack>
-                                        <Text
-                                          fontWeight='regular'
-                                          fontSize='sm'
-                                          color='gray'
-                                          overflow='hidden'
-                                          textOverflow='ellipsis'
-                                          style={{
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 2,
-                                            lineClamp: 2,
-                                            WebkitBoxOrient: 'vertical',
-                                          }}
-                                        >
-                                          {description}
-                                        </Text>
-                                      </Stack>
-                                    </HStack>
-                                  </Stack>
-                                </Stack>
-                              </Stack>
-                            </Card>
-                          </Link>
-                        </motion.div>
-                      ),
-                    )}
+                    {map(proposals?.data, (data: any) => (
+                      <ProposalCard {...data} />
+                    ))}
                   </MotionGrid>
                 </Stack>
               </motion.div>

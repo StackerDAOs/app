@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import { getTransaction } from 'api/clubs';
 
 export function useTransaction(transactionId: string) {
-  const [interval, setInterval] = React.useState(30000);
+  const [interval, setInterval] = React.useState(1000);
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
     ['transaction', transactionId],
     async () => {
@@ -17,6 +17,7 @@ export function useTransaction(transactionId: string) {
     {
       enabled: !!transactionId,
       refetchInterval: interval,
+      refetchOnMount: true,
     },
   );
 

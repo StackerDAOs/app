@@ -383,7 +383,7 @@ const FinishedState = () => {
                           <HStack align='flex-start' spacing='4'>
                             <Stack spacing='1' maxW='lg'>
                               <Heading size='md' fontWeight='black'>
-                                Activate Club
+                                Activate Team
                               </Heading>
                               <Text
                                 fontSize='sm'

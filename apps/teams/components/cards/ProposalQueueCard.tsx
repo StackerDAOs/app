@@ -3,8 +3,6 @@ import { StacksSDK } from 'sdk';
 import {
   Button,
   Circle,
-  Grid,
-  GridItem,
   Heading,
   HStack,
   Icon,
@@ -20,7 +18,7 @@ import { truncateAddress } from '@stacks-os/utils';
 import { findExtension, getExplorerLink } from 'utils';
 import { CheckCircle, XIcon } from 'ui/components/icons';
 
-export const ProposalQueueCard = (submission: any) => {
+export const ProposalQueueCard = ({ submission }: any) => {
   const {
     title,
     contract_address: contractAddress,
@@ -33,6 +31,7 @@ export const ProposalQueueCard = (submission: any) => {
   const createProposal = useCreateProposal();
   const toast = useToast();
   const transaction = useTransaction(transactionId);
+
   const submitProposal = () =>
     sdk.submit({
       extensionAddress: multisigExtension?.contract_address,
@@ -98,44 +97,59 @@ export const ProposalQueueCard = (submission: any) => {
     });
 
   return (
-    <Grid templateColumns='repeat(5, 1fr)' gap={8} alignItems='center'>
-      <GridItem colSpan={{ base: 2, md: 4 }}>
-        <Stack spacing='2'>
-          <Tag
-            color='yellow.500'
-            bg='dark.800'
-            alignSelf='self-start'
-            size='sm'
-            borderRadius='3xl'
-          >
-            <Text as='span' fontWeight='regular'>
-              {truncateAddress(contractAddress)}
-            </Text>
-          </Tag>
-          <HStack align='flex-start' spacing='4'>
-            <Stack spacing='1' maxW='lg'>
-              <Heading size='xs' fontWeight='black'>
-                {title}
-              </Heading>
-            </Stack>
-          </HStack>
-        </Stack>
-      </GridItem>
-      <GridItem colSpan={{ base: 1, md: 1 }}>
+    <HStack
+      justify='space-between'
+      py={{ base: '6', md: '6' }}
+      px={{ base: '6', md: '6' }}
+      borderBottomWidth='1px'
+      borderBottomColor='dark.500'
+      _last={{ borderBottomWidth: '0' }}
+    >
+      <HStack spacing='2'>
+        <HStack align='flex-start' spacing='4'>
+          <Stack spacing='2' maxW='lg'>
+            <Tag
+              color='yellow.500'
+              bg='dark.800'
+              alignSelf='self-start'
+              size='sm'
+              borderRadius='3xl'
+            >
+              <Text as='span' fontWeight='regular'>
+                {truncateAddress(contractAddress)}
+              </Text>
+            </Tag>
+            <Heading size='sm' fontWeight='regular'>
+              {title}
+            </Heading>
+          </Stack>
+        </HStack>
+      </HStack>
+      <>
         {!transaction?.data && (
           <Button variant='link' size='sm' isDisabled>
             Inactive
           </Button>
         )}
         {transaction?.data?.tx_status === 'pending' && (
-          <Button variant='dark' size='sm' isLoading />
+          <HStack spacing='2'>
+            <Circle size='2' bg='yellow.500' color='white' />
+            <Text
+              fontSize='sm'
+              fontWeight='medium'
+              color='light.900'
+              letterSpacing='tight'
+            >
+              Deploying
+            </Text>
+          </HStack>
         )}
         {transaction?.data?.tx_status === 'success' && (
           <Button variant='secondary' size='sm' onClick={submitProposal}>
-            Submit
+            Submit as proposal
           </Button>
         )}
-      </GridItem>
-    </Grid>
+      </>
+    </HStack>
   );
 };
