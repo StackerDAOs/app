@@ -33,6 +33,70 @@ export const ProposalQueueCard = (submission: any) => {
   const createProposal = useCreateProposal();
   const toast = useToast();
   const transaction = useTransaction(transactionId);
+  const submitProposal = () =>
+    sdk.submit({
+      extensionAddress: multisigExtension?.contract_address,
+      proposalAddress: contractAddress,
+      onFinish(payload) {
+        const { txId } = payload;
+        createProposal.mutate(
+          {
+            contract_address: contractAddress,
+            proposed_by: stxAddress as string,
+            tx_id: txId,
+          },
+          {
+            onSuccess: () => {
+              const href = getExplorerLink(txId);
+              toast({
+                duration: 5000,
+                position: 'bottom-right',
+                isClosable: true,
+                render: () => (
+                  <Stack
+                    direction='row'
+                    justify='space-between'
+                    py='2'
+                    px='3'
+                    spacing='3'
+                    bg='dark.800'
+                    borderRadius='3xl'
+                    borderColor='dark.500'
+                    borderWidth='1px'
+                  >
+                    <Stack spacing='2'>
+                      <Stack spacing='3' direction='row' align='center'>
+                        <Circle size='8' bg='dark.500' borderRadius='3xl'>
+                          <Icon
+                            as={CheckCircle}
+                            color='primary.500'
+                            boxSize='5'
+                          />
+                        </Circle>
+                        <a href={href} target='_blank' rel='noreferrer'>
+                          <Button variant='link' size='sm'>
+                            View transaction
+                          </Button>
+                        </a>
+                      </Stack>
+                    </Stack>
+                    <Button variant='link' size='sm'>
+                      <Icon
+                        as={XIcon}
+                        color='light.900'
+                        boxSize='5'
+                        onClick={() => toast.closeAll()}
+                      />
+                    </Button>
+                  </Stack>
+                ),
+              });
+            },
+          },
+        );
+      },
+    });
+
   console.log({
     title,
     contractAddress,
@@ -66,80 +130,19 @@ export const ProposalQueueCard = (submission: any) => {
         </Stack>
       </GridItem>
       <GridItem colSpan={{ base: 1, md: 1 }}>
-        <Button
-          variant='secondary'
-          size='sm'
-          onClick={() =>
-            sdk.submit({
-              extensionAddress: multisigExtension?.contract_address,
-              proposalAddress: contractAddress,
-              onFinish(payload) {
-                const { txId } = payload;
-                createProposal.mutate(
-                  {
-                    contract_address: contractAddress,
-                    proposed_by: stxAddress as string,
-                    tx_id: txId,
-                  },
-                  {
-                    onSuccess: () => {
-                      const href = getExplorerLink(txId);
-                      toast({
-                        duration: 5000,
-                        position: 'bottom-right',
-                        isClosable: true,
-                        render: () => (
-                          <Stack
-                            direction='row'
-                            justify='space-between'
-                            py='2'
-                            px='3'
-                            spacing='3'
-                            bg='dark.800'
-                            borderRadius='3xl'
-                            borderColor='dark.500'
-                            borderWidth='1px'
-                          >
-                            <Stack spacing='2'>
-                              <Stack spacing='3' direction='row' align='center'>
-                                <Circle
-                                  size='8'
-                                  bg='dark.500'
-                                  borderRadius='3xl'
-                                >
-                                  <Icon
-                                    as={CheckCircle}
-                                    color='primary.500'
-                                    boxSize='5'
-                                  />
-                                </Circle>
-                                <a href={href} target='_blank' rel='noreferrer'>
-                                  <Button variant='link' size='sm'>
-                                    View transaction
-                                  </Button>
-                                </a>
-                              </Stack>
-                            </Stack>
-                            <Button variant='link' size='sm'>
-                              <Icon
-                                as={XIcon}
-                                color='light.900'
-                                boxSize='5'
-                                onClick={() => toast.closeAll()}
-                              />
-                            </Button>
-                          </Stack>
-                        ),
-                      });
-                    },
-                  },
-                );
-              },
-            })
-          }
-        >
-          Submit
-        </Button>
+        {!transaction?.data && (
+          <Button variant='link' isDisabled>
+            Inactive
+          </Button>
+        )}
+        {transaction?.data?.tx_status === 'pending' && (
+          <Button variant='dark' size='sm' isLoading />
+        )}
+        {transaction?.data?.tx_status === 'success' && (
+          <Button variant='secondary' size='sm' onClick={submitProposal}>
+            Submit
+          </Button>
+        )}
       </GridItem>
     </Grid>
   );
