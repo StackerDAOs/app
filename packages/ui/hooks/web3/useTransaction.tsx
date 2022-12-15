@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import { getTransaction } from 'api/clubs';
 
 export function useTransaction(transactionId: string) {
-  const [interval, setInterval] = React.useState(1000);
+  const [interval, setInterval] = React.useState(100000);
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
     ['transaction', transactionId],
     async () => {
