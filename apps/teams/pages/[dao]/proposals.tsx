@@ -53,7 +53,6 @@ export default function Proposals() {
   const transactions = useTeamTransactions(
     multisigExtension?.contract_address,
     'team',
-    4,
   );
   const proposals = useTeamProposals();
   const submissions = useTeamSubmissions();
