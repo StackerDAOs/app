@@ -46,7 +46,6 @@ import { debounce } from 'lodash';
 import { useGlobalState } from 'store';
 import { useTeam, useTransaction } from 'ui/hooks';
 import { useCreateTeam } from 'api/teams/mutations';
-import { Notification } from '@components/feedback';
 import { LaunchLayout } from '../components/layout';
 
 const FinishedState = ({ name }: any) => (
@@ -121,7 +120,6 @@ export default function Create() {
       console.log('onSuccess | Teams', { error });
     }
   };
-  const hasIncompleteClub = !!dao?.data && !dao?.data?.active;
   const name = useGlobalState((state) => state.club.name);
   const updateName = useGlobalState((state) => state.updateName);
   const validateInput = (input: string) => {
@@ -339,9 +337,6 @@ export default function Create() {
           </GridItem>
         </Grid>
       </Stack>
-      {hasIncompleteClub && (
-        <Notification path={`/create/${nameToSlug(data?.name)}`} />
-      )}
     </Stack>
   );
 }

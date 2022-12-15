@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { StacksSDK } from 'sdk';
 import type { ButtonProps } from 'ui';
 import {
@@ -49,6 +50,7 @@ import {
   MinusIcon,
   ArrowRight,
   XIcon,
+  UndoIcon,
 } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { DotStep } from 'ui/components/feedback';
@@ -190,8 +192,9 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
     (state) => state.updateProposalData,
   );
   const addToken = useProposalStore((state) => state.addToken);
+  const clearRecipients = useProposalStore((state) => state.clearRecipients);
+  const clearAllowlist = useProposalStore((state) => state.clearAllowlist);
   const createSubmission = useCreateSubmission();
-  console.log({ proposal });
 
   const onFinishDeployVaultTemplate = (payload: any) => {
     setStep(step + 1);
@@ -266,9 +269,11 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
           </Text>
         </Stack>
         <HStack justify='center'>
-          <Button variant='link' onClick={onClose}>
-            View Proposals
-          </Button>
+          <Link href={`/${dao?.data?.slug}/proposals`}>
+            <Button variant='link' onClick={onClose}>
+              View Proposals
+            </Button>
+          </Link>
         </HStack>
       </Stack>
     );
@@ -549,7 +554,7 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                                       Allowlist
                                     </Text>
                                   </Box>
-                                  {map(proposal?.recipients, (recipient) => (
+                                  {map(proposal?.allowlist, (token) => (
                                     <HStack
                                       align='space-between'
                                       justify='space-between'
@@ -562,7 +567,7 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                                           borderColor='dark.500'
                                         >
                                           <Icon
-                                            as={ArrowRight}
+                                            as={PlusIcon}
                                             boxSize='4'
                                             color='secondary.900'
                                           />
@@ -573,32 +578,9 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                                             fontSize='sm'
                                             fontWeight='semibold'
                                           >
-                                            {truncateAddress(recipient?.to)}
+                                            {truncateAddress(token)}
                                           </Text>
                                         </Stack>
-                                      </HStack>
-                                      <HStack spacing='1'>
-                                        <Image
-                                          cursor='pointer'
-                                          height='15px'
-                                          src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
-                                          alt='logo'
-                                        />
-                                        <Text
-                                          color='light.900'
-                                          fontSize='sm'
-                                          fontWeight='semibold'
-                                        >
-                                          {recipient?.amount}
-                                        </Text>
-
-                                        <Text
-                                          fontSize='sm'
-                                          fontWeight='semibold'
-                                          color='light.500'
-                                        >
-                                          STX
-                                        </Text>
                                       </HStack>
                                     </HStack>
                                   ))}
@@ -724,13 +706,32 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                   </Stack>
                 </HStack>
               </Stack>
-              <Square size='8' bg='dark.500' color='inverted' borderRadius='lg'>
-                {proposal.isTransferSelected ? (
-                  <Icon as={MinusIcon} boxSize='4' />
-                ) : (
-                  <Icon as={PlusIcon} boxSize='4' />
-                )}
-              </Square>
+              <HStack spacing='3'>
+                <Square
+                  size='8'
+                  bg='transparent'
+                  color='inverted'
+                  borderRadius='lg'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clearRecipients();
+                  }}
+                >
+                  <Icon as={UndoIcon} boxSize='4' />
+                </Square>
+                <Square
+                  size='8'
+                  bg='dark.500'
+                  color='inverted'
+                  borderRadius='lg'
+                >
+                  {proposal.isTransferSelected ? (
+                    <Icon as={MinusIcon} boxSize='4' />
+                  ) : (
+                    <Icon as={PlusIcon} boxSize='4' />
+                  )}
+                </Square>
+              </HStack>
             </HStack>
           </Stack>
           {proposal.isTransferSelected && (
@@ -889,13 +890,32 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                   </Stack>
                 </HStack>
               </Stack>
-              <Square size='8' bg='dark.500' color='inverted' borderRadius='lg'>
-                {proposal.isAllowListSelected ? (
-                  <Icon as={MinusIcon} boxSize='4' />
-                ) : (
-                  <Icon as={PlusIcon} boxSize='4' />
-                )}
-              </Square>
+              <HStack spacing='3'>
+                <Square
+                  size='8'
+                  bg='transparent'
+                  color='inverted'
+                  borderRadius='lg'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clearAllowlist();
+                  }}
+                >
+                  <Icon as={UndoIcon} boxSize='4' />
+                </Square>
+                <Square
+                  size='8'
+                  bg='dark.500'
+                  color='inverted'
+                  borderRadius='lg'
+                >
+                  {proposal.isAllowListSelected ? (
+                    <Icon as={MinusIcon} boxSize='4' />
+                  ) : (
+                    <Icon as={PlusIcon} boxSize='4' />
+                  )}
+                </Square>
+              </HStack>
             </HStack>
           </Stack>
           {proposal.isAllowListSelected && (

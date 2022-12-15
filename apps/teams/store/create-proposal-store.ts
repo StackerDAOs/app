@@ -1,6 +1,5 @@
 import create from 'zustand';
 import produce from 'immer';
-import { stxToUstx } from 'utils';
 
 type Recipient = {
   to: string;
@@ -57,6 +56,8 @@ interface SelectProposalStore {
     description: string;
     body: string;
   }) => void;
+  clearRecipients: () => void;
+  clearAllowlist: () => void;
 }
 
 export const useProposalStore = create<SelectProposalStore>()((set) => ({
@@ -124,6 +125,20 @@ export const useProposalStore = create<SelectProposalStore>()((set) => ({
       produce((draft) => {
         draft.proposal.allowlist.push(tokenAddress);
         draft.proposal.tokenAddress = '';
+      }),
+    );
+  },
+  clearRecipients: () => {
+    set(
+      produce((draft) => {
+        draft.proposal.recipients = [];
+      }),
+    );
+  },
+  clearAllowlist: () => {
+    set(
+      produce((draft) => {
+        draft.proposal.allowlist = [];
       }),
     );
   },
