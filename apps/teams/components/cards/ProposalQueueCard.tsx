@@ -132,7 +132,7 @@ export const ProposalQueueCard = (submission: any) => {
       </GridItem>
       <GridItem colSpan={{ base: 1, md: 1 }}>
         {!transaction?.data && (
-          <Button variant='link' isDisabled>
+          <Button variant='link' size='sm' isDisabled>
             Inactive
           </Button>
         )}
