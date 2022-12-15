@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@micro-stacks/react": "^1.0.6",
-    "@stacks-os/utils": "^1.0.2",
+    "@stacks-os/utils": "^1.0.3",
     "boring-avatars": "^1.7.0",
     "immer": "^9.0.16",
     "lodash": "^4.17.21",

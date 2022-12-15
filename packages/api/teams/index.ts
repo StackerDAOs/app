@@ -163,7 +163,7 @@ export async function getProposals({ queryKey }: any) {
     .select(
       '*, submission:submissions!inner(id, title, description, body, team_id)',
     )
-    .eq('team_id', organizationId)
+    .eq('submission.team_id', organizationId)
     .order('created_at', { ascending: false });
   try {
     const { data: proposals, error } = await query;
