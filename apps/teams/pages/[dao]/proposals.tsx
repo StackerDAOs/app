@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import { StacksSDK } from 'sdk';
 import { useRouter } from 'next/router';
 import {
   Badge,
@@ -17,13 +16,12 @@ import {
   RadioGroup,
   SimpleGrid,
   Stack,
-  Tag,
   Text,
   Tooltip,
-  useToast,
 } from 'ui';
-import { useAccount, useAuth } from 'ui/components';
+import { useAuth } from 'ui/components';
 import { Card } from 'ui/components/cards';
+import { ProposalQueueCard } from '@components/cards';
 import { DashboardLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { SectionHeader } from 'ui/components/layout';
@@ -37,14 +35,9 @@ import {
 } from 'ui/hooks';
 import { findExtension, getExplorerLink } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
-import { capitalize, map, size } from 'lodash';
-import { useActivateTeam, useCreateProposal } from 'api/teams/mutations';
-import {
-  CheckCircle,
-  InfoIcon,
-  TransferIcon,
-  XIcon,
-} from 'ui/components/icons';
+import { capitalize, map } from 'lodash';
+import { useActivateTeam } from 'api/teams/mutations';
+import { InfoIcon, TransferIcon } from 'ui/components/icons';
 
 const MotionGrid = motion(SimpleGrid);
 
@@ -53,22 +46,17 @@ export default function Proposals() {
   const { isSignedIn } = useAuth();
   const router = useRouter();
   const slug = router.query?.dao as any;
-  const account = useAccount();
-  const stxAddress = account?.stxAddress as string;
   const dao = useTeam();
   const isActive = dao?.data?.active;
   const activate = useActivateTeam();
-  const sdk = new StacksSDK(dao?.data?.contract_address);
   const multisigExtension = findExtension(dao?.data?.extensions, 'Team');
   const transactions = useTeamTransactions(
     multisigExtension?.contract_address,
     'team',
-    3,
+    4,
   );
   const proposals = useTeamProposals();
   const submissions = useTeamSubmissions();
-  const createProposal = useCreateProposal();
-  const toast = useToast();
 
   if (dao?.isLoading && dao?.isFetching) {
     return null;
@@ -267,134 +255,7 @@ export default function Proposals() {
                         {submissions?.data?.length !== 0 && (
                           <Stack spacing='6' py='3'>
                             {submissions?.data?.map((submission: any) => (
-                              <Grid
-                                templateColumns='repeat(5, 1fr)'
-                                gap={8}
-                                alignItems='center'
-                              >
-                                <GridItem colSpan={{ base: 2, md: 4 }}>
-                                  <Stack spacing='2'>
-                                    {size([]) < 6 && (
-                                      <Tag
-                                        color='yellow.500'
-                                        bg='dark.800'
-                                        alignSelf='self-start'
-                                        size='sm'
-                                        borderRadius='3xl'
-                                      >
-                                        <Text as='span' fontWeight='regular'>
-                                          {truncateAddress(
-                                            submission?.contract_address,
-                                          )}
-                                        </Text>
-                                      </Tag>
-                                    )}
-                                    <HStack align='flex-start' spacing='4'>
-                                      <Stack spacing='1' maxW='lg'>
-                                        <Heading size='xs' fontWeight='black'>
-                                          {submission?.title}
-                                        </Heading>
-                                      </Stack>
-                                    </HStack>
-                                  </Stack>
-                                </GridItem>
-                                <GridItem colSpan={{ base: 1, md: 1 }}>
-                                  <Button
-                                    variant='secondary'
-                                    size='sm'
-                                    onClick={() =>
-                                      sdk.submit({
-                                        extensionAddress:
-                                          multisigExtension?.contract_address,
-                                        proposalAddress:
-                                          submission?.contract_address,
-                                        onFinish(payload) {
-                                          const { txId } = payload;
-                                          createProposal.mutate(
-                                            {
-                                              contract_address:
-                                                submission?.contract_address,
-                                              proposed_by: stxAddress as string,
-                                              tx_id: txId,
-                                            },
-                                            {
-                                              onSuccess: () => {
-                                                const href =
-                                                  getExplorerLink(txId);
-                                                toast({
-                                                  duration: 5000,
-                                                  position: 'bottom-right',
-                                                  isClosable: true,
-                                                  render: () => (
-                                                    <Stack
-                                                      direction='row'
-                                                      justify='space-between'
-                                                      py='2'
-                                                      px='3'
-                                                      spacing='3'
-                                                      bg='dark.800'
-                                                      borderRadius='3xl'
-                                                      borderColor='dark.500'
-                                                      borderWidth='1px'
-                                                    >
-                                                      <Stack spacing='2'>
-                                                        <Stack
-                                                          spacing='3'
-                                                          direction='row'
-                                                          align='center'
-                                                        >
-                                                          <Circle
-                                                            size='8'
-                                                            bg='dark.500'
-                                                            borderRadius='3xl'
-                                                          >
-                                                            <Icon
-                                                              as={CheckCircle}
-                                                              color='primary.500'
-                                                              boxSize='5'
-                                                            />
-                                                          </Circle>
-                                                          <a
-                                                            href={href}
-                                                            target='_blank'
-                                                            rel='noreferrer'
-                                                          >
-                                                            <Button
-                                                              variant='link'
-                                                              size='sm'
-                                                            >
-                                                              View transaction
-                                                            </Button>
-                                                          </a>
-                                                        </Stack>
-                                                      </Stack>
-                                                      <Button
-                                                        variant='link'
-                                                        size='sm'
-                                                      >
-                                                        <Icon
-                                                          as={XIcon}
-                                                          color='light.900'
-                                                          boxSize='5'
-                                                          onClick={() =>
-                                                            toast.closeAll()
-                                                          }
-                                                        />
-                                                      </Button>
-                                                    </Stack>
-                                                  ),
-                                                });
-                                              },
-                                            },
-                                          );
-                                        },
-                                      })
-                                    }
-                                  >
-                                    Submit
-                                  </Button>
-                                </GridItem>
-                              </Grid>
+                              <ProposalQueueCard submission={submission} />
                             ))}
                           </Stack>
                         )}
@@ -404,7 +265,7 @@ export default function Proposals() {
                 </Stack>
               </GridItem>
               <GridItem colSpan={3}>
-                <Card bg='dark.900' h='36.5vh'>
+                <Card bg='dark.900' h='36vh'>
                   <Stack
                     px={{ base: '6', md: '6' }}
                     py={{ base: '6', md: '6' }}
