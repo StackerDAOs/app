@@ -253,8 +253,10 @@ export default function Proposals() {
                         )}
                         {submissions?.data?.length !== 0 && (
                           <Stack spacing='6' py='3'>
-                            {submissions?.data?.map((submission: any) => (
-                              <ProposalQueueCard submission={submission} />
+                            {submissions?.data?.map((data: any) => (
+                              <ProposalQueueCard
+                                submission={data?.submission}
+                              />
                             ))}
                           </Stack>
                         )}
