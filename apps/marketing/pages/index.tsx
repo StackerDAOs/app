@@ -266,7 +266,7 @@ export default function Web() {
                     >
                       Create Team
                     </Button>
-                    <Link href='/clubs'>
+                    <Link href='/teams'>
                       <Button
                         variant='link'
                         size='lg'
