@@ -15,12 +15,26 @@ function App({ Component, pageProps }: any) {
         <meta property='og:image' content='/meta-image.png' />
         {/* <meta property='og:image:width' content='<image width>' /> */}
         {/* <meta property='og:image:height' content='<image height>' /> */}
-        <meta property='og:title' content='StackerDAO Labs' />
+        <meta property='og:title' content='StackerDAOs' />
+        <meta property='og:type' content='website' />
         <meta
           property='og:description'
-          content='Take ownership & action. Together.'
+          content='Ownership & Action. Together.'
         />
+        {/* Twitter Meta Tags */}
         <meta property='og:url' content='https://stackerdaos.com' />
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta
+          property='twitter:domain'
+          content='https://twitter.com/stackerdaolabs'
+        />
+        <meta property='twitter:url' content='https://stackerdaos.com' />
+        <meta name='twitter:title' content='StackerDAOs' />
+        <meta
+          name='twitter:description'
+          content='Ownership & Action. Together.'
+        />
+        <meta name='twitter:image' content='/meta-image.png' />
         <link rel='icon' sizes='192x192' href='/android-chrome-192x192.png' />
         <link rel='icon' sizes='512x512' href='/android-chrome-512x512.png' />
         <link

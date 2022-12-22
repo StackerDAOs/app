@@ -720,26 +720,9 @@ export default function GetStarted() {
                 bgClip='text'
                 letterSpacing='tight'
               >
-                Choose 3 structures for you web3 organization, all powered by{' '}
-                <Text
-                  as='span'
-                  fontWeight='black'
-                  bgGradient='linear(to-b, primary.900, primary-accent.900)'
-                  bgClip='text'
-                >
-                  Bitcoin
-                </Text>
+                Learn more about each structure and select what&apos;s best for
+                your use case
               </Heading>
-              <Text
-                color='light.500'
-                fontWeight='light'
-                fontSize={{ base: 'lg', md: 'xl', lg: '3xl' }}
-                maxW='3xl'
-                letterSpacing='tight'
-              >
-                Learn more about each structure and pick the one that’s best for
-                your use case.
-              </Text>
               <SimpleGrid
                 as={RadioCardGroup}
                 onChange={(value: any) => handleScrollTo(value)}
