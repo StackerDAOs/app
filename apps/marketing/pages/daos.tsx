@@ -22,7 +22,6 @@ import {
 } from 'ui/components/icons';
 import { useScrollPosition } from 'ui/hooks/react';
 import { MainNavbar, Footer } from '@components/navigation';
-import { appUrl } from 'utils';
 
 const features = [
   {
@@ -122,7 +121,7 @@ export default function Clubs() {
             >
               <Button
                 as='a'
-                href={`${appUrl.daos}`}
+                href='https://form.typeform.com/to/zfYJYLgV'
                 variant='default'
                 size='lg'
               >

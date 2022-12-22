@@ -25,7 +25,6 @@ import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { ArrowRight, CheckCircle, InfoIcon } from 'ui/components/icons';
 import { Banner } from '@components/misc';
 import { RadioCardGroup, RadioCard } from 'ui/components/forms';
-import { appUrl } from 'utils';
 import { map } from 'lodash';
 
 export default function GetStarted() {
