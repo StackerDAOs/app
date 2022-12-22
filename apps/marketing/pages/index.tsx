@@ -197,12 +197,14 @@ export default function Web() {
                   <ButtonGroup spacing='6'>
                     <Button
                       as='a'
-                      href={`${appUrl.clubs}/create`}
+                      href='https://form.typeform.com/to/zfYJYLgV'
+                      target='_blank'
+                      rel='noreferrer'
                       variant='default'
                       size='lg'
                       fontWeight='medium'
                     >
-                      Create Club
+                      Get in touch
                     </Button>
                     <Link href='/clubs'>
                       <Button

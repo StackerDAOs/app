@@ -22,7 +22,6 @@ import {
 } from 'ui/components/icons';
 import { useScrollPosition } from 'ui/hooks/react';
 import { MainNavbar, Footer } from '@components/navigation';
-import { appUrl } from 'utils';
 
 const features = [
   {
@@ -114,11 +113,13 @@ export default function Clubs() {
             >
               <Button
                 as='a'
-                href={`${appUrl.clubs}/create`}
+                href='https://form.typeform.com/to/zfYJYLgV'
+                target='_blank'
+                rel='noreferrer'
                 variant='default'
                 size='lg'
               >
-                Create Club
+                Get in touch
               </Button>
               <Button
                 as='a'

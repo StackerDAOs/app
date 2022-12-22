@@ -243,6 +243,7 @@ export default function Vault() {
                       size='sm'
                       vaultAddress={vaultExtension?.contract_address}
                       amount={depositAmount}
+                      isDisabled={depositAmount === ''}
                       reset={() => {
                         setDepositAmount('');
                       }}

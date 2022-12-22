@@ -59,16 +59,19 @@ export const MainNavbar = (props: any) => {
       title: 'Clubs',
       href: pathUrl.clubs,
       icon: ArrowRight,
+      active: false,
     },
     {
       title: 'Teams',
       href: pathUrl.teams,
       icon: ArrowRight,
+      active: true,
     },
     {
       title: 'StackerDAOs',
       href: pathUrl.daos,
       icon: ArrowRight,
+      active: true,
     },
   ];
 
@@ -162,21 +165,39 @@ export const MainNavbar = (props: any) => {
                         >
                           <Stack>
                             {products.map((product) => (
-                              <Link key={product.title} href={product.href}>
+                              <Link
+                                key={product.title}
+                                href={product.active ? product.href : '#'}
+                              >
                                 <Stack
                                   spacing='4'
                                   direction='row'
                                   justify='space-between'
                                   p='2'
-                                  _hover={{
-                                    cursor: 'pointer',
-                                    bg: 'dark.800',
-                                    color: 'primary.900',
-                                  }}
+                                  _hover={
+                                    product.active
+                                      ? {
+                                          cursor: 'pointer',
+                                          bg: 'dark.800',
+                                          color: 'primary.900',
+                                        }
+                                      : { cursor: 'default' }
+                                  }
                                 >
-                                  <Text fontWeight='medium'>
-                                    {product.title}
-                                  </Text>
+                                  <HStack spacing='6' justify='space-between'>
+                                    <Text fontWeight='medium'>
+                                      {product.title}
+                                    </Text>
+                                    {!product.active && (
+                                      <Text
+                                        fontSize='sm'
+                                        fontWeight='medium'
+                                        color='yellow.500'
+                                      >
+                                        Coming soon
+                                      </Text>
+                                    )}
+                                  </HStack>
                                 </Stack>
                               </Link>
                             ))}
