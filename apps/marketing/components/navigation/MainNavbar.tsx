@@ -32,21 +32,21 @@ export const MainNavbar = (props: any) => {
     switch (path) {
       case '/clubs':
         return {
-          getStarted: pathUrl.clubs,
-          create: `${pathUrl.clubs}/create`,
+          getStarted: 'https://form.typeform.com/to/zfYJYLgV',
+          create: 'https://form.typeform.com/to/zfYJYLgV',
           docs: 'https://stackerdaos.gitbook.io/stackerdao-labs-wiki/stackerdao-labs-offerings/products-stackerdao-clubs-teams/clubs',
         };
 
       case '/teams':
         return {
           getStarted: pathUrl.teams,
-          create: `${pathUrl.teams}/create`,
+          create: 'https://teams.stackerdaos.com/create',
           docs: 'https://stackerdaos.gitbook.io/stackerdao-labs-wiki/stackerdao-labs-offerings/products-stackerdao-clubs-teams/teams',
         };
       case '/daos':
         return {
           getStarted: pathUrl.daos,
-          create: `${pathUrl.daos}/create`,
+          create: 'https://form.typeform.com/to/zfYJYLgV',
           docs: 'https://stackerdaos.gitbook.io/stackerdao-labs-wiki/stackerdao-labs-offerings/products-stackerdao-clubs-teams/stackerdao',
         };
       default:

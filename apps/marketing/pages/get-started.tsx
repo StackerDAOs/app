@@ -75,12 +75,12 @@ export default function GetStarted() {
                     <ButtonGroup spacing='6'>
                       <Button
                         as='a'
-                        href={`${appUrl.clubs}/create`}
+                        href='https://form.typeform.com/to/zfYJYLgV'
                         variant='default'
                         size='lg'
                         fontWeight='medium'
                       >
-                        Create Club
+                        Get in touch
                       </Button>
                       <Link href='/clubs'>
                         <Button
@@ -508,7 +508,7 @@ export default function GetStarted() {
                     <ButtonGroup spacing='6'>
                       <Button
                         as='a'
-                        href={`${appUrl.teams}/create`}
+                        href='https://teams.stackerdaos.com/create'
                         variant='default'
                         size='lg'
                         fontWeight='medium'
