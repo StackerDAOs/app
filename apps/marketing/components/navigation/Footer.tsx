@@ -20,7 +20,8 @@ export const Footer = () => (
           height='35px'
         />
         <Text color='muted'>
-          &copy; {new Date().getFullYear()} StackerDAO Labs All rights reserved.
+          &copy; {new Date().getFullYear()} StackerDAO Labs. All rights
+          reserved.
         </Text>
       </Stack>
       <Stack

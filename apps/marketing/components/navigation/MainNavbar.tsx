@@ -17,7 +17,8 @@ import { LogoIcon, ArrowRight } from 'ui/components/icons';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
 const pathUrl = {
-  clubs: 'https://clubs.stackerdaos.com',
+  clubs:
+    'https://stackerdaos.gitbook.io/stackerdao-labs-wiki/stackerdao-labs-offerings/products-stackerdao-clubs-teams/clubs',
   teams: 'https://teams.stackerdaos.com',
   daos: 'https://app.stackerdaos.com',
 };

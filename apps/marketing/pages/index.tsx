@@ -21,7 +21,6 @@ import {
   RegulationIcon,
 } from 'ui/components/icons';
 import { MainNavbar, Footer } from '@components/navigation';
-import { appUrl } from 'utils';
 
 const features = [
   {
@@ -260,7 +259,7 @@ export default function Web() {
                   <ButtonGroup spacing='6'>
                     <Button
                       as='a'
-                      href={`${appUrl.teams}/create`}
+                      href='https://teams.stackerdaos.com/create'
                       variant='default'
                       size='lg'
                       fontWeight='medium'

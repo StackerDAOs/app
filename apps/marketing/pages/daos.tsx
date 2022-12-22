@@ -126,7 +126,7 @@ export default function Clubs() {
                 variant='default'
                 size='lg'
               >
-                Get started
+                Get in touch
               </Button>
               <Button
                 as='a'
