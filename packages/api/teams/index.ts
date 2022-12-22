@@ -37,12 +37,23 @@ export async function getTeam(name: string) {
   }
 }
 
-export async function getTeams(creatorAddress: string | undefined) {
+export async function getTeams(
+  creatorAddress: string | undefined,
+  limit: number,
+  page = 1,
+) {
   try {
+    const startingPosition = (page - 1) * limit;
+    const endingPosition = startingPosition + limit;
+    console.log({ startingPosition, endingPosition });
     const { data, error } = await supabase
       .from('teams')
-      .select('id, name, slug, contract_address, prefix')
-      .eq('creator_address', creatorAddress);
+      .select(
+        'id, name, slug, contract_address, prefix, bootstrap_tx_id, activation_tx_id, active',
+      )
+      .eq('creator_address', creatorAddress)
+      .range(startingPosition, endingPosition)
+      .limit(limit);
     if (error) throw error;
     return data;
   } catch (e: any) {
