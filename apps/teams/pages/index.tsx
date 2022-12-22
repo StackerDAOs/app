@@ -70,38 +70,41 @@ export default function Index() {
               )}
               {data?.map((team: any, i: number) => (
                 <Link href={viewPath(team)}>
-                  <HStack
+                  <Box
                     key={team.name}
-                    justify='space-between'
                     cursor='pointer'
-                    my='2'
-                    p='3'
                     _hover={{ bg: 'dark.800' }}
                     _first={{ my: '0' }}
                   >
-                    <Text fontSize='md' fontWeight='light' color='gray'>
-                      {i + 1}. {team?.name}
-                    </Text>
-                    <HStack spacing='2'>
-                      {team?.active ? (
-                        <Text
-                          fontSize='sm'
-                          fontWeight='medium'
-                          color='green.500'
-                        >
-                          Active
-                        </Text>
-                      ) : (
-                        <Text
-                          fontSize='sm'
-                          fontWeight='medium'
-                          color='yellow.500'
-                        >
-                          Pending
-                        </Text>
-                      )}
+                    <HStack
+                      justify='space-between'
+                      py={{ base: '3', md: '3' }}
+                      px={{ base: '6', md: '6' }}
+                    >
+                      <Text fontSize='md' fontWeight='light' color='gray'>
+                        {i + 1}. {team?.name}
+                      </Text>
+                      <HStack spacing='2'>
+                        {team?.active ? (
+                          <Text
+                            fontSize='sm'
+                            fontWeight='medium'
+                            color='green.500'
+                          >
+                            Active
+                          </Text>
+                        ) : (
+                          <Text
+                            fontSize='sm'
+                            fontWeight='medium'
+                            color='yellow.500'
+                          >
+                            Pending
+                          </Text>
+                        )}
+                      </HStack>
                     </HStack>
-                  </HStack>
+                  </Box>
                 </Link>
               ))}
             </Stack>

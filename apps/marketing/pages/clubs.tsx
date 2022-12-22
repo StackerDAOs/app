@@ -5,12 +5,21 @@ import {
   Heading,
   Flex,
   Text,
+  Icon,
   Image,
   SimpleGrid,
   Stack,
 } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { ArrowRight } from 'ui/components/icons';
+import {
+  ArrowRight,
+  ExtensionIcon,
+  OnchainIcon,
+  RagequitIcon,
+  ProposalIcon,
+  TempCheckIcon,
+  VaultIcon,
+} from 'ui/components/icons';
 import { useScrollPosition } from 'ui/hooks/react';
 import { MainNavbar, Footer } from '@components/navigation';
 import { appUrl } from 'utils';
@@ -18,37 +27,37 @@ import { appUrl } from 'utils';
 const features = [
   {
     name: 'Treasury',
-    image: '/images/proposal-hero.png',
+    icon: VaultIcon,
     description:
       'Manage fungible tokens and NFTs. Whitelist assets to protect your treasury. View your assets on our dashboard.',
   },
   {
     name: 'Proposals & Automatic Execution',
-    image: '/images/proposal-hero.png',
+    icon: ProposalIcon,
     description:
       'Members can create, deploy, and submit proposals. Proposals are smart contracts—allowing the Club to automatically execute approved proposals for on-chain activity.',
   },
   {
     name: 'On-Chain Voting',
-    image: '/images/proposal-hero.png',
+    icon: OnchainIcon,
     description:
       'Members that have deposited funds can vote on-chain with voter approved proposals automatically executing.',
   },
   {
     name: 'Off-Chain Temperature Checks',
-    image: '/images/proposal-hero.png',
+    icon: TempCheckIcon,
     description:
       'Members can create Ideas to receive guidance from the rest of the Club through upvotes and downvotes before submitting a formal on-chain proposal—all powered by off-chain authenticated wallet signatures.',
   },
   {
     name: 'Composable Extensions',
-    image: '/images/proposal-hero.png',
+    icon: ExtensionIcon,
     description:
       'Buy and sell NFTs, swap tokens, borrow and lend, and more. Extensions provide your Club’s structure and allow it to do almost anything an individual wallet can do.',
   },
   {
     name: 'Ragequit',
-    image: '/images/proposal-hero.png',
+    icon: RagequitIcon,
     description:
       'Members can exit the Club at anytime (or "ragequit") by burning their Club Pass and governance tokens in return for their pro-rata share of liquid STX in the Club’s treasury.',
   },
@@ -286,7 +295,7 @@ export default function Clubs() {
               textAlign='center'
             >
               <Stack spacing={{ base: '1', md: '2' }} align='center'>
-                <Image src={feature.image} alt={feature.name} />
+                <Icon as={feature.icon} boxSize='10' color='primary.500' />
                 <Text fontSize={{ base: 'lg', md: 'xl' }} fontWeight='semibold'>
                   {feature.name}
                 </Text>

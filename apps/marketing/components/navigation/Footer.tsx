@@ -82,6 +82,24 @@ export const Footer = () => (
               >
                 Github
               </Button>
+              <Button
+                as='a'
+                href='https://twitter.com/stackerdaolabs'
+                target='_blank'
+                variant='link'
+                size='sm'
+              >
+                Twitter
+              </Button>
+              <Button
+                as='a'
+                href='https://github.com/StackerDAOs'
+                target='_blank'
+                variant='link'
+                size='sm'
+              >
+                Discord
+              </Button>
             </Stack>
           </Stack>
           <Stack spacing='4' minW='36' flex='1'>

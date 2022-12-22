@@ -5,12 +5,20 @@ import {
   Heading,
   Flex,
   Text,
+  Icon,
   Image,
   SimpleGrid,
   Stack,
 } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { ArrowRight } from 'ui/components/icons';
+import {
+  ArrowRight,
+  ExtensionIcon,
+  OnchainIcon,
+  ProposalIcon,
+  TempCheckIcon,
+  VaultIcon,
+} from 'ui/components/icons';
 import { useScrollPosition } from 'ui/hooks/react';
 import { MainNavbar, Footer } from '@components/navigation';
 import { appUrl } from 'utils';
@@ -18,37 +26,42 @@ import { appUrl } from 'utils';
 const features = [
   {
     name: 'Treasury',
+    icon: VaultIcon,
     description:
       'Manage fungible tokens and NFTs. Whitelist assets to protect your treasury. View your assets on our dashboard.',
     image: '/images/proposal-hero.png',
   },
   {
     name: 'Proposals & Automatic Execution',
+    icon: ProposalIcon,
     description:
       'Members can create, deploy, and submit proposals. Proposals are smart contracts—allowing the Team to automatically execute approved proposals for on-chain activity.',
     image: '/images/proposal-hero.png',
   },
   {
     name: 'On-Chain Voting',
+    icon: OnchainIcon,
     description:
       'Members vote on-chain, with Member approved proposals automatically executing.',
     image: '/images/proposal-hero.png',
   },
   {
     name: 'Off-Chain Temperature Checks',
+    icon: TempCheckIcon,
     description:
       'Members can create Ideas to receive guidance from the rest of the Team through upvotes and downvotes before submitting a formal on-chain proposal—all powered by off-chain authenticated wallet signatures.',
     image: '/images/proposal-hero.png',
   },
   {
     name: 'Composable Extensions',
+    icon: ExtensionIcon,
     description:
       'Buy and sell NFTs, swap tokens, borrow and lend, and more. Extensions provide your Team’s structure and allow it to do almost anything an individual wallet can do.',
     image: '/images/proposal-hero.png',
   },
 ];
 
-export default function Clubs() {
+export default function Teams() {
   const scrollPosition = useScrollPosition();
 
   return (
@@ -290,7 +303,7 @@ export default function Clubs() {
               textAlign='center'
             >
               <Stack spacing={{ base: '1', md: '2' }} align='center'>
-                <Image src={feature.image} alt={feature.name} />
+                <Icon as={feature.icon} boxSize='10' color='primary.500' />
                 <Text fontSize={{ base: 'lg', md: 'xl' }} fontWeight='semibold'>
                   {feature.name}
                 </Text>

@@ -6,29 +6,39 @@ import {
   ButtonGroup,
   Flex,
   Heading,
+  Icon,
   Image,
   SimpleGrid,
   Stack,
   Text,
 } from 'ui';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { ArrowRight, ChevronDown } from 'ui/components/icons';
+import {
+  ArrowRight,
+  BitcoinIcon,
+  ChevronDown,
+  EngineGearsIcon,
+  RegulationIcon,
+} from 'ui/components/icons';
 import { MainNavbar, Footer } from '@components/navigation';
 import { appUrl } from 'utils';
 
 const features = [
   {
     name: 'Powered by Bitcoin',
+    icon: BitcoinIcon,
     description:
       'Leverage cryptos most secure, decentralized, and valuable network for security and capital. Native Bitcoin fundraising coming soon.',
   },
   {
     name: 'Decentralized, composable, and powerful',
+    icon: EngineGearsIcon,
     description:
       ' Execute voter approved on-chain proposals automatically, easily interact with and integrate other applications, and do almost anything an individual wallet can do.',
   },
   {
     name: 'Quick Legal Setup',
+    icon: RegulationIcon,
     description:
       'Form a legal entity with a few clicks, generate form legal docs, and receive compliance assistance. Coming soon.',
   },
@@ -61,7 +71,7 @@ export default function Web() {
             <Stack spacing='6' align='flex-start'>
               <Heading
                 fontSize={{ base: '5xl', sm: '7xl', lg: '8xl' }}
-                fontWeight='medium'
+                fontWeight='black'
                 lineHeight='1.2'
                 bg='light.900'
                 bgClip='text'
@@ -137,24 +147,12 @@ export default function Web() {
               <Stack spacing='3'>
                 <Heading
                   as='h1'
-                  size='4xl'
-                  fontWeight='medium'
+                  size='3xl'
+                  fontWeight='black'
                   lineHeight='1.2'
                   letterSpacing='tight'
                 >
-                  Create a{' '}
-                  <Text as='span' color='light.900' fontWeight='extrabold'>
-                    Club
-                  </Text>
-                  ,{' '}
-                  <Text as='span' color='light.900' fontWeight='extrabold'>
-                    Team
-                  </Text>
-                  , or{' '}
-                  <Text as='span' color='light.900' fontWeight='extrabold'>
-                    DAO
-                  </Text>{' '}
-                  in just a few steps
+                  Easily build and manage your own Club, Team, or DAO
                 </Heading>
               </Stack>
             </Stack>
@@ -166,6 +164,7 @@ export default function Web() {
                   align='center'
                   textAlign='center'
                 >
+                  <Icon as={feature.icon} boxSize='10' color='primary.500' />
                   <Stack spacing={{ base: '1', md: '2' }}>
                     <Text
                       fontSize={{ base: 'lg', md: 'xl' }}
