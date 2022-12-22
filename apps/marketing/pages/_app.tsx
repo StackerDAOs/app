@@ -13,8 +13,6 @@ function App({ Component, pageProps }: any) {
         <meta name='viewport' content='initial-scale=1.0, width=device-width' />
         <meta name='image' content='/meta-image.png' />
         <meta property='og:image' content='/meta-image.png' />
-        {/* <meta property='og:image:width' content='<image width>' /> */}
-        {/* <meta property='og:image:height' content='<image height>' /> */}
         <meta property='og:title' content='StackerDAOs' />
         <meta property='og:type' content='website' />
         <meta
