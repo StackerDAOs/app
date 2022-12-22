@@ -93,7 +93,7 @@ export const Footer = () => (
               </Button>
               <Button
                 as='a'
-                href='https://github.com/StackerDAOs'
+                href='https://discord.gg/ewjKs49wFr'
                 target='_blank'
                 variant='link'
                 size='sm'

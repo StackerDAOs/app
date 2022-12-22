@@ -69,24 +69,25 @@ export default function Web() {
         >
           <Box as='section' py='6' px='12'>
             <Stack spacing='6' align='flex-start'>
-              <Heading
-                fontSize={{ base: '5xl', sm: '7xl', lg: '8xl' }}
-                fontWeight='black'
-                lineHeight='1.2'
-                bg='light.900'
-                bgClip='text'
-                letterSpacing='tight'
-              >
-                Create a web3 organization powered by{' '}
+              <Stack spacing='0'>
+                <Heading
+                  m='0'
+                  fontSize={{ base: '5xl', sm: '7xl', lg: '8xl' }}
+                  fontWeight='thin'
+                  letterSpacing='tight'
+                >
+                  Ownership &amp; Action.
+                </Heading>
                 <Text
-                  as='span'
+                  m='-20px 0 0 0 !important'
+                  fontSize={{ base: '5xl', sm: '7xl', lg: '8xl' }}
                   fontWeight='black'
                   bgGradient='linear(to-b, primary.900, primary-accent.900)'
                   bgClip='text'
                 >
-                  Bitcoin
+                  Together.
                 </Text>
-              </Heading>
+              </Stack>
               <Text
                 color='light.500'
                 fontWeight='light'
@@ -94,25 +95,8 @@ export default function Web() {
                 maxW='4xl'
                 letterSpacing='tight'
               >
-                Whether it’s to govern a protocol, invest, fund causes, or build
-                products,{' '}
-                <Text
-                  as='span'
-                  fontWeight='regular'
-                  _selection={{ color: 'light.900', bg: 'primary-accent.900' }}
-                >
-                  StackerDAOs
-                </Text>{' '}
-                provides{' '}
-                <Text
-                  as='span'
-                  fontWeight='regular'
-                  _selection={{ color: 'light.900', bg: 'primary-accent.900' }}
-                >
-                  decentralized
-                </Text>{' '}
-                and trustless coordination so communities can have true
-                ownership and take action.{' '}
+                Create and manage compliant web3 organizations that govern
+                protocols, invest, fund causes, and more.{' '}
                 <Text as='span' fontWeight='semibold'>
                   Together
                 </Text>
