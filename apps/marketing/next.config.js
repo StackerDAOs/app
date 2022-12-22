@@ -3,7 +3,6 @@ const withTM = require('next-transpile-modules')([
   'utils',
   'api',
   'hooks',
-  'sdk',
 ]);
 
 module.exports = withTM({
