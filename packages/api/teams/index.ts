@@ -579,6 +579,7 @@ export async function getProposal(
     const submission = dbProposal?.submission;
 
     return {
+      id: dbProposal?.id,
       principalAddress: proposalAddress,
       submission,
       signalsRequired,

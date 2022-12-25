@@ -4,6 +4,7 @@ const withTM = require('next-transpile-modules')([
   'api',
   'hooks',
   'sdk',
+  'react-syntax-highlighter',
 ]);
 
 module.exports = withTM({

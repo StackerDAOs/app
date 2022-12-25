@@ -1,2 +1,2 @@
 export * from './ProposalCard';
-export * from './ProposalQueueCard';
+export * from './SubmissionCard';

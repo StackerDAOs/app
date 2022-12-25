@@ -37,12 +37,17 @@ import {
   Textarea,
   useDisclosure,
 } from 'ui';
+import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Card } from 'ui/components/cards';
 import { RadioCardGroup, RadioCard } from 'ui/components/forms';
 import { useGenerateName, useTeam } from 'ui/hooks';
 import { useCreateSubmission } from 'api/teams/mutations';
 import { useProposalStore } from 'store';
 import { findExtension } from 'utils';
+import { vaultTemplateProposal } from 'utils/contracts';
 import { map, size } from 'lodash';
 import {
   CheckCircle,
@@ -195,6 +200,11 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
   const clearRecipients = useProposalStore((state) => state.clearRecipients);
   const clearAllowlist = useProposalStore((state) => state.clearAllowlist);
   const createSubmission = useCreateSubmission();
+  const codeBody = vaultTemplateProposal(
+    vaultExtension?.contract_address,
+    proposal?.recipients,
+    proposal?.allowlist,
+  );
 
   const onFinishDeployVaultTemplate = (payload: any) => {
     setStep(step + 1);
@@ -464,9 +474,12 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                                   fontSize='lg'
                                   fontWeight='regular'
                                 >
-                                  {proposal?.data?.body
-                                    ? proposal?.data?.body
-                                    : 'Description'}
+                                  <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                                    {proposal?.data?.body.replace(
+                                      /\n/gi,
+                                      '&nbsp; \n',
+                                    )}
+                                  </ReactMarkdown>
                                 </Text>
                               </Stack>
                             </Stack>
@@ -606,7 +619,12 @@ const VaultAndAssetManagement = ({ onClose }: any) => {
                               fontWeight='semibold'
                               color='gray'
                             >
-                              Coming soon
+                              <SyntaxHighlighter
+                                language='clojure'
+                                style={atomDark}
+                              >
+                                {codeBody}
+                              </SyntaxHighlighter>
                             </Text>
                           </Stack>
                         </Card>

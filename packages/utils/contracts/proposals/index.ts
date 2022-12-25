@@ -175,9 +175,7 @@ export const vaultTemplateProposal = (
 (define-public (execute (sender principal))
   (begin
     ${allowList}
-
     ${memberList}
-    
     (print {event: "execute", sender: sender})
     (ok true)
   )

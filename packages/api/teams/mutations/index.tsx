@@ -176,11 +176,21 @@ export const useCreateSubmission = () => {
 
 export async function createProposal(proposal: Proposal) {
   try {
-    const { data, error } = await supabase
+    const newProposal = await supabase
       .from('proposals')
       .insert([{ ...proposal }]);
-    if (error) throw error;
-    return data;
+    if (newProposal.error) throw newProposal.error;
+    const submission = await supabase
+      .from('submissions')
+      .update({ deployed: true })
+      .match({
+        contract_address: proposal.contract_address,
+      });
+    if (submission.error) throw submission.error;
+    return {
+      proposal: newProposal.data,
+      submission: submission.data,
+    };
   } catch (e: any) {
     console.error({ e });
   }
@@ -191,6 +201,7 @@ export const useCreateProposal = () => {
   return useMutation(createProposal, {
     onSuccess: () => {
       queryClient.invalidateQueries('proposals');
+      queryClient.invalidateQueries('submissions');
     },
   });
 };

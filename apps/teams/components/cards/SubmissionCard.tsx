@@ -3,10 +3,10 @@ import { StacksSDK } from 'sdk';
 import {
   Button,
   Circle,
-  Heading,
   HStack,
   Icon,
   Stack,
+  Square,
   Tag,
   Text,
   useToast,
@@ -14,16 +14,12 @@ import {
 import { useAccount } from 'ui/components';
 import { useTeam, useTransaction } from 'ui/hooks';
 import { useCreateProposal } from 'api/teams/mutations';
-import { truncateAddress } from '@stacks-os/utils';
 import { findExtension, getExplorerLink } from 'utils';
-import { CheckCircle, XIcon } from 'ui/components/icons';
+import { CheckCircle, UndoIcon, XIcon } from 'ui/components/icons';
 
-export const ProposalQueueCard = ({ submission }: any) => {
-  const {
-    title,
-    contract_address: contractAddress,
-    tx_id: transactionId,
-  } = submission;
+export const SubmissionCard = ({ submission }: any) => {
+  const { contract_address: contractAddress, tx_id: transactionId } =
+    submission;
   const dao = useTeam();
   const { stxAddress } = useAccount();
   const multisigExtension = findExtension(dao?.data?.extensions, 'Team');
@@ -97,59 +93,81 @@ export const ProposalQueueCard = ({ submission }: any) => {
     });
 
   return (
-    <HStack
+    <Stack
+      key={submission?.id}
+      direction='row'
+      spacing='2'
       justify='space-between'
-      py={{ base: '6', md: '6' }}
-      px={{ base: '6', md: '6' }}
+      align='center'
+      py='6'
       borderBottomWidth='1px'
       borderBottomColor='dark.500'
-      _last={{ borderBottomWidth: '0' }}
+      _first={{
+        borderTopWidth: '1px',
+        borderTopColor: 'dark.500',
+      }}
     >
-      <HStack spacing='2'>
-        <HStack align='flex-start' spacing='4'>
-          <Stack spacing='2' maxW='lg'>
+      <Stack spacing='1'>
+        <HStack spacing='2' align='center'>
+          {transaction?.data?.tx_status === 'pending' && (
             <Tag
-              color='yellow.500'
+              color='orange.500'
               bg='dark.800'
               alignSelf='self-start'
               size='sm'
               borderRadius='3xl'
             >
               <Text as='span' fontWeight='regular'>
-                {truncateAddress(contractAddress)}
+                Deploying
               </Text>
             </Tag>
-            <Heading size='sm' fontWeight='regular'>
-              {title}
-            </Heading>
-          </Stack>
-        </HStack>
-      </HStack>
-      <>
-        {!transaction?.data && (
-          <Button variant='link' size='sm' isDisabled>
-            Inactive
-          </Button>
-        )}
-        {transaction?.data?.tx_status === 'pending' && (
-          <HStack spacing='2'>
-            <Circle size='2' bg='yellow.500' color='white' />
-            <Text
-              fontSize='sm'
-              fontWeight='medium'
-              color='light.900'
-              letterSpacing='tight'
+          )}
+          {transaction?.data?.tx_status === 'success' && (
+            <Tag
+              color='green.500'
+              bg='dark.800'
+              alignSelf='self-start'
+              size='sm'
+              borderRadius='3xl'
             >
-              Deploying
-            </Text>
-          </HStack>
-        )}
-        {transaction?.data?.tx_status === 'success' && (
-          <Button variant='secondary' size='sm' onClick={submitProposal}>
-            Submit as proposal
-          </Button>
-        )}
-      </>
-    </HStack>
+              <Text as='span' fontWeight='regular'>
+                Ready for submission
+              </Text>
+            </Tag>
+          )}
+          {transaction?.data?.tx_status === 'abort_by_response' && (
+            <Tag
+              color='red.500'
+              bg='dark.800'
+              alignSelf='self-start'
+              size='sm'
+              borderRadius='3xl'
+            >
+              <Text as='span' fontWeight='regular'>
+                Failed
+              </Text>
+            </Tag>
+          )}
+        </HStack>
+        <Text fontSize='md' fontWeight='semibold' color='light.900'>
+          {submission?.title}
+        </Text>
+      </Stack>
+      {transaction?.data?.tx_status === 'pending' && (
+        <Button variant='dark' isLoading />
+      )}
+      {transaction?.data?.tx_status === 'success' && (
+        <Button variant='secondary' size='sm' onClick={submitProposal}>
+          Submit proposal
+        </Button>
+      )}
+      {transaction?.data?.tx_status === 'abort_by_response' && (
+        <HStack>
+          <Square size='8' bg='dark.500' color='inverted' borderRadius='lg'>
+            <Icon as={UndoIcon} boxSize='4' />
+          </Square>
+        </HStack>
+      )}
+    </Stack>
   );
 };

@@ -4,9 +4,11 @@ import { useRouter } from 'next/router';
 import {
   Box,
   Button,
+  Circle,
   Flex,
   Grid,
   GridItem,
+  Icon,
   Input,
   InputGroup,
   Heading,
@@ -28,10 +30,12 @@ import {
   useTeamProposals,
   useTeamVaultBalance,
 } from 'ui/hooks';
-import { findExtension, ustxToStx } from 'utils';
+import { truncateAddress } from '@stacks-os/utils';
+import { findExtension, getExplorerLink, ustxToStx } from 'utils';
 import { TransactionTable } from '@components/tables';
 import { useActivateTeam } from 'api/teams/mutations';
 import { defaultTo } from 'lodash';
+import { TransferIcon } from 'ui/components/icons';
 
 export default function Dashboard() {
   const { isSignedIn } = useAuth();
@@ -411,7 +415,7 @@ export default function Dashboard() {
           </Stack>
         </Stack>
         <Grid templateColumns='repeat(6, 1fr)' gap={6}>
-          <GridItem colSpan={6}>
+          <GridItem colSpan={4}>
             <Card>
               <Stack spacing='5'>
                 <Box px={{ base: '4', md: '6' }} pt='5'>
@@ -444,6 +448,79 @@ export default function Dashboard() {
               </Stack>
             </Card>
           </GridItem>
+          <GridItem colSpan={2}>
+            <Card bg='dark.800' h='fit-content'>
+              <Stack
+                px={{ base: '6', md: '6' }}
+                py={{ base: '6', md: '6' }}
+                spacing='6'
+              >
+                <Heading
+                  color='light.900'
+                  fontSize='lg'
+                  fontWeight='regular'
+                  letterSpacing='tight'
+                >
+                  Recent Activity
+                </Heading>
+                {transactions?.data?.length !== 0 &&
+                  transactions?.data?.map((transaction: any) => (
+                    <Stack spacing='6' justify='center' h='full'>
+                      <HStack justify='space-between'>
+                        <HStack spacing='2'>
+                          <Circle
+                            size='5'
+                            bg='dark.800'
+                            borderWidth='1px'
+                            borderColor='dark.500'
+                          >
+                            <Icon
+                              as={TransferIcon}
+                              boxSize='2'
+                              color='primary.900'
+                            />
+                          </Circle>
+                          <Text
+                            fontSize='sm'
+                            fontWeight='medium'
+                            color='light.900'
+                          >
+                            {truncateAddress(transaction?.txId)}
+                          </Text>
+                        </HStack>
+                        <a
+                          href={getExplorerLink(transaction?.txId)}
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          <Text
+                            fontSize='sm'
+                            fontWeight='regular'
+                            color='gray'
+                            cursor='pointer'
+                          >
+                            View transaction
+                          </Text>
+                        </a>
+                      </HStack>
+                    </Stack>
+                  ))}
+                {transactions?.data?.length === 0 && (
+                  <Stack
+                    spacing='3'
+                    justify='center'
+                    align='center'
+                    h='15vh'
+                    cursor='default'
+                  >
+                    <Text fontSize='md' fontWeight='light' color='gray'>
+                      No recent activity
+                    </Text>
+                  </Stack>
+                )}
+              </Stack>
+            </Card>
+          </GridItem>
         </Grid>
       </Stack>
     </motion.div>
@@ -451,7 +528,7 @@ export default function Dashboard() {
 }
 
 const Header = () => (
-  <Flex justify='space-between' align='center' py='6' px='4'>
+  <Flex justify='space-between' align='center' py='6' px='10'>
     <Heading size='lg' fontWeight='black' letterSpacing='tight'>
       Dashboard
     </Heading>

@@ -3,7 +3,7 @@ import { Wrapper } from '@components/containers';
 import { Sidebar } from '@components/navigation';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 
-export const DashboardLayout = ({ children, header }: any) => (
+export const ProposalLayout = ({ children, header }: any) => (
   <Grid templateColumns='repeat(9, 1fr)'>
     <GridItem colSpan={2}>
       <Sidebar />

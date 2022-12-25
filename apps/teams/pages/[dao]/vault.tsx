@@ -71,7 +71,6 @@ export default function Vault() {
     }
   };
   const transformedResponse = transformResponse(vaultBalance?.data);
-  console.log({ transformedResponse });
 
   if (!isActive) {
     return (
@@ -374,7 +373,7 @@ export default function Vault() {
 Vault.getLayout = (page: any) => (
   <DashboardLayout
     header={
-      <Flex justify='space-between' align='center' py='6' px='4'>
+      <Flex justify='space-between' align='center' py='6' px='10'>
         <Heading size='lg' fontWeight='black' letterSpacing='tight'>
           Vault
         </Heading>

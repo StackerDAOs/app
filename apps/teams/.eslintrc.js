@@ -6,6 +6,7 @@ module.exports = {
       files: ['*.ts', '*.tsx'],
       rules: {
         'no-undef': 'off',
+        'react/no-children-prop': 'off',
       },
     },
   ],

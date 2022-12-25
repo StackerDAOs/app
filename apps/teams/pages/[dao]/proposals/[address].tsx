@@ -3,28 +3,27 @@ import { useRouter } from 'next/router';
 import {
   Button,
   ButtonGroup,
-  Grid,
-  GridItem,
+  Circle,
+  Flex,
   Heading,
   HStack,
+  Progress,
   Icon,
+  SimpleGrid,
   Stack,
-  Tab,
-  Tabs,
-  TabPanel,
-  TabPanels,
-  TabList,
-  Tag,
   Text,
+  Divider,
 } from 'ui';
+import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
 import { useTeam, useTeamProposal } from 'ui/hooks';
-import { DashboardLayout } from '@components/layout';
-import { Card } from 'ui/components/cards';
+import { ProposalLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
 import { findExtension, generatePostConditions } from 'utils';
-import { map } from 'lodash';
+// import { map } from 'lodash';
 import { StacksSDK } from 'sdk';
-import { CheckIcon } from 'ui/components/forms';
+// import Avatar from 'boring-avatars';
+import { ArrowLeft, InfoIcon } from 'ui/components/icons';
 
 export default function ProposalView() {
   const dao = useTeam();
@@ -37,6 +36,15 @@ export default function ProposalView() {
     postConditions: proposal?.data?.submission?.post_conditions,
     isPassing: proposal?.data?.isExecutable,
   });
+  let status = '';
+  const signalsReceived = proposal?.data?.signalsReceived ?? 0;
+  const signalsRequired = proposal?.data?.signalsRequired ?? 0;
+
+  if (signalsReceived < signalsRequired) {
+    status = 'active';
+  } else {
+    status = 'executed';
+  }
 
   if (proposal?.isLoading) {
     return null;
@@ -50,266 +58,237 @@ export default function ProposalView() {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.25, type: 'linear' }}
     >
-      <Grid templateColumns='repeat(5, 1fr)' gap={12}>
-        <GridItem colSpan={{ base: 5, lg: 3 }}>
-          <Stack spacing='8' py={{ base: '8', md: '8' }}>
-            <motion.div
-              variants={FADE_IN_VARIANTS}
-              initial={FADE_IN_VARIANTS.hidden}
-              animate={FADE_IN_VARIANTS.enter}
-              exit={FADE_IN_VARIANTS.exit}
-              transition={{ duration: 0.25, type: 'linear' }}
+      <Stack spacing='10'>
+        <motion.div
+          variants={FADE_IN_VARIANTS}
+          initial={FADE_IN_VARIANTS.hidden}
+          animate={FADE_IN_VARIANTS.enter}
+          exit={FADE_IN_VARIANTS.exit}
+          transition={{ duration: 0.25, type: 'linear' }}
+        >
+          <Stack spacing='8'>
+            <Stack spacing='2'>
+              <Heading
+                fontSize='7xl'
+                fontWeight='thin'
+                color='light.900'
+                maxW='3xl'
+                letterSpacing='tight'
+              >
+                {proposal?.data?.submission?.title
+                  ? proposal?.data?.submission?.title
+                  : 'Untitled'}
+              </Heading>
+              {status === 'active' && (
+                <HStack spacing='2'>
+                  <Circle size='3' bg='green.500' borderRadius='3xl' />
+                  <HStack>
+                    <Text color='light.900' fontWeight='regular'>
+                      Awaiting approval
+                    </Text>
+                    <Text color='gray' fontWeight='regular'>
+                      1 more signature required
+                    </Text>
+                  </HStack>
+                </HStack>
+              )}
+              {status === 'executed' && (
+                <HStack spacing='2'>
+                  <Circle size='3' bg='secondary.500' borderRadius='3xl' />
+                  <HStack>
+                    <Text color='light.900' fontWeight='regular'>
+                      Executed
+                    </Text>
+                    <Text color='gray' fontWeight='regular'>
+                      {signalsReceived} of {signalsRequired} signatures received
+                    </Text>
+                  </HStack>
+                </HStack>
+              )}
+            </Stack>
+            <SimpleGrid columns={2} gap={8}>
+              <Stack spacing='3'>
+                <Progress
+                  colorScheme='secondary'
+                  borderRadius='lg'
+                  size='sm'
+                  value={100}
+                  bg='dark.500'
+                />
+                <Stack>
+                  <Heading size='md' fontWeight='regular' color='gray'>
+                    Active Signers
+                  </Heading>
+                  <HStack>
+                    <Text color='light.900' fontWeight='black' size='lg'>
+                      {signalsReceived}
+                    </Text>
+                    {/* <Stack>
+                      <HStack spacing='-1'>
+                        {map(['ryan.stx'], (item) => (
+                          <Avatar
+                            size={20}
+                            colors={[
+                              '#624AF2',
+                              '#7301fa',
+                              '#eb00ff',
+                              '#27cb9f',
+                            ]}
+                            name={item}
+                            variant='beam'
+                          />
+                        ))}
+                      </HStack>
+                    </Stack> */}
+                  </HStack>
+                </Stack>
+                {proposal?.data?.hasSignaled && (
+                  <HStack spacing='1'>
+                    <Icon as={InfoIcon} color='gray' />
+                    <Text color='gray' fontWeight='regular'>
+                      You have approved this proposal
+                    </Text>
+                  </HStack>
+                )}
+              </Stack>
+              <Stack spacing='3'>
+                <Progress
+                  colorScheme='gray'
+                  borderRadius='lg'
+                  size='sm'
+                  value={0}
+                  bg='dark.500'
+                />
+                <Stack>
+                  <Heading size='md' fontWeight='regular' color='gray'>
+                    Inactive Signers
+                  </Heading>
+                  <HStack>
+                    <Text color='light.900' fontWeight='black' size='lg'>
+                      {signalsRequired - signalsReceived}
+                    </Text>
+                    {/* <Stack>
+                      <HStack>
+                        <Avatar
+                          size={20}
+                          colors={['#624AF2', '#7301fa', '#eb00ff', '#27cb9f']}
+                          name='waits.btc'
+                          variant='beam'
+                        />
+                      </HStack>
+                    </Stack> */}
+                  </HStack>
+                </Stack>
+              </Stack>
+            </SimpleGrid>
+            <ButtonGroup>
+              {!proposal?.data?.hasSignaled && proposal?.data?.isExecutable && (
+                <Button
+                  variant='secondary'
+                  onClick={() =>
+                    sdk.submit({
+                      extensionAddress: multisigExtension?.contract_address,
+                      proposalAddress: address,
+                      postConditions,
+                      onFinish(payload) {
+                        const { txId } = payload;
+                        console.log({ txId });
+                      },
+                    })
+                  }
+                >
+                  Execute
+                </Button>
+              )}
+              {!proposal?.data?.hasSignaled && !proposal?.data?.isExecutable && (
+                <Button
+                  variant='default'
+                  onClick={() =>
+                    sdk.submit({
+                      extensionAddress: multisigExtension?.contract_address,
+                      proposalAddress: address,
+                      postConditions,
+                      onFinish(payload) {
+                        const { txId } = payload;
+                        console.log({ txId });
+                      },
+                    })
+                  }
+                >
+                  Approve
+                </Button>
+              )}
+            </ButtonGroup>
+          </Stack>
+        </motion.div>
+        <Stack spacing='6'>
+          <Divider borderColor='dark.500' />
+          <Stack spacing='2'>
+            <Heading size='lg' fontWeight='light' textTransform='uppercase'>
+              tl;dr
+            </Heading>
+            <Text
+              color='gray'
+              fontSize='lg'
+              fontWeight='light'
+              letterSpacing='tight'
             >
-              <Stack spacing='6'>
-                <Stack spacing='2'>
-                  <Tag
-                    color='yellow.500'
-                    bg='dark.800'
-                    alignSelf='self-start'
-                    size='md'
-                    borderRadius='3xl'
-                  >
-                    <Text as='span' fontWeight='regular'>
-                      {proposal?.data?.signalsReceived} of{' '}
-                      {proposal?.data?.signalsRequired} approvals
-                    </Text>
-                  </Tag>
-                  <Heading fontSize='4xl' fontWeight='black' color='light.900'>
-                    {proposal?.data?.submission?.title
-                      ? proposal?.data?.submission?.title
-                      : 'Untitled'}
-                  </Heading>
-                  <Text
-                    color='gray'
-                    fontSize='lg'
-                    fontWeight='light'
-                    letterSpacing='tight'
-                  >
-                    {proposal?.data?.submission?.description
-                      ? proposal?.data?.submission?.description
-                      : 'TL;DR'}
-                  </Text>
-                </Stack>
-                <ButtonGroup>
-                  {!proposal?.data?.hasSignaled &&
-                    proposal?.data?.isExecutable && (
-                      <Button
-                        variant='secondary'
-                        onClick={() =>
-                          sdk.submit({
-                            extensionAddress:
-                              multisigExtension?.contract_address,
-                            proposalAddress: address,
-                            postConditions,
-                            onFinish(payload) {
-                              const { txId } = payload;
-                              console.log({ txId });
-                            },
-                          })
-                        }
-                      >
-                        Execute
-                      </Button>
-                    )}
-                  {proposal?.data?.hasSignaled && (
-                    <Button variant='dark' isDisabled>
-                      Approved
-                    </Button>
-                  )}
-                  {!proposal?.data?.hasSignaled &&
-                    !proposal?.data?.isExecutable && (
-                      <Button
-                        variant='default'
-                        onClick={() =>
-                          sdk.submit({
-                            extensionAddress:
-                              multisigExtension?.contract_address,
-                            proposalAddress: address,
-                            postConditions,
-                            onFinish(payload) {
-                              const { txId } = payload;
-                              console.log({ txId });
-                            },
-                          })
-                        }
-                      >
-                        Approve
-                      </Button>
-                    )}
-                </ButtonGroup>
-              </Stack>
-            </motion.div>
-            <Tabs color='light.900' isFitted borderColor='dark.500'>
-              <TabList>
-                <ButtonGroup bg='dark.900' w='35vw'>
-                  {map(['Details', 'On-chain', 'Code'], (item) => (
-                    <Tab
-                      key={item}
-                      color='light.500'
-                      fontSize='sm'
-                      borderColor='dark.500'
-                      _selected={{
-                        boxShadow: 'none',
-                        borderColor: 'secondary.900',
-                      }}
-                      _active={{
-                        boxShadow: 'none',
-                      }}
-                      _focus={{
-                        boxShadow: 'none',
-                      }}
-                    >
-                      {item}
-                    </Tab>
-                  ))}
-                </ButtonGroup>
-              </TabList>
-              <TabPanels>
-                <TabPanel px='0' py='6'>
-                  <motion.div
-                    variants={FADE_IN_VARIANTS}
-                    initial={FADE_IN_VARIANTS.hidden}
-                    animate={FADE_IN_VARIANTS.enter}
-                    exit={FADE_IN_VARIANTS.exit}
-                    transition={{ duration: 0.25, type: 'linear' }}
-                  >
-                    <Stack spacing='2'>
-                      <Stack spacing='6'>
-                        <Stack spacing='2'>
-                          <Text
-                            color='light.900'
-                            fontSize='lg'
-                            fontWeight='regular'
-                          >
-                            {proposal?.data?.submission?.body
-                              ? proposal?.data?.submission?.body
-                              : 'Description'}
-                          </Text>
-                        </Stack>
-                      </Stack>
-                    </Stack>
-                  </motion.div>
-                </TabPanel>
-                <TabPanel px='0' py='6'>
-                  <motion.div
-                    variants={FADE_IN_VARIANTS}
-                    initial={FADE_IN_VARIANTS.hidden}
-                    animate={FADE_IN_VARIANTS.enter}
-                    exit={FADE_IN_VARIANTS.exit}
-                    transition={{ duration: 0.25, type: 'linear' }}
-                  >
-                    <Card h='fit-content' bg='dark.900' border='none'>
-                      <Stack spacing='2'>
-                        <Text fontSize='sm' fontWeight='semibold' color='gray'>
-                          Coming soon
-                        </Text>
-                      </Stack>
-                    </Card>
-                  </motion.div>
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
+              {proposal?.data?.submission?.description
+                ? proposal?.data?.submission?.description
+                : 'TL;DR'}
+            </Text>
           </Stack>
-        </GridItem>
-        <GridItem colSpan={{ base: 5, lg: 2 }}>
-          <Stack py={{ base: '8', md: '8' }}>
-            <Card h='fit-content' bg='dark.900'>
-              <Stack spacing='0'>
-                <Stack
-                  spacing='6'
-                  justify='space-between'
-                  direction='row'
-                  px={{ base: '6', md: '6' }}
-                  py={{ base: '3', md: '3' }}
-                  bg='dark.700'
-                  borderTopLeftRadius='md'
-                  borderTopRightRadius='md'
-                  align='center'
-                >
-                  <Heading
-                    color='light.900'
-                    fontSize='md'
-                    fontWeight='regular'
-                    letterSpacing='tight'
-                  >
-                    Status
-                  </Heading>
-                </Stack>
-                <Stack
-                  px={{ base: '6', md: '6' }}
-                  py={{ base: '6', md: '6' }}
-                  spacing='3'
-                >
-                  <HStack justify='space-between' align='center' spacing='2'>
-                    <Text fontSize='md' fontWeight='regular' color='light.500'>
-                      Approvals Received
-                    </Text>
-                    <HStack
-                      bg='dark.500'
-                      borderRadius='lg'
-                      borderColor='dark.500'
-                      borderWidth='1px'
-                      py='1'
-                      px='3'
-                    >
-                      <Text
-                        fontSize='sm'
-                        fontWeight='semibold'
-                        color='light.500'
-                      >
-                        {proposal?.data?.signalsReceived}
-                      </Text>
-                    </HStack>
-                  </HStack>
-                  <HStack justify='space-between' align='center' spacing='2'>
-                    <Text fontSize='md' fontWeight='regular' color='light.500'>
-                      Approvals Required
-                    </Text>
-                    <HStack
-                      bg='dark.500'
-                      borderRadius='lg'
-                      borderColor='dark.500'
-                      borderWidth='1px'
-                      py='1'
-                      px='3'
-                    >
-                      <Text
-                        fontSize='sm'
-                        fontWeight='semibold'
-                        color='light.500'
-                      >
-                        {proposal?.data?.signalsRequired}
-                      </Text>
-                    </HStack>
-                  </HStack>
-                  <HStack justify='space-between' align='center' spacing='2'>
-                    <Text fontSize='md' fontWeight='regular' color='light.500'>
-                      Voted
-                    </Text>
-                    <Text
-                      fontSize='sm'
-                      fontWeight='semibold'
-                      color='light.500'
-                      py='1'
-                      px='3'
-                    >
-                      {proposal?.data?.hasSignaled ? (
-                        <Icon as={CheckIcon} color='green.500' />
-                      ) : (
-                        'No'
-                      )}
-                    </Text>
-                  </HStack>
-                </Stack>
-              </Stack>
-            </Card>
+        </Stack>
+        <Stack spacing='6'>
+          <Divider borderColor='dark.500' />
+          <Stack spacing='2'>
+            <Heading size='lg' fontWeight='light'>
+              Description
+            </Heading>
+            <Text
+              color='gray'
+              fontSize='lg'
+              fontWeight='light'
+              letterSpacing='tight'
+            >
+              <ReactMarkdown
+                remarkPlugins={[remarkBreaks]}
+                children={proposal?.data?.submission?.body.replace(
+                  /\n/gi,
+                  '&nbsp; \n',
+                )}
+              />
+            </Text>
           </Stack>
-        </GridItem>
-      </Grid>
+        </Stack>
+      </Stack>
     </motion.div>
   );
 }
 
+const Header = () => {
+  const router = useRouter();
+  const { address } = router.query as any;
+  const proposal = useTeamProposal(address);
+
+  return (
+    <Flex justify='space-between' align='center' py='6' px='10'>
+      <HStack>
+        <Icon
+          as={ArrowLeft}
+          color='light.500'
+          fontSize='lg'
+          cursor='pointer'
+          onClick={() => router.back()}
+        />
+        <Heading size='lg' fontWeight='black' letterSpacing='tight'>
+          Proposal {proposal?.data?.id.toString().padStart(3, '0')}
+        </Heading>
+      </HStack>
+    </Flex>
+  );
+};
+
 ProposalView.getLayout = (page: any) => (
-  <DashboardLayout>{page}</DashboardLayout>
+  <ProposalLayout header={<Header />}>{page}</ProposalLayout>
 );
