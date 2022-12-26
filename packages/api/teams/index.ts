@@ -520,7 +520,7 @@ export async function getDBProposal(address: string) {
     const { data, error } = await supabase
       .from('proposals')
       .select(
-        'id, contract_address, submission:submissions!inner(title, description, body, post_conditions)',
+        'id, contract_address, tx_id, submission:submissions!inner(title, description, body, post_conditions)',
       )
       .eq('contract_address', address)
       .limit(1);
@@ -577,9 +577,11 @@ export async function getProposal(
     const isExecutable = isEqual(signalsRequired, add(signalsReceived, 1));
     const dbProposal = await getDBProposal(proposalAddress);
     const submission = dbProposal?.submission;
+    console.log({ dbProposal });
 
     return {
       id: dbProposal?.id,
+      txId: dbProposal?.tx_id,
       principalAddress: proposalAddress,
       submission,
       signalsRequired,

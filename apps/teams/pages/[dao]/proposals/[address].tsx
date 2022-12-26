@@ -19,7 +19,7 @@ import remarkBreaks from 'remark-breaks';
 import { useTeam, useTeamProposal } from 'ui/hooks';
 import { ProposalLayout } from '@components/layout';
 import { motion, FADE_IN_VARIANTS } from 'ui/animation';
-import { findExtension, generatePostConditions } from 'utils';
+import { findExtension, getExplorerLink, generatePostConditions } from 'utils';
 // import { map } from 'lodash';
 import { StacksSDK } from 'sdk';
 // import Avatar from 'boring-avatars';
@@ -39,8 +39,12 @@ export default function ProposalView() {
   let status = '';
   const signalsReceived = proposal?.data?.signalsReceived ?? 0;
   const signalsRequired = proposal?.data?.signalsRequired ?? 0;
+  const href = getExplorerLink(proposal?.data?.txId);
+  console.log({ signalsRequired });
 
-  if (signalsReceived < signalsRequired) {
+  if (signalsReceived === 0) {
+    status = 'pending';
+  } else if (signalsReceived < signalsRequired) {
     status = 'active';
   } else {
     status = 'executed';
@@ -79,6 +83,21 @@ export default function ProposalView() {
                   ? proposal?.data?.submission?.title
                   : 'Untitled'}
               </Heading>
+              {status === 'pending' && (
+                <HStack spacing='2'>
+                  <Circle size='3' bg='yellow.500' borderRadius='3xl' />
+                  <HStack>
+                    <Text color='light.900' fontWeight='regular'>
+                      Proposal pending
+                    </Text>
+                    <a href={href} target='_blank' rel='noreferrer'>
+                      <Text color='gray' fontWeight='regular'>
+                        View transaction
+                      </Text>
+                    </a>
+                  </HStack>
+                </HStack>
+              )}
               {status === 'active' && (
                 <HStack spacing='2'>
                   <Circle size='3' bg='green.500' borderRadius='3xl' />
@@ -87,7 +106,8 @@ export default function ProposalView() {
                       Awaiting approval
                     </Text>
                     <Text color='gray' fontWeight='regular'>
-                      1 more signature required
+                      {signalsRequired - signalsReceived} more signature
+                      required
                     </Text>
                   </HStack>
                 </HStack>
@@ -182,42 +202,46 @@ export default function ProposalView() {
               </Stack>
             </SimpleGrid>
             <ButtonGroup>
-              {!proposal?.data?.hasSignaled && proposal?.data?.isExecutable && (
-                <Button
-                  variant='secondary'
-                  onClick={() =>
-                    sdk.submit({
-                      extensionAddress: multisigExtension?.contract_address,
-                      proposalAddress: address,
-                      postConditions,
-                      onFinish(payload) {
-                        const { txId } = payload;
-                        console.log({ txId });
-                      },
-                    })
-                  }
-                >
-                  Execute
-                </Button>
-              )}
-              {!proposal?.data?.hasSignaled && !proposal?.data?.isExecutable && (
-                <Button
-                  variant='default'
-                  onClick={() =>
-                    sdk.submit({
-                      extensionAddress: multisigExtension?.contract_address,
-                      proposalAddress: address,
-                      postConditions,
-                      onFinish(payload) {
-                        const { txId } = payload;
-                        console.log({ txId });
-                      },
-                    })
-                  }
-                >
-                  Approve
-                </Button>
-              )}
+              {status !== 'pending' &&
+                !proposal?.data?.hasSignaled &&
+                proposal?.data?.isExecutable && (
+                  <Button
+                    variant='secondary'
+                    onClick={() =>
+                      sdk.submit({
+                        extensionAddress: multisigExtension?.contract_address,
+                        proposalAddress: address,
+                        postConditions,
+                        onFinish(payload) {
+                          const { txId } = payload;
+                          console.log({ txId });
+                        },
+                      })
+                    }
+                  >
+                    Execute proposal
+                  </Button>
+                )}
+              {status !== 'pending' &&
+                !proposal?.data?.hasSignaled &&
+                !proposal?.data?.isExecutable && (
+                  <Button
+                    variant='default'
+                    onClick={() =>
+                      sdk.submit({
+                        extensionAddress: multisigExtension?.contract_address,
+                        proposalAddress: address,
+                        postConditions,
+                        onFinish(payload) {
+                          const { txId } = payload;
+                          console.log({ txId });
+                        },
+                      })
+                    }
+                  >
+                    Approve proposal
+                  </Button>
+                )}
             </ButtonGroup>
           </Stack>
         </motion.div>

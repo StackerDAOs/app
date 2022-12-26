@@ -1,8 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  Alert,
-  AlertDescription,
   Box,
   ButtonGroup,
   Button,
@@ -41,12 +39,7 @@ import { shortenAddress, validateContractAddress } from '@stacks-os/utils';
 import { useVaultStore } from 'store';
 import { findExtension, getPercentage } from 'utils';
 import { filter, size } from 'lodash';
-import {
-  ArrowRight,
-  CheckIcon,
-  InfoIcon,
-  UploadIcon,
-} from 'ui/components/icons';
+import { ArrowRight, CheckIcon, UploadIcon } from 'ui/components/icons';
 
 const AllowlistSelectForm = () => {
   const vault = useVaultStore((state) => state.vault);
@@ -369,7 +362,7 @@ const FinishedState = () => {
                         <Stack spacing='2'>
                           {transaction?.data?.tx_status !== 'success' && (
                             <Tag
-                              color='orange.500'
+                              color='yellow.500'
                               bg='dark.800'
                               alignSelf='self-start'
                               size='sm'
@@ -432,42 +425,22 @@ const FinishedState = () => {
           </Card>
         </Stack>
         {transaction?.data?.tx_status === 'success' &&
-        activationTransaction?.data?.tx_status === 'success' ? (
-          <Link href={`/${dao?.data?.slug}`}>
-            <Button
-              variant='link'
-              rightIcon={<ArrowRight />}
-              onClick={() => {
-                activate.mutate({
-                  contract_address: dao?.data?.contract_address,
-                });
-              }}
-              isLoading={activate.isLoading}
-            >
-              Go to Dashboard
-            </Button>
-          </Link>
-        ) : (
-          <Alert
-            bg='dark.800'
-            borderColor='dark.500'
-            borderWidth='1px'
-            color='light.900'
-            status='info'
-            borderRadius='lg'
-            textAlign='center'
-            justifyContent='center'
-            m='0 auto'
-          >
-            <HStack spacing='2'>
-              <Icon as={InfoIcon} color='secondary.900' fontSize='lg' />
-              <AlertDescription>
-                The following steps must be compeleted in the order they are
-                presented.
-              </AlertDescription>
-            </HStack>
-          </Alert>
-        )}
+          activationTransaction?.data?.tx_status === 'success' && (
+            <Link href={`/${dao?.data?.slug}`}>
+              <Button
+                variant='link'
+                rightIcon={<ArrowRight />}
+                onClick={() => {
+                  activate.mutate({
+                    contract_address: dao?.data?.contract_address,
+                  });
+                }}
+                isLoading={activate.isLoading}
+              >
+                Go to Dashboard
+              </Button>
+            </Link>
+          )}
       </Stack>
     </Stack>
   );

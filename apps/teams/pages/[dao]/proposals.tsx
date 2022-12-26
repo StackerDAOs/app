@@ -241,7 +241,7 @@ export default function Proposals() {
                           No contracts found
                         </Heading>
                         <Text color='gray' maxW='md'>
-                          Proposal contracts will appear here.
+                          Your proposal contracts will appear here.
                         </Text>
                       </Stack>
                     </Stack>

@@ -4,11 +4,9 @@ import { useRouter } from 'next/router';
 import {
   Box,
   Button,
-  Circle,
   Flex,
   Grid,
   GridItem,
-  Icon,
   Input,
   InputGroup,
   Heading,
@@ -30,12 +28,10 @@ import {
   useTeamProposals,
   useTeamVaultBalance,
 } from 'ui/hooks';
-import { truncateAddress } from '@stacks-os/utils';
-import { findExtension, getExplorerLink, ustxToStx } from 'utils';
+import { findExtension, ustxToStx } from 'utils';
 import { TransactionTable } from '@components/tables';
 import { useActivateTeam } from 'api/teams/mutations';
 import { defaultTo } from 'lodash';
-import { TransferIcon } from 'ui/components/icons';
 
 export default function Dashboard() {
   const { isSignedIn } = useAuth();
@@ -238,10 +234,15 @@ export default function Dashboard() {
                           fontWeight='medium'
                           color='light.900'
                         >
-                          {ustxToStx(vaultBalance?.data?.stx?.total_sent)}{' '}
-                          <Text as='span' fontSize='sm' fontWeight='thin'>
-                            STX
-                          </Text>
+                          {defaultTo(
+                            ustxToStx(vaultBalance?.data?.stx?.total_sent),
+                            '---',
+                          )}{' '}
+                          {vaultBalance?.data?.stx?.total_sent > 0 && (
+                            <Text as='span' fontSize='sm' fontWeight='thin'>
+                              STX
+                            </Text>
+                          )}
                         </Text>
                       </HStack>
                       <HStack justify='space-between'>
@@ -253,10 +254,15 @@ export default function Dashboard() {
                           fontWeight='medium'
                           color='light.900'
                         >
-                          {ustxToStx(vaultBalance?.data?.stx?.total_received)}{' '}
-                          <Text as='span' fontSize='sm' fontWeight='thin'>
-                            STX
-                          </Text>
+                          {defaultTo(
+                            ustxToStx(vaultBalance?.data?.stx?.total_received),
+                            '---',
+                          )}{' '}
+                          {vaultBalance?.data?.stx?.total_received > 0 && (
+                            <Text as='span' fontSize='sm' fontWeight='thin'>
+                              STX
+                            </Text>
+                          )}
                         </Text>
                       </HStack>
                     </Stack>
@@ -414,7 +420,7 @@ export default function Dashboard() {
             </Grid>
           </Stack>
         </Stack>
-        <Grid templateColumns='repeat(6, 1fr)' gap={6}>
+        <Grid templateColumns='repeat(4, 1fr)' gap={6}>
           <GridItem colSpan={4}>
             <Card>
               <Stack spacing='5'>
@@ -448,7 +454,7 @@ export default function Dashboard() {
               </Stack>
             </Card>
           </GridItem>
-          <GridItem colSpan={2}>
+          {/* <GridItem colSpan={2}>
             <Card bg='dark.800' h='fit-content'>
               <Stack
                 px={{ base: '6', md: '6' }}
@@ -520,7 +526,7 @@ export default function Dashboard() {
                 )}
               </Stack>
             </Card>
-          </GridItem>
+          </GridItem> */}
         </Grid>
       </Stack>
     </motion.div>

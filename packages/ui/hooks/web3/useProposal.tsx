@@ -6,10 +6,12 @@ import { getProposal } from 'api/clubs';
 import { getProposal as getTeamProposal } from 'api/teams';
 
 export function useProposal(id: string) {
+  const account = useAccount();
+  const stxAddress = account?.stxAddress as string;
   const votingExtension = useExtension('Voting');
 
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
-    ['proposal', id],
+    ['proposal', id, stxAddress],
     async () => {
       return await getProposal(votingExtension?.data?.contract_address, id);
     },
@@ -27,7 +29,7 @@ export function useTeamProposal(id: string) {
   const multisigExtension = useTeamExtension('Team');
 
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
-    ['proposal', id],
+    ['proposal', id, stxAddress],
     async () => {
       return await getTeamProposal(
         multisigExtension?.data?.contract_address,
