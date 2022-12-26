@@ -23,7 +23,7 @@ import { findExtension, getExplorerLink, generatePostConditions } from 'utils';
 // import { map } from 'lodash';
 import { StacksSDK } from 'sdk';
 // import Avatar from 'boring-avatars';
-import { ArrowLeft, InfoIcon } from 'ui/components/icons';
+import { ArrowLeft, CheckCircle } from 'ui/components/icons';
 
 export default function ProposalView() {
   const dao = useTeam();
@@ -164,7 +164,7 @@ export default function ProposalView() {
                 </Stack>
                 {proposal?.data?.hasSignaled && (
                   <HStack spacing='1'>
-                    <Icon as={InfoIcon} color='gray' />
+                    <Icon as={CheckCircle} color='gray' />
                     <Text color='gray' fontWeight='regular'>
                       You have approved this proposal
                     </Text>
