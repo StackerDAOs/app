@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Box, Button, Circle, HStack, Progress, Stack, Text } from 'ui';
 import { useTeam, useTeamProposal, useTransaction } from 'ui/hooks';
 import Avatar from 'boring-avatars';
+import { getPercentage } from 'utils';
 import { truncateAddress } from '@stacks-os/utils';
 
 export const ProposalCard = ({ proposal }: any) => {
@@ -73,7 +74,7 @@ export const ProposalCard = ({ proposal }: any) => {
                 colorScheme='secondary'
                 borderRadius='lg'
                 size='sm'
-                value={50}
+                value={getPercentage(signalsRequired, signalsReceived)}
                 bg='dark.500'
                 w='10vw'
               />
