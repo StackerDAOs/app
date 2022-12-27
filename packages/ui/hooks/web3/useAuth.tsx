@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import { useAccount, useAuth as useMicroStacksAuth } from 'ui/components';
 import { useExtension, useTeamExtension } from 'ui/hooks';
 import { getAccountBalances, getTokenId } from 'api/clubs';
-import { getApprover } from 'api/teams';
+import { getApprover, getSignalsRequired } from 'api/teams';
 
 export function useAuth() {
   const [interval, setInterval] = React.useState(1000);
@@ -58,9 +58,13 @@ export function useTeamAuth() {
         stxAddress as string,
         multisig?.data?.contract_address,
       );
+      const signalsRequired = await getSignalsRequired(
+        multisig?.data?.contract_address,
+      );
 
       return {
         isMember,
+        signalsRequired: Number(signalsRequired),
       };
     },
     {

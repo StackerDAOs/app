@@ -14,6 +14,7 @@ import {
   vaultExtension,
   votingExtension,
   multisigExtension,
+  upgradeTeamProposal,
 } from 'utils/contracts';
 import type { MicroStacksClient, FinishedTxData } from 'ui/components';
 import type {
@@ -30,6 +31,7 @@ import type {
   VaultTemplateParams,
   ClubBootstrapParams,
   TeamBootstrapParams,
+  TeamUpgradeParams,
 } from '../../common';
 
 /**
@@ -707,6 +709,65 @@ export class Deployer {
   ): Promise<FinishedTxData | undefined> {
     const { contractName, vaultAddress, recipients, allowlist } = params;
     const codeBody = vaultTemplateProposal(vaultAddress, recipients, allowlist);
+    return this.openContractCallDeploy({
+      contractName,
+      codeBody,
+      onFinish: (payload) => {
+        params?.onFinish?.(payload);
+      },
+      onCancel: (error) => {
+        params?.onCancel?.(error);
+      },
+    });
+  }
+
+  /**
+   * Deploys an optional Transfer STX and Allowlist Upgrade to the Stacks blockchain.
+   *
+   * @remarks Deploys an optional Transfer STX and Allowlist Upgrade and returns the tx data of the deployed contract
+   *
+   * @example
+   * ```javascript
+   * const contractAddress = await sdk.deployer.deployVaultTemplate({
+   *  contractName: "transfer-funds",
+   *  vaultAddress: "SP3WV3VC6GM1WF215SDHP0MESQ3BNXHB1N6TPB70S.vault",
+   *  recipients: ['ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM','ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50'],
+   *  allowlist: ['ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.miami-coin','ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50.newyork-coin'],
+   *  amount: 1500,
+   * });
+   * ```
+   *
+   * @param params - the parameters for the Template Proposal
+   * ```javascript
+   * interface VaultTemplateParams {
+   *  contractName: string;
+   *  vaultAddress: string;
+   *  recipients?: string[];
+   *  allowlist?: string[];
+   *  amount?: number;
+   *  onFinish?: (payload: FinishedTxData) => void;
+   *  onCancel?: (error?: string) => void;
+   * }
+   * ```
+   *
+   * @returns the txId and txRaw of the deployed contract
+   */
+  public async deployTeamUpgrade(
+    params: TeamUpgradeParams,
+  ): Promise<FinishedTxData | undefined> {
+    const {
+      contractName,
+      addedMembers,
+      removedMembers,
+      signatureThreshold,
+      multisigAddress,
+    } = params;
+    const codeBody = upgradeTeamProposal({
+      addedMembers,
+      removedMembers,
+      signatureThreshold,
+      multisigAddress,
+    });
     return this.openContractCallDeploy({
       contractName,
       codeBody,

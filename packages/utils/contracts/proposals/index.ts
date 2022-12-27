@@ -121,6 +121,47 @@ export const upgradeProtocolProposal = (params: any) => {
 `;
 };
 
+const teamUpgrades = (params: any) => {
+  const { addedMembers, removedMembers, signatureThreshold, multisigAddress } =
+    params;
+  let upgrades = '';
+  if (size(addedMembers) > 0) {
+    let addedMemberList = '';
+    addedMembers.forEach((newMember: any, index: number) => {
+      upgrades += `(try! (contract-call? '${multisigAddress} set-approver '${newMember} true))`;
+      upgrades += `  \n    `;
+    });
+    upgrades += addedMemberList;
+  }
+  if (size(removedMembers) > 0) {
+    let removedMemberList = '';
+    removedMembers.forEach((memberToRemove: any, index: number) => {
+      upgrades += `(try! (contract-call? '${multisigAddress} set-approver '${memberToRemove} false))`;
+      upgrades += `  \n    `;
+    });
+    upgrades += removedMemberList;
+  }
+  if (signatureThreshold) {
+    upgrades += `(try! (contract-call? '${multisigAddress} set-signals-required u${signatureThreshold}))`;
+    upgrades += `  \n    `;
+  }
+  return upgrades;
+};
+
+export const upgradeTeamProposal = (params: any) => {
+  return `
+(impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
+
+(define-public (execute (sender principal))
+  (begin
+    ${teamUpgrades(params)}
+    (print {event: "execute", sender: sender})
+    (ok true)
+  )
+)
+`;
+};
+
 const allowedAssets = (params: any) => {
   const { vaultAddress, allowed, disabled } = params;
   let assets = '';

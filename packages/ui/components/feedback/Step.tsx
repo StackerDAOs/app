@@ -9,10 +9,13 @@ interface StepProps extends StackProps {
 
 export const Step = (props: StepProps) => {
   const { isActive, isCompleted, isLastStep, ...stackProps } = props;
-
+  const stepCircleProps = {
+    iscompleted: isCompleted,
+    isactive: isActive,
+  };
   return (
     <HStack flex={isLastStep ? '0' : '1'} spacing='3' {...stackProps}>
-      <StepCircle isActive={isActive} isCompleted={isCompleted} />
+      <StepCircle {...stepCircleProps} />
       {!isLastStep && (
         <Divider
           orientation='horizontal'

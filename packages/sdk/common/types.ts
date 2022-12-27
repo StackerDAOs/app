@@ -135,3 +135,11 @@ export interface VaultTemplateParams extends ContractCallParams {
   recipients?: Recipient[];
   allowlist?: string[];
 }
+
+export interface TeamUpgradeParams extends ContractCallParams {
+  contractName: string;
+  multisigAddress: string;
+  addedMembers?: string[];
+  removedMembers?: string[];
+  signatureThreshold?: string;
+}

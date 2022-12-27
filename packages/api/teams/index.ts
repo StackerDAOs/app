@@ -45,7 +45,6 @@ export async function getTeams(
   try {
     const startingPosition = (page - 1) * limit;
     const endingPosition = startingPosition + limit;
-    console.log({ startingPosition, endingPosition });
     const { data, error } = await supabase
       .from('teams')
       .select(
@@ -577,7 +576,6 @@ export async function getProposal(
     const isExecutable = isEqual(signalsRequired, add(signalsReceived, 1));
     const dbProposal = await getDBProposal(proposalAddress);
     const submission = dbProposal?.submission;
-    console.log({ dbProposal });
 
     return {
       id: dbProposal?.id,
@@ -589,6 +587,25 @@ export async function getProposal(
       hasSignaled,
       isExecutable,
     };
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getSignalsRequired(extensionAddress: string) {
+  try {
+    const network = new stacksNetwork();
+    const [contractAddress, contractName] =
+      splitContractAddress(extensionAddress);
+    const getSignalsRequired: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress,
+      contractName,
+      senderAddress: contractAddress,
+      functionArgs: [],
+      functionName: 'get-signals-required',
+    });
+    return getSignalsRequired;
   } catch (e: any) {
     console.error({ e });
   }

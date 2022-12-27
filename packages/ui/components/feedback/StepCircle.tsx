@@ -1,12 +1,12 @@
 import { Circle, SquareProps } from '@chakra-ui/react';
 
 interface RadioCircleProps extends SquareProps {
-  isCompleted: boolean;
-  isActive: boolean;
+  iscompleted: boolean;
+  isactive: boolean;
 }
 
 export const StepCircle = (props: RadioCircleProps) => {
-  const { isCompleted, isActive } = props;
+  const { iscompleted: isCompleted, isactive: isActive } = props;
   return (
     <Circle
       size='4'

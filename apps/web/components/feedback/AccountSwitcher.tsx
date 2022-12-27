@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  HStack,
-  Menu,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Text,
-} from 'ui';
+import { HStack, Menu, MenuDivider, MenuItem, MenuList, Text } from 'ui';
 import { ConnectButton } from 'ui/components/buttons';
 import { useAuth } from 'ui/components';
 import { useAccountBalance } from 'ui/hooks';
@@ -63,6 +55,7 @@ export const AccountSwitcher = (props: AccountSwitcherProps) => {
         </MenuItem>
         <MenuItem
           rounded='md'
+          onClick={switchAccount}
           _focus={{
             bg: 'none',
           }}
@@ -70,15 +63,7 @@ export const AccountSwitcher = (props: AccountSwitcherProps) => {
             bg: 'dark.500',
           }}
         >
-          <Button
-            variant='link'
-            size='sm'
-            fontWeight='light'
-            onClick={switchAccount}
-            _hover={{ opacity: 0.9 }}
-          >
-            Switch account
-          </Button>
+          Switch account
         </MenuItem>
         <MenuDivider />
         <MenuItem
