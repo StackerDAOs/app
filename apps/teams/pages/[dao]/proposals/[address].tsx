@@ -40,7 +40,6 @@ export default function ProposalView() {
   const signalsReceived = proposal?.data?.signalsReceived ?? 0;
   const signalsRequired = proposal?.data?.signalsRequired ?? 0;
   const href = getExplorerLink(proposal?.data?.txId);
-  console.log({ signalsRequired });
 
   if (signalsReceived === 0) {
     status = 'pending';
