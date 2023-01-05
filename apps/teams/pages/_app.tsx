@@ -7,8 +7,7 @@ import {
   StacksTestnet,
   StacksMocknet,
 } from 'ui/components';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AnimatePresence } from 'ui/animation';
 import { SessionProvider } from 'next-auth/react';
 import { isMainnet, isTestnet } from 'api/constants';
@@ -48,7 +47,6 @@ function App({ Component, pageProps: { session, ...pageProps } }: any) {
       >
         <ChakraProvider theme={theme}>
           <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools />
             <Head>
               <title>SD | Teams</title>
               <meta name='description' content='StackerDAO Labs' />

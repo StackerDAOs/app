@@ -1,5 +1,5 @@
 import { supabase } from '../../supabase';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type Team = {
   name: string;
@@ -62,8 +62,8 @@ export const useCreateTeam = () => {
   const queryClient = useQueryClient();
   return useMutation(createTeam, {
     onSuccess: () => {
-      queryClient.invalidateQueries('team');
-      queryClient.invalidateQueries('teams');
+      queryClient.invalidateQueries({ queryKey: ['team'] });
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
   });
 };
@@ -94,8 +94,8 @@ export const useUpdateBootstrap = () => {
   const queryClient = useQueryClient();
   return useMutation(updateBootrapAddress, {
     onSuccess: () => {
-      queryClient.invalidateQueries('team');
-      queryClient.invalidateQueries('teams');
+      queryClient.invalidateQueries({ queryKey: ['team'] });
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
   });
 };
@@ -122,8 +122,8 @@ export const useUpdateInitTxId = () => {
   const queryClient = useQueryClient();
   return useMutation(updateInitTxId, {
     onSuccess: () => {
-      queryClient.invalidateQueries('team');
-      queryClient.invalidateQueries('teams');
+      queryClient.invalidateQueries({ queryKey: ['team'] });
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
   });
 };
@@ -147,8 +147,8 @@ export const useActivateTeam = () => {
   const queryClient = useQueryClient();
   return useMutation(activateTeam, {
     onSuccess: () => {
-      queryClient.invalidateQueries('team');
-      queryClient.invalidateQueries('teams');
+      queryClient.invalidateQueries({ queryKey: ['team'] });
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
   });
 };
@@ -169,7 +169,7 @@ export const useCreateSubmission = () => {
   const queryClient = useQueryClient();
   return useMutation(createSubmission, {
     onSuccess: () => {
-      queryClient.invalidateQueries('submissions');
+      queryClient.invalidateQueries({ queryKey: ['submissions'] });
     },
   });
 };
@@ -200,8 +200,8 @@ export const useCreateProposal = () => {
   const queryClient = useQueryClient();
   return useMutation(createProposal, {
     onSuccess: () => {
-      queryClient.invalidateQueries('proposals');
-      queryClient.invalidateQueries('submissions');
+      queryClient.invalidateQueries({ queryKey: ['proposals'] });
+      queryClient.invalidateQueries({ queryKey: ['submissions'] });
     },
   });
 };

@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useExtension, useTeamExtension } from 'ui/hooks';
 import { getVaultBalance } from 'api/clubs';
 import { getVaultBalance as getTeamVaultBalance } from 'api/teams';
@@ -7,8 +7,8 @@ import { getVaultBalance as getTeamVaultBalance } from 'api/teams';
 export function useVaultBalance() {
   const { data: vault } = useExtension('Vault');
 
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
-    'vault-balance',
+  const { isFetching, isLoading, isError, data } = useQuery(
+    ['vault-balance'],
     async () => {
       return await getVaultBalance(vault?.contract_address);
     },
@@ -17,15 +17,15 @@ export function useVaultBalance() {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, data };
+  return { isFetching, isLoading, isError, data };
 }
 
 // Hook (use-team-vault-balance.tsx)
 export function useTeamVaultBalance() {
   const { data: vault } = useTeamExtension('Vault');
 
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
-    'vault-balance',
+  const { isFetching, isLoading, isError, data } = useQuery(
+    ['vault-balance'],
     async () => {
       return await getTeamVaultBalance(vault?.contract_address);
     },
@@ -34,5 +34,5 @@ export function useTeamVaultBalance() {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, data };
+  return { isFetching, isLoading, isError, data };
 }

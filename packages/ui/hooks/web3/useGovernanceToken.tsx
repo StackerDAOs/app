@@ -1,5 +1,5 @@
 // Hook (use-governance-token.tsx)
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useAccount } from 'ui/components';
 import { useExtension } from 'ui/hooks';
 import { getBalance, getDecimal, getSymbol, getTotalSupply } from 'api/clubs';
@@ -9,7 +9,7 @@ export function useGovernanceToken() {
   const { stxAddress } = useAccount();
   const { data: governanceToken } = useExtension('Governance Token');
 
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+  const { isFetching, isLoading, isError, data } = useQuery(
     ['governance-token', `${governanceToken?.contract_address}`, stxAddress],
     async () => {
       const [address, name] = splitContractAddress(
@@ -31,5 +31,5 @@ export function useGovernanceToken() {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, data };
+  return { isFetching, isLoading, isError, data };
 }

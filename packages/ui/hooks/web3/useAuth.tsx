@@ -1,6 +1,6 @@
 // Hook (use-auth.tsx)
 import React from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useAccount, useAuth as useMicroStacksAuth } from 'ui/components';
 import { useExtension, useTeamExtension } from 'ui/hooks';
 import { getAccountBalances, getTokenId } from 'api/clubs';
@@ -12,7 +12,7 @@ export function useAuth() {
   const nft = useExtension('NFT Membership');
   const { isSignedIn } = useMicroStacksAuth();
 
-  const { isFetching, isIdle, isLoading, isError, refetch, data } = useQuery(
+  const { isFetching, isLoading, isError, refetch, data } = useQuery(
     ['auth', stxAddress],
     async () => {
       const balances = await getAccountBalances(stxAddress as string);
@@ -44,14 +44,14 @@ export function useAuth() {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, refetch, data };
+  return { isFetching, isLoading, isError, refetch, data };
 }
 
 export function useTeamAuth() {
   const { stxAddress } = useAccount();
   const multisig = useTeamExtension('Team');
 
-  const { isFetching, isIdle, isLoading, isError, refetch, data } = useQuery(
+  const { isFetching, isLoading, isError, refetch, data } = useQuery(
     ['auth', stxAddress],
     async () => {
       const isMember = await getApprover(
@@ -72,5 +72,5 @@ export function useTeamAuth() {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, refetch, data };
+  return { isFetching, isLoading, isError, refetch, data };
 }

@@ -1,5 +1,5 @@
 // Hook (use-submissions.tsx)
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useAccount } from 'ui/components';
 import { useDAO, useTeam } from 'ui/hooks';
 import { getSubmissions } from 'api/clubs';
@@ -8,7 +8,7 @@ import { getSubmissions as getTeamSubmissions } from 'api/teams';
 export function useSubmissions(filter = 'active') {
   const { stxAddress } = useAccount();
   const { data: dao } = useDAO();
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+  const { isFetching, isLoading, isError, data } = useQuery(
     ['submissions', dao?.id, stxAddress, filter],
     getSubmissions,
     {
@@ -16,13 +16,13 @@ export function useSubmissions(filter = 'active') {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, data };
+  return { isFetching, isLoading, isError, data };
 }
 
 export function useTeamSubmissions(filter = 'active') {
   const { stxAddress } = useAccount();
   const { data: dao } = useTeam();
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+  const { isFetching, isLoading, isError, data } = useQuery(
     ['submissions', dao?.id, stxAddress, filter],
     getTeamSubmissions,
     {
@@ -30,5 +30,5 @@ export function useTeamSubmissions(filter = 'active') {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, data };
+  return { isFetching, isLoading, isError, data };
 }

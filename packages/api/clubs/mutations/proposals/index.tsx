@@ -1,5 +1,5 @@
 import { supabase } from '../../../supabase';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type Proposal = {
   organizationId: string;
@@ -30,7 +30,7 @@ export const useAddProposal = () => {
   const queryClient = useQueryClient();
   return useMutation(createProposalContract, {
     onSuccess: () => {
-      queryClient.invalidateQueries('contracts');
+      queryClient.invalidateQueries({ queryKey: ['contracts'] });
     },
   });
 };
@@ -63,7 +63,7 @@ export const useConcludeProposal = () => {
   const queryClient = useQueryClient();
   return useMutation(concludeProposal, {
     onSuccess: () => {
-      queryClient.invalidateQueries('contracts');
+      queryClient.invalidateQueries({ queryKey: ['contracts'] });
     },
   });
 };
@@ -89,7 +89,7 @@ export const useSubmitProposal = () => {
   const queryClient = useQueryClient();
   return useMutation(updateSubmittedProposal, {
     onSuccess: () => {
-      queryClient.invalidateQueries('contracts');
+      queryClient.invalidateQueries({ queryKey: ['contracts'] });
     },
   });
 };
@@ -117,7 +117,7 @@ export const useDisableProposal = () => {
   return useMutation(updateDisabledProposal, {
     onSuccess: (data: any) => {
       const [disabledContract] = data;
-      queryClient.setQueryData('contracts', (contracts: any) => {
+      queryClient.setQueryData(['contracts'], (contracts: any) => {
         const filteredContracts = contracts.filter(
           (contract: any) => contract.id !== disabledContract.id,
         );

@@ -1,4 +1,4 @@
-import { useQuery, useInfiniteQuery } from 'react-query';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { useDAO, useTeam } from 'ui/hooks';
 import { getProposals } from 'api/clubs';
 import { getProposals as getTeamProposals } from 'api/teams';
@@ -6,7 +6,7 @@ import { getProposals as getTeamProposals } from 'api/teams';
 // Hook (use-proposals.tsx)
 export function useProposals() {
   const { data: dao } = useDAO();
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+  const { isFetching, isLoading, isError, data } = useQuery(
     ['proposals', dao?.id],
     getProposals,
     {
@@ -14,13 +14,13 @@ export function useProposals() {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, data };
+  return { isFetching, isLoading, isError, data };
 }
 
 // Hook (use-team-proposals.tsx)
 export function useTeamProposals() {
   const { data: dao } = useTeam();
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+  const { isFetching, isLoading, isError, data } = useQuery(
     ['proposals', dao?.id],
     getTeamProposals,
     {
@@ -28,7 +28,7 @@ export function useTeamProposals() {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, data };
+  return { isFetching, isLoading, isError, data };
 }
 
 // Hook (use-infinite-team-proposals.tsx)

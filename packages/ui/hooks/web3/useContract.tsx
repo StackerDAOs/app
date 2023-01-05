@@ -1,5 +1,5 @@
 // Hook (use-contract.tsx)
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useOpenContractCall } from '@micro-stacks/react';
 import { contractPrincipalCV, uintCV, boolCV } from 'micro-stacks/clarity';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
@@ -122,10 +122,10 @@ export function useContract(contract: string, templateName: string) {
       },
       stxAddress,
     );
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+  const { isFetching, isLoading, isError, data } = useQuery(
     ['contract', contract, templateName],
     fetch,
   );
 
-  return { isFetching, isIdle, isLoading, isError, ...data };
+  return { isFetching, isLoading, isError, ...data };
 }

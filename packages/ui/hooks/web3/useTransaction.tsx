@@ -1,11 +1,11 @@
 // Hook (use-transaction.tsx)
 import React from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getTransaction } from 'api/clubs';
 
 export function useTransaction(transactionId: string) {
   const [interval, setInterval] = React.useState(100000);
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+  const { isFetching, isLoading, isError, data } = useQuery(
     ['transaction', transactionId],
     async () => {
       const data = await getTransaction(transactionId);
@@ -21,5 +21,5 @@ export function useTransaction(transactionId: string) {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, data };
+  return { isFetching, isLoading, isError, data };
 }

@@ -1,5 +1,5 @@
 import { supabase } from '../../../supabase';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type Extension = {
   club_id: number;
@@ -28,8 +28,8 @@ export const useCreateExtension = () => {
   const queryClient = useQueryClient();
   return useMutation(createExtension, {
     onSuccess: () => {
-      queryClient.invalidateQueries('extensions');
-      queryClient.invalidateQueries('dao');
+      queryClient.invalidateQueries({ queryKey: ['extensions'] });
+      queryClient.invalidateQueries({ queryKey: ['dao'] });
     },
   });
 };

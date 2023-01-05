@@ -1,5 +1,5 @@
 // Hook (use-investment-club.tsx)
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useDAO, useExtension, useGovernanceToken } from 'ui/hooks';
 import { getDAO, getFundingRound } from 'api/clubs';
 import { splitContractAddress } from '@stacks-os/utils';
@@ -22,7 +22,7 @@ export function useInvestmentClub() {
   const dao = useDAO();
   const club = useExtension('Investment Club');
   const governanceToken = useGovernanceToken();
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+  const { isFetching, isLoading, isError, data } = useQuery(
     ['investment-club', club?.data?.contract_address],
     async () => {
       const [contractAddress, contractName] = splitContractAddress(
@@ -51,5 +51,5 @@ export function useInvestmentClub() {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, data };
+  return { isFetching, isLoading, isError, data };
 }

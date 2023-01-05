@@ -1,5 +1,5 @@
 // Hook (use-token.tsx)
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useExtension } from 'ui/hooks';
 import { getTokenMetadata, getVaultBalance } from 'api/clubs';
 import { splitContractAddress } from '@stacks-os/utils';
@@ -10,7 +10,6 @@ export function useToken() {
 
   const {
     isFetching,
-    isIdle,
     isLoading,
     isError,
     data: token,
@@ -29,7 +28,7 @@ export function useToken() {
   );
 
   const { data: balance } = useQuery(
-    'vault-balance',
+    ['vault-balance'],
     async () => {
       return await getVaultBalance(vault?.contractAddress);
     },
@@ -38,5 +37,5 @@ export function useToken() {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, token, balance };
+  return { isFetching, isLoading, isError, token, balance };
 }

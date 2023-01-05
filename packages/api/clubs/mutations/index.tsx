@@ -1,5 +1,5 @@
 import { supabase } from '../../supabase';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type Club = {
   name: string;
@@ -74,8 +74,8 @@ export const useCreateClub = () => {
   const queryClient = useQueryClient();
   return useMutation(createClub, {
     onSuccess: () => {
-      queryClient.invalidateQueries('dao');
-      queryClient.invalidateQueries('clubs');
+      queryClient.invalidateQueries({ queryKey: ['dao'] });
+      queryClient.invalidateQueries({ queryKey: ['clubs'] });
     },
   });
 };
@@ -102,9 +102,9 @@ export const useUpdateClub = () => {
   const queryClient = useQueryClient();
   return useMutation(updateClub, {
     onSuccess: () => {
-      queryClient.invalidateQueries('dao');
-      queryClient.invalidateQueries('clubs');
-      queryClient.invalidateQueries('investment-club');
+      queryClient.invalidateQueries({ queryKey: ['dao'] });
+      queryClient.invalidateQueries({ queryKey: ['clubs'] });
+      queryClient.invalidateQueries({ queryKey: ['investment-club'] });
     },
   });
 };
@@ -135,9 +135,9 @@ export const useUpdateBootstrap = () => {
   const queryClient = useQueryClient();
   return useMutation(updateBootrapAddress, {
     onSuccess: () => {
-      queryClient.invalidateQueries('dao');
-      queryClient.invalidateQueries('clubs');
-      queryClient.invalidateQueries('investment-club');
+      queryClient.invalidateQueries({ queryKey: ['dao'] });
+      queryClient.invalidateQueries({ queryKey: ['clubs'] });
+      queryClient.invalidateQueries({ queryKey: ['investment-club'] });
     },
   });
 };
@@ -164,9 +164,9 @@ export const useUpdateInitTxId = () => {
   const queryClient = useQueryClient();
   return useMutation(updateInitTxId, {
     onSuccess: () => {
-      queryClient.invalidateQueries('dao');
-      queryClient.invalidateQueries('clubs');
-      queryClient.invalidateQueries('investment-club');
+      queryClient.invalidateQueries({ queryKey: ['dao'] });
+      queryClient.invalidateQueries({ queryKey: ['clubs'] });
+      queryClient.invalidateQueries({ queryKey: ['investment-club'] });
     },
   });
 };
@@ -190,8 +190,8 @@ export const useActivateClub = () => {
   const queryClient = useQueryClient();
   return useMutation(activateClub, {
     onSuccess: () => {
-      queryClient.invalidateQueries('dao');
-      queryClient.invalidateQueries('clubs');
+      queryClient.invalidateQueries({ queryKey: ['dao'] });
+      queryClient.invalidateQueries({ queryKey: ['clubs'] });
     },
   });
 };
@@ -210,7 +210,7 @@ export const useCreateIdea = () => {
   const queryClient = useQueryClient();
   return useMutation(createIdea, {
     onSuccess: () => {
-      queryClient.invalidateQueries('ideas');
+      queryClient.invalidateQueries({ queryKey: ['ideas'] });
     },
   });
 };
@@ -231,7 +231,7 @@ export const useCreateSubmission = () => {
   const queryClient = useQueryClient();
   return useMutation(createSubmission, {
     onSuccess: () => {
-      queryClient.invalidateQueries('submissions');
+      queryClient.invalidateQueries({ queryKey: ['submissions'] });
     },
   });
 };
@@ -252,7 +252,7 @@ export const useCreateProposal = () => {
   const queryClient = useQueryClient();
   return useMutation(createProposal, {
     onSuccess: () => {
-      queryClient.invalidateQueries('proposals');
+      queryClient.invalidateQueries({ queryKey: ['proposals'] });
     },
   });
 };
@@ -271,7 +271,7 @@ export const useIdeaVote = () => {
   const queryClient = useQueryClient();
   return useMutation(handleIdeaVote, {
     onSuccess: () => {
-      queryClient.invalidateQueries('ideas');
+      queryClient.invalidateQueries({ queryKey: ['ideas'] });
     },
   });
 };
@@ -293,7 +293,7 @@ export const useUpdateIdeaVote = () => {
   const queryClient = useQueryClient();
   return useMutation(handleUpdateIdeaVote, {
     onSuccess: () => {
-      queryClient.invalidateQueries('ideas');
+      queryClient.invalidateQueries({ queryKey: ['ideas'] });
     },
   });
 };

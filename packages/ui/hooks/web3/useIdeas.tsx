@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useAccount } from 'ui/components';
 import { useDAO, useTeam } from 'ui/hooks';
 import { getIdeas } from 'api/clubs';
@@ -8,7 +8,7 @@ import { getIdeas as getTeamIdeas } from 'api/teams';
 export function useIdeas(filter = 'active') {
   const { stxAddress } = useAccount();
   const { data: dao } = useDAO();
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+  const { isFetching, isLoading, isError, data } = useQuery(
     ['ideas', dao?.id, stxAddress, filter],
     getIdeas,
     {
@@ -16,14 +16,14 @@ export function useIdeas(filter = 'active') {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, data };
+  return { isFetching, isLoading, isError, data };
 }
 
 // Hook (use-team-ideas.tsx)
 export function useTeamIdeas(filter = 'active') {
   const { stxAddress } = useAccount();
   const { data: dao } = useTeam();
-  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+  const { isFetching, isLoading, isError, data } = useQuery(
     ['ideas', dao?.id, stxAddress, filter],
     getTeamIdeas,
     {
@@ -31,5 +31,5 @@ export function useTeamIdeas(filter = 'active') {
     },
   );
 
-  return { isFetching, isIdle, isLoading, isError, data };
+  return { isFetching, isLoading, isError, data };
 }
